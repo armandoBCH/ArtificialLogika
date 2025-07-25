@@ -2,32 +2,22 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Brain } from "lucide-react";
 import { PlexusBackground } from "@/components/PlexusBackground";
 
-const heroBackground = "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop";
-
 export const Hero = () => {
   return (
     <section 
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{
-        backgroundImage: `url(${heroBackground})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}
     >
       <PlexusBackground />
       
       {/* Overlay */}
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-1" />
+      <div className="absolute inset-0 bg-background/90 backdrop-blur-sm z-1" />
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-6 text-center animate-fade-in-up">
         {/* Logo */}
-        <div className="flex justify-center mb-8">
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-card/60 border border-primary/20 rounded-lg backdrop-blur-sm shadow-lg animate-pulse-glow">
-            <Brain className="w-8 h-8 text-foreground" />
-            <span className="text-2xl font-bold text-foreground">Artificial Lógika</span>
-          </div>
+        <div className="flex justify-center items-center gap-4 mb-8">
+          <Brain className="w-10 h-10 text-primary animate-pulse" />
+          <span className="text-3xl md:text-4xl font-bold text-foreground animate-text-glow">Artificial Lógika</span>
         </div>
         
         {/* Main heading */}
