@@ -1,5 +1,6 @@
 {
   "name": "Artificial Logika",
   "description": "An empty app",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "prompt": ""
 }
