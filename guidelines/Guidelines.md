@@ -1,61 +1,118 @@
-**Add your own guidelines here**
-<!--
+# Guidelines de Artificial Lógika
 
-System Guidelines
+## Filosofía de Diseño
+**"Logic as Aesthetics"** - Cada elemento debe sentirse deliberado, eficiente y elegante, con claridad estructural, movimiento con propósito y minimalismo funcional.
 
-Use this file to provide the AI with rules and guidelines you want it to follow.
-This template outlines a few examples of things you can add. You can add your own sections and format it to suit your needs
+## Colores del Proyecto
+- **Primario**: #40d9ac (Verde menta - HSL: 166° 65% 55%)
+- **Fondo**: #0e1015 (Azul oscuro - HSL: 210° 20% 7%) 
+- **Card/Secondary**: #1a1d24 (Gris azulado - HSL: 210° 15% 13%)
+- **Tipografía**: Sora (Google Fonts)
 
-TIP: More context isn't always better. It can confuse the LLM. Try and add the most important rules you need
+## Errores y Conclusiones del Deploy
 
-# General guidelines
+### ⚠️ ERRORES RESUELTOS DURANTE EL DESARROLLO
 
-Any general rules you want the AI to follow.
-For example:
+#### 1. **Error de TypeScript Build (RESUELTO)**
+- **Problema**: Variables no utilizadas en componentes
+- **Error**: `'content' is declared but its value is never read`
+- **Solución**: Eliminar variables unused en Pricing.tsx y otros componentes
+- **Lección**: Siempre revisar warnings de TypeScript antes del deploy
 
-* Only use absolute positioning when necessary. Opt for responsive and well structured layouts that use flexbox and grid by default
-* Refactor code as you go to keep code clean
-* Keep file sizes small and put helper functions and components in their own files.
+#### 2. **Error de Tailwind CSS V4 PostCSS (RESUELTO)**
+- **Problema**: `tailwindcss directly as a PostCSS plugin`
+- **Error**: Tailwind V4 alpha requiere plugin separado `@tailwindcss/postcss`
+- **Solución**: Downgrade a Tailwind V3 estable (`^3.4.0`)
+- **Lección**: NO usar versiones alpha en producción
 
---------------
+#### 3. **Error de Estilos CSS No Aplicados (RESUELTO)**
+- **Problema**: Los estilos de Tailwind no se aplicaban, solo las animaciones
+- **Causas**:
+  - Configuración incorrecta de PostCSS en vite.config.ts
+  - Sintaxis @theme incompatible con V3
+  - Variables HSL mal definidas
+- **Soluciones**:
+  - Cambiar `css.postcss.plugins: []` por `css.postcss: './postcss.config.js'`
+  - Usar @layer base en lugar de @theme
+  - Importar Tailwind correctamente: `@import "tailwindcss/base"`
 
-# Design system guidelines
-Rules for how the AI should make generations look like your company's design system
+#### 4. **Error de Colores Incorrectos (ACTUAL)**
+- **Problema**: Los colores se muestran invertidos (verde se ve violeta)
+- **Causa**: Valores HSL incorrectos en variables CSS
+- **Conversión correcta**:
+  - #40d9ac → 166° 65% 55% (no 64 217 172)
+  - #0e1015 → 210° 20% 7% (no 14 16 21)
+- **Solución**: Corregir todas las variables HSL en globals.css
 
-Additionally, if you select a design system to use in the prompt box, you can reference
-your design system's components, tokens, variables and components.
-For example:
+### 🔧 CONFIGURACIONES CRÍTICAS
 
-* Use a base font-size of 14px
-* Date formats should always be in the format “Jun 10”
-* The bottom toolbar should only ever have a maximum of 4 items
-* Never use the floating action button with the bottom toolbar
-* Chips should always come in sets of 3 or more
-* Don't use a dropdown if there are 2 or fewer options
+#### **package.json**
+```json
+"tailwindcss": "^3.4.0"  // NO usar V4 alpha
+```
 
-You can also create sub sections and add more specific details
-For example:
+#### **postcss.config.js** 
+```js
+plugins: {
+  tailwindcss: {},  // NO '@tailwindcss/postcss'
+  autoprefixer: {},
+}
+```
 
+#### **vite.config.ts**
+```ts
+css: {
+  postcss: './postcss.config.js',  // NO plugins: []
+}
+```
 
-## Button
-The Button component is a fundamental interactive element in our design system, designed to trigger actions or navigate
-users through the application. It provides visual feedback and clear affordances to enhance user experience.
+#### **globals.css**
+```css
+@import "tailwindcss/base";     // NO @import "tailwindcss"
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+```
 
-### Usage
-Buttons should be used for important actions that users need to take, such as form submissions, confirming choices,
-or initiating processes. They communicate interactivity and should have clear, action-oriented labels.
+### 📁 ARCHIVOS PROBLEMÁTICOS
+- `/src/App.tsx` y `/src/main.tsx` → Duplicados que causan conflictos
+- Marcar como eliminados para evitar problemas de build
 
-### Variants
-* Primary Button
-  * Purpose : Used for the main action in a section or page
-  * Visual Style : Bold, filled with the primary brand color
-  * Usage : One primary button per section to guide users toward the most important action
-* Secondary Button
-  * Purpose : Used for alternative or supporting actions
-  * Visual Style : Outlined with the primary color, transparent background
-  * Usage : Can appear alongside a primary button for less important actions
-* Tertiary Button
-  * Purpose : Used for the least important actions
-  * Visual Style : Text-only with no border, using primary color
-  * Usage : For actions that should be available but not emphasized
--->
+### 🚀 PROCESO DE DEPLOY CORRECTO
+1. **Verificar TypeScript**: `tsc --noEmit`
+2. **Build local**: `npm run build` 
+3. **Preview**: `npm run preview`
+4. **Deploy Vercel**: Solo después de verificar localmente
+
+### 📚 LECCIONES APRENDIDAS
+- **Tailwind V3** es la versión de producción estable
+- **Variables HSL** deben convertirse correctamente desde hex
+- **PostCSS** debe configurarse explícitamente en Vite
+- **Archivos duplicados** en diferentes carpetas causan conflictos
+- **Vercel** necesita configuración específica en vercel.json
+
+## Guidelines Técnicas
+
+### Color System
+- Usar variables HSL correctas en formato: `hue saturation% lightness%`
+- Nunca usar valores RGB en variables HSL
+- Verificar conversión hex→HSL con herramientas online
+
+### Mobile First
+- Base: 14px font-size
+- Responsive breakpoints: 640px, 768px, 1024px
+- Padding: `mobile-padding` utility class
+
+### Animaciones Personalizadas
+- `animate-float`: Flotación suave para elementos
+- `animate-pulse-glow`: Brillo pulsante para CTAs
+- `animate-neural-pulse`: Efecto neural para backgrounds
+
+### Componentes UI
+- Usar shadcn/ui components from `/components/ui`
+- Personalizar con classes de Tailwind cuando sea necesario
+- Mantener consistencia visual en toda la aplicación
+
+### Content Management
+- Todo el contenido editable a través de EditableContentContext
+- Sistema de administración en `/admin` route
+- Persistencia en localStorage hasta implementar Supabase
