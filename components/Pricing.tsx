@@ -18,10 +18,8 @@ import {
   Server,
   HeadphonesIcon
 } from 'lucide-react';
-import { useEditableContent } from '../contexts/EditableContentContext';
 
 const Pricing: React.FC = () => {
-  const { content } = useEditableContent();
   const [showCustomizer, setShowCustomizer] = useState(false);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
