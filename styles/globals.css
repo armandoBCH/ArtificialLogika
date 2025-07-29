@@ -1,110 +1,125 @@
-@import "tailwindcss";
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
 
-@theme {
-  --color-background: #0e1015;
-  --color-foreground: #FFFFFF;
-  --color-card: #1a1d24;
-  --color-card-foreground: #FFFFFF;
-  --color-popover: #1a1d24;
-  --color-popover-foreground: #FFFFFF;
-  --color-primary: #40d9ac;
-  --color-primary-foreground: #0e1015;
-  --color-secondary: #2a2f3a;
-  --color-secondary-foreground: #FFFFFF;
-  --color-muted: #2a2f3a;
-  --color-muted-foreground: #a0a0a0;
-  --color-accent: #40d9ac;
-  --color-accent-foreground: #0e1015;
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #FFFFFF;
-  --color-border: rgba(64, 217, 172, 0.2);
-  --color-input: transparent;
-  --color-ring: #40d9ac;
-  --radius: 0.625rem;
-  --color-sidebar: #1a1d24;
-  --color-sidebar-foreground: #FFFFFF;
-  --color-sidebar-primary: #40d9ac;
-  --color-sidebar-primary-foreground: #0e1015;
-  --color-sidebar-accent: #2a2f3a;
-  --color-sidebar-accent-foreground: #FFFFFF;
-  --color-sidebar-border: rgba(64, 217, 172, 0.2);
-  --color-sidebar-ring: #40d9ac;
-  --font-family-sans: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+@layer base {
+  :root {
+    --background: 14 16 21;
+    --foreground: 255 255 255;
+    --card: 26 29 36;
+    --card-foreground: 255 255 255;
+    --popover: 26 29 36;
+    --popover-foreground: 255 255 255;
+    --primary: 64 217 172;
+    --primary-foreground: 14 16 21;
+    --secondary: 42 47 58;
+    --secondary-foreground: 255 255 255;
+    --muted: 42 47 58;
+    --muted-foreground: 160 160 160;
+    --accent: 64 217 172;
+    --accent-foreground: 14 16 21;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border: 64 217 172 / 0.2;
+    --input: 0 0 0 / 0;
+    --ring: 64 217 172;
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: 14 16 21;
+    --foreground: 255 255 255;
+    --card: 26 29 36;
+    --card-foreground: 255 255 255;
+    --popover: 26 29 36;
+    --popover-foreground: 255 255 255;
+    --primary: 64 217 172;
+    --primary-foreground: 14 16 21;
+    --secondary: 42 47 58;
+    --secondary-foreground: 255 255 255;
+    --muted: 42 47 58;
+    --muted-foreground: 160 160 160;
+    --accent: 64 217 172;
+    --accent-foreground: 14 16 21;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border: 64 217 172 / 0.2;
+    --input: 0 0 0 / 0;
+    --ring: 64 217 172;
+  }
 }
 
-/* Base Styles */
-* {
-  border-color: rgb(from var(--color-border) r g b / <alpha-value>);
-}
+@layer base {
+  * {
+    @apply border-border;
+  }
 
-html {
-  font-size: 14px;
-  scroll-behavior: smooth;
-}
+  html {
+    font-size: 14px;
+    scroll-behavior: smooth;
+  }
 
-body {
-  background: var(--color-background);
-  color: var(--color-foreground);
-  font-family: var(--font-family-sans);
-  overflow-x: hidden;
-}
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    overflow-x: hidden;
+  }
 
-/* Button Focus */
-button, [role="button"] {
-  outline: none;
-}
+  button, [role="button"] {
+    outline: none;
+  }
 
-button:focus-visible, [role="button"]:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
+  button:focus-visible, [role="button"]:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
 
-/* Typography */
-h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
 
-h2 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
 
-h3 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.3;
-}
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
 
-h4 {
-  font-size: 1.125rem;
-  font-weight: 500;
-  line-height: 1.4;
-}
+  h4 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
 
-p {
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.6;
-}
+  p {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
 
-@media (min-width: 768px) {
-  h1 { font-size: 3rem; }
-  h2 { font-size: 2.25rem; }
-  h3 { font-size: 1.875rem; }
-  h4 { font-size: 1.25rem; }
-  p { font-size: 1rem; }
-}
+  @media (min-width: 768px) {
+    h1 { font-size: 3rem; }
+    h2 { font-size: 2.25rem; }
+    h3 { font-size: 1.875rem; }
+    h4 { font-size: 1.25rem; }
+    p { font-size: 1rem; }
+  }
 
-@media (min-width: 1024px) {
-  h1 { font-size: 3.5rem; }
-  h2 { font-size: 2.5rem; }
-  p { font-size: 1.125rem; }
+  @media (min-width: 1024px) {
+    h1 { font-size: 3.5rem; }
+    h2 { font-size: 2.5rem; }
+    p { font-size: 1.125rem; }
+  }
 }
 
 /* Custom Animations */
