@@ -281,22 +281,24 @@ html {
   animation: neural-pulse 3s ease-in-out infinite;
 }
 
-/* Mobile First Utilities */
-.mobile-padding {
-  @apply px-4 sm:px-6 lg:px-8;
-}
+@layer utilities {
+  /* Mobile First Utilities */
+  .mobile-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
 
-.mobile-text-balance {
-  text-wrap: balance;
-}
+  .mobile-text-balance {
+    text-wrap: balance;
+  }
 
-/* Button focus fix */
-.button-focus-fix {
-  outline: none !important;
-  box-shadow: none !important;
-}
+  /* Button focus fix */
+  .button-focus-fix {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 
-.button-focus-fix:focus-visible {
-  outline: 2px solid var(--primary) !important;
-  outline-offset: 2px !important;
+  .button-focus-fix:focus-visible {
+    outline: 2px solid var(--primary) !important;
+    outline-offset: 2px !important;
+  }
 }
