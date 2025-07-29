@@ -16,7 +16,6 @@ import {
   Users, 
   DollarSign,
   HelpCircle,
-  MessageSquare,
   Building
 } from 'lucide-react';
 
