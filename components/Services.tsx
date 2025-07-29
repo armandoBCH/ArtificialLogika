@@ -9,7 +9,6 @@ import {
   ArrowRight, 
   CheckCircle,
   TrendingUp,
-  Clock,
   Users,
   ShoppingCart
 } from 'lucide-react';

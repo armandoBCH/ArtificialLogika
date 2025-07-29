@@ -5,14 +5,9 @@ import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
 import { 
   Check, 
-  Sparkles, 
-  Zap, 
   Crown, 
   ArrowRight, 
-  Clock,
   Shield,
-  Users,
-  AlertCircle,
   Star,
   Calendar,
   Calculator,
@@ -20,7 +15,6 @@ import {
   Globe,
   MessageSquare,
   Settings,
-  Plus,
   Server,
   HeadphonesIcon
 } from 'lucide-react';
