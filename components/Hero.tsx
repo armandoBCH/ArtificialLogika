@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { ChevronRight, Sparkles, Clock } from 'lucide-react';
 import { useEditableContent } from '../contexts/EditableContentContext';
