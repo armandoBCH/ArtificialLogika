@@ -212,7 +212,7 @@ const Pricing: React.FC = () => {
             Precios transparentes
             <span className="text-primary block sm:inline"> en pesos argentinos</span>
           </h2>
-          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mobile-text-balance">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mobile-text-balance">
             Costos claros desde el primer día. Incluye desarrollo, hosting, capacitación y soporte. 
             <span className="block mt-2 text-primary font-medium">
               Sin sorpresas, sin letra pequeña.

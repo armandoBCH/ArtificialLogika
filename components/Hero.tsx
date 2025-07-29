@@ -65,7 +65,7 @@ const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 sm:mb-6 mobile-text-balance">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 sm:mb-6 mobile-text-balance">
             {content.hero.title}
             <br />
             <span className="text-primary block mt-2 relative min-h-[1.2em]">
@@ -87,7 +87,7 @@ const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
         >
-          <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed mobile-text-balance">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed mobile-text-balance">
             {content.hero.description}
           </p>
         </motion.div>
@@ -126,7 +126,7 @@ const Hero: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground"
+            className="flex flex-col sm:flex-row items-center gap-3 text-sm sm:text-sm text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
@@ -135,13 +135,13 @@ const Hero: React.FC = () => {
               {[...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/20 rounded-full border-2 border-background flex items-center justify-center"
+                  className="w-8 h-8 sm:w-8 sm:h-8 bg-primary/20 rounded-full border-2 border-background flex items-center justify-center"
                 >
-                  <span className="text-primary text-xs">✓</span>
+                  <span className="text-primary text-sm">✓</span>
                 </div>
               ))}
             </div>
-            <span className="mobile-text-balance">
+            <span className="mobile-text-balance text-center sm:text-left">
               {content.hero.trustText}
             </span>
           </motion.div>

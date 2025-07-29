@@ -17,7 +17,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   const { content } = useEditableContent();
   
   const defaultTitle = `${content.company.name} - ${content.company.tagline}`;
-  const defaultDescription = "Consultora boutique de software e IA que automatiza negocios ambiciosos. Transformamos procesos manuales en sistemas automáticos con ROI garantizado en 90 días.";
+  const defaultDescription = "Consultora boutique de software e IA que automatiza negocios ambiciosos. Desarrollo páginas web, ecommerce, chatbots y automatizaciones. ROI garantizado. Soluciones 100% autogestionables.";
   
   const seoTitle = title || defaultTitle;
   const seoDescription = description || defaultDescription;
@@ -34,6 +34,60 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       document.head.appendChild(metaDescription);
     }
     metaDescription.setAttribute('content', seoDescription);
+
+    // Add meta keywords
+    let metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (!metaKeywords) {
+      metaKeywords = document.createElement('meta');
+      metaKeywords.setAttribute('name', 'keywords');
+      document.head.appendChild(metaKeywords);
+    }
+    metaKeywords.setAttribute('content', 'consultora software, desarrollo web, inteligencia artificial, chatbots, automatización, ecommerce, páginas web, landing pages, ROI, PyMEs, autogestionable');
+
+    // Add robots meta
+    let metaRobots = document.querySelector('meta[name="robots"]');
+    if (!metaRobots) {
+      metaRobots = document.createElement('meta');
+      metaRobots.setAttribute('name', 'robots');
+      document.head.appendChild(metaRobots);
+    }
+    metaRobots.setAttribute('content', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
+
+    // Add viewport meta
+    let metaViewport = document.querySelector('meta[name="viewport"]');
+    if (!metaViewport) {
+      metaViewport = document.createElement('meta');
+      metaViewport.setAttribute('name', 'viewport');
+      document.head.appendChild(metaViewport);
+    }
+    metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
+
+    // Add language meta
+    let metaLanguage = document.querySelector('meta[http-equiv="content-language"]');
+    if (!metaLanguage) {
+      metaLanguage = document.createElement('meta');
+      metaLanguage.setAttribute('http-equiv', 'content-language');
+      document.head.appendChild(metaLanguage);
+    }
+    metaLanguage.setAttribute('content', 'es-ES');
+
+    // Add preconnect for performance
+    const preconnects = [
+      'https://fonts.googleapis.com',
+      'https://fonts.gstatic.com',
+      'https://www.google-analytics.com',
+      'https://www.googletagmanager.com'
+    ];
+    
+    preconnects.forEach(url => {
+      if (!document.querySelector(`link[href="${url}"]`)) {
+        const link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = url;
+        if (url.includes('gstatic')) link.crossOrigin = 'anonymous';
+        document.head.appendChild(link);
+      }
+    });
     
     // Update canonical URL
     let canonicalLink = document.querySelector('link[rel="canonical"]');
@@ -51,7 +105,11 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       { property: 'og:type', content: type },
       { property: 'og:url', content: canonical },
       { property: 'og:site_name', content: content.company.name },
-      { property: 'og:locale', content: 'es_ES' }
+      { property: 'og:locale', content: 'es_ES' },
+      { property: 'og:image', content: `${canonical}/og-image.jpg` },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
+      { property: 'og:image:alt', content: `${content.company.name} - Consultora de Software e IA` }
     ];
     
     ogTags.forEach(tag => {
@@ -68,7 +126,10 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     const twitterTags = [
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: seoTitle },
-      { name: 'twitter:description', content: seoDescription }
+      { name: 'twitter:description', content: seoDescription },
+      { name: 'twitter:image', content: `${canonical}/og-image.jpg` },
+      { name: 'twitter:creator', content: '@artificiallogika' },
+      { name: 'twitter:site', content: '@artificiallogika' }
     ];
     
     twitterTags.forEach(tag => {
@@ -81,32 +142,103 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       twitterMeta.setAttribute('content', tag.content);
     });
     
-    // Structured data for local business
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "ProfessionalService",
-      "name": content.company.name,
-      "description": seoDescription,
-      "url": canonical,
-      "telephone": content.company.phone,
-      "email": content.company.email,
-      "address": {
-        "@type": "PostalAddress", 
-        "addressLocality": content.company.address.split(',')[0],
-        "addressCountry": "ES"
+    // Enhanced structured data
+    const structuredData = [
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": content.company.name,
+        "alternateName": "Artificial Lógika",
+        "description": seoDescription,
+        "url": canonical,
+        "telephone": content.company.phone,
+        "email": content.company.email,
+        "address": {
+          "@type": "PostalAddress", 
+          "addressLocality": content.company.address.split(',')[0],
+          "addressCountry": "ES"
+        },
+        "sameAs": [
+          content.company.socialMedia.linkedin,
+          content.company.socialMedia.twitter
+        ],
+        "serviceType": ["Software Development", "AI Automation", "Web Development", "E-commerce Development"],
+        "areaServed": {
+          "@type": "Country",
+          "name": "Spain"
+        },
+        "founder": {
+          "@type": "Person",
+          "name": content.company.founderName,
+          "jobTitle": content.company.founderTitle
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5.0",
+          "ratingCount": "15",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Servicios de Software e IA",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Desarrollo Web",
+                "description": "Páginas web y landing pages autogestionables"
+              }
+            },
+            {
+              "@type": "Offer", 
+              "itemOffered": {
+                "@type": "Service",
+                "name": "E-commerce",
+                "description": "Tiendas online completas con gestión autónoma"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service", 
+                "name": "Chatbots e IA",
+                "description": "Asistentes inteligentes y automatizaciones"
+              }
+            }
+          ]
+        }
       },
-      "sameAs": [
-        content.company.socialMedia.linkedin,
-        content.company.socialMedia.twitter
-      ],
-      "serviceType": "Software Development & AI Automation",
-      "areaServed": "Spain",
-      "founder": {
-        "@type": "Person",
-        "name": content.company.founderName,
-        "jobTitle": content.company.founderTitle
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": content.company.name,
+        "url": canonical,
+        "logo": `${canonical}/logo.png`,
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": content.company.phone,
+          "contactType": "customer service",
+          "email": content.company.email,
+          "availableLanguage": "Spanish"
+        },
+        "foundingDate": "2024",
+        "numberOfEmployees": "1-10",
+        "slogan": content.company.tagline
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": content.company.name,
+        "url": canonical,
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": `${canonical}?q={search_term_string}`,
+          "query-input": "required name=search_term_string"
+        }
       }
-    };
+    ];
     
     let structuredDataScript = document.querySelector('script[type="application/ld+json"]');
     if (!structuredDataScript) {

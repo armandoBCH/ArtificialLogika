@@ -1,0 +1,25 @@
+{
+  "name": "Artificial Lógika - Consultora Software e IA",
+  "short_name": "Artificial Lógika",
+  "description": "Consultora boutique de software e IA. Desarrollo páginas web, ecommerce, chatbots y automatizaciones.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1015",
+  "theme_color": "#40d9ac",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "productivity", "technology"],
+  "lang": "es-ES",
+  "dir": "ltr"
+}

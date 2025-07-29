@@ -178,36 +178,36 @@ const Services: React.FC = () => {
                 Todas las soluciones incluyen panel de administración intuitivo para que puedas gestionar todo sin depender de nadie.
               </p>
               
-              <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-sm sm:max-w-md mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-xs sm:max-w-md mx-auto">
                 <motion.div 
-                  className="flex flex-col items-center"
+                  className="flex sm:flex-col items-center gap-3 sm:gap-2"
                   whileHover={{ y: -5 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl flex items-center justify-center mb-2 shadow-md group-hover:shadow-lg group-hover:from-primary/40 group-hover:to-primary/20 transition-all duration-300">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:from-primary/40 group-hover:to-primary/20 transition-all duration-300 flex-shrink-0">
                     <span className="text-xl sm:text-2xl">⚡</span>
                   </div>
-                  <div className="text-xs sm:text-sm font-medium text-white text-center leading-tight">Fácil gestión</div>
+                  <div className="text-sm sm:text-sm font-medium text-white text-left sm:text-center leading-tight">Fácil gestión</div>
                 </motion.div>
                 <motion.div 
-                  className="flex flex-col items-center"
+                  className="flex sm:flex-col items-center gap-3 sm:gap-2"
                   whileHover={{ y: -5 }}
                   transition={{ duration: 0.2, delay: 0.1 }}
                 >
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl flex items-center justify-center mb-2 shadow-md group-hover:shadow-lg group-hover:from-primary/40 group-hover:to-primary/20 transition-all duration-300">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:from-primary/40 group-hover:to-primary/20 transition-all duration-300 flex-shrink-0">
                     <span className="text-xl sm:text-2xl">🔧</span>
                   </div>
-                  <div className="text-xs sm:text-sm font-medium text-white text-center leading-tight">Sin dependencias</div>
+                  <div className="text-sm sm:text-sm font-medium text-white text-left sm:text-center leading-tight">Sin dependencias</div>
                 </motion.div>
                 <motion.div 
-                  className="flex flex-col items-center"
+                  className="flex sm:flex-col items-center gap-3 sm:gap-2"
                   whileHover={{ y: -5 }}
                   transition={{ duration: 0.2, delay: 0.2 }}
                 >
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl flex items-center justify-center mb-2 shadow-md group-hover:shadow-lg group-hover:from-primary/40 group-hover:to-primary/20 transition-all duration-300">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:from-primary/40 group-hover:to-primary/20 transition-all duration-300 flex-shrink-0">
                     <span className="text-xl sm:text-2xl">🎯</span>
                   </div>
-                  <div className="text-xs sm:text-sm font-medium text-white text-center leading-tight">Control total</div>
+                  <div className="text-sm sm:text-sm font-medium text-white text-left sm:text-center leading-tight">Control total</div>
                 </motion.div>
               </div>
             </div>

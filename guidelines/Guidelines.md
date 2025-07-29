@@ -36,13 +36,22 @@
   - Usar @layer base en lugar de @theme
   - Importar Tailwind correctamente: `@import "tailwindcss/base"`
 
-#### 4. **Error de Colores Incorrectos (ACTUAL)**
+#### 4. **Error de Colores Incorrectos (RESUELTO)**
 - **Problema**: Los colores se muestran invertidos (verde se ve violeta)
 - **Causa**: Valores HSL incorrectos en variables CSS
 - **Conversión correcta**:
   - #40d9ac → 166° 65% 55% (no 64 217 172)
   - #0e1015 → 210° 20% 7% (no 14 16 21)
 - **Solución**: Corregir todas las variables HSL en globals.css
+
+#### 5. **Problemas de Diseño Mobile (RESUELTO)**
+- **Problema**: Texto muy pequeño en móvil, iconos mal alineados
+- **Causa**: Tipografía base demasiado pequeña y grid inapropiado
+- **Soluciones**:
+  - Aumentar font-size base de 14px a 16px (15px en móvil)
+  - Hero title de text-2xl a text-3xl en móvil
+  - Iconos sección "autogestionable" en grid vertical en móvil
+  - Mejorar spacing y alignment mobile-first
 
 ### 🔧 CONFIGURACIONES CRÍTICAS
 
@@ -116,3 +125,13 @@ css: {
 - Todo el contenido editable a través de EditableContentContext
 - Sistema de administración en `/admin` route
 - Persistencia en localStorage hasta implementar Supabase
+
+### SEO Optimización
+- **Meta tags completos**: Title, description, keywords, robots
+- **Open Graph**: Facebook, LinkedIn con imágenes optimizadas
+- **Twitter Cards**: Summary large image format
+- **Structured Data**: Organization, ProfessionalService, WebSite schemas
+- **Performance**: Preconnect, DNS prefetch, PWA manifest
+- **Sitemap y robots.txt**: Para indexación correcta
+- **Canonical URLs**: Evitar contenido duplicado
+- **Language tags**: es-ES correcto para audiencia argentina
