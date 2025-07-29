@@ -128,14 +128,14 @@ const defaultContent: EditableContent = {
     title: "Transformamos",
     subtitle: "en ventaja competitiva",
     dynamicTexts: [
-      "tareas repetitivas",
+      "tu lógica de negocio",
+      "ideas brillantes",
       "procesos manuales",
-      "páginas web básicas",
-      "atención al cliente",
-      "ecommerce que no vende",
-      "gestión de datos"
+      "páginas web desde cero",
+      "ecommerce que convierte",
+      "sistemas inteligentes"
     ],
-    description: "Automatizamos lo que te quita tiempo para que te enfoques en hacer crecer tu negocio. Desde páginas web y ecommerce que convierten hasta chatbots inteligentes y sistemas automáticos.",
+    description: "Creamos soluciones digitales desde cero, completamente autogestionables, que automatizan procesos y potencian tu negocio. Páginas web, ecommerce, chatbots inteligentes y sistemas que trabajan por ti las 24 horas.",
     ctaText: "Ver cómo ayudo",
     ctaTextLong: "Descubrir cómo puedo ayudarte",
     trustText: "Proyectos completados • Enfoque personalizado • Resultados reales",
@@ -148,24 +148,24 @@ const defaultContent: EditableContent = {
   services: [
     {
       title: "Páginas Web & Ecommerce",
-      description: "Sitios web, tiendas online y landing pages optimizadas para convertir visitantes en clientes. Rápidas, responsive y enfocadas en resultados.",
+      description: "Creamos desde cero sitios web, tiendas online y landing pages completamente autogestionables que convierten visitantes en clientes. Diseño moderno, carga rápida y panel de administración incluido.",
       icon: "Globe",
       features: [
-        "Diseño optimizado para conversión",
-        "Ecommerce completo con pasarela de pagos",
+        "Diseño único optimizado para conversión", 
+        "Desarrollo completo desde cero",
+        "Ecommerce con pasarela de pagos integrada",
         "Carga súper rápida (<3 segundos)",
         "Responsive en todos los dispositivos",
-        "Formularios de contacto inteligentes",
-        "Integración con herramientas de marketing",
-        "SEO básico incluido",
-        "Panel de gestión fácil de usar"
+        "Panel de administración autogestionable",
+        "SEO técnico incluido",
+        "Hosting y configuración completa"
       ],
       businessValue: "Presencia digital profesional que convierte y vende",
       roi: "Mejora conversiones 50-150%"
     },
     {
       title: "Chatbots & Asistentes IA",
-      description: "Chatbots inteligentes que atienden a tus clientes 24/7, responden preguntas frecuentes y capturan leads mientras duermes.",
+      description: "Desarrollamos chatbots inteligentes completamente autogestionables que atienden a tus clientes 24/7, responden preguntas y capturan leads automáticamente. Panel de control incluido.",
       icon: "MessageSquare",
       features: [
         "Respuestas automáticas 24/7",
@@ -179,16 +179,16 @@ const defaultContent: EditableContent = {
       roi: "Ahorra 20+ horas/semana"
     },
     {
-      title: "Automatización de Procesos",
-      description: "Automatizamos tareas repetitivas como reportes, seguimiento de clientes, gestión de inventario y más.",
+      title: "Automatización de Procesos", 
+      description: "Diseñamos sistemas de automatización completamente autogestionables para eliminar tareas repetitivas: reportes automáticos, seguimiento de clientes, gestión de inventario y workflows inteligentes.",
       icon: "Zap",
       features: [
-        "Automatización de reportes",
-        "Integración entre herramientas",
-        "Workflows personalizados",
-        "Notificaciones automáticas",
-        "Backup y sincronización de datos",
-        "Dashboards de seguimiento"
+        "Sistemas de automatización custom",
+        "Integración entre herramientas existentes", 
+        "Workflows inteligentes personalizados",
+        "Reportes automáticos programados",
+        "Notificaciones y alertas inteligentes",
+        "Dashboards de control en tiempo real"
       ],
       businessValue: "Libera tiempo para tareas importantes",
       roi: "Ahorra 10-15 horas/semana"
@@ -247,16 +247,16 @@ const defaultContent: EditableContent = {
       subtitle: "La mayoría de proyectos",
       price: "€800 - €5,000",
       period: "",
-      description: "Desde landing pages hasta ecommerce completos, chatbots o automatizaciones",
+      description: "Creación completa desde cero y autogestionable: landing pages, ecommerce, chatbots inteligentes y sistemas de automatización",
       features: [
-        "Solución completamente personalizada",
+        "Desarrollo completo desde cero",
+        "Solución 100% personalizada y autogestionable",
         "Entrega en 1-4 semanas según complejidad",
-        "Incluye capacitación del equipo",
-        "1-3 meses de ajustes incluidos",
-        "Documentación completa",
-        "Soporte durante implementación",
-        "Integración con tus herramientas",
-        "Optimización post-lanzamiento"
+        "Capacitación completa del equipo",
+        "2-3 meses de ajustes post-lanzamiento",
+        "Documentación técnica completa",
+        "Integración con sistemas existentes",
+        "Soporte durante toda la implementación"
       ],
       popular: true,
       cta: "Ver qué necesito"
@@ -325,7 +325,7 @@ const defaultContent: EditableContent = {
     {
       id: 8,
       question: "¿Puedes crear un ecommerce que realmente venda?",
-      answer: "Sí, me especializo en ecommerce optimizado para conversiones. Incluyo pasarelas de pago, gestión de inventario, SEO para productos, y todas las funcionalidades necesarias para vender online efectivamente.",
+      answer: "Sí, creo ecommerce completamente desde cero y autogestionables, optimizados para conversiones. Incluyo pasarelas de pago, gestión de inventario, panel de administración y todas las funcionalidades necesarias para vender online efectivamente.",
       category: "Ecommerce"
     }
   ],
@@ -352,7 +352,7 @@ const defaultContent: EditableContent = {
       name: "Ana López",
       role: "Dueña",
       company: "Tienda Online",
-      content: "Mi ecommerce anterior no vendía nada. El que me creó Alex tiene todo optimizado: checkout rápido, pagos seguros, y realmente convierte visitantes en ventas.",
+      content: "Alex me creó un ecommerce completamente desde cero. Con checkout optimizado, pagos seguros, y diseño enfocado en conversión. Ahora realmente vendo online.",
       rating: 5,
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
       result: "🛒 +200% ventas online"
@@ -369,7 +369,7 @@ const defaultContent: EditableContent = {
       },
       {
         title: "Enfoque práctico",
-        description: "No vendo tecnología fancy. Vendo soluciones que resuelven problemas reales y ahorran tiempo o dinero.",
+        description: "No vendo tecnología complicada. Creo soluciones desde cero que resuelven problemas reales y generan resultados medibles.",
         icon: "Target"
       },
       {

@@ -51,8 +51,8 @@ const Services: React.FC = () => {
             <span className="text-primary block sm:inline"> realmente funcionan</span>
           </h2>
           <p className="text-sm sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mobile-text-balance">
-            No vendo tecnología complicada. Creo herramientas prácticas que te ahorran tiempo, 
-            automatizan tareas repetitivas y hacen crecer tu negocio.
+            Desarrollo soluciones digitales desde cero, completamente autogestionables, que automatizan procesos 
+            y potencian el crecimiento de tu negocio.
           </p>
         </motion.div>
 
@@ -164,35 +164,34 @@ const Services: React.FC = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <Card className="inline-block bg-gradient-to-r from-primary/10 to-transparent border-primary/20 p-8 sm:p-12 rounded-2xl max-w-4xl">
-            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+          <Card className="inline-block bg-gradient-to-r from-primary/10 to-transparent border-primary/20 p-6 sm:p-8 rounded-2xl max-w-3xl">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
               <div className="flex-shrink-0">
-                <div className="w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center">
-                  <ShoppingCart className="w-10 h-10 text-primary" />
+                <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center">
+                  <ShoppingCart className="w-8 h-8 text-primary" />
                 </div>
               </div>
               
               <div className="text-center sm:text-left">
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
-                  Especialidad en Ecommerce
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                  Soluciones 100% Autogestionables
                 </h3>
-                <p className="text-muted-foreground mb-4">
-                  Creo tiendas online completas que realmente venden. Desde el catálogo hasta el checkout, 
-                  cada elemento está optimizado para convertir visitantes en compradores.
+                <p className="text-sm text-muted-foreground mb-3">
+                  Todas las soluciones incluyen panel de administración intuitivo para que puedas gestionar todo sin depender de nadie.
                 </p>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                <div className="flex justify-center sm:justify-start gap-6">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary mb-1">🛒</div>
-                    <div className="text-xs text-muted-foreground">Checkout optimizado</div>
+                    <div className="text-lg font-bold text-primary mb-1">⚡</div>
+                    <div className="text-xs text-muted-foreground">Fácil gestión</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary mb-1">💳</div>
-                    <div className="text-xs text-muted-foreground">Pagos seguros</div>
+                    <div className="text-lg font-bold text-primary mb-1">🔧</div>
+                    <div className="text-xs text-muted-foreground">Sin dependencias</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary mb-1">📊</div>
-                    <div className="text-xs text-muted-foreground">Analytics incluido</div>
+                    <div className="text-lg font-bold text-primary mb-1">🎯</div>
+                    <div className="text-xs text-muted-foreground">Control total</div>
                   </div>
                 </div>
               </div>
