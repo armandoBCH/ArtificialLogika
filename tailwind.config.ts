@@ -4,7 +4,7 @@ import tailwindcssAnimate from "tailwindcss-animate";
 const config = {
   darkMode: "class",
   content: [
-    './index.html',
+    './index-1.html',
     './Landing Page de Artificial Lógika (Copy)/**/*.{ts,tsx}',
 	],
   prefix: "",
