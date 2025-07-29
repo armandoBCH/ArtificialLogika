@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from './ui/card';
 import { ChevronDown, MessageCircle, Clock, Shield, Zap } from 'lucide-react';
 

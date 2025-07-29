@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
 import { 
   Check, 
-  Sparkles, 
-  Zap, 
   Crown, 
   ArrowRight, 
-  Clock,
   Shield,
-  Users,
-  AlertCircle,
   Star,
   Calendar,
   Calculator,
@@ -20,14 +15,11 @@ import {
   Globe,
   MessageSquare,
   Settings,
-  Plus,
   Server,
   HeadphonesIcon
 } from 'lucide-react';
-import { useEditableContent } from '../contexts/EditableContentContext';
 
 const Pricing: React.FC = () => {
-  const { content } = useEditableContent();
   const [showCustomizer, setShowCustomizer] = useState(false);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 

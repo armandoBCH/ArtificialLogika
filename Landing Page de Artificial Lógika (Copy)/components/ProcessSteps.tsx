@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Card } from './ui/card';
 import { Search, Lightbulb, Code, Rocket } from 'lucide-react';
 
