@@ -164,36 +164,52 @@ const Services: React.FC = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <Card className="inline-block bg-gradient-to-r from-primary/10 to-transparent border-primary/20 p-6 sm:p-8 rounded-2xl max-w-3xl">
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-              <div className="flex-shrink-0">
-                <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center">
+          <Card className="inline-block bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20 p-6 sm:p-8 rounded-2xl max-w-4xl mx-auto shadow-lg backdrop-blur-sm group">
+            <div className="text-center">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/30 to-primary/10 rounded-2xl flex items-center justify-center shadow-lg">
                   <ShoppingCart className="w-8 h-8 text-primary" />
                 </div>
               </div>
               
-              <div className="text-center sm:text-left">
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
-                  Soluciones 100% Autogestionables
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Todas las soluciones incluyen panel de administración intuitivo para que puedas gestionar todo sin depender de nadie.
-                </p>
-                
-                <div className="flex justify-center sm:justify-start gap-6">
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-primary mb-1">⚡</div>
-                    <div className="text-xs text-muted-foreground">Fácil gestión</div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
+                Soluciones 100% Autogestionables
+              </h3>
+              <p className="text-sm sm:text-base text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Todas las soluciones incluyen panel de administración intuitivo para que puedas gestionar todo sin depender de nadie.
+              </p>
+              
+              <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-sm sm:max-w-md mx-auto">
+                <motion.div 
+                  className="flex flex-col items-center"
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl flex items-center justify-center mb-2 shadow-md group-hover:shadow-lg group-hover:from-primary/40 group-hover:to-primary/20 transition-all duration-300">
+                    <span className="text-xl sm:text-2xl">⚡</span>
                   </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-primary mb-1">🔧</div>
-                    <div className="text-xs text-muted-foreground">Sin dependencias</div>
+                  <div className="text-xs sm:text-sm font-medium text-white text-center leading-tight">Fácil gestión</div>
+                </motion.div>
+                <motion.div 
+                  className="flex flex-col items-center"
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.2, delay: 0.1 }}
+                >
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl flex items-center justify-center mb-2 shadow-md group-hover:shadow-lg group-hover:from-primary/40 group-hover:to-primary/20 transition-all duration-300">
+                    <span className="text-xl sm:text-2xl">🔧</span>
                   </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-primary mb-1">🎯</div>
-                    <div className="text-xs text-muted-foreground">Control total</div>
+                  <div className="text-xs sm:text-sm font-medium text-white text-center leading-tight">Sin dependencias</div>
+                </motion.div>
+                <motion.div 
+                  className="flex flex-col items-center"
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.2, delay: 0.2 }}
+                >
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl flex items-center justify-center mb-2 shadow-md group-hover:shadow-lg group-hover:from-primary/40 group-hover:to-primary/20 transition-all duration-300">
+                    <span className="text-xl sm:text-2xl">🎯</span>
                   </div>
-                </div>
+                  <div className="text-xs sm:text-sm font-medium text-white text-center leading-tight">Control total</div>
+                </motion.div>
               </div>
             </div>
           </Card>
