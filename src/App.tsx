@@ -1,11 +1,12 @@
 import React from "react";
-import { EditableContentProvider } from "./contexts/EditableContentContext";
+import { EditableContentProvider } from "../contexts/EditableContentContext";
 import {
   RouterProvider,
   useRouter,
-} from "./contexts/RouterContext";
-import LandingPage from "./pages/LandingPage";
-import AdminPage from "./pages/AdminPage";
+} from "../contexts/RouterContext";
+import LandingPage from "../pages/LandingPage";
+import AdminPage from "../pages/AdminPage";
+import "../styles/globals.css";
 
 // Componente principal que maneja el routing
 const AppContent: React.FC = () => {
