@@ -13,11 +13,8 @@ import {
   User,
   DollarSign
 } from 'lucide-react';
-import { useEditableContent } from '../contexts/EditableContentContext';
 
 const ValueProposition: React.FC = () => {
-  const { content } = useEditableContent();
-
   const scrollToContact = () => {
     const element = document.querySelector('#contacto');
     if (element) {

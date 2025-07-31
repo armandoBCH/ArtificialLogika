@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo, { LogoSVG } from './Logo';
+import Logo from './Logo';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Download, Copy } from 'lucide-react';

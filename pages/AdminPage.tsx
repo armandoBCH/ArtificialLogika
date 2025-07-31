@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
@@ -15,8 +14,7 @@ import {
   Settings, 
   Home, 
   Globe, 
-  ShoppingBag, 
-  MessageSquare,
+  ShoppingBag,
   Database,
   User,
   Palette,
@@ -25,18 +23,8 @@ import {
   Trash2,
   Star,
   Crown,
-  Save,
-  AlertCircle,
-  Calculator,
-  Calendar,
-  Shield,
   Edit3,
-  Check,
-  X,
-  TrendingUp,
-  Server,
-  HeadphonesIcon,
-  Zap
+  Check
 } from 'lucide-react';
 import { useRouter } from '../contexts/RouterContext';
 import { useEditableContent } from '../contexts/EditableContentContext';
