@@ -1,139 +1,212 @@
 # Artificial Lógika - Landing Page
 
-Una landing page moderna y optimizada para conversiones, desarrollada con React, TypeScript y Tailwind CSS v4.
+Landing page profesional para consultora boutique de software e IA, con sistema de administración completo y base de datos híbrida (Supabase + IndexedDB).
 
-## 🚀 Stack Tecnológico
+## 🚀 Características
 
-- **React 18** + **TypeScript** - Framework y tipado
-- **Tailwind CSS v4** - Sistema de estilos
-- **Vite** - Build tool y desarrollo
-- **Motion** - Animaciones fluidas
-- **Shadcn/ui** - Componentes UI
-- **Vercel** - Deployment y hosting
+### Frontend
+- **React 18** con TypeScript
+- **Tailwind CSS v3** con diseño responsive mobile-first
+- **Framer Motion** para animaciones suaves
+- **Shadcn/ui** para componentes de interfaz
+- **Sora** como tipografía principal
 
-## 🎯 Características
+### Backend y Base de Datos
+- **Base de datos híbrida**: Supabase (nube) + IndexedDB (local)
+- **Fallback automático**: Si Supabase no está disponible, usa IndexedDB
+- **Sincronización bidireccional** entre ambas bases de datos
+- **Persistencia completa** sin pérdida de datos
 
-- ✅ **Mobile-First Design** - Responsive en todos los dispositivos
-- ✅ **Dark Theme Nativo** - Tema oscuro optimizado
-- ✅ **Animaciones Suaves** - UX pulido con Motion
-- ✅ **SEO Optimizado** - Meta tags y estructura semántica
-- ✅ **Panel de Admin** - Gestión de contenido sin código
-- ✅ **Performance** - Carga rápida y optimizada
+### Sistema de Administración
+- **Panel de administración completo** en `/admin`
+- **Gestión de contenido** sin código
+- **Sistema de precios** con calculadora personalizable
+- **Gestión de proyectos** con drag & drop
+- **Exportación/importación** de datos
+- **Configuración de empresa** y redes sociales
 
-## 🛠️ Desarrollo Local
+## 🛠️ Instalación
 
+1. **Clonar el repositorio**
 ```bash
-# Instalar dependencias
+git clone https://github.com/tu-usuario/artificial-logika-landing.git
+cd artificial-logika-landing
+```
+
+2. **Instalar dependencias**
+```bash
 npm install
-
-# Servidor de desarrollo
-npm run dev
-
-# Build para producción
-npm run build
-
-# Preview del build
-npm run preview
 ```
 
-## 🚀 Deploy en Vercel
-
-### Método 1: Vercel CLI (Recomendado)
-
+3. **Configurar variables de entorno** (opcional para Supabase)
 ```bash
-# Instalar Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel --prod
+cp .env.example .env
 ```
 
-### Método 2: GitHub Integration
+Edita el archivo `.env` con tus credenciales de Supabase:
+```env
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=tu-clave-publica-aqui
+```
 
-1. Hacer push del código a GitHub
-2. Conectar el repositorio en [vercel.com](https://vercel.com)
-3. Vercel detectará automáticamente la configuración
-4. Deploy automático en cada push
+4. **Ejecutar en desarrollo**
+```bash
+npm run dev
+```
 
-### Método 3: Manual Upload
+## 🗄️ Configuración de Supabase
 
-1. Ejecutar `npm run build`
-2. Subir la carpeta `dist/` a Vercel
-3. Configurar rewrites para SPA
+### Paso 1: Crear Proyecto en Supabase
+1. Ve a [supabase.com](https://supabase.com)
+2. Crea una nueva cuenta o inicia sesión
+3. Crea un nuevo proyecto
+4. Copia la URL del proyecto y la clave anónima
 
-## ⚙️ Configuración de Vercel
+### Paso 2: Configurar la Base de Datos
+1. Ve al editor SQL de tu proyecto Supabase
+2. Ejecuta el siguiente código SQL:
 
-El proyecto incluye `vercel.json` con:
-- ✅ **SPA Rewrites** - Routing del lado cliente
-- ✅ **Cache Headers** - Optimización de assets
-- ✅ **Build Configuration** - Configuración automática
+```sql
+-- Enable RLS (Row Level Security)
+alter table if exists public.content enable row level security;
+
+-- Create content table
+create table if not exists public.content (
+  id text primary key,
+  user_id uuid references auth.users(id) default auth.uid(),
+  content_type text not null,
+  content_data jsonb not null,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- Create policies
+create policy "Users can manage own content" on public.content
+  for all using (auth.uid() = user_id or user_id is null);
+
+-- Create trigger for updated_at
+create or replace function public.handle_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+
+create trigger content_updated_at
+  before update on public.content
+  for each row execute function public.handle_updated_at();
+```
+
+### Paso 3: Variables de Entorno
+Añade las variables de entorno en tu archivo `.env`:
+
+```env
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### Paso 4: Configurar en Vercel (Producción)
+1. Ve a tu proyecto en Vercel
+2. Configuración > Environment Variables
+3. Añade las mismas variables que en tu `.env`
 
 ## 📁 Estructura del Proyecto
 
 ```
-src/
-├── components/          # Componentes React
-│   ├── ui/             # Componentes base (Shadcn)
-│   └── figma/          # Componentes específicos
-├── contexts/           # Context providers
-├── hooks/              # Custom hooks
-├── pages/              # Páginas principales
-├── styles/             # Estilos globales
-└── App.tsx            # Componente raíz
+├── components/
+│   ├── admin/           # Componentes del panel de administración
+│   ├── ui/              # Componentes de interfaz (Shadcn)
+│   └── ...              # Componentes de la landing page
+├── contexts/            # React Contexts
+├── db/                  # Configuración de base de datos
+├── pages/               # Páginas principales
+├── styles/              # Estilos globales
+└── hooks/               # Custom hooks
 ```
 
-## 🎨 Design System
+## 🎨 Personalización
 
-- **Primary Color**: `#40d9ac` (Verde agua)
-- **Background**: `#0e1015` (Negro azulado)
-- **Typography**: Sora (Google Fonts)
-- **Border Radius**: `10px` base
-- **Animations**: Float, Pulse, Neural
+### Colores del Proyecto
+- **Primario**: `#40d9ac` (Verde menta)
+- **Fondo**: `#0e1015` (Azul oscuro)
+- **Cards**: `#1a1d24` (Gris azulado)
 
-## 📱 Mobile First
+### Tipografía
+- **Fuente principal**: Sora (Google Fonts)
+- **Tamaños responsivos** optimizados para mobile
 
-Todos los componentes están diseñados mobile-first:
-- Breakpoints: sm (640px), md (768px), lg (1024px)
-- Typography escalada automáticamente
-- Padding y spacing responsivos
+### Filosofía de Diseño
+**"Logic as Aesthetics"** - Cada elemento debe sentirse deliberado, eficiente y elegante.
 
-## 🔧 Variables de Entorno
+## 🔧 Sistema de Base de Datos
 
-No se requieren variables de entorno para el funcionamiento básico.
-Para analytics o integraciones externas, crear `.env.local`:
+### Funcionamiento Híbrido
+1. **Supabase (Principal)**: Si está configurado, se usa como base de datos principal
+2. **IndexedDB (Fallback)**: Se usa automáticamente si Supabase no está disponible
+3. **Sincronización**: Los datos se sincronizan automáticamente entre ambas bases
 
-```env
-VITE_ANALYTICS_ID=your_analytics_id
-VITE_CONTACT_EMAIL=info@artificiallogika.com
-```
+### Gestión de Datos
+- **Auto-guardado**: Los cambios se guardan automáticamente
+- **Backup/Restore**: Exportación e importación de datos
+- **Sin pérdida de datos**: Funciona sin conexión a internet
 
-## 📊 Performance
+## 🚀 Deploy
 
-- ✅ **Lighthouse Score**: 90+ en todas las métricas
-- ✅ **Bundle Size**: < 500KB gzipped
-- ✅ **First Paint**: < 1.5s
-- ✅ **Interactive**: < 2.5s
+### Vercel (Recomendado)
+1. Conecta tu repositorio de GitHub a Vercel
+2. Configura las variables de entorno en Vercel
+3. Deploy automático con cada push
 
-## 🐛 Troubleshooting
+### Otras Plataformas
+- **Netlify**: Compatible con configuración similar
+- **Railway**: Soporte para bases de datos y hosting
+- **GitHub Pages**: Solo para versión estática
 
-### Build Errors
-- Verificar versiones de Node.js (16+)
-- Limpiar cache: `rm -rf node_modules && npm install`
+## 📱 Responsive Design
 
-### Deploy Issues
-- Verificar que `dist/` se genera correctamente
-- Revisar logs en Vercel dashboard
+- **Mobile First**: Diseño optimizado para móviles
+- **Breakpoints**: 640px, 768px, 1024px
+- **Tipografía adaptativa**: Tamaños que se ajustan automáticamente
+- **Navegación mobile**: Menú hamburguesa optimizado
 
-### Styling Issues
-- Asegurar que Tailwind CSS v4 esté configurado
-- Verificar imports de `globals.css`
+## 🔒 Seguridad
 
-## 📞 Soporte
+- **Row Level Security (RLS)**: Activado en Supabase
+- **Validación de datos**: Tanto en frontend como backend
+- **Sanitización**: Contenido limpio y seguro
+- **HTTPS**: Conexiones seguras por defecto
 
-Para soporte técnico:
-- Email: info@artificiallogika.com
-- Website: [artificiallogika.com](https://artificiallogika.com)
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la branch (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ve el archivo `LICENSE` para más detalles.
+
+## 🆘 Soporte
+
+Si tienes algún problema o pregunta:
+
+1. Revisa la documentación en `/guidelines/Guidelines.md`
+2. Busca en los Issues existentes
+3. Crea un nuevo Issue con detalles del problema
+4. Para soporte urgente: [tu-email@ejemplo.com]
+
+## 🎯 Roadmap
+
+- [ ] Autenticación de usuarios
+- [ ] Dashboard de analytics
+- [ ] Integración con CRM
+- [ ] API REST para integraciones
+- [ ] Sistema de notificaciones
+- [ ] Multi-idioma
 
 ---
 
-**Artificial Lógika** - Transformamos tu lógica de negocio en ventaja competitiva
+**Desarrollado con ❤️ por [Armando Beato Chang](https://github.com/armando-beato)**

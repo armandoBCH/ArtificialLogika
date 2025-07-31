@@ -131,6 +131,19 @@ const Pricing: React.FC = () => {
     }
   };
 
+  const getBadgeColorClass = (color: string) => {
+    const colorMap = {
+      blue: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+      green: 'bg-green-500/10 text-green-400 border-green-500/20',
+      purple: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+      yellow: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+      red: 'bg-red-500/10 text-red-400 border-red-500/20',
+      gray: 'bg-gray-500/10 text-gray-400 border-gray-500/20',
+      primary: 'bg-primary/10 text-primary border-primary/20'
+    };
+    return colorMap[color as keyof typeof colorMap] || colorMap.primary;
+  };
+
   const iconMap = {
     'Calendar': Calendar,
     'Crown': Crown,
@@ -450,7 +463,22 @@ const Pricing: React.FC = () => {
                                     {settings.badges.hostingFreeText}
                                   </Badge>
                                 )}
+                                {service.isDynamic && (
+                                  <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-400 border-blue-500/20">
+                                    <Zap className="w-3 h-3 mr-1" />
+                                    {settings.badges.dynamicText}
+                                  </Badge>
+                                )}
                                 {getDatabaseBadge(service.databaseType)}
+                                {service.customBadges?.map((badge) => (
+                                  <Badge 
+                                    key={badge.id} 
+                                    variant="secondary" 
+                                    className={`text-xs ${getBadgeColorClass(badge.color)}`}
+                                  >
+                                    {badge.text}
+                                  </Badge>
+                                ))}
                               </div>
                             </div>
                             <p className="text-sm text-muted-foreground mb-3">

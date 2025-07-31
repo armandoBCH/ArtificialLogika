@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { dbManager } from '../db/indexedDB';
+import { dbManager } from '../db/hybridManager';
 
 interface PricingPlan {
   id: string;
@@ -16,6 +16,12 @@ interface PricingPlan {
   badge: string;
 }
 
+interface CustomBadge {
+  id: string;
+  text: string;
+  color: 'blue' | 'green' | 'purple' | 'yellow' | 'red' | 'gray' | 'primary';
+}
+
 interface CustomService {
   id: string;
   name: string;
@@ -28,7 +34,9 @@ interface CustomService {
   infrastructureDetails: string[];
   databaseType: 'none' | 'sqlite' | 'supabase';
   isStatic: boolean;
+  isDynamic?: boolean;
   icon: string;
+  customBadges?: CustomBadge[];
 }
 
 interface PricingSettings {
@@ -51,6 +59,7 @@ interface PricingSettings {
     supabaseText: string;
     noDatabaseText: string;
     hostingFreeText: string;
+    dynamicText: string;
   };
 }
 
@@ -129,6 +138,7 @@ interface EditableContent {
   
   // Featured Projects
   featuredProjects: Array<{
+    id: string;
     title: string;
     description: string;
     image: string;
@@ -165,9 +175,21 @@ interface EditableContentContextType {
   updatePricingSettings: (settings: Partial<PricingSettings>) => void;
   updatePricingPlan: (planId: string, updates: Partial<PricingPlan>) => void;
   updateCustomService: (serviceId: string, updates: Partial<CustomService>) => void;
+  // New functions for managing services and projects
+  addCustomService: (service: Omit<CustomService, 'id'>) => void;
+  removeCustomService: (serviceId: string) => void;
+  reorderCustomServices: (startIndex: number, endIndex: number) => void;
+  addFeaturedProject: (project: Omit<typeof defaultContent.featuredProjects[0], 'id'>) => void;
+  removeFeaturedProject: (projectId: string) => void;
+  reorderFeaturedProjects: (startIndex: number, endIndex: number) => void;
+  updateFeaturedProject: (projectId: string, updates: Partial<typeof defaultContent.featuredProjects[0]>) => void;
   resetToDefaults: () => void;
   exportData: () => Promise<string>;
   importData: (jsonData: string) => Promise<void>;
+  // Database status and sync functions
+  getDatabaseStatus: () => { primary: string, supabase: boolean, indexeddb: boolean, provider: string };
+  forceSyncToSupabase: () => Promise<void>;
+  forceSyncFromSupabase: () => Promise<void>;
   isLoading: boolean;
   lastSaved: Date | null;
   saveStatus: 'idle' | 'saving' | 'saved' | 'error';
@@ -334,7 +356,8 @@ const defaultContent: EditableContent = {
         sqliteText: "SQLite (Gratis)",
         supabaseText: "Supabase Pro",
         noDatabaseText: "Sin BD",
-        hostingFreeText: "Hosting gratis"
+        hostingFreeText: "Hosting gratis",
+        dynamicText: "Dinámico"
       }
     },
     
@@ -439,7 +462,9 @@ const defaultContent: EditableContent = {
         infrastructureDetails: ['Cloudflare hosting gratuito', 'CDN global incluido', 'SSL automático'],
         databaseType: 'none',
         isStatic: true,
-        icon: 'Globe'
+        isDynamic: false,
+        icon: 'Globe',
+        customBadges: []
       },
       {
         id: 'website',
@@ -472,7 +497,9 @@ const defaultContent: EditableContent = {
         infrastructureDetails: ['Cloudflare hosting gratuito', 'CDN global incluido', 'SSL automático'],
         databaseType: 'none',
         isStatic: true,
-        icon: 'Globe'
+        isDynamic: false,
+        icon: 'Globe',
+        customBadges: []
       },
       {
         id: 'ecommerce',
@@ -510,7 +537,12 @@ const defaultContent: EditableContent = {
         ],
         databaseType: 'supabase',
         isStatic: false,
-        icon: 'Globe'
+        isDynamic: true,
+        icon: 'Globe',
+        customBadges: [
+          { id: 'ecommerce-1', text: 'E-commerce', color: 'blue' },
+          { id: 'ecommerce-2', text: 'Pagos Online', color: 'green' }
+        ]
       },
       {
         id: 'chatbot-web',
@@ -545,7 +577,12 @@ const defaultContent: EditableContent = {
         ],
         databaseType: 'sqlite',
         isStatic: false,
-        icon: 'MessageSquare'
+        isDynamic: true,
+        icon: 'MessageSquare',
+        customBadges: [
+          { id: 'chatbot-1', text: 'IA', color: 'purple' },
+          { id: 'chatbot-2', text: '24/7', color: 'yellow' }
+        ]
       },
       {
         id: 'chatbot-whatsapp',
@@ -581,7 +618,12 @@ const defaultContent: EditableContent = {
         ],
         databaseType: 'sqlite',
         isStatic: false,
-        icon: 'MessageSquare'
+        isDynamic: true,
+        icon: 'MessageSquare',
+        customBadges: [
+          { id: 'whatsapp-1', text: 'WhatsApp', color: 'green' },
+          { id: 'whatsapp-2', text: 'Automático', color: 'primary' }
+        ]
       }
     ]
   },
@@ -606,6 +648,7 @@ const defaultContent: EditableContent = {
   
   featuredProjects: [
     {
+      id: "ecommerce-boutique",
       title: "E-commerce Boutique",
       description: "Tienda online de moda con experiencia de compra premium y panel administrativo completo.",
       image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
@@ -613,13 +656,15 @@ const defaultContent: EditableContent = {
       category: "E-commerce"
     },
     {
+      id: "saas-dashboard",
       title: "SaaS Dashboard", 
-      description: "Panel de control para startup tech con métricas en tiempo real y automatización de reportes.",
+      description: "Panel de control para startup tech con métricas en tiempo real y automatización de reportes.",  
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
       technologies: ["React", "Python", "IA", "APIs"],
       category: "SaaS"
     },
     {
+      id: "consultoria-profesional",
       title: "Consultoría Profesional",
       description: "Landing page de alta conversión para consultor con sistema de agenda automática.",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop",
@@ -702,27 +747,29 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
-  // Cargar contenido inicial desde IndexedDB
+  // Helper function to generate unique IDs
+  const generateId = () => {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  };
+
+  // Initialize database and load content
   useEffect(() => {
     const loadContent = async () => {
       try {
         setIsLoading(true);
         
-        // Inicializar IndexedDB
+        // Initialize hybrid database manager
         await dbManager.init();
         
-        // Migrar datos desde localStorage si existen
-        await dbManager.migrateFromLocalStorage();
-        
-        // Cargar contenido desde IndexedDB
+        // Load content from database
         const savedContent = await dbManager.getContent('editableContent');
         
         if (savedContent) {
-          // Mergear contenido guardado con valores por defecto para nuevas propiedades
+          // Merge saved content with defaults for new properties
           const mergedContent = { 
             ...defaultContent, 
             ...savedContent,
-            // Asegurar que las secciones importantes existen
+            // Ensure important sections exist
             hero: {
               ...defaultContent.hero,
               ...savedContent.hero
@@ -743,20 +790,20 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
             }
           };
           setContent(mergedContent);
-          console.log('Contenido cargado desde IndexedDB');
+          console.log('✅ Content loaded from database');
         } else {
-          // Si no hay contenido guardado, usar valores por defecto
+          // No saved content, use defaults
           setContent(defaultContent);
-          // Guardar valores por defecto en IndexedDB
+          // Save defaults to database
           await dbManager.saveContent('editableContent', defaultContent);
-          console.log('Contenido por defecto guardado en IndexedDB');
+          console.log('💾 Default content saved to database');
         }
         
         setLastSaved(new Date());
       } catch (error) {
-        console.error('Error cargando contenido:', error);
+        console.error('❌ Error loading content:', error);
         setSaveStatus('error');
-        // En caso de error, usar valores por defecto
+        // In case of error, use defaults
         setContent(defaultContent);
       } finally {
         setIsLoading(false);
@@ -773,19 +820,19 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       const newContent = { ...content, [key]: value };
       setContent(newContent);
       
-      // Guardar en IndexedDB
+      // Save to database
       await dbManager.saveContent('editableContent', newContent);
       
       setLastSaved(new Date());
       setSaveStatus('saved');
       
-      // Resetear status después de 2 segundos
+      // Reset status after 2 seconds
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
-      console.error('Error guardando contenido:', error);
+      console.error('❌ Error saving content:', error);
       setSaveStatus('error');
       
-      // Resetear status después de 3 segundos
+      // Reset status after 3 seconds
       setTimeout(() => setSaveStatus('idle'), 3000);
     }
   };
@@ -806,7 +853,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       };
       setContent(newContent);
       
-      // Guardar en IndexedDB
+      // Save to database
       await dbManager.saveContent('editableContent', newContent);
       
       setLastSaved(new Date());
@@ -814,7 +861,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
-      console.error('Error guardando configuración de precios:', error);
+      console.error('❌ Error saving pricing settings:', error);
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
     }
@@ -837,7 +884,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       };
       setContent(newContent);
       
-      // Guardar en IndexedDB
+      // Save to database
       await dbManager.saveContent('editableContent', newContent);
       
       setLastSaved(new Date());
@@ -845,7 +892,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
-      console.error('Error guardando plan de precios:', error);
+      console.error('❌ Error saving pricing plan:', error);
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
     }
@@ -868,7 +915,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       };
       setContent(newContent);
       
-      // Guardar en IndexedDB
+      // Save to database
       await dbManager.saveContent('editableContent', newContent);
       
       setLastSaved(new Date());
@@ -876,7 +923,202 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
-      console.error('Error guardando servicio personalizado:', error);
+      console.error('❌ Error saving custom service:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  // New functions for managing custom services
+  const addCustomService = async (service: Omit<CustomService, 'id'>) => {
+    try {
+      setSaveStatus('saving');
+      
+      const newService: CustomService = {
+        ...service,
+        id: generateId()
+      };
+      
+      const newServices = [...content.pricing.customServices, newService];
+      
+      const newContent = {
+        ...content,
+        pricing: {
+          ...content.pricing,
+          customServices: newServices
+        }
+      };
+      setContent(newContent);
+      
+      await dbManager.saveContent('editableContent', newContent);
+      
+      setLastSaved(new Date());
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('❌ Error adding service:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  const removeCustomService = async (serviceId: string) => {
+    try {
+      setSaveStatus('saving');
+      
+      const newServices = content.pricing.customServices.filter(service => service.id !== serviceId);
+      
+      const newContent = {
+        ...content,
+        pricing: {
+          ...content.pricing,
+          customServices: newServices
+        }
+      };
+      setContent(newContent);
+      
+      await dbManager.saveContent('editableContent', newContent);
+      
+      setLastSaved(new Date());
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('❌ Error removing service:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  const reorderCustomServices = async (startIndex: number, endIndex: number) => {
+    try {
+      setSaveStatus('saving');
+      
+      const newServices = [...content.pricing.customServices];
+      const [removed] = newServices.splice(startIndex, 1);
+      newServices.splice(endIndex, 0, removed);
+      
+      const newContent = {
+        ...content,
+        pricing: {
+          ...content.pricing,
+          customServices: newServices
+        }
+      };
+      setContent(newContent);
+      
+      await dbManager.saveContent('editableContent', newContent);
+      
+      setLastSaved(new Date());
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('❌ Error reordering services:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  // New functions for managing featured projects
+  const addFeaturedProject = async (project: Omit<typeof defaultContent.featuredProjects[0], 'id'>) => {
+    try {
+      setSaveStatus('saving');
+      
+      const newProject = {
+        ...project,
+        id: generateId()
+      };
+      
+      const newProjects = [...content.featuredProjects, newProject];
+      
+      const newContent = {
+        ...content,
+        featuredProjects: newProjects
+      };
+      setContent(newContent);
+      
+      await dbManager.saveContent('editableContent', newContent);
+      
+      setLastSaved(new Date());
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('❌ Error adding project:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  const removeFeaturedProject = async (projectId: string) => {
+    try {
+      setSaveStatus('saving');
+      
+      const newProjects = content.featuredProjects.filter(project => project.id !== projectId);
+      
+      const newContent = {
+        ...content,
+        featuredProjects: newProjects
+      };
+      setContent(newContent);
+      
+      await dbManager.saveContent('editableContent', newContent);
+      
+      setLastSaved(new Date());
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('❌ Error removing project:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  const reorderFeaturedProjects = async (startIndex: number, endIndex: number) => {
+    try {
+      setSaveStatus('saving');
+      
+      const newProjects = [...content.featuredProjects];
+      const [removed] = newProjects.splice(startIndex, 1);
+      newProjects.splice(endIndex, 0, removed);
+      
+      const newContent = {
+        ...content,
+        featuredProjects: newProjects
+      };
+      setContent(newContent);
+      
+      await dbManager.saveContent('editableContent', newContent);
+      
+      setLastSaved(new Date());
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('❌ Error reordering projects:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  const updateFeaturedProject = async (projectId: string, updates: Partial<typeof defaultContent.featuredProjects[0]>) => {
+    try {
+      setSaveStatus('saving');
+      
+      const newProjects = content.featuredProjects.map(project => 
+        project.id === projectId ? { ...project, ...updates } : project
+      );
+      
+      const newContent = {
+        ...content,
+        featuredProjects: newProjects
+      };
+      setContent(newContent);
+      
+      await dbManager.saveContent('editableContent', newContent);
+      
+      setLastSaved(new Date());
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('❌ Error updating project:', error);
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
     }
@@ -894,7 +1136,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
-      console.error('Error reseteando contenido:', error);
+      console.error('❌ Error resetting content:', error);
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
     }
@@ -904,7 +1146,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
     try {
       return await dbManager.exportData();
     } catch (error) {
-      console.error('Error exportando datos:', error);
+      console.error('❌ Error exporting data:', error);
       throw new Error('Error al exportar datos');
     }
   };
@@ -915,13 +1157,13 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       
       await dbManager.importData(jsonData);
       
-      // Recargar contenido después de importar
+      // Reload content after import
       const importedContent = await dbManager.getContent('editableContent');
       if (importedContent) {
         const mergedContent = { 
           ...defaultContent, 
           ...importedContent,
-          // Asegurar que las secciones importantes existen
+          // Ensure important sections exist
           hero: {
             ...defaultContent.hero,
             ...importedContent.hero
@@ -942,7 +1184,52 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       setSaveStatus('saved');
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
-      console.error('Error importando datos:', error);
+      console.error('❌ Error importing data:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+      throw error;
+    }
+  };
+
+  // Database status and sync functions
+  const getDatabaseStatus = () => {
+    try {
+      return (dbManager as any).getStatus();
+    } catch (error) {
+      return { primary: 'unknown', supabase: false, indexeddb: false, provider: 'unknown' };
+    }
+  };
+
+  const forceSyncToSupabase = async (): Promise<void> => {
+    try {
+      setSaveStatus('saving');
+      await (dbManager as any).forceSyncToSupabase();
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('❌ Error syncing to Supabase:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+      throw error;
+    }
+  };
+
+  const forceSyncFromSupabase = async (): Promise<void> => {
+    try {
+      setSaveStatus('saving');
+      await (dbManager as any).forceSyncFromSupabase();
+      
+      // Reload content after sync
+      const syncedContent = await dbManager.getContent('editableContent');
+      if (syncedContent) {
+        setContent(syncedContent);
+      }
+      
+      setLastSaved(new Date());
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('❌ Error syncing from Supabase:', error);
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
       throw error;
@@ -955,9 +1242,19 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
     updatePricingSettings,
     updatePricingPlan,
     updateCustomService,
+    addCustomService,
+    removeCustomService,
+    reorderCustomServices,
+    addFeaturedProject,
+    removeFeaturedProject,
+    reorderFeaturedProjects,
+    updateFeaturedProject,
     resetToDefaults,
     exportData,
     importData,
+    getDatabaseStatus,
+    forceSyncToSupabase,
+    forceSyncFromSupabase,
     isLoading,
     lastSaved,
     saveStatus
