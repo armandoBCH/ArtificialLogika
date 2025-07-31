@@ -53,11 +53,37 @@
   - Iconos sección "autogestionable" en grid vertical en móvil
   - Mejorar spacing y alignment mobile-first
 
+#### 6. **Error de Dependencia Radix UI Sheet (RESUELTO)**
+- **Problema**: `@radix-ui/react-sheet@^0.2.3` no existe en npm registry
+- **Error**: `Error npm 404 No encontrado - GET https://registry.npmjs.org/@radix-ui%2freact-sheet`
+- **Causa**: Dependencia inexistente listada en package.json
+- **Solución**: Eliminar `"@radix-ui/react-sheet": "^0.2.3"` del package.json
+- **Nota**: El componente Sheet usa correctamente `@radix-ui/react-dialog` que sí existe
+- **Lección**: Verificar que todas las dependencias existan antes del deploy
+
 ### 🔧 CONFIGURACIONES CRÍTICAS
 
 #### **package.json**
 ```json
-"tailwindcss": "^3.4.0"  // NO usar V4 alpha
+{
+  "dependencies": {
+    // ✅ CORRECTAS - Estas dependencias SÍ existen
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-select": "^2.0.0",
+    
+    // ❌ INCORRECTA - Esta dependencia NO existe
+    // "@radix-ui/react-sheet": "^0.2.3",  // ELIMINAR
+    
+    "tailwindcss": "^3.4.0"  // NO usar V4 alpha
+  }
+}
+```
+
+#### **components/ui/sheet.tsx**
+```tsx
+// ✅ CORRECTO - Sheet usa dialog internamente
+import * as SheetPrimitive from "@radix-ui/react-dialog";
 ```
 
 #### **postcss.config.js** 
@@ -87,16 +113,19 @@ css: {
 - Marcar como eliminados para evitar problemas de build
 
 ### 🚀 PROCESO DE DEPLOY CORRECTO
-1. **Verificar TypeScript**: `tsc --noEmit`
-2. **Build local**: `npm run build` 
-3. **Preview**: `npm run preview`
-4. **Deploy Vercel**: Solo después de verificar localmente
+1. **Verificar dependencias**: Revisar que todas las dependencias existan en npm
+2. **Verificar TypeScript**: `tsc --noEmit`
+3. **Build local**: `npm run build` 
+4. **Preview**: `npm run preview`
+5. **Deploy Vercel**: Solo después de verificar localmente
 
 ### 📚 LECCIONES APRENDIDAS
 - **Tailwind V3** es la versión de producción estable
 - **Variables HSL** deben convertirse correctamente desde hex
 - **PostCSS** debe configurarse explícitamente en Vite
 - **Archivos duplicados** en diferentes carpetas causan conflictos
+- **Dependencias Radix UI**: No todas las combinaciones existen, verificar en npm
+- **Sheet component**: Usa `@radix-ui/react-dialog`, no `@radix-ui/react-sheet`
 - **Vercel** necesita configuración específica en vercel.json
 
 ## Guidelines Técnicas
@@ -120,11 +149,12 @@ css: {
 - Usar shadcn/ui components from `/components/ui`
 - Personalizar con classes de Tailwind cuando sea necesario
 - Mantener consistencia visual en toda la aplicación
+- **IMPORTANTE**: Verificar que las dependencias Radix UI existan antes de usar
 
 ### Content Management
 - Todo el contenido editable a través de EditableContentContext
 - Sistema de administración en `/admin` route
-- Persistencia en localStorage hasta implementar Supabase
+- Persistencia en IndexedDB con auto-save
 
 ### SEO Optimización
 - **Meta tags completos**: Title, description, keywords, robots
@@ -135,3 +165,22 @@ css: {
 - **Sitemap y robots.txt**: Para indexación correcta
 - **Canonical URLs**: Evitar contenido duplicado
 - **Language tags**: es-ES correcto para audiencia argentina
+
+### Dependencias Críticas
+#### ✅ Dependencias que SÍ existen:
+- `@radix-ui/react-dialog`
+- `@radix-ui/react-tabs`
+- `@radix-ui/react-select`
+- `@radix-ui/react-dropdown-menu`
+- `@radix-ui/react-checkbox`
+
+#### ❌ Dependencias que NO existen:
+- `@radix-ui/react-sheet` (usar `@radix-ui/react-dialog`)
+
+### Deploy Checklist
+- [ ] Verificar que no hay dependencias inexistentes en package.json
+- [ ] Eliminar archivos duplicados en `/src/`
+- [ ] Build local exitoso: `npm run build`
+- [ ] Preview funcional: `npm run preview`
+- [ ] Commit y push a GitHub
+- [ ] Deploy automático en Vercel
