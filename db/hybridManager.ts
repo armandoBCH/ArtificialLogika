@@ -53,8 +53,9 @@ class HybridDatabaseManager implements DatabaseManagerInterface {
         }
       } else {
         console.log('🔒 Supabase not configured, using IndexedDB only')
+        // Only show detailed warnings in debug mode
         if (isDebugMode()) {
-          envValidation.warnings.forEach(warning => console.warn(warning))
+          envValidation.warnings.forEach(warning => console.info(warning))
         }
       }
     } catch (error) {

@@ -7,10 +7,14 @@ import {
   DollarSign, 
   Image,
   ShoppingBag,
-  ArrowLeft
+  ArrowLeft,
+  Cloud,
+  HardDrive
 } from 'lucide-react';
 import { useEditableContent } from '../../contexts/EditableContentContext';
 import { useRouter } from '../../contexts/RouterContext';
+import { hybridManager } from '../../db/hybridManager';
+import { isSupabaseConfigured } from '../../db/config';
 
 interface DashboardTabProps {
   setActiveTab: (tab: string) => void;
@@ -19,6 +23,10 @@ interface DashboardTabProps {
 const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
   const { content } = useEditableContent();
   const { navigateTo } = useRouter();
+  
+  // Get database status
+  const dbStatus = hybridManager.getStatus();
+  const supabaseConfigured = isSupabaseConfigured();
 
   return (
     <div className="space-y-6">
@@ -52,27 +60,56 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
         <Card className="p-6">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-              <Database className="w-5 h-5 text-blue-400" />
+              {dbStatus.provider === 'hybrid' ? (
+                <Cloud className="w-5 h-5 text-blue-400" />
+              ) : dbStatus.provider === 'supabase' ? (
+                <Cloud className="w-5 h-5 text-blue-400" />
+              ) : (
+                <HardDrive className="w-5 h-5 text-blue-400" />
+              )}
             </div>
             <div>
               <h3 className="font-semibold text-white">Base de Datos</h3>
-              <p className="text-sm text-muted-foreground">IndexedDB embebida</p>
+              <p className="text-sm text-muted-foreground">
+                {dbStatus.provider === 'hybrid' ? 'Híbrida (Local + Cloud)' :
+                 dbStatus.provider === 'supabase' ? 'Supabase Cloud' :
+                 'IndexedDB Local'}
+              </p>
             </div>
           </div>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Estado</span>
-              <span className="text-green-400">Conectada</span>
+              <span className="text-green-400">
+                {dbStatus.initialized ? 'Conectada' : 'Inicializando...'}
+              </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Tipo</span>
-              <span className="text-white">Local</span>
+              <span className="text-muted-foreground">Supabase</span>
+              <span className={supabaseConfigured ? "text-green-400" : "text-yellow-400"}>
+                {supabaseConfigured ? 'Configurado' : 'No configurado'}
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Auto-save</span>
               <span className="text-green-400">Activo</span>
             </div>
           </div>
+          {!supabaseConfigured && (
+            <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+              <p className="text-xs text-yellow-400 mb-2">
+                📊 Usando almacenamiento local. Para habilitar sincronización en la nube:
+              </p>
+              <Button
+                onClick={() => setActiveTab('database')}
+                size="sm"
+                variant="outline"
+                className="text-xs h-7 bg-yellow-500/20 border-yellow-500/30 hover:bg-yellow-500/30"
+              >
+                Configurar Supabase
+              </Button>
+            </div>
+          )}
         </Card>
 
         <Card className="p-6">

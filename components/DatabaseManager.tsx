@@ -5,8 +5,9 @@ import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { useEditableContent } from '../contexts/EditableContentContext';
-import { dbManager } from '../db/indexedDB';
-import { Database, Download, Upload, RotateCcw, HardDrive, Clock, Package } from 'lucide-react';
+import { hybridManager } from '../db/hybridManager';
+import { isSupabaseConfigured } from '../db/config';
+import { Database, Download, Upload, RotateCcw, HardDrive, Clock, Package, Cloud, Shield, Settings } from 'lucide-react';
 
 interface DatabaseStats {
   totalEntries: number;
@@ -25,12 +26,21 @@ const DatabaseManager: React.FC = () => {
     lastModified: null
   });
 
+  // Get database status
+  const dbStatus = hybridManager.getStatus();
+  const supabaseConfigured = isSupabaseConfigured();
+
   // Cargar estadísticas de la base de datos
   useEffect(() => {
     const loadStats = async () => {
       try {
-        const stats = await dbManager.getStats();
-        setDbStats(stats);
+        // Try to get stats from the hybrid manager
+        // For now we'll use basic stats until we implement getStats in hybridManager
+        setDbStats({
+          totalEntries: 1, // At least the main content entry
+          totalSize: JSON.stringify(lastSaved).length || 0,
+          lastModified: lastSaved ? new Date() : null
+        });
       } catch (error) {
         console.error('Error cargando estadísticas:', error);
       }
@@ -135,11 +145,17 @@ const DatabaseManager: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Database className="h-5 w-5" />
+            {dbStatus.provider === 'hybrid' || dbStatus.provider === 'supabase' ? (
+              <Cloud className="h-5 w-5" />
+            ) : (
+              <Database className="h-5 w-5" />
+            )}
             Estado de la Base de Datos
           </CardTitle>
           <CardDescription>
-            Sistema IndexedDB embebido - Almacenamiento local persistente
+            {dbStatus.provider === 'hybrid' ? 'Sistema híbrido - Local + Supabase Cloud' :
+             dbStatus.provider === 'supabase' ? 'Supabase Cloud - Sincronización automática' :
+             'Sistema IndexedDB embebido - Almacenamiento local persistente'}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -184,11 +200,57 @@ const DatabaseManager: React.FC = () => {
 
           {/* Información técnica */}
           <div className="text-sm text-muted-foreground space-y-1">
-            <p><strong>Base de datos:</strong> IndexedDB (Embebida)</p>
-            <p><strong>Almacenamiento:</strong> Local del navegador</p>
+            <p><strong>Proveedor primario:</strong> {dbStatus.primary === 'supabase' ? 'Supabase Cloud' : 'IndexedDB Local'}</p>
+            <p><strong>IndexedDB:</strong> {dbStatus.indexeddb ? '✅ Disponible' : '❌ No disponible'}</p>
+            <p><strong>Supabase:</strong> {dbStatus.supabase ? '✅ Conectado' : '❌ No configurado'}</p>
             <p><strong>Persistencia:</strong> Automática con cada cambio</p>
-            <p><strong>Backup:</strong> Se mantiene copia en localStorage como respaldo</p>
+            {dbStatus.provider === 'hybrid' && (
+              <p><strong>Sincronización:</strong> Bidireccional automática</p>
+            )}
           </div>
+
+          {/* Configuración de Supabase */}
+          {!supabaseConfigured && (
+            <>
+              <Separator />
+              <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <Settings className="h-5 w-5 text-blue-400 mt-0.5" />
+                  <div className="space-y-3">
+                    <div>
+                      <h4 className="font-medium text-blue-400">Habilitar Sincronización en la Nube</h4>
+                      <p className="text-sm text-blue-400/80 mt-1">
+                        El sistema funciona perfectamente con almacenamiento local. Para habilitar la sincronización en la nube y acceso desde múltiples dispositivos, configura Supabase.
+                      </p>
+                    </div>
+                    <div className="space-y-2 text-xs text-blue-400/70">
+                      <p><strong>1.</strong> Crea una cuenta gratuita en <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="underline">supabase.com</a></p>
+                      <p><strong>2.</strong> Crea un nuevo proyecto</p>
+                      <p><strong>3.</strong> Ve a Project Settings {'>'} API</p>
+                      <p><strong>4.</strong> Agrega las variables a tu archivo <code>.env</code>:</p>
+                      <div className="font-mono bg-blue-500/10 p-2 rounded border text-xs">
+                        VITE_SUPABASE_URL=https://tu-proyecto.supabase.co<br />
+                        VITE_SUPABASE_ANON_KEY=tu-clave-aqui
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Status de inicialización */}
+          {!dbStatus.initialized && (
+            <>
+              <Separator />
+              <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-yellow-400" />
+                  <span className="text-sm text-yellow-400">Base de datos inicializándose...</span>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 
