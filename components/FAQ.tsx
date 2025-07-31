@@ -3,146 +3,128 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from './ui/card';
 import { ChevronDown, MessageCircle, Clock, Shield, Zap } from 'lucide-react';
 
-const faqData = [
-  {
-    id: 1,
-    question: "¿Cuánto tiempo toma desarrollar un proyecto típico?",
-    answer: "Depende del alcance, pero la mayoría de proyectos web toman entre 4-8 semanas. Proyectos con IA pueden extenderse a 8-12 semanas. Te damos un cronograma detallado después del análisis inicial.",
-    icon: Clock,
-    category: "Tiempo"
-  },
-  {
-    id: 2,
-    question: "¿Qué tecnologías utilizan para el desarrollo?",
-    answer: "Usamos React, TypeScript, Node.js, Python para IA, y tecnologías cloud como AWS. Siempre elegimos la mejor herramienta para cada proyecto, no nos casamos con una sola tecnología.",
-    icon: Zap,
-    category: "Tecnología"
-  },
-  {
-    id: 3,
-    question: "¿Ofrecen soporte y mantenimiento después del lanzamiento?",
-    answer: "Sí, incluimos 3 meses de soporte gratuito post-lanzamiento. Después ofrecemos planes de mantenimiento mensuales que incluyen actualizaciones, backups y monitoreo 24/7.",
-    icon: Shield,
-    category: "Soporte"
-  },
-  {
-    id: 4,
-    question: "¿Cómo funciona el proceso de facturación?",
-    answer: "Trabajamos con pagos en milestones: 30% al inicio, 40% en desarrollo, 30% al finalizar. Para proyectos grandes, podemos ajustar el esquema de pagos según tus necesidades de flujo de caja.",
-    icon: MessageCircle,
-    category: "Facturación"
-  },
-  {
-    id: 5,
-    question: "¿Pueden trabajar con mi equipo interno?",
-    answer: "Absolutamente. Nos integramos perfectamente con equipos internos, ya sea como consultores, desarrolladores adicionales o líderes técnicos. Adaptamos nuestra metodología a tu forma de trabajar.",
-    icon: MessageCircle,
-    category: "Colaboración"
-  },
-  {
-    id: 6,
-    question: "¿Qué diferencia a Artificial Lógika de otras consultoras?",
-    answer: "Nos especializamos en entender la lógica única de cada negocio. No vendemos soluciones genéricas, sino que creamos código que refleja exactamente cómo funciona tu empresa. Además, combinamos desarrollo tradicional con IA de manera práctica.",
-    icon: Zap,
-    category: "Diferenciación"
-  }
-];
-
 const FAQ: React.FC = () => {
   const [openItems, setOpenItems] = useState<number[]>([]);
 
-  const toggleItem = (id: number) => {
+  const toggleItem = (index: number) => {
     setOpenItems(prev => 
-      prev.includes(id) 
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
     );
   };
 
+  const openWhatsApp = () => {
+    const phoneNumber = "+542284638361";
+    const message = "¡Hola! Tengo una pregunta específica sobre tus servicios que no encontré en la página. ¿Podrías ayudarme?";
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const faqs = [
+    {
+      question: "¿Qué diferencia hay entre el desarrollo y el mantenimiento?",
+      answer: "El desarrollo es el costo único para crear tu proyecto desde cero (landing, ecommerce, etc.). El mantenimiento es opcional y cubre hosting, actualizaciones, soporte técnico y hasta 1 hora mensual de cambios menores. Puedes elegir solo desarrollo y gestionar el hosting por tu cuenta, o contratar el mantenimiento para tranquilidad total."
+    },
+    {
+      question: "¿Realmente puedo gestionar el contenido sin saber programar?",
+      answer: "Absolutamente. Desarrollo con sistemas autogestionables: panel de administración intuitivo, capacitación incluida, y documentación paso a paso. Cambias textos, imágenes, precios y productos sin tocar código. Si necesitas algo más complejo, ahí estoy para ayudarte."
+    },
+    {
+      question: "¿Por qué Vercel + Supabase en lugar de WordPress?",
+      answer: "Velocidad y confiabilidad. WordPress puede ser lento y requiere mantenimiento constante. Vercel garantiza velocidad de carga de 1-2 segundos y Supabase es una base de datos moderna y escalable. Es tecnología de 2025, no de 2005."
+    },
+    {
+      question: "¿Incluye diseño o solo programación?",
+      answer: "Incluye todo: análisis de tu negocio, diseño UI/UX, desarrollo completo, capacitación y soporte. No necesitas contratar diseñador aparte. Trabajo directo contigo para entender tu visión y la ejecuto completamente."
+    },
+    {
+      question: "¿Qué pasa si no estoy satisfecho con el resultado?",
+      answer: "Incluyo 1-3 meses de ajustes según el proyecto. Trabajamos juntos hasta que estés 100% conforme. Mi reputación depende de tu satisfacción, así que me aseguro de que el resultado final supere tus expectativas."
+    },
+    {
+      question: "¿Puedes integrar con mis herramientas actuales?",
+      answer: "Sí. Integro con Mercado Pago, Stripe, WhatsApp Business, Google Analytics, Facebook Pixel, Mailchimp, HubSpot, y muchas más. Si usas algo específico, conversamos para ver la mejor forma de conectarlo."
+    },
+    {
+      question: "¿Trabajas con empresas grandes o solo PyMEs?",
+      answer: "Me enfoco en PyMEs, emprendedores y profesionales que valoran la atención personalizada. Trabajo directo contigo, no con intermediarios. Si eres una empresa grande, puedo recomendarte agencias especializadas en proyectos de mayor escala."
+    },
+    {
+      question: "¿Cuánto tiempo demora un proyecto típico?",
+      answer: "Landing page: 1-2 semanas. Sitio web completo: 2-3 semanas. Ecommerce: 3-4 semanas. Chatbot IA: 1-2 semanas. Los tiempos incluyen diseño, desarrollo, pruebas y capacitación. Siempre prefiero calidad sobre velocidad."
+    }
+  ];
+
   return (
-    <section className="relative py-16 sm:py-20 lg:py-24 mobile-padding" id="faq">
+    <section className="relative py-16 sm:py-20 lg:py-24 mobile-padding">
       <div className="max-w-4xl mx-auto">
-        {/* Título de sección */}
+        {/* Header */}
         <motion.div
           className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8 }}
         >
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6 mobile-text-balance">
-            Preguntas que nos hacen 
-            <span className="text-primary block sm:inline"> constantemente</span>
+            Preguntas que me hacen
+            <span className="text-primary block sm:inline"> todos los días</span>
           </h2>
-          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mobile-text-balance">
-            Resolvemos tus dudas más comunes sobre nuestros servicios, procesos y metodología de trabajo.
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mobile-text-balance">
+            Respuestas honestas a las dudas más comunes sobre desarrollo web, 
+            <span className="block mt-2">
+              precios, tiempos y qué esperar trabajando conmigo.
+            </span>
           </p>
         </motion.div>
 
-        {/* Lista de preguntas */}
-        <div className="space-y-3 sm:space-y-4">
-          {faqData.map((item, index) => (
+        {/* FAQ Items */}
+        <div className="space-y-4 mb-12 sm:mb-16">
+          {faqs.map((faq, index) => (
             <motion.div
-              key={item.id}
+              key={index}
+              className="group"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.1,
-                ease: "easeOut"
-              }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              <Card className="bg-card border-border hover:border-primary/50 transition-all duration-300 overflow-hidden">
+              <Card className="bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 overflow-hidden">
                 <button
-                  onClick={() => toggleItem(item.id)}
-                  className="w-full p-4 sm:p-6 text-left focus:outline-none button-focus-fix"
+                  className="w-full p-6 sm:p-8 text-left focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background"
+                  onClick={() => toggleItem(index)}
+                  aria-expanded={openItems.includes(index)}
                 >
                   <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 sm:gap-4 flex-1">
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                        </div>
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-sm sm:text-base md:text-lg font-semibold text-white mobile-text-balance">
-                          {item.question}
-                        </h3>
-                        <span className="text-xs sm:text-sm text-primary font-medium mt-1 block sm:hidden">
-                          {item.category}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <span className="hidden sm:inline text-xs text-primary font-medium bg-primary/10 px-2 py-1 rounded-full">
-                        {item.category}
-                      </span>
-                      <motion.div
-                        animate={{ rotate: openItems.includes(item.id) ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
-                      </motion.div>
-                    </div>
+                    <h3 className="text-sm sm:text-base font-semibold text-white group-hover:text-primary transition-colors pr-4">
+                      {faq.question}
+                    </h3>
+                    <motion.div
+                      className="flex-shrink-0"
+                      animate={{ rotate: openItems.includes(index) ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <ChevronDown className="w-5 h-5 text-primary" />
+                    </motion.div>
                   </div>
                 </button>
                 
                 <AnimatePresence>
-                  {openItems.includes(item.id) && (
+                  {openItems.includes(index) && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeOut" }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden"
                     >
-                      <div className="px-4 sm:px-6 pb-4 sm:pb-6">
-                        <div className="ml-11 sm:ml-14">
-                          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                            {item.answer}
-                          </p>
-                        </div>
+                      <div className="px-6 sm:px-8 pb-6 sm:pb-8">
+                        <div className="w-full h-px bg-border/30 mb-4" />
+                        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                          {faq.answer}
+                        </p>
                       </div>
                     </motion.div>
                   )}
@@ -152,13 +134,55 @@ const FAQ: React.FC = () => {
           ))}
         </div>
 
-        {/* CTA del FAQ */}
+        {/* Trust indicators */}
         <motion.div
-          className="text-center mt-12 sm:mt-16"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.6, duration: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          {[
+            {
+              icon: Clock,
+              title: "Respuesta rápida",
+              description: "Contestación en menos de 24 horas, horario laboral argentino"
+            },
+            {
+              icon: Shield,
+              title: "Sin presión comercial",
+              description: "Conversación honesta sobre si puedo ayudarte o no"
+            },
+            {
+              icon: Zap,
+              title: "Propuesta clara",
+              description: "Cronograma, precio exacto y qué esperar desde el día 1"
+            }
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 + 0.6 }}
+            >
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <item.icon className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="font-semibold text-white mb-2">{item.title}</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">{item.description}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* CTA final */}
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.8 }}
         >
           <Card className="bg-card/50 backdrop-blur-sm p-6 sm:p-8 border border-border/50 max-w-2xl mx-auto">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -176,12 +200,7 @@ const FAQ: React.FC = () => {
               className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors button-focus-fix"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                const element = document.querySelector('#contacto');
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
+              onClick={openWhatsApp}
             >
               Hacer mi pregunta
               <MessageCircle className="w-4 h-4" />

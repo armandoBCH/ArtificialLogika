@@ -63,6 +63,12 @@
       font-size: 15px; /* Slightly smaller on mobile but still readable */
     }
   }
+  
+  @media (max-width: 480px) {
+    html {
+      font-size: 14px; /* Even smaller for very small screens */
+    }
+  }
 
   body {
     @apply bg-background text-foreground;

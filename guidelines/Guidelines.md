@@ -1,4 +1,4 @@
-# Guidelines de Artificial Lógika
+# Guidelines de Armando Beato
 
 ## Filosofía de Diseño
 **"Logic as Aesthetics"** - Cada elemento debe sentirse deliberado, eficiente y elegante, con claridad estructural, movimiento con propósito y minimalismo funcional.

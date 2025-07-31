@@ -58,6 +58,29 @@ const ValueProposition: React.FC = () => {
     { issue: "Página web que no convierte visitantes", time: "60-80% visitantes perdidos" }
   ];
 
+  // Value proposition estática
+  const valueProposition = {
+    title: "Mi enfoque es directo y honesto",
+    subtitle: "No prometo milagros. Trabajo con tecnología probada para resolver problemas reales de pequeños y medianos negocios.",
+    points: [
+      {
+        icon: "User",
+        title: "Para negocios reales",
+        description: "PyMEs, emprendedores y profesionales que necesitan soluciones prácticas, no complicaciones tecnológicas."
+      },
+      {
+        icon: "Target", 
+        title: "Resultados medibles",
+        description: "Cada proyecto se mide por resultados concretos: más leads, menos tiempo perdido, procesos automatizados."
+      },
+      {
+        icon: "DollarSign",
+        title: "Inversión que se paga sola",
+        description: "El tiempo y dinero que ahorras con automatización simple supera el costo inicial en 2-6 meses."
+      }
+    ]
+  };
+
   const iconMap = {
     'User': User,
     'Target': Target,
@@ -203,15 +226,15 @@ const ValueProposition: React.FC = () => {
         >
           <div className="mb-8">
             <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">
-              {content.valueProposition.title}
+              {valueProposition.title}
             </h3>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              {content.valueProposition.subtitle}
+              {valueProposition.subtitle}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            {content.valueProposition.points.map((point, index) => {
+            {valueProposition.points.map((point, index) => {
               const IconComponent = iconMap[point.icon as keyof typeof iconMap] || Target;
               
               return (

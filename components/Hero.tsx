@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Button } from './ui/button';
 import { ChevronRight, Sparkles, Clock } from 'lucide-react';
 import { useEditableContent } from '../contexts/EditableContentContext';
@@ -48,11 +48,12 @@ const Hero: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [displayedText, isDeleting, isPaused, currentTextIndex, dynamicTexts]);
 
-  const scrollToContact = () => {
-    const element = document.querySelector('#contacto');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const openWhatsApp = () => {
+    const phoneNumber = content.company.phone.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    const message = "¡Hola! Me interesa saber más sobre tus servicios de desarrollo web y automatización. ¿Podrías contarme cómo puedes ayudarme?";
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   return (
@@ -105,7 +106,7 @@ const Hero: React.FC = () => {
           >
             <Button 
               size="lg" 
-              onClick={scrollToContact}
+              onClick={openWhatsApp}
               className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-medium rounded-xl group relative overflow-hidden button-focus-fix"
             >
               <span className="relative z-10 flex items-center justify-center gap-2">

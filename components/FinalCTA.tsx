@@ -45,6 +45,11 @@ const FinalCTA: React.FC = () => {
   const handlePrimaryClick = () => {
     trackCTAClick('final_cta', 'Conversación gratuita');
     trackCallBooking();
+    const phoneNumber = "+542284638361";
+    const message = "¡Hola! Me interesa agendar una conversación gratuita para hablar sobre mi situación específica y ver si podés ayudarme.";
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleEmailClick = () => {

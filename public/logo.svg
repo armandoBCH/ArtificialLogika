@@ -1,0 +1,35 @@
+<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Artificial Lógika Logo con bordes gruesos -->
+  <defs>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Contenedor exterior con borde grueso -->
+  <rect 
+    x="2" 
+    y="2" 
+    width="40" 
+    height="40" 
+    rx="8" 
+    fill="rgba(64, 217, 172, 0.08)" 
+    stroke="#40d9ac" 
+    stroke-width="4"
+    filter="url(#glow)"
+  />
+  
+  <!-- Cuadrado interno sólido -->
+  <rect 
+    x="15" 
+    y="15" 
+    width="14" 
+    height="14" 
+    rx="1" 
+    fill="#40d9ac"
+  />
+</svg>

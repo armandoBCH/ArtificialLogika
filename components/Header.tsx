@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
 import { Menu, X, ChevronRight, Sparkles } from 'lucide-react';
+import Logo from './Logo';
 
 const navItems = [
   { name: 'Servicios', href: '#servicios' },
@@ -78,24 +79,9 @@ const Header: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
-              <div className="relative">
-                <motion.div
-                  className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-primary/20"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-sm" />
-                </motion.div>
-                
-                <motion.div
-                  className="absolute inset-0 bg-primary/20 rounded-lg sm:rounded-xl"
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                />
-              </div>
-              
+              <Logo size="md" animated={true} />
               <div>
-                <h1 className="text-lg sm:text-xl font-bold text-white">
+                <h1 className="text-base sm:text-lg md:text-xl font-bold text-white whitespace-nowrap">
                   Artificial <span className="text-primary">Lógika</span>
                 </h1>
                 <p className="text-xs text-muted-foreground hidden sm:block">Software + IA</p>

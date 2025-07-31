@@ -1,13 +1,18 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Separator } from './ui/separator';
-import { Github, Linkedin, Mail, MapPin, Settings } from 'lucide-react';
+import { Github, Linkedin, Mail, MapPin, Settings, MessageCircle } from 'lucide-react';
 import { useEditableContent } from '../contexts/EditableContentContext';
 import { useRouter } from '../contexts/RouterContext';
 
 const Footer: React.FC = () => {
   const { content } = useEditableContent();
   const { navigateTo } = useRouter();
+
+  // Crear las partes del nombre de la empresa de manera segura
+  const companyNameParts = content.company?.name?.split(' ') || ['Artificial', 'Lógika'];
+  const firstName = companyNameParts[0] || 'Artificial';
+  const lastName = companyNameParts[1] || 'Lógika';
 
   return (
     <footer className="relative py-16 px-6 bg-card/20 border-t border-border/50">
@@ -24,11 +29,10 @@ const Footer: React.FC = () => {
           >
             <div className="mb-6">
               <h3 className="text-2xl font-bold text-white mb-2">
-                {content.company.name.split(' ')[0]} <span className="text-primary">{content.company.name.split(' ')[1]}</span>
+                {firstName} <span className="text-primary">{lastName}</span>
               </h3>
               <p className="text-muted-foreground leading-relaxed max-w-md">
-                Consultora boutique de software e IA. Fusionamos ingeniería lógica con inteligencia 
-                artificial para crear soluciones que realmente transforman negocios.
+                {content.footerDescription || "Desarrollo páginas web, ecommerce, chatbots y automatizaciones desde cero. Soluciones 100% autogestionables que transforman negocios."}
               </p>
             </div>
             
@@ -36,11 +40,22 @@ const Footer: React.FC = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-muted-foreground">
                 <Mail className="w-4 h-4 text-primary" />
-                <span>{content.company.email}</span>
+                <span>{content.company?.email || "armadobeatochang@gmail.com"}</span>
+              </div>
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <MessageCircle className="w-4 h-4 text-primary" />
+                <a 
+                  href={`https://wa.me/${content.company?.phone?.replace(/[^0-9]/g, '') || '542284638361'}?text=${encodeURIComponent("¡Hola! Me interesa conocer más sobre tus servicios.")}`}
+                  className="hover:text-primary transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {content.company?.phone || "+54 2284 638361"}
+                </a>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground">
                 <MapPin className="w-4 h-4 text-primary" />
-                <span>{content.company.address}</span>
+                <span>{content.company?.address || "Olavarría, Buenos Aires, Argentina"}</span>
               </div>
             </div>
           </motion.div>
@@ -54,7 +69,7 @@ const Footer: React.FC = () => {
           >
             <h4 className="text-lg font-semibold text-white mb-4">Servicios</h4>
             <ul className="space-y-2">
-              {content.services.map((service, index) => (
+              {content.services?.map((service, index) => (
                 <li key={index}>
                   <a 
                     href="#servicios" 
@@ -63,7 +78,11 @@ const Footer: React.FC = () => {
                     {service.title}
                   </a>
                 </li>
-              ))}
+              )) || (
+                <li>
+                  <span className="text-muted-foreground">Cargando servicios...</span>
+                </li>
+              )}
             </ul>
           </motion.div>
 
@@ -118,7 +137,7 @@ const Footer: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <p>
-              © 2025 {content.company.name}. Todos los derechos reservados.
+              © 2025 {content.company?.name || "Artificial Lógika"}. Todos los derechos reservados.
             </p>
           </motion.div>
 
@@ -131,9 +150,9 @@ const Footer: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             {[
-              { icon: Github, href: "#", label: "GitHub" },
-              { icon: Linkedin, href: content.company.socialMedia.linkedin, label: "LinkedIn" },
-              { icon: Mail, href: `mailto:${content.company.email}`, label: "Email" }
+              { icon: Github, href: content.company?.socialMedia?.github || "#", label: "GitHub" },
+              { icon: Linkedin, href: content.company?.socialMedia?.linkedin || "#", label: "LinkedIn" },
+              { icon: Mail, href: `mailto:${content.company?.email || "armadobeatochang@gmail.com"}`, label: "Email" }
             ].map((social, index) => (
               <motion.a
                 key={index}
@@ -142,6 +161,8 @@ const Footer: React.FC = () => {
                 className="w-10 h-10 bg-secondary/50 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300"
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
+                target={social.href.startsWith('http') ? "_blank" : undefined}
+                rel={social.href.startsWith('http') ? "noopener noreferrer" : undefined}
               >
                 <social.icon className="w-5 h-5" />
               </motion.a>

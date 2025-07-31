@@ -11,17 +11,17 @@ interface SEOHeadProps {
 const SEOHead: React.FC<SEOHeadProps> = ({ 
   title, 
   description, 
-  canonical = 'https://artificiallogika.com',
+  canonical = 'https://artificial-logika.com',
   type = 'website' 
 }) => {
   const { content } = useEditableContent();
   
   const defaultTitle = `${content.company.name} - ${content.company.tagline}`;
-  const defaultDescription = "Consultora boutique de software e IA que automatiza negocios ambiciosos. Desarrollo páginas web, ecommerce, chatbots y automatizaciones. ROI garantizado. Soluciones 100% autogestionables.";
+  const defaultDescription = "Armando Beato - Desarrollador especializado en software e IA. Creo páginas web, ecommerce, chatbots y automatizaciones desde cero. Soluciones 100% autogestionables para tu negocio.";
   
   const seoTitle = title || defaultTitle;
   const seoDescription = description || defaultDescription;
-  
+
   React.useEffect(() => {
     // Update document title
     document.title = seoTitle;
@@ -42,7 +42,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       metaKeywords.setAttribute('name', 'keywords');
       document.head.appendChild(metaKeywords);
     }
-    metaKeywords.setAttribute('content', 'consultora software, desarrollo web, inteligencia artificial, chatbots, automatización, ecommerce, páginas web, landing pages, ROI, PyMEs, autogestionable');
+    metaKeywords.setAttribute('content', 'Armando Beato, desarrollador web, inteligencia artificial, chatbots, automatización, ecommerce, páginas web, landing pages, Buenos Aires, Argentina, desarrollo software');
 
     // Add robots meta
     let metaRobots = document.querySelector('meta[name="robots"]');
@@ -109,7 +109,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       { property: 'og:image', content: `${canonical}/og-image.jpg` },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
-      { property: 'og:image:alt', content: `${content.company.name} - Consultora de Software e IA` }
+      { property: 'og:image:alt', content: `${content.company.name} - Desarrollador de Software e IA` }
     ];
     
     ogTags.forEach(tag => {
@@ -128,8 +128,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       { name: 'twitter:title', content: seoTitle },
       { name: 'twitter:description', content: seoDescription },
       { name: 'twitter:image', content: `${canonical}/og-image.jpg` },
-      { name: 'twitter:creator', content: '@artificiallogika' },
-      { name: 'twitter:site', content: '@artificiallogika' }
+      { name: 'twitter:creator', content: '@armando_beato' },
+      { name: 'twitter:site', content: '@armando_beato' }
     ];
     
     twitterTags.forEach(tag => {
@@ -148,15 +148,15 @@ const SEOHead: React.FC<SEOHeadProps> = ({
         "@context": "https://schema.org",
         "@type": "ProfessionalService",
         "name": content.company.name,
-        "alternateName": "Artificial Lógika",
+        "alternateName": "Armando Beato Developer",
         "description": seoDescription,
         "url": canonical,
         "telephone": content.company.phone,
         "email": content.company.email,
         "address": {
           "@type": "PostalAddress", 
-          "addressLocality": content.company.address.split(',')[0],
-          "addressCountry": "ES"
+          "addressLocality": content.company.address.split(',')[0] || "Olavarría",
+          "addressCountry": "AR"
         },
         "sameAs": [
           content.company.socialMedia.linkedin,
@@ -165,7 +165,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
         "serviceType": ["Software Development", "AI Automation", "Web Development", "E-commerce Development"],
         "areaServed": {
           "@type": "Country",
-          "name": "Spain"
+          "name": "Argentina"
         },
         "founder": {
           "@type": "Person",
