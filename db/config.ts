@@ -3,7 +3,7 @@ import { DatabaseConfig } from './types';
 // Safely get environment variables
 const getEnvVar = (key: string, fallback: string = ''): string => {
   try {
-    return import.meta?.env?.[key] || fallback;
+    return (import.meta as any)?.env?.[key] || fallback;
   } catch (error) {
     console.warn(`Environment variable ${key} not available, using fallback`);
     return fallback;

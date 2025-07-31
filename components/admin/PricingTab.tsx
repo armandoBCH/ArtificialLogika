@@ -14,8 +14,7 @@ import {
   Trash2, 
   Edit3, 
   Check, 
-  Crown, 
-  Star,
+  Crown,
   ArrowUp,
   ArrowDown,
   DollarSign

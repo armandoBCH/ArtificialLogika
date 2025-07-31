@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 // Safely get environment variables with fallbacks
 const getEnvVar = (key: string, fallback: string = ''): string => {
   try {
-    return import.meta?.env?.[key] || fallback;
+    return (import.meta as any)?.env?.[key] || fallback;
   } catch (error) {
     console.warn(`Environment variable ${key} not available:`, error);
     return fallback;
@@ -42,7 +42,7 @@ export class SupabaseManager {
 
     try {
       // Test connection
-      const { data, error } = await supabase!.from('content').select('count').limit(1);
+      const { error } = await supabase!.from('content').select('count').limit(1);
       if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
         console.error('Supabase connection failed:', error);
         return false;

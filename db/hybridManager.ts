@@ -292,7 +292,7 @@ class HybridDatabaseManager implements DatabaseManagerInterface {
 
     if (this.indexedDBAvailable) {
       try {
-        await indexedDBManager.clearAll()
+        await indexedDBManager.clearAllContent()
         if (isDebugMode()) console.log('🧹 Cleared IndexedDB')
       } catch (error) {
         console.error('Error clearing IndexedDB:', error)

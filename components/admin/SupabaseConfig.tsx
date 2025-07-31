@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+
 import { Label } from '../ui/label';
 import { Badge } from '../ui/badge';
 import { Alert, AlertDescription } from '../ui/alert';
-import { Separator } from '../ui/separator';
+
 import { 
   Database, 
   RefreshCw, 
@@ -15,7 +15,7 @@ import {
   Copy,
   Download,
   Upload,
-  Trash2,
+
   Settings,
   Cloud,
   HardDrive,
@@ -31,7 +31,7 @@ const SupabaseConfig: React.FC = () => {
     forceSyncFromSupabase,
     exportData,
     importData,
-    saveStatus
+
   } = useEditableContent();
 
   const [status, setStatus] = useState(getDatabaseStatus());
