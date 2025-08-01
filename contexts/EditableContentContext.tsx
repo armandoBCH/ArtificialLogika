@@ -327,92 +327,103 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
 
   // Cargar contenido inicial
   useEffect(() => {
-    loadAllContent();
-  }, []);
+    const initializeContent = async () => {
+      await loadAllContent();
+    };
+    initializeContent();
+  }, []); // loadAllContent es estable, no necesita estar en dependencias
 
   // Función para verificar si las APIs están disponibles
   const checkAPIAvailability = async (): Promise<boolean> => {
     try {
-      const response = await fetch('/api/check-env');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos timeout
+
+      const response = await fetch('/api/check-env', {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
       if (!response.ok) return false;
       
       const envStatus = await response.json();
       return envStatus.supabase?.urlConfigured && envStatus.supabase?.keyConfigured;
-    } catch {
+    } catch (error) {
+      console.log('API availability check failed:', error);
       return false;
     }
   };
 
   // Función para cargar todo el contenido
   const loadAllContent = async () => {
+    console.log('🔄 Iniciando carga de contenido...');
+    
     try {
       setLoading(true);
       setError(null);
 
-      // Primero verificar si las APIs están disponibles
-      const apiAvailable = await checkAPIAvailability();
-      
-      if (!apiAvailable) {
-        console.log('API not available, using default content');
-        setContent(getDefaultContent());
-        setError('Aplicación funcionando en modo demo. Para configurar el sistema de administración, accede a /admin y sigue las instrucciones.');
-        setLoading(false);
-        return;
-      }
-
-      const response = await fetch('/api/content');
-      if (!response.ok) {
-        if (response.status === 500) {
-          // Si es error 500, probablemente es un problema de configuración de Supabase
-          const errorData = await response.json().catch(() => ({}));
-          if (errorData.error?.includes('Supabase configuration missing')) {
-            console.log('Supabase not configured, using default content');
-            setContent(getDefaultContent());
-            setError('Aplicación funcionando en modo demo. Para configurar el sistema de administración, accede a /admin y sigue las instrucciones.');
-            setLoading(false);
-            return;
-          }
-        }
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-
-      const contentItems: ContentItem[] = await response.json();
-      
-      // Si no hay contenido en la base de datos, usar contenido por defecto
-      if (!contentItems || contentItems.length === 0) {
-        console.log('No content found in database, using default content');
-        setContent(getDefaultContent());
-        setError('Usando contenido por defecto. Configura Supabase para habilitar edición.');
-        setLoading(false);
-        return;
-      }
-      
-      // Organizar contenido por tipo
-      const organizedContent: Record<string, ContentData> = {};
-      contentItems.forEach(item => {
-        organizedContent[item.content_type] = item.content_data;
-      });
-
-      // Combinar con contenido por defecto para asegurar que todas las propiedades existan
-      const defaultContent = getDefaultContent();
-      const mergedContent: Record<string, ContentData> = {};
-      
-      Object.keys(defaultContent).forEach(key => {
-        mergedContent[key] = organizedContent[key] || defaultContent[key];
-      });
-
-      setContent(mergedContent);
-      console.log('Content loaded successfully from Supabase');
-    } catch (err) {
-      console.error('Error loading content:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
-      setError(errorMessage);
-      
-      // Si hay error, usar contenido por defecto
+      // Usar contenido por defecto inmediatamente para evitar pantalla en blanco
       setContent(getDefaultContent());
-      console.log('Using default content due to error:', errorMessage);
+      
+      // Verificar API en background
+      try {
+        const apiAvailable = await checkAPIAvailability();
+        
+        if (!apiAvailable) {
+          console.log('✅ API no disponible, usando contenido por defecto');
+          setError('Aplicación funcionando en modo demo. Para configurar el sistema de administración, accede a /admin y sigue las instrucciones.');
+          setLoading(false);
+          return;
+        }
+
+        // Intentar cargar contenido de la API
+        const response = await fetch('/api/content');
+        
+        if (!response.ok) {
+          console.log('⚠️ Error en API, usando contenido por defecto');
+          setError('Error al cargar contenido. Usando modo demo.');
+          setLoading(false);
+          return;
+        }
+
+        const contentItems: ContentItem[] = await response.json();
+        
+        if (!contentItems || contentItems.length === 0) {
+          console.log('📝 No hay contenido en BD, usando contenido por defecto');
+          setError('Usando contenido por defecto. Configura Supabase para habilitar edición.');
+          setLoading(false);
+          return;
+        }
+        
+        // Organizar contenido por tipo
+        const organizedContent: Record<string, ContentData> = {};
+        contentItems.forEach(item => {
+          organizedContent[item.content_type] = item.content_data;
+        });
+
+        // Combinar con contenido por defecto
+        const defaultContent = getDefaultContent();
+        const mergedContent: Record<string, ContentData> = {};
+        
+        Object.keys(defaultContent).forEach(key => {
+          mergedContent[key] = organizedContent[key] || defaultContent[key];
+        });
+
+        setContent(mergedContent);
+        console.log('✅ Contenido cargado exitosamente desde Supabase');
+        
+      } catch (apiError) {
+        console.log('⚠️ Error en API, usando contenido por defecto:', apiError);
+        setError('Error de conexión. Usando modo demo.');
+      }
+      
+    } catch (err) {
+      console.error('❌ Error general:', err);
+      setError('Error desconocido. Usando modo demo.');
     } finally {
       setLoading(false);
+      console.log('✅ Carga de contenido completada');
     }
   };
 
