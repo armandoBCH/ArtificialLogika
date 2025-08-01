@@ -35,12 +35,17 @@ const SupabaseConfig: React.FC = () => {
 
   const checkServerEnvironment = async () => {
     try {
+      console.log('🔍 Checking server environment...');
       const response = await fetch('/api/check-env');
       const data = await response.json();
+      console.log('📊 Server environment response:', data);
       setServerEnvCheck(data);
     } catch (error) {
-      console.error('Failed to check server environment:', error);
-      setServerEnvCheck({ error: 'Failed to connect to API endpoint' });
+      console.error('❌ Failed to check server environment:', error);
+      setServerEnvCheck({ 
+        error: 'Failed to connect to API endpoint',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   };
 
@@ -214,6 +219,11 @@ const SupabaseConfig: React.FC = () => {
                 <div className={hasSupabaseEnv ? 'text-green-400' : 'text-red-400'}>
                   {hasSupabaseEnv ? '✅ Disponible' : '❌ No encontrada'}
                 </div>
+                {serverEnvCheck?.supabase?.urlLength && (
+                  <div className="text-gray-400 text-xs">
+                    Longitud: {serverEnvCheck.supabase.urlLength} caracteres
+                  </div>
+                )}
               </div>
               
               <div>
@@ -221,6 +231,11 @@ const SupabaseConfig: React.FC = () => {
                 <div className={hasSupabaseEnv ? 'text-green-400' : 'text-red-400'}>
                   {hasSupabaseEnv ? '✅ Disponible' : '❌ No encontrada'}
                 </div>
+                {serverEnvCheck?.supabase?.keyLength && (
+                  <div className="text-gray-400 text-xs">
+                    Longitud: {serverEnvCheck.supabase.keyLength} caracteres
+                  </div>
+                )}
               </div>
             </div>
             
@@ -237,6 +252,16 @@ const SupabaseConfig: React.FC = () => {
                     <div className={serverEnvCheck.supabase?.keyConfigured ? 'text-green-400' : 'text-red-400'}>
                       Key en servidor: {serverEnvCheck.supabase?.keyConfigured ? '✅ Configurada' : '❌ No encontrada'}
                     </div>
+                    {serverEnvCheck.environment && (
+                      <div className="text-gray-400">
+                        Ambiente: {serverEnvCheck.environment}
+                      </div>
+                    )}
+                    {serverEnvCheck.availableEnvVars && serverEnvCheck.availableEnvVars.length > 0 && (
+                      <div className="text-gray-400">
+                        Variables disponibles: {serverEnvCheck.availableEnvVars.join(', ')}
+                      </div>
+                    )}
                   </>
                 )}
               </div>
