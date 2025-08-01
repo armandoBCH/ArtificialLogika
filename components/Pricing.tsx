@@ -69,14 +69,14 @@ const Pricing: React.FC = () => {
       infrastructure: '0', 
       maintenance: '0',
       hasInfrastructure: false,
-      hasSupabase: false
+              hasTurso: false
     };
     
     let developmentTotal = 0;
     let infrastructureTotal = 0;
     let maintenanceTotal = 0;
     let hasInfrastructureService = false;
-    let hasSupabaseService = false;
+          let hasTursoService = false;
     
     selectedItems.forEach((item: any) => {
       if (item.developmentPrice !== 'Consultar') {
@@ -85,8 +85,8 @@ const Pricing: React.FC = () => {
       if (item.infrastructurePrice !== 'Consultar' && item.infrastructurePrice !== '0') {
         infrastructureTotal += parseInt(item.infrastructurePrice.replace(/\./g, ''));
         hasInfrastructureService = true;
-        if (item.databaseType === 'supabase') {
-          hasSupabaseService = true;
+        if (item.databaseType === 'turso') {
+          hasTursoService = true;
         }
       }
       if (item.maintenancePrice !== 'Consultar') {
@@ -99,7 +99,7 @@ const Pricing: React.FC = () => {
       infrastructure: infrastructureTotal > 0 ? infrastructureTotal.toLocaleString('es-AR') : '0',
       maintenance: maintenanceTotal > 0 ? maintenanceTotal.toLocaleString('es-AR') : 'Consultar',
       hasInfrastructure: hasInfrastructureService,
-      hasSupabase: hasSupabaseService
+              hasTurso: hasTursoService
     };
   };
 
@@ -113,11 +113,11 @@ const Pricing: React.FC = () => {
             {badges.sqliteText}
           </Badge>
         );
-      case 'supabase':
+      case 'turso':
         return (
           <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-400 border-blue-500/20">
             <Database className="w-3 h-3 mr-1" />
-            {badges.supabaseText}
+            {badges.tursoText}
           </Badge>
         );
       case 'none':
@@ -168,7 +168,7 @@ const Pricing: React.FC = () => {
       hostingFreeText: "Hosting Gratis",
       dynamicText: "Dinámico",
       sqliteText: "SQLite",
-      supabaseText: "Supabase",
+              tursoText: "Turso",
       noDatabaseText: "Sin BD"
     },
     benefits: [],
@@ -527,7 +527,7 @@ const Pricing: React.FC = () => {
                                 ${service.infrastructurePrice === '0' ? 'Gratis' : service.infrastructurePrice}/mes
                               </div>
                               <div className="text-xs text-purple-300">
-                                {service.isStatic ? 'Hosting estático' : service.databaseType === 'supabase' ? 'APIs + BD' : 'APIs + SQLite'}
+                                {service.isStatic ? 'Hosting estático' : service.databaseType === 'turso' ? 'APIs + BD' : 'APIs + SQLite'}
                               </div>
                             </div>
 
@@ -640,7 +640,7 @@ const Pricing: React.FC = () => {
                         {calculateEstimate().infrastructure !== '0' && '/mes'}
                       </div>
                       <div className="text-xs text-purple-300 mt-1">
-                        {calculateEstimate().hasSupabase ? 'Incluye Supabase Pro' : 
+                        {calculateEstimate().hasTurso ? 'Incluye Turso Pro' : 
                          calculateEstimate().hasInfrastructure ? 'APIs + SQLite' : 'Solo hosting estático'}
                       </div>
                     </div>
@@ -671,14 +671,14 @@ const Pricing: React.FC = () => {
                     </div>
                   )}
 
-                  {calculateEstimate().hasSupabase && (
+                  {calculateEstimate().hasTurso && (
                     <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                       <div className="flex items-start gap-2">
                         <Database className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="text-sm text-blue-200 font-medium">💎 Base de datos profesional incluida</p>
                           <p className="text-xs text-blue-300 mt-1">
-                            Supabase Pro incluye PostgreSQL escalable, autenticación, y APIs automáticas.
+                            Turso Pro incluye SQLite escalable, autenticación, y APIs automáticas.
                           </p>
                         </div>
                       </div>

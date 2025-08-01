@@ -27,7 +27,7 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ variant = 'full' })
         bgColor: 'bg-blue-500/10',
         borderColor: 'border-blue-500/20',
         title: 'Conectando...',
-        message: 'Cargando contenido desde Supabase',
+        message: 'Cargando contenido desde Turso',
         type: 'loading' as const
       };
     }

@@ -32,8 +32,8 @@ const FAQ: React.FC = () => {
       answer: "Absolutamente. Desarrollo con sistemas autogestionables: panel de administración intuitivo, capacitación incluida, y documentación paso a paso. Cambias textos, imágenes, precios y productos sin tocar código. Si necesitas algo más complejo, ahí estoy para ayudarte."
     },
     {
-      question: "¿Por qué Vercel + Supabase en lugar de WordPress?",
-      answer: "Velocidad y confiabilidad. WordPress puede ser lento y requiere mantenimiento constante. Vercel garantiza velocidad de carga de 1-2 segundos y Supabase es una base de datos moderna y escalable. Es tecnología de 2025, no de 2005."
+      question: "¿Por qué Vercel + Turso en lugar de WordPress?",
+      answer: "Velocidad y confiabilidad. WordPress puede ser lento y requiere mantenimiento constante. Vercel garantiza velocidad de carga de 1-2 segundos y Turso es una base de datos moderna y escalable. Es tecnología de 2025, no de 2005."
     },
     {
       question: "¿Incluye diseño o solo programación?",

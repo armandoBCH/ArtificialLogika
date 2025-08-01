@@ -172,7 +172,7 @@ const getDefaultContent = (): Record<string, ContentData> => ({
         hostingFreeText: "Hosting Gratis",
         dynamicText: "Dinámico",
         sqliteText: "SQLite",
-        supabaseText: "Supabase",
+        tursoText: "Turso",
         noDatabaseText: "Sin BD"
       },
       benefits: [
@@ -348,7 +348,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       if (!response.ok) return false;
       
       const envStatus = await response.json();
-      return envStatus.supabase?.configured || false;
+      return envStatus.turso?.configured || false;
     } catch (error) {
       console.log('API availability check failed:', error);
       return false;
@@ -391,7 +391,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
         
         if (!contentItems || contentItems.length === 0) {
           console.log('📝 No hay contenido en BD, usando contenido por defecto');
-          setError('Usando contenido por defecto. Configura Supabase para habilitar edición.');
+          setError('Usando contenido por defecto. Configura Turso para habilitar edición.');
           setLoading(false);
           return;
         }
@@ -411,7 +411,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
         });
 
         setContent(mergedContent);
-        console.log('✅ Contenido cargado exitosamente desde Supabase');
+        console.log('✅ Contenido cargado exitosamente desde Turso');
         
       } catch (apiError) {
         console.log('⚠️ Error en API, usando contenido por defecto:', apiError);
@@ -442,7 +442,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       const apiAvailable = await checkAPIAvailability();
       
       if (!apiAvailable) {
-        setError('Cambios guardados localmente. Configura las variables de entorno en Vercel para habilitar sincronización con Supabase.');
+        setError('Cambios guardados localmente. Configura las variables de entorno en Vercel para habilitar sincronización con Turso.');
         return; // Mantener cambios locales sin sincronizar
       }
 
@@ -459,8 +459,8 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       if (!response.ok) {
         if (response.status === 500) {
           const errorData = await response.json().catch(() => ({}));
-          if (errorData.error?.includes('Supabase configuration missing')) {
-            setError('Cambios guardados localmente. Configura las variables VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en Vercel.');
+                  if (errorData.error?.includes('Turso configuration missing')) {
+          setError('Cambios guardados localmente. Configura las variables VITE_TURSO_DATABASE_URL y VITE_TURSO_AUTH_TOKEN en Vercel.');
             return; // Mantener cambios locales
           }
         }
@@ -473,7 +473,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       
       // Si es error de configuración, mantener cambios locales pero mostrar warning
       if (err instanceof Error && (err.message.includes('500') || err.message.includes('configuration'))) {
-        setError('Cambios guardados localmente. Configura Supabase para sincronización completa.');
+        setError('Cambios guardados localmente. Configura Turso para sincronización completa.');
         return; // No revertir cambios locales
       }
       

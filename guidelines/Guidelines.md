@@ -93,8 +93,8 @@
 # ✅ CONFIGURAR ÚNICAMENTE EN VERCEL
 # Vercel Dashboard > Project Settings > Environment Variables
 
-VITE_SUPABASE_URL=https://proyecto.supabase.co
-VITE_SUPABASE_ANON_KEY=jwt-token-publico
+VITE_TURSO_DATABASE_URL=libsql://artificial-logika.turso.io
+VITE_TURSO_AUTH_TOKEN=tu-token-de-turso
 
 # Variables opcionales
 VITE_ENABLE_ANALYTICS=true
@@ -190,13 +190,13 @@ css: {
 - `/index.html` → Configurado correctamente para apuntar a `/main.tsx`
 
 ### 🚀 PROCESO DE DEPLOY CORRECTO
-1. **Configurar variables en Vercel**: VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY
+1. **Configurar variables en Vercel**: VITE_TURSO_DATABASE_URL y VITE_TURSO_AUTH_TOKEN
 2. **Verificar estructura de archivos**: No debe haber duplicados de entry points
 3. **Verificar dependencias**: Revisar que todas las dependencias existan en npm y no haya duplicados
 4. **Verificar imports**: Comprobar que todos los imports sean correctos (framer-motion, no motion/react)
 5. **Verificar TypeScript**: `tsc --noEmit` para eliminar variables no utilizadas
 6. **NO crear archivo .env local**: Solo usar variables de Vercel por seguridad
-7. **Build local**: `npm run build` (REQUIERE variables de Supabase para funcionar)
+7. **Build local**: `npm run build` (REQUIERE variables de Turso para funcionar)
 8. **Deploy Vercel**: Variables de entorno se aplican automáticamente
 
 ### 📚 LECCIONES APRENDIDAS
@@ -253,7 +253,7 @@ css: {
 - Todo el contenido editable a través de EditableContentContext (ACTUALIZADO)
 - Sistema de administración en `/admin` route
 - **ELIMINADO**: Persistencia en IndexedDB
-- **NUEVO**: Persistencia únicamente en Supabase vía API endpoints
+- **NUEVO**: Persistencia únicamente en Turso vía API endpoints
 - Auto-save mediante fetch() a endpoints `/api/content.ts` y `/api/content-by-type.ts`
 
 ### SEO Optimización
@@ -280,7 +280,7 @@ css: {
 - `motion` (usar `framer-motion`)
 
 ### Deploy Checklist Final
-- [ ] **Configurar variables de entorno en Vercel**: VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY
+- [ ] **Configurar variables de entorno en Vercel**: VITE_TURSO_DATABASE_URL y VITE_TURSO_AUTH_TOKEN
 - [ ] **NO crear archivo .env local**: Solo usar variables de Vercel por seguridad
 - [ ] **Verificar estructura de archivos**: Solo un App.tsx y main.tsx en la raíz
 - [ ] **Verificar que no hay dependencias inexistentes** en package.json
@@ -289,7 +289,7 @@ css: {
 - [ ] **Verificar imports correctos** (framer-motion, no motion/react)
 - [ ] **Eliminar variables e imports no utilizados**
 - [ ] **Verificar override de estilos** en componentes base según guidelines
-- [ ] **Build local exitoso**: `npm run build` (REQUIERE variables de Supabase configuradas)
+- [ ] **Build local exitoso**: `npm run build` (REQUIERE variables de Turso configuradas)
 - [ ] **Commit y push a GitHub**
 - [ ] **Deploy automático en Vercel** (variables se aplican automáticamente)
 
@@ -310,12 +310,12 @@ css: {
 
 **IMPORTANTE**: Mantener esta estructura para evitar conflictos de build en Vercel/Vite.
 
-## 🚨 MIGRACIÓN TOTAL A SUPABASE API-ONLY (ENERO 2025)
+## 🚨 MIGRACIÓN TOTAL A TURSO API-ONLY (ENERO 2025)
 
 ### CAMBIO ARQUITECTÓNICO RADICAL
 - **ELIMINADO COMPLETAMENTE**: Sistema híbrido (IndexedDB + localStorage + HybridManager)
 - **RAZÓN**: Complejidad excesiva, problemas de sincronización persistentes
-- **NUEVO ENFOQUE**: API-only con Supabase como única fuente de verdad
+- **NUEVO ENFOQUE**: API-only con Turso como única fuente de verdad
 
 ### ARCHIVOS ELIMINADOS/MODIFICADOS
 ```
@@ -334,7 +334,7 @@ css: {
 
 🔄 ACTUALIZADOS:
 ├── /contexts/EditableContentContext.tsx (completamente reescrito)
-├── /components/admin/SupabaseConfig.tsx (simplificado, sin funciones híbridas)
+├── /components/admin/TursoConfig.tsx (simplificado, sin funciones híbridas)
 ├── /vercel.json (nodejs22.x, endpoints configurados)
 ```
 
@@ -358,15 +358,15 @@ css: {
 - **Optimistic updates**: Cambios locales inmediatos + API call en background
 - **Error handling**: Revert automático en caso de fallo de API
 
-#### **Dependencias de Supabase:**
+#### **Dependencias de Turso:**
 ```typescript
 // Solo en endpoints API (server-side)
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@libsql/client';
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL || '',
-  process.env.VITE_SUPABASE_ANON_KEY || ''
-);
+const turso = createClient({
+  url: process.env.VITE_TURSO_DATABASE_URL || '',
+  authToken: process.env.VITE_TURSO_AUTH_TOKEN || ''
+});
 ```
 
 ### MIGRACIÓN STEP-BY-STEP
@@ -381,13 +381,13 @@ const supabase = createClient(
 
 2. **Verificar variables de entorno en Vercel:**
    ```bash
-   VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-   VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiI...
+   VITE_TURSO_DATABASE_URL=libsql://artificial-logika.turso.io
+VITE_TURSO_AUTH_TOKEN=tu-token-de-turso
    ```
 
-3. **Verificar tabla en Supabase:**
+3. **Verificar tabla en Turso:**
    ```sql
-   -- Ejecutar en Supabase SQL Editor
+   -- Ejecutar en Turso CLI
    CREATE TABLE IF NOT EXISTS public.content (
      id text primary key,
      user_id uuid references auth.users(id) default auth.uid(),
@@ -406,7 +406,7 @@ const supabase = createClient(
 
 ### VENTAJAS DE LA NUEVA ARQUITECTURA
 
-✅ **Simplicidad**: Una sola fuente de verdad (Supabase)
+✅ **Simplicidad**: Una sola fuente de verdad (Turso)
 ✅ **Confiabilidad**: Sin problemas de sincronización
 ✅ **Mantenibilidad**: Código más limpio y comprensible  
 ✅ **Escalabilidad**: API REST estándar

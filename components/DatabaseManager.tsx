@@ -8,7 +8,7 @@
 // Ahora toda la gestión de datos se hace a través de:
 // - Endpoints API en /api/content.ts y /api/content-by-type.ts
 // - Fetch directo desde los contextos
-// - Supabase como única fuente de verdad
+// - Turso como única fuente de verdad
 
 export default function DatabaseManager() {
   return null;

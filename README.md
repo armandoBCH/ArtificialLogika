@@ -1,212 +1,159 @@
-# Artificial Lógika - Landing Page
+# 🚀 Artificial Lógika - Landing Page
 
-Landing page profesional para consultora boutique de software e IA, con sistema de administración completo y base de datos híbrida (Supabase + IndexedDB).
+**Landing page moderna y dinámica para consultora de software e IA**
 
-## 🚀 Características
+## ✨ **Características**
 
-### Frontend
-- **React 18** con TypeScript
-- **Tailwind CSS v3** con diseño responsive mobile-first
-- **Framer Motion** para animaciones suaves
-- **Shadcn/ui** para componentes de interfaz
-- **Sora** como tipografía principal
+- **🎨 Diseño moderno** - UI/UX profesional con animaciones suaves
+- **📱 Mobile-first** - Responsive design optimizado
+- **⚡ Rendimiento** - Carga ultra rápida con Vite + React
+- **🔄 Contenido dinámico** - Edición en tiempo real desde admin panel
+- **🌐 Turso Database** - Base de datos SQLite escalable en la nube
+- **🚀 Vercel Deploy** - Hosting edge con CDN global
 
-### Backend y Base de Datos
-- **Base de datos híbrida**: Supabase (nube) + IndexedDB (local)
-- **Fallback automático**: Si Supabase no está disponible, usa IndexedDB
-- **Sincronización bidireccional** entre ambas bases de datos
-- **Persistencia completa** sin pérdida de datos
+## 🛠️ **Stack Tecnológico**
 
-### Sistema de Administración
-- **Panel de administración completo** en `/admin`
-- **Gestión de contenido** sin código
-- **Sistema de precios** con calculadora personalizable
-- **Gestión de proyectos** con drag & drop
-- **Exportación/importación** de datos
-- **Configuración de empresa** y redes sociales
+- **Frontend**: React 18 + TypeScript + Vite
+- **Styling**: Tailwind CSS v3 + Framer Motion
+- **UI Components**: Shadcn/ui
+- **Database**: Turso (SQLite en la nube)
+- **Hosting**: Vercel Serverless Functions
+- **State Management**: React Context API
 
-## 🛠️ Instalación
+## 🚀 **Instalación Rápida**
 
-1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/tu-usuario/artificial-logika-landing.git
-cd artificial-logika-landing
-```
+# Clonar repositorio
+git clone https://github.com/armandoBCH/ArtificialLogika.git
+cd ArtificialLogika
 
-2. **Instalar dependencias**
-```bash
+# Instalar dependencias
 npm install
-```
 
-3. **Configurar variables de entorno** (opcional para Supabase)
-```bash
-cp .env.example .env
-```
+# Configurar variables de entorno
+cp .env.example .env.local
+# Editar .env.local con tus credenciales de Turso
 
-Edita el archivo `.env` con tus credenciales de Supabase:
-```env
-VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-VITE_SUPABASE_ANON_KEY=tu-clave-publica-aqui
-```
-
-4. **Ejecutar en desarrollo**
-```bash
+# Ejecutar en desarrollo
 npm run dev
+
+# Build para producción
+npm run build
 ```
 
-## 🗄️ Configuración de Supabase
+## 🔧 **Configuración de Turso**
 
-### Paso 1: Crear Proyecto en Supabase
-1. Ve a [supabase.com](https://supabase.com)
-2. Crea una nueva cuenta o inicia sesión
-3. Crea un nuevo proyecto
-4. Copia la URL del proyecto y la clave anónima
+### **1. Crear base de datos Turso:**
+```bash
+# Instalar Turso CLI
+curl -sSfL https://get.tur.so/install.sh | bash
 
-### Paso 2: Configurar la Base de Datos
-1. Ve al editor SQL de tu proyecto Supabase
-2. Ejecuta el siguiente código SQL:
+# Crear base de datos
+turso db create artificial-logika
 
-```sql
--- Enable RLS (Row Level Security)
-alter table if exists public.content enable row level security;
-
--- Create content table
-create table if not exists public.content (
-  id text primary key,
-  user_id uuid references auth.users(id) default auth.uid(),
-  content_type text not null,
-  content_data jsonb not null,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-
--- Create policies
-create policy "Users can manage own content" on public.content
-  for all using (auth.uid() = user_id or user_id is null);
-
--- Create trigger for updated_at
-create or replace function public.handle_updated_at()
-returns trigger as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$ language plpgsql;
-
-create trigger content_updated_at
-  before update on public.content
-  for each row execute function public.handle_updated_at();
+# Obtener URL y token
+turso db show artificial-logika
+turso db tokens create artificial-logika
 ```
 
-### Paso 3: Variables de Entorno
-Añade las variables de entorno en tu archivo `.env`:
-
-```env
-VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+### **2. Configurar variables de entorno:**
+```bash
+# .env.local
+VITE_TURSO_DATABASE_URL=libsql://artificial-logika.turso.io
+VITE_TURSO_AUTH_TOKEN=tu-token-de-turso
 ```
 
-### Paso 4: Configurar en Vercel (Producción)
-1. Ve a tu proyecto en Vercel
-2. Configuración > Environment Variables
-3. Añade las mismas variables que en tu `.env`
-
-## 📁 Estructura del Proyecto
-
-```
-├── components/
-│   ├── admin/           # Componentes del panel de administración
-│   ├── ui/              # Componentes de interfaz (Shadcn)
-│   └── ...              # Componentes de la landing page
-├── contexts/            # React Contexts
-├── db/                  # Configuración de base de datos
-├── pages/               # Páginas principales
-├── styles/              # Estilos globales
-└── hooks/               # Custom hooks
+### **3. Ejecutar esquema SQL:**
+```bash
+turso db shell artificial-logika
+# Copia y pega el contenido de db/turso-schema.sql
 ```
 
-## 🎨 Personalización
+## 📁 **Estructura del Proyecto**
 
-### Colores del Proyecto
-- **Primario**: `#40d9ac` (Verde menta)
-- **Fondo**: `#0e1015` (Azul oscuro)
-- **Cards**: `#1a1d24` (Gris azulado)
+```
+├── /components          # Componentes React
+│   ├── /admin          # Panel de administración
+│   ├── /ui             # Componentes UI base
+│   └── /figma          # Componentes específicos
+├── /contexts           # React Context API
+├── /db                 # Configuración de base de datos
+├── /api                # Endpoints de Vercel
+├── /lib                # Utilidades y helpers
+└── /public             # Assets estáticos
+```
 
-### Tipografía
-- **Fuente principal**: Sora (Google Fonts)
-- **Tamaños responsivos** optimizados para mobile
+## 🎯 **Funcionalidades Principales**
 
-### Filosofía de Diseño
-**"Logic as Aesthetics"** - Cada elemento debe sentirse deliberado, eficiente y elegante.
+### **Admin Panel**
+- Edición en tiempo real del contenido
+- Gestión de secciones (Hero, Services, Company)
+- Sincronización automática con Turso
+- Fallback a IndexedDB local
 
-## 🔧 Sistema de Base de Datos
+### **Contenido Dinámico**
+- Hero section con animaciones
+- Servicios con pricing dinámico
+- Testimonios y casos de éxito
+- Información de contacto editable
 
-### Funcionamiento Híbrido
-1. **Supabase (Principal)**: Si está configurado, se usa como base de datos principal
-2. **IndexedDB (Fallback)**: Se usa automáticamente si Supabase no está disponible
-3. **Sincronización**: Los datos se sincronizan automáticamente entre ambas bases
+### **Performance**
+- Lazy loading de componentes
+- Optimización de imágenes
+- Code splitting automático
+- Cache inteligente
 
-### Gestión de Datos
-- **Auto-guardado**: Los cambios se guardan automáticamente
-- **Backup/Restore**: Exportación e importación de datos
-- **Sin pérdida de datos**: Funciona sin conexión a internet
+## 🌐 **Deployment**
 
-## 🚀 Deploy
+### **Vercel (Recomendado)**
+1. Conectar repositorio a Vercel
+2. Configurar variables de entorno
+3. Deploy automático en cada push
 
-### Vercel (Recomendado)
-1. Conecta tu repositorio de GitHub a Vercel
-2. Configura las variables de entorno en Vercel
-3. Deploy automático con cada push
+### **Variables de Entorno en Vercel:**
+```bash
+VITE_TURSO_DATABASE_URL=libsql://artificial-logika.turso.io
+VITE_TURSO_AUTH_TOKEN=tu-token-de-turso
+```
 
-### Otras Plataformas
-- **Netlify**: Compatible con configuración similar
-- **Railway**: Soporte para bases de datos y hosting
-- **GitHub Pages**: Solo para versión estática
+## 🔍 **Endpoints API**
 
-## 📱 Responsive Design
+- `GET /api/content` - Obtener todo el contenido
+- `POST /api/content` - Crear nuevo contenido
+- `PUT /api/content` - Actualizar contenido
+- `DELETE /api/content` - Eliminar contenido
+- `GET /api/status` - Verificar estado de Turso
 
-- **Mobile First**: Diseño optimizado para móviles
-- **Breakpoints**: 640px, 768px, 1024px
-- **Tipografía adaptativa**: Tamaños que se ajustan automáticamente
-- **Navegación mobile**: Menú hamburguesa optimizado
+## 📊 **Migración a Turso**
 
-## 🔒 Seguridad
+**✅ Completada**: Migración completa de Supabase a Turso para mejor rendimiento y simplicidad.
 
-- **Row Level Security (RLS)**: Activado en Supabase
-- **Validación de datos**: Tanto en frontend como backend
-- **Sanitización**: Contenido limpio y seguro
-- **HTTPS**: Conexiones seguras por defecto
+### **Ventajas de Turso:**
+- ⚡ **Mejor rendimiento** - Más rápido que Supabase
+- 🔧 **Más simple** - Menos configuración
+- 💰 **Más económico** - Mejor plan gratuito
+- 🌍 **Mejor distribución** - Edge locations globales
+- 📱 **SQLite nativo** - Compatibilidad total
 
-## 🤝 Contribución
+## 🤝 **Contribuir**
 
 1. Fork el proyecto
-2. Crea una feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la branch (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+2. Crear feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit cambios (`git commit -m 'Add AmazingFeature'`)
+4. Push al branch (`git push origin feature/AmazingFeature`)
+5. Abrir Pull Request
 
-## 📄 Licencia
+## 📄 **Licencia**
 
-Este proyecto está bajo la Licencia MIT. Ve el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
 
-## 🆘 Soporte
+## 📞 **Contacto**
 
-Si tienes algún problema o pregunta:
-
-1. Revisa la documentación en `/guidelines/Guidelines.md`
-2. Busca en los Issues existentes
-3. Crea un nuevo Issue con detalles del problema
-4. Para soporte urgente: [tu-email@ejemplo.com]
-
-## 🎯 Roadmap
-
-- [ ] Autenticación de usuarios
-- [ ] Dashboard de analytics
-- [ ] Integración con CRM
-- [ ] API REST para integraciones
-- [ ] Sistema de notificaciones
-- [ ] Multi-idioma
+- **Desarrollador**: Armando Beato
+- **Email**: contacto@artificiallogika.com
+- **LinkedIn**: [armando-beato](https://linkedin.com/in/armando-beato)
+- **GitHub**: [artificial-logika](https://github.com/artificial-logika)
 
 ---
 
-**Desarrollado con ❤️ por [Armando Beato Chang](https://github.com/armando-beato)**
+**Desarrollado con ❤️ por Artificial Lógika**
