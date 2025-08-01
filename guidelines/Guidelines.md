@@ -1,422 +1,201 @@
-# Guidelines de Armando Beato
+# 🚀 Guidelines de Desarrollo - Artificial Lógika
 
-## Filosofía de Diseño
-**"Logic as Aesthetics"** - Cada elemento debe sentirse deliberado, eficiente y elegante, con claridad estructural, movimiento con propósito y minimalismo funcional.
+## 📋 **RESUMEN DEL PROYECTO**
 
-## Colores del Proyecto
-- **Primario**: #40d9ac (Verde menta - HSL: 166° 65% 55%)
-- **Fondo**: #0e1015 (Azul oscuro - HSL: 210° 20% 7%) 
-- **Card/Secondary**: #1a1d24 (Gris azulado - HSL: 210° 15% 13%)
-- **Tipografía**: Sora (Google Fonts)
+Landing page moderna con panel de administración completo, migrada a Turso para mejor rendimiento y simplicidad.
 
-## Errores y Conclusiones del Deploy
+### **Stack Actual:**
+- **Frontend**: React 18 + TypeScript + Vite
+- **Styling**: Tailwind CSS v3 + Framer Motion
+- **UI**: Shadcn/ui components
+- **Database**: Turso (SQLite en la nube)
+- **Hosting**: Vercel Serverless Functions
+- **State**: React Context API
 
-### ⚠️ ERRORES RESUELTOS DURANTE EL DESARROLLO
+## 🎯 **ESTRUCTURA DE ARCHIVOS**
 
-#### 1. **Error de TypeScript Build (RESUELTO)**
-- **Problema**: Variables no utilizadas en componentes
-- **Error**: `'content' is declared but its value is never read`
-- **Solución**: Eliminar variables unused en Pricing.tsx y otros componentes
-- **Lección**: Siempre revisar warnings de TypeScript antes del deploy
+### **Archivos Principales (NO TOCAR):**
+```
+App.tsx              # Componente principal
+main.tsx             # Entry point
+vite.config.ts       # Configuración Vite
+package.json          # Dependencias y scripts
+```
 
-#### 2. **Error de Tailwind CSS V4 PostCSS (RESUELTO)**
-- **Problema**: `tailwindcss directly as a PostCSS plugin`
-- **Error**: Tailwind V4 alpha requiere plugin separado `@tailwindcss/postcss`
-- **Solución**: Downgrade a Tailwind V3 estable (`^3.4.0`)
-- **Lección**: NO usar versiones alpha en producción
+### **Directorios Organizados:**
+```
+/components/          # Componentes React
+  /admin/            # Panel de administración
+  /ui/               # Componentes base (Shadcn)
+  /figma/            # Componentes específicos
+/contexts/           # React Context API
+/db/                 # Configuración Turso
+/api/                # Endpoints Vercel
+/lib/                # Utilidades
+/public/             # Assets estáticos
+```
 
-#### 3. **Error de Estilos CSS No Aplicados (RESUELTO)**
-- **Problema**: Los estilos de Tailwind no se aplicaban, solo las animaciones
-- **Causas**:
-  - Configuración incorrecta de PostCSS en vite.config.ts
-  - Sintaxis @theme incompatible con V3
-  - Variables HSL mal definidas
-- **Soluciones**:
-  - Cambiar `css.postcss.plugins: []` por `css.postcss: './postcss.config.js'`
-  - Usar @layer base en lugar de @theme
-  - Importar Tailwind correctamente: `@import "tailwindcss/base"`
+## 🚨 **REGLAS CRÍTICAS**
 
-#### 4. **Error de Colores Incorrectos (RESUELTO)**
-- **Problema**: Los colores se muestran invertidos (verde se ve violeta)
-- **Causa**: Valores HSL incorrectos en variables CSS
-- **Conversión correcta**:
-  - #40d9ac → 166° 65% 55% (no 64 217 172)
-  - #0e1015 → 210° 20% 7% (no 14 16 21)
-- **Solución**: Corregir todas las variables HSL en globals.css
+### **1. NO crear archivos .env locales**
+- ❌ NO crear `.env`, `.env.local`, `.env.example`
+- ✅ Usar SOLO variables de Vercel Dashboard
+- ✅ Variables requeridas: `VITE_TURSO_DATABASE_URL`, `VITE_TURSO_AUTH_TOKEN`
 
-#### 5. **Problemas de Diseño Mobile (RESUELTO)**
-- **Problema**: Texto muy pequeño en móvil, iconos mal alineados
-- **Causa**: Tipografía base demasiado pequeña y grid inapropiado
-- **Soluciones**:
-  - Aumentar font-size base de 14px a 16px (15px en móvil)
-  - Hero title de text-2xl a text-3xl en móvil
-  - Iconos sección "autogestionable" en grid vertical en móvil
-  - Mejorar spacing y alignment mobile-first
+### **2. NO duplicar entry points**
+- ❌ NO crear múltiples `App.tsx` o `main.tsx`
+- ✅ Solo UN `App.tsx` en la raíz
+- ✅ Solo UN `main.tsx` en la raíz
 
-#### 6. **Error de Dependencia Radix UI Sheet (RESUELTO)**
-- **Problema**: `@radix-ui/react-sheet@^0.2.3` no existe en npm registry
-- **Error**: `Error npm 404 No encontrado - GET https://registry.npmjs.org/@radix-ui%2freact-sheet`
-- **Causa**: Dependencia inexistente listada en package.json
-- **Solución**: Eliminar `"@radix-ui/react-sheet": "^0.2.3"` del package.json
-- **Nota**: El componente Sheet usa correctamente `@radix-ui/react-dialog` que sí existe
-- **Lección**: Verificar que todas las dependencias existan antes del deploy
+### **3. NO usar Next.js**
+- ❌ NO instalar `next` o `@next/*`
+- ✅ Usar SOLO Vite para frontend
+- ✅ Endpoints usan sintaxis Next.js pero NO es Next.js
 
-#### 7. **Error de Importaciones Motion React (RESUELTO)**
-- **Problema**: `Cannot find module 'motion/react' or its corresponding type declarations`
-- **Error**: Múltiples archivos (Footer, Hero, Pricing, AdminPage) fallan en build
-- **Causa**: Dependencias conflictivas: `"motion": "^10.18.0"` y `"framer-motion": "^11.0.8"`
-- **Solución**: 
-  - Eliminar `"motion": "^10.18.0"` del package.json
-  - Cambiar `import { motion } from 'motion/react'` por `import { motion } from 'framer-motion'`
-  - Eliminar imports no utilizados en AdminPage.tsx y otros archivos
-- **Lección**: Un solo paquete de animaciones es suficiente, usar framer-motion estable
+## 🔧 **PROCESO DE DESARROLLO**
 
-#### 8. **Error de Archivos Duplicados de Entry Point (RESUELTO)**
-- **Problema**: Conflictos en build por archivos duplicados en diferentes carpetas
-- **Error**: Vite/Vercel se confunde con múltiples entry points (App.tsx en `/` y `/src/`)
-- **Causa**: Estructura de archivos inconsistente con archivos principales en dos ubicaciones
-- **Archivos problemáticos**:
-  - `/App.tsx` (CORRECTO - usar este)
-  - `/main.tsx` (CORRECTO - usar este)
-  - `/src/App.tsx` (DUPLICADO - eliminar)
-  - `/src/main.tsx` (DUPLICADO - eliminar)
-- **Solución**: 
-  - Mantener `/App.tsx` y `/main.tsx` en la raíz como entry points principales
-  - Marcar archivos en `/src/` como eliminados con comentario identificador
-  - Actualizar index.html para que apunte a `/main.tsx` (no `/src/main.tsx`)
-- **Lección**: Mantener estructura de entry points consistente y evitar archivos duplicados
-
-### 🔧 CONFIGURACIONES CRÍTICAS
-
-#### **Variables de Entorno (Solo Vercel)**
+### **1. Desarrollo Local:**
 ```bash
-# ✅ CONFIGURAR ÚNICAMENTE EN VERCEL
-# Vercel Dashboard > Project Settings > Environment Variables
+npm install          # Instalar dependencias
+npm run dev          # Servidor desarrollo
+npm run build        # Build producción
+npm run lint         # Verificar código
+```
 
+### **2. Deploy:**
+```bash
+git add .
+git commit -m "Descripción del cambio"
+git push origin main
+# Vercel deploy automático
+```
+
+### **3. Verificación:**
+- ✅ `npm run build` exitoso
+- ✅ `tsc --noEmit` sin errores
+- ✅ Variables configuradas en Vercel
+- ✅ Admin panel funciona en `/admin`
+
+## 📊 **ARQUITECTURA ACTUAL**
+
+### **Migración Completada: Supabase → Turso**
+
+**✅ CAMBIOS REALIZADOS:**
+- Dependencias: `@supabase/supabase-js` → `@libsql/client`
+- Variables: `VITE_SUPABASE_*` → `VITE_TURSO_*`
+- Endpoints: Actualizados para Turso
+- Componentes: `SupabaseConfig` → `TursoConfig`
+
+**✅ VENTAJAS DE TURSO:**
+- ⚡ Mejor rendimiento
+- 🔧 Configuración más simple
+- 💰 Plan gratuito más generoso
+- 🌍 Mejor distribución global
+
+## 🎨 **GUIDELINES DE DISEÑO**
+
+### **Colores:**
+```css
+--primary: #40d9ac    /* Verde menta */
+--background: #0e1015 /* Azul oscuro */
+--card: #1a1d24      /* Gris azulado */
+```
+
+### **Tipografía:**
+- **Principal**: Sora (Google Fonts)
+- **Responsive**: Tamaños adaptativos
+- **Mobile-first**: Diseño optimizado para móviles
+
+### **Componentes:**
+- Usar Shadcn/ui como base
+- Mantener consistencia visual
+- Animaciones con Framer Motion
+- Accesibilidad incluida
+
+## 🚀 **CONFIGURACIÓN EN VERCEL**
+
+### **Variables Requeridas:**
+```bash
 VITE_TURSO_DATABASE_URL=libsql://artificial-logika.turso.io
 VITE_TURSO_AUTH_TOKEN=tu-token-de-turso
-
-# Variables opcionales
-VITE_ENABLE_ANALYTICS=true
-VITE_ENABLE_SYNC=true
-VITE_DEBUG_DB=false
 ```
 
-#### **package.json**
-```json
-{
-  "dependencies": {
-    // ✅ CORRECTAS - Estas dependencias SÍ existen
-    "@radix-ui/react-dialog": "^1.0.5",
-    "@radix-ui/react-tabs": "^1.0.4",
-    "@radix-ui/react-select": "^2.0.0",
-    "framer-motion": "^11.0.8",  // Para animaciones
-    
-    // ❌ INCORRECTAS - Estas dependencias NO existen o son duplicadas
-    // "@radix-ui/react-sheet": "^0.2.3",  // ELIMINAR
-    // "motion": "^10.18.0",  // ELIMINAR (duplica framer-motion)
-    
-    "tailwindcss": "^3.4.0"  // NO usar V4 alpha
-  }
-}
-```
+### **Configuración:**
+1. Vercel Dashboard → Project Settings
+2. Environment Variables → Add New
+3. Seleccionar: Production, Preview, Development
+4. Redeploy automático
 
-#### **Estructura de Entry Points Correcta**
-```
-/ (raíz del proyecto)
-├── App.tsx          ✅ PRINCIPAL - Entry point de React
-├── main.tsx         ✅ PRINCIPAL - Entry point de Vite
-├── index.html       ✅ Apunta a /main.tsx
-└── src/
-    ├── App.tsx      ❌ DUPLICADO - Eliminar o marcar como eliminado
-    └── main.tsx     ❌ DUPLICADO - Eliminar o marcar como eliminado
-```
+## 🔍 **ENDPOINTS API**
 
-#### **index.html Configuración Correcta**
-```html
-<script type="module" src="/main.tsx"></script>
-<!-- NO /src/main.tsx -->
-```
+### **Disponibles:**
+- `GET /api/content` - Obtener todo
+- `POST /api/content` - Crear
+- `PUT /api/content` - Actualizar
+- `DELETE /api/content` - Eliminar
+- `GET /api/status` - Verificar Turso
 
-#### **Importaciones Motion Correctas**
-```tsx
-// ✅ CORRECTO
-import { motion } from 'framer-motion';
-
-// ❌ INCORRECTO
-import { motion } from 'motion/react';
-```
-
-#### **components/ui/sheet.tsx**
-```tsx
-// ✅ CORRECTO - Sheet usa dialog internamente
-import * as SheetPrimitive from "@radix-ui/react-dialog";
-```
-
-#### **postcss.config.js** 
-```js
-plugins: {
-  tailwindcss: {},  // NO '@tailwindcss/postcss'
-  autoprefixer: {},
-}
-```
-
-#### **vite.config.ts**
-```ts
-css: {
-  postcss: './postcss.config.js',  // NO plugins: []
-}
-// Variables de entorno manejadas automáticamente por Vite
-// Las variables de Vercel están disponibles durante build time
-```
-
-#### **globals.css**
-```css
-@import "tailwindcss/base";     // NO @import "tailwindcss"
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-```
-
-### 📁 ARCHIVOS PROBLEMÁTICOS Y SOLUCIONES
-
-#### **Archivos Duplicados (RESUELTO)**
-- `/src/App.tsx` → Marcado como `// ARCHIVO COMPLETAMENTE ELIMINADO - NO USAR`
-- `/src/main.tsx` → Marcado como `// ARCHIVO COMPLETAMENTE ELIMINADO - NO USAR`
-- **IMPORTANTE**: No eliminar físicamente para evitar confusión, solo marcar como eliminados
-
-#### **Archivos Principales (CORRECTOS)**
-- `/App.tsx` → Entry point principal de React
-- `/main.tsx` → Entry point principal de Vite
-- `/index.html` → Configurado correctamente para apuntar a `/main.tsx`
-
-### 🚀 PROCESO DE DEPLOY CORRECTO
-1. **Configurar variables en Vercel**: VITE_TURSO_DATABASE_URL y VITE_TURSO_AUTH_TOKEN
-2. **Verificar estructura de archivos**: No debe haber duplicados de entry points
-3. **Verificar dependencias**: Revisar que todas las dependencias existan en npm y no haya duplicados
-4. **Verificar imports**: Comprobar que todos los imports sean correctos (framer-motion, no motion/react)
-5. **Verificar TypeScript**: `tsc --noEmit` para eliminar variables no utilizadas
-6. **NO crear archivo .env local**: Solo usar variables de Vercel por seguridad
-7. **Build local**: `npm run build` (REQUIERE variables de Turso para funcionar)
-8. **Deploy Vercel**: Variables de entorno se aplican automáticamente
-
-### 📚 LECCIONES APRENDIDAS
-- **Tailwind V3** es la versión de producción estable
-- **Variables HSL** deben convertirse correctamente desde hex
-- **PostCSS** debe configurarse explícitamente en Vite
-- **Archivos duplicados** en diferentes carpetas causan conflictos de build
-- **Entry points únicos**: Solo debe haber un App.tsx y un main.tsx principales
-- **Dependencias Radix UI**: No todas las combinaciones existen, verificar en npm
-- **Sheet component**: Usa `@radix-ui/react-dialog`, no `@radix-ui/react-sheet`
-- **Motion/Animaciones**: Usar solo `framer-motion`, eliminar paquetes duplicados como `motion`
-- **Imports no utilizados**: TypeScript strict mode requiere eliminar variables y imports no utilizados
-- **Vercel** necesita configuración específica en vercel.json
-
-## Guidelines Técnicas
-
-### Color System
-- Usar variables HSL correctas en formato: `hue saturation% lightness%`
-- Nunca usar valores RGB en variables HSL
-- Verificar conversión hex→HSL con herramientas online
-
-### Mobile First
-- Base: 16px font-size (15px móvil, 14px móviles muy pequeños)
-- Responsive breakpoints: 640px, 768px, 1024px
-- Padding: `mobile-padding` utility class
-
-### Componentes UI y Styling Override
-- Usar shadcn/ui components from `/components/ui`
-- **IMPORTANTE**: Algunos componentes base tienen estilos por defecto (gap, typography)
-- **Siempre sobrescribir explícitamente** los estilos según estas guidelines
-- Ejemplo de override correcto:
-  ```tsx
-  <Button className="text-base font-medium p-4 gap-2">  // Override explícito
-    Texto del botón
-  </Button>
-  ```
-- Personalizar con classes de Tailwind cuando sea necesario
-- Mantener consistencia visual en toda la aplicación
-- **IMPORTANTE**: Verificar que las dependencias Radix UI existan antes de usar
-
-### Typography Override Guidelines
-- **NO usar clases de Tailwind** para font-size, font-weight, o line-height en componentes principales
-- El sistema de tipografía está definido en `globals.css` para HTML elements (h1, h2, h3, h4, p)
-- **Solo override** cuando el usuario específicamente pida cambios tipográficos
-- Usar `mobile-text-balance` para mejor legibilidad en móviles
-
-### Animaciones Personalizadas
-- `animate-float`: Flotación suave para elementos
-- `animate-pulse-glow`: Brillo pulsante para CTAs
-- `animate-neural-pulse`: Efecto neural para backgrounds
-- **Solo usar framer-motion**: `import { motion } from 'framer-motion'`
-
-### Content Management (ACTUALIZADO - API ONLY)
-- Todo el contenido editable a través de EditableContentContext (ACTUALIZADO)
-- Sistema de administración en `/admin` route
-- **ELIMINADO**: Persistencia en IndexedDB
-- **NUEVO**: Persistencia únicamente en Turso vía API endpoints
-- Auto-save mediante fetch() a endpoints `/api/content.ts` y `/api/content-by-type.ts`
-
-### SEO Optimización
-- **Meta tags completos**: Title, description, keywords, robots
-- **Open Graph**: Facebook, LinkedIn con imágenes optimizadas
-- **Twitter Cards**: Summary large image format
-- **Structured Data**: Organization, ProfessionalService, WebSite schemas
-- **Performance**: Preconnect, DNS prefetch, PWA manifest
-- **Sitemap y robots.txt**: Para indexación correcta
-- **Canonical URLs**: Evitar contenido duplicado
-- **Language tags**: es-ES correcto para audiencia argentina
-
-### Dependencias Críticas
-#### ✅ Dependencias que SÍ existen:
-- `@radix-ui/react-dialog`
-- `@radix-ui/react-tabs`
-- `@radix-ui/react-select`
-- `@radix-ui/react-dropdown-menu`
-- `@radix-ui/react-checkbox`
-- `framer-motion` (para animaciones)
-
-#### ❌ Dependencias que NO existen o son problemáticas:
-- `@radix-ui/react-sheet` (usar `@radix-ui/react-dialog`)
-- `motion` (usar `framer-motion`)
-
-### Deploy Checklist Final
-- [ ] **Configurar variables de entorno en Vercel**: VITE_TURSO_DATABASE_URL y VITE_TURSO_AUTH_TOKEN
-- [ ] **NO crear archivo .env local**: Solo usar variables de Vercel por seguridad
-- [ ] **Verificar estructura de archivos**: Solo un App.tsx y main.tsx en la raíz
-- [ ] **Verificar que no hay dependencias inexistentes** en package.json
-- [ ] **Verificar que no hay dependencias duplicadas** (motion vs framer-motion)
-- [ ] **Confirmar archivos duplicados marcados** como eliminados en `/src/`
-- [ ] **Verificar imports correctos** (framer-motion, no motion/react)
-- [ ] **Eliminar variables e imports no utilizados**
-- [ ] **Verificar override de estilos** en componentes base según guidelines
-- [ ] **Build local exitoso**: `npm run build` (REQUIERE variables de Turso configuradas)
-- [ ] **Commit y push a GitHub**
-- [ ] **Deploy automático en Vercel** (variables se aplican automáticamente)
-
-## Estructura de Proyecto Recomendada
-
-```
-/ (raíz)
-├── App.tsx                    # Entry point principal React
-├── main.tsx                   # Entry point principal Vite  
-├── index.html                 # Configurado para /main.tsx
-├── components/                # Componentes React
-├── contexts/                  # React Contexts
-├── pages/                     # Páginas principales
-├── styles/globals.css         # Estilos globales Tailwind V3
-├── guidelines/Guidelines.md   # Este archivo
-└── src/ (NO USAR)            # Archivos duplicados marcados como eliminados
-```
-
-**IMPORTANTE**: Mantener esta estructura para evitar conflictos de build en Vercel/Vite.
-
-## 🚨 MIGRACIÓN TOTAL A TURSO API-ONLY (ENERO 2025)
-
-### CAMBIO ARQUITECTÓNICO RADICAL
-- **ELIMINADO COMPLETAMENTE**: Sistema híbrido (IndexedDB + localStorage + HybridManager)
-- **RAZÓN**: Complejidad excesiva, problemas de sincronización persistentes
-- **NUEVO ENFOQUE**: API-only con Turso como única fuente de verdad
-
-### ARCHIVOS ELIMINADOS/MODIFICADOS
-```
-❌ ELIMINADOS:
-├── /db/ (carpeta completa)
-│   ├── hybridManager.ts
-│   ├── indexedDB.ts  
-│   ├── localStorage.ts
-│   ├── operations.ts
-│   └── tipos.ts
-├── /components/DatabaseManager.tsx (reemplazado con mensaje)
-
-✅ CREADOS:
-├── /api/content.ts (CRUD completo)
-├── /api/content-by-type.ts (operaciones por tipo)
-
-🔄 ACTUALIZADOS:
-├── /contexts/EditableContentContext.tsx (completamente reescrito)
-├── /components/admin/TursoConfig.tsx (simplificado, sin funciones híbridas)
-├── /vercel.json (nodejs22.x, endpoints configurados)
-```
-
-### NUEVA ARQUITECTURA API-ONLY
-
-#### **Endpoints API Creados:**
-1. **`/api/content.ts`**:
-   - `GET /api/content` → Obtener todo el contenido
-   - `POST /api/content` → Crear nuevo contenido
-   - `PUT /api/content` → Actualizar contenido existente  
-   - `DELETE /api/content` → Eliminar contenido
-
-2. **`/api/content-by-type.ts`**:
-   - `GET /api/content-by-type?type=hero` → Contenido por tipo
-   - `POST /api/content-by-type?type=hero` → Crear/actualizar por tipo (upsert)
-
-#### **Context Actualizado:**
-- **`EditableContentContext.tsx`** completamente reescrito
-- **Eliminadas funciones**: `getDatabaseStatus()`, `forceSyncToSupabase()`, `forceSyncFromSupabase()`
-- **Nuevas funciones**: `updateContent()`, `getContent()`, `getAllContent()` usando fetch()
-- **Optimistic updates**: Cambios locales inmediatos + API call en background
-- **Error handling**: Revert automático en caso de fallo de API
-
-#### **Dependencias de Turso:**
+### **Uso en Frontend:**
 ```typescript
-// Solo en endpoints API (server-side)
-import { createClient } from '@libsql/client';
-
-const turso = createClient({
-  url: process.env.VITE_TURSO_DATABASE_URL || '',
-  authToken: process.env.VITE_TURSO_AUTH_TOKEN || ''
-});
+const updateContent = async (type: string, data: any) => {
+  const response = await fetch('/api/content-by-type?' + new URLSearchParams({ type }), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content_data: data })
+  });
+  return response.json();
+};
 ```
 
-### MIGRACIÓN STEP-BY-STEP
+## 🆘 **TROUBLESHOOTING**
 
-#### **Para desarrolladores que tenían el sistema anterior:**
+### **Build Fails:**
+- Verificar TypeScript errors: `tsc --noEmit`
+- Verificar dependencias: `npm install`
+- Verificar estructura de archivos
 
-1. **Limpiar dependencias locales:**
-   ```bash
-   rm -rf /db/
-   # DatabaseManager.tsx → mensaje de eliminación
-   ```
+### **Admin Panel No Carga:**
+- Verificar variables en Vercel
+- Verificar endpoint `/api/status`
+- Verificar conexión a Turso
 
-2. **Verificar variables de entorno en Vercel:**
-   ```bash
-   VITE_TURSO_DATABASE_URL=libsql://artificial-logika.turso.io
-VITE_TURSO_AUTH_TOKEN=tu-token-de-turso
-   ```
+### **Variables No Detectadas:**
+- Verificar nombres exactos en Vercel
+- Verificar que estén en todas las environments
+- Hacer redeploy después de configurar
 
-3. **Verificar tabla en Turso:**
-   ```sql
-   -- Ejecutar en Turso CLI
-   CREATE TABLE IF NOT EXISTS public.content (
-     id text primary key,
-     user_id uuid references auth.users(id) default auth.uid(),
-     content_type text not null,
-     content_data jsonb not null,
-     created_at timestamptz default now(),
-     updated_at timestamptz default now()
-   );
-   ```
+## 📝 **COMMIT MESSAGES**
 
-4. **Testing:**
-   ```bash
-   npm run build  # Debe compilar exitosamente
-   # Verificar que /api/content y /api/content-by-type respondan
-   ```
+### **Formato:**
+```bash
+git commit -m "Type: Descripción breve"
 
-### VENTAJAS DE LA NUEVA ARQUITECTURA
+# Ejemplos:
+git commit -m "Fix: Corregir error de TypeScript"
+git commit -m "Feat: Agregar nueva sección"
+git commit -m "Update: Migrar a Turso"
+git commit -m "Style: Mejorar diseño responsive"
+```
 
-✅ **Simplicidad**: Una sola fuente de verdad (Turso)
-✅ **Confiabilidad**: Sin problemas de sincronización
-✅ **Mantenibilidad**: Código más limpio y comprensible  
-✅ **Escalabilidad**: API REST estándar
-✅ **Testing**: Endpoints independientes fáciles de probar
+### **Tipos:**
+- `Fix`: Corrección de bugs
+- `Feat`: Nueva funcionalidad
+- `Update`: Actualización de dependencias
+- `Style`: Cambios de diseño
+- `Refactor`: Mejoras de código
+- `Docs`: Documentación
 
-❌ **Desventajas aceptadas**: Requiere conexión a internet (no funciona offline)
+## ✅ **CHECKLIST FINAL**
 
-### LECCIÓN CRÍTICA
-**Los sistemas híbridos aumentan la complejidad exponencialmente.** 
-Para aplicaciones que requieren persistencia, es mejor elegir:
-- **API-only + cache inteligente** (nuestra elección)
-- **Offline-first completo** (más complejo pero factible)
-- **Evitar híbridos** que prometen "lo mejor de ambos mundos"
+Antes de hacer commit:
+- [ ] `npm run build` exitoso
+- [ ] `tsc --noEmit` sin errores
+- [ ] Admin panel funciona
+- [ ] Variables configuradas en Vercel
+- [ ] Código limpio y comentado
+- [ ] Commit message descriptivo
+
+---
+
+**Última actualización**: Agosto 2024
+**Estado**: ✅ Migración a Turso completada

@@ -14,7 +14,7 @@ const HeroTab = lazy(() => import('../components/admin/HeroTab'));
 const ServicesTab = lazy(() => import('../components/admin/ServicesTab'));
 const PricingTab = lazy(() => import('../components/admin/PricingTab'));
 const ProjectsTab = lazy(() => import('../components/admin/ProjectsTab'));
-const SupabaseConfig = lazy(() => import('../components/admin/SupabaseConfig'));
+const TursoConfig = lazy(() => import('../components/admin/TursoConfig'));
 
 // Import constants
 import { adminTabs } from '../components/admin/constants';
@@ -154,7 +154,7 @@ const AdminPage: React.FC = () => {
             </TabsContent>
 
             <TabsContent value="database">
-              <SupabaseConfig />
+              <TursoConfig />
             </TabsContent>
 
             <TabsContent value="settings">

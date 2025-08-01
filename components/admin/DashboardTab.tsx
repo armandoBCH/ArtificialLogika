@@ -25,13 +25,13 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
   
   // Verificar si Supabase está configurado (a través del estado de error)
   // En producción las variables de entorno no están disponibles en el cliente
-  const supabaseConfigured = !error || error.includes('demo');
+  const tursoConfigured = !error || error.includes('demo');
   
   // Status simplificado para la nueva arquitectura API-only
   const dbStatus = {
-    provider: supabaseConfigured ? 'supabase' : 'offline',
-    initialized: supabaseConfigured && !error,
-    connected: supabaseConfigured && !error && isOnline
+          provider: tursoConfigured ? 'turso' : 'offline',
+      initialized: tursoConfigured && !error,
+      connected: tursoConfigured && !error && isOnline
   };
 
   return (
@@ -87,9 +87,9 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Supabase</span>
-              <span className={supabaseConfigured ? "text-green-400" : "text-yellow-400"}>
-                {supabaseConfigured ? 'Configurado' : 'No configurado'}
+                              <span className="text-muted-foreground">Turso</span>
+                              <span className={tursoConfigured ? "text-green-400" : "text-yellow-400"}>
+                  {tursoConfigured ? 'Configurado' : 'No configurado'}
               </span>
             </div>
             <div className="flex justify-between text-sm">
@@ -99,7 +99,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
               </span>
             </div>
           </div>
-          {!supabaseConfigured && (
+                          {!tursoConfigured && (
             <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
               <p className="text-xs text-yellow-400 mb-2">
                 ⚠️ Sin Supabase configurado. API-only requiere configuración:

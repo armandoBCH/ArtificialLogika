@@ -41,7 +41,7 @@ export default async function handler(request: Request) {
         const contentItems = result.rows.map(row => ({
           id: row.id,
           content_type: row.content_type,
-          content_data: JSON.parse(row.content_data),
+          content_data: JSON.parse(row.content_data as string),
           created_at: row.created_at,
           updated_at: row.updated_at
         }));

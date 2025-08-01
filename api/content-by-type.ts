@@ -1,9 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL || '',
-  process.env.VITE_SUPABASE_ANON_KEY || ''
-);
+import { turso } from '../db/turso';
 
 export default async function handler(request: Request) {
   const method = request.method;
@@ -21,14 +16,24 @@ export default async function handler(request: Request) {
     switch (method) {
       case 'GET': {
         // Obtener contenido por tipo
-        const { data: getTypeData, error: getTypeError } = await supabase
-          .from('content')
-          .select('*')
-          .eq('content_type', type)
-          .order('created_at', { ascending: false });
+        const result = await turso.execute({
+          sql: 'SELECT * FROM content WHERE content_type = ? ORDER BY created_at DESC',
+          args: [type]
+        });
         
-        if (getTypeError) throw getTypeError;
-        return new Response(JSON.stringify(getTypeData || []), {
+        if (!result.rows) {
+          throw new Error('Failed to fetch data from Turso');
+        }
+        
+        const contentItems = result.rows.map(row => ({
+          id: row.id,
+          content_type: row.content_type,
+          content_data: JSON.parse(row.content_data as string),
+          created_at: row.created_at,
+          updated_at: row.updated_at
+        }));
+        
+        return new Response(JSON.stringify(contentItems), {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
@@ -38,22 +43,19 @@ export default async function handler(request: Request) {
         const body = await request.json();
         const { content_data, id } = body;
         const contentId = id || `${type}-${Date.now()}`;
+        const contentData = JSON.stringify(content_data);
         
-        // Usar upsert para crear o actualizar
-        const { data: upsertData, error: upsertError } = await supabase
-          .from('content')
-          .upsert({
-            id: contentId,
-            content_type: type,
-            content_data,
-            user_id: null,
-            updated_at: new Date().toISOString()
-          })
-          .select()
-          .single();
-
-        if (upsertError) throw upsertError;
-        return new Response(JSON.stringify(upsertData), {
+        // Usar INSERT OR REPLACE para upsert
+        const result = await turso.execute({
+          sql: 'INSERT OR REPLACE INTO content (id, content_type, content_data, updated_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)',
+          args: [contentId, type, contentData]
+        });
+        
+        if (!result.rowsAffected || result.rowsAffected === 0) {
+          throw new Error('Failed to insert/update data in Turso');
+        }
+        
+        return new Response(JSON.stringify({ id: contentId, success: true }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
