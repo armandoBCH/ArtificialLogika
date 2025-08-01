@@ -151,7 +151,7 @@
   # Archivo .nvmrc (raíz del proyecto)
   18.19.0
   ```
-- **Lección**: Usar `.nvmrc` para especificar versión de Node.js en Vercel, no vercel.json
+- **Lección**: ~~Usar `.nvmrc` para especificar versión de Node.js en Vercel~~ INCORRECTO
 
 #### 13. **Error de Schema vercel.json nodeVersion (RESUELTO)**
 - **Problema**: `should NOT have additional property 'nodeVersion'`
@@ -161,6 +161,41 @@
   - Remover `"nodeVersion": "18.x"` del vercel.json
   - Usar archivo `.nvmrc` en su lugar para especificar la versión
 - **Lección**: Verificar el schema oficial de vercel.json antes de añadir propiedades
+
+#### 14. **Error de Node.js Version Persistente (CRÍTICO)**
+- **Problema**: ~~Error persiste: `Found invalid Node.js Version: "22.x". Please set Node.js Version to 18.x`~~ OBSOLETO
+- **Nuevo problema**: `Node.js version 18.x is deprecated. Please set Node.js Version to 22.x`
+- **Causa**: Vercel deprecó Node.js 18.x a partir del 2025-09-01
+- **Solución ACTUALIZADA 2025**:
+  - Ir a Vercel Dashboard → Proyecto → Settings → General
+  - En "Node.js Version" seleccionar manualmente **"22.x"** (no 18.x)
+  - Actualizar `"engines": { "node": "22.x" }` en package.json
+  - `@vercel/node@3.2.0` es compatible con Node.js 22.x
+- **Lección**: Configuraciones de runtime van en el panel de Vercel, no en código
+
+#### 15. **Vulnerabilidades de Seguridad NPM (RESUELTO)**
+- **Problema**: 5 vulnerabilidades (3 moderate, 2 high) en dependencias
+- **Vulnerabilidades detectadas**:
+  - `esbuild <=0.24.2` - Moderate (GHSA-67mh-4wv8-2f99)
+  - `path-to-regexp 4.0.0 - 6.2.2` - High (GHSA-9wv6-86v2-598j)
+  - `undici <=5.28.5` - Moderate (GHSA-c76h-2ccp-4975, GHSA-cxrh-j4jr-qwg3)
+- **Solución**:
+  - Actualizar `@vercel/node` de `^3.0.7` a `^3.2.0`
+  - Esto resuelve automáticamente las vulnerabilidades en dependencias transitivas
+  - Actualizar vercel.json para usar `@vercel/node@3.2.0`
+- **Lección**: Mantener dependencias actualizadas regularmente para seguridad
+
+#### 16. **Deprecación de Node.js 18.x en Vercel (CRÍTICO - 2025)**
+- **Problema**: `Node.js version 18.x is deprecated. Deployments created on or after 2025-09-01 will fail to build. Please set Node.js Version to 22.x`
+- **Cambio de política**: Vercel deprecó Node.js 18.x a partir del 1 de septiembre de 2025
+- **Error**: Las funciones serverless fallan con versiones deprecadas de Node.js
+- **Migración REQUERIDA**:
+  - Cambiar `"engines": { "node": "18.x" }` a `"engines": { "node": "22.x" }` en package.json
+  - Configurar en Vercel Dashboard: Settings > General > Node.js Version → **22.x**
+  - `@vercel/node@3.2.0` es compatible con Node.js 22.x (no requiere actualización)
+  - Todas las dependencias actuales son compatibles con Node.js 22.x
+- **Testing**: Verificar que todas las funciones serverless funcionen correctamente
+- **Lección**: Estar atento a las deprecaciones de runtime en plataformas cloud
 
 ### 🏗️ ARQUITECTURA DE ENDPOINTS Y CRUD
 
@@ -379,6 +414,9 @@ VITE_DEBUG_DB=false
 #### **package.json**
 ```json
 {
+  "engines": {
+    "node": "22.x"  // ✅ Actualizado 2025 - Documentación para Vercel
+  },
   "dependencies": {
     // ✅ CORRECTAS - Estas dependencias SÍ existen
     "@radix-ui/react-dialog": "^1.0.5",
@@ -393,7 +431,7 @@ VITE_DEBUG_DB=false
     "tailwindcss": "^3.4.0"  // NO usar V4 alpha
   },
   "devDependencies": {
-    "@vercel/node": "^3.0.7",  // ✅ NECESARIO para endpoints serverless
+    "@vercel/node": "^3.2.0",  // ✅ ACTUALIZADO para resolver vulnerabilidades
     // ... otras dependencias
   }
 }
@@ -416,24 +454,28 @@ VITE_DEBUG_DB=false
   ],
   "functions": {
     "api/check-env.ts": {
-      "runtime": "@vercel/node@3.0.7"
+      "runtime": "@vercel/node@3.2.0"
     }
   }
 }
 ```
 
-#### **.nvmrc**
-```
-18.19.0
+#### **package.json engines**
+```json
+{
+  "engines": {
+    "node": "22.x"
+  }
+}
 ```
 
 #### **Estructura de Entry Points Correcta**
 ```
 / (raíz del proyecto)
-├── .nvmrc           ✅ Especifica Node.js 18.19.0 para Vercel
 ├── App.tsx          ✅ PRINCIPAL - Entry point de React
 ├── main.tsx         ✅ PRINCIPAL - Entry point de Vite
 ├── index.html       ✅ Apunta a /main.tsx
+├── package.json     ✅ Con engines: { "node": "22.x" } (2025 update)
 ├── api/
 │   └── check-env.ts ✅ Único endpoint - Verificación de variables de entorno
 └── src/
@@ -498,6 +540,77 @@ css: {
 - `/main.tsx` → Entry point principal de Vite
 - `/index.html` → Configurado correctamente para apuntar a `/main.tsx`
 
+### ⚙️ CONFIGURACIÓN CRÍTICA DE VERCEL
+
+#### **🚨 MIGRACIÓN URGENTE A NODE.JS 22.X (2025)**
+
+**CAMBIO CRÍTICO**: Vercel deprecó Node.js 18.x efectivo desde el 1 de septiembre de 2025.
+
+**Todos los proyectos DEBEN migrar a Node.js 22.x o fallarán en el build.**
+
+**✅ MIGRACIÓN COMPLETA REQUERIDA:**
+
+1. **Actualizar package.json**:
+   ```json
+   {
+     "engines": {
+       "node": "22.x"  // Cambiar desde "18.x"
+     }
+   }
+   ```
+
+2. **Configurar Vercel Dashboard**:
+   - Ir a https://vercel.com/dashboard
+   - Proyecto → Settings → General → Node.js Version
+   - Cambiar de "18.x" a **"22.x"**
+   - Guardar configuración
+
+3. **Verificar compatibilidad**:
+   - `@vercel/node@3.2.0` ✅ Compatible con Node.js 22.x
+   - Todas las dependencias actuales ✅ Compatibles
+   - No se requieren cambios en el código
+
+4. **Testing post-migración**:
+   - Verificar que el endpoint `/api/check-env.ts` funcione
+   - Confirmar que el build de Vite se complete
+   - Validar funcionalidad de Supabase
+
+**💀 CONSECUENCIAS DE NO MIGRAR:**
+- Builds fallarán después del 2025-09-01
+- Deployments existentes seguirán funcionando
+- Nuevos deployments serán imposibles
+
+
+#### **🔧 Cómo resolver el error de Node.js Version definitivamente:**
+
+**Error**: `Node.js version 18.x is deprecated. Please set Node.js Version to 22.x`
+
+**❌ LO QUE NO FUNCIONA:**
+- Archivo `.nvmrc` (es para desarrollo local con nvm, no para Vercel)
+- `"nodeVersion"` en vercel.json (propiedad inválida)
+- Variables de entorno (no controlan runtime)
+
+**✅ SOLUCIÓN DEFINITIVA:**
+1. **Ir al Panel de Vercel**:
+   - Abrir https://vercel.com/dashboard
+   - Seleccionar el proyecto "artificial-logika-landing"
+   - Ir a "Settings" (en el menú lateral)
+   - Ir a "General" (primera pestaña)
+
+2. **Configurar Node.js Version**:
+   - Buscar la sección "Node.js Version" 
+   - Cambiar de "18.x" a **"22.x"** (actualización 2025)
+   - Hacer clic en "Save"
+
+3. **Redesplegar**:
+   - Ir a "Deployments" 
+   - Hacer clic en "Redeploy" en el último deployment
+   - O hacer un nuevo commit para triggerar redeploy automático
+
+**📝 Documentación en código:**
+- Agregar `"engines": { "node": "22.x" }` al package.json (actualización 2025)
+- Esto NO controla Vercel, solo documenta la versión esperada
+
 ### 🚀 PROCESO DE DEPLOY CORRECTO
 1. **Configurar variables en Vercel**: VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY
 2. **Verificar estructura de archivos**: No debe haber duplicados de entry points
@@ -520,7 +633,7 @@ css: {
 - **Imports no utilizados**: TypeScript strict mode requiere eliminar variables y imports no utilizados
 - **Vercel** necesita configuración específica en vercel.json
 - **Sintaxis correcta de Vercel**: Usar `@vercel/node@3.0.7` no `nodejs18.x` para funciones serverless
-- **Node.js Version**: Usar archivo `.nvmrc` con `18.19.0`, no `nodeVersion` en vercel.json
+- **Node.js Version**: Configurar en Vercel Dashboard > Settings > General → **22.x** (2025 update)
 - **Endpoints API**: Solo necesario para verificación de variables de entorno, no para CRUD
 
 ## Guidelines Técnicas
@@ -600,7 +713,9 @@ css: {
 - [ ] **Eliminar variables e imports no utilizados**
 - [ ] **Verificar override de estilos** en componentes base según guidelines
 - [ ] **Configurar vercel.json con functions**: Usar runtime `@vercel/node@3.0.7` (no nodeVersion)
-- [ ] **Crear archivo .nvmrc**: Con `18.19.0` para especificar versión de Node.js
+- [ ] **CRÍTICO: Configurar Node.js en Vercel Dashboard**: Settings > General > Node.js Version → **22.x** (2025 update - NO se puede hacer desde código)
+- [ ] **Migrar a Node.js 22.x**: Actualizar engines en package.json y configuración de Vercel (REQUERIDO 2025)
+- [ ] **Verificar @vercel/node**: Versión `^3.2.0` es compatible con Node.js 22.x
 - [ ] **Añadir @vercel/node a devDependencies**: Necesario para tipos TypeScript
 - [ ] **Verificar endpoint /api funcional**: Necesario para verificación de variables de entorno
 - [ ] **Build local exitoso**: `npm run build` (funciona con IndexedDB sin variables)

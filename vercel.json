@@ -41,7 +41,7 @@
   ],
   "functions": {
     "api/check-env.ts": {
-      "runtime": "@vercel/node@3.0.7"
+      "runtime": "@vercel/node@3.2.0"
     }
   }
 }
