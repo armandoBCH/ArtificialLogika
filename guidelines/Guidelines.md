@@ -86,6 +86,22 @@
   - Actualizar index.html para que apunte a `/main.tsx` (no `/src/main.tsx`)
 - **Lección**: Mantener estructura de entry points consistente y evitar archivos duplicados
 
+#### 9. **Error de Variables de Entorno import.meta.env (RESUELTO)**
+- **Problema**: `⚠️ import.meta.env is not available. Using fallback for VITE_SUPABASE_URL`
+- **Error**: Variables de entorno no disponibles en desarrollo local causando warnings en consola
+- **Causa**: Acceso no defensivo a `import.meta.env` sin validación de disponibilidad
+- **Solución**:
+  - Implementar función `getImportMeta()` con manejo de errores defensivo
+  - Silenciar warnings en modo normal, solo mostrar en modo debug (`VITE_DEBUG_DB=true`)
+  - Fallback silencioso a IndexedDB cuando las variables no están disponibles
+  - Acceso seguro a `import.meta.env` con verificación de disponibilidad
+- **Configuración mejorada**:
+  - Variables de entorno manejadas automáticamente por Vite
+  - Desarrollo local: funciona perfectamente sin variables (IndexedDB)
+  - Producción Vercel: variables aplicadas automáticamente durante build
+  - Sistema híbrido robusto que nunca falla
+- **Lección**: Siempre usar acceso defensivo a objetos globales como `import.meta.env`
+
 ### 🔧 CONFIGURACIONES CRÍTICAS
 
 #### **Variables de Entorno (Solo Vercel)**

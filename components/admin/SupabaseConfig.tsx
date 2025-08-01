@@ -41,10 +41,23 @@ const SupabaseConfig: React.FC = () => {
   const [showEnvVars, setShowEnvVars] = useState(false);
   const [importText, setImportText] = useState('');
   const [showImport, setShowImport] = useState(false);
+  const [serverEnvCheck, setServerEnvCheck] = useState<any>(null);
 
   useEffect(() => {
     refreshStatus();
+    checkServerEnvironment();
   }, []);
+
+  const checkServerEnvironment = async () => {
+    try {
+      const response = await fetch('/api/check-env');
+      const data = await response.json();
+      setServerEnvCheck(data);
+    } catch (error) {
+      console.error('Failed to check server environment:', error);
+      setServerEnvCheck({ error: 'Failed to connect to API endpoint' });
+    }
+  };
 
   const refreshStatus = () => {
     setStatus(getDatabaseStatus());
@@ -166,6 +179,108 @@ const SupabaseConfig: React.FC = () => {
             <p className="text-sm text-muted-foreground">
               Configuración y sincronización de Supabase
             </p>
+          </div>
+        </div>
+
+        {/* Debug Panel - Temporal para diagnosticar el problema */}
+        <div className="p-4 bg-card/30 rounded-lg border border-primary/20 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm font-medium text-primary">🔍 Debug - Variables de Entorno (Temporal)</h4>
+            <Button
+              onClick={checkServerEnvironment}
+              variant="ghost"
+              size="sm"
+              className="text-xs"
+            >
+              <RefreshCw className="w-3 h-3 mr-1" />
+              Verificar servidor
+            </Button>
+          </div>
+          <div className="text-xs space-y-2 font-mono">
+            {(() => {
+              // Safely check if import.meta.env is available
+              const getEnv = () => {
+                try {
+                  return (import.meta as any)?.env || {};
+                } catch {
+                  return {};
+                }
+              };
+              
+              const env = getEnv();
+              const metaEnvAvailable = Object.keys(env).length > 0;
+              
+              return (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-white">VITE_SUPABASE_URL:</div>
+                      <div className={env.VITE_SUPABASE_URL ? 'text-green-400' : 'text-red-400'}>
+                        {env.VITE_SUPABASE_URL ? '✅ Disponible' : '❌ No encontrada'}
+                      </div>
+                      {env.VITE_SUPABASE_URL && (
+                        <div className="text-gray-400 truncate">
+                          {env.VITE_SUPABASE_URL.substring(0, 50)}...
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div>
+                      <div className="text-white">VITE_SUPABASE_ANON_KEY:</div>
+                      <div className={env.VITE_SUPABASE_ANON_KEY ? 'text-green-400' : 'text-red-400'}>
+                        {env.VITE_SUPABASE_ANON_KEY ? '✅ Disponible' : '❌ No encontrada'}
+                      </div>
+                      {env.VITE_SUPABASE_ANON_KEY && (
+                        <div className="text-gray-400">
+                          Longitud: {env.VITE_SUPABASE_ANON_KEY.length} caracteres
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="pt-2 border-t border-border/30">
+                    <div className="text-white">Información del entorno (Cliente):</div>
+                    <div className={metaEnvAvailable ? 'text-green-400' : 'text-red-400'}>
+                      import.meta.env: {metaEnvAvailable ? '✅ Disponible' : '❌ No disponible'}
+                    </div>
+                    <div className="text-gray-400">NODE_ENV: {env.NODE_ENV || 'undefined'}</div>
+                    <div className="text-gray-400">MODE: {env.MODE || 'undefined'}</div>
+                    <div className="text-gray-400">
+                      Variables VITE_: {Object.keys(env).filter(k => k.startsWith('VITE_')).join(', ') || 'Ninguna'}
+                    </div>
+                    <div className="text-gray-400">
+                      Total variables: {Object.keys(env).length}
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+            
+            {serverEnvCheck && (
+              <div className="pt-2 border-t border-border/30">
+                <div className="text-white">Información del entorno (Servidor):</div>
+                {serverEnvCheck.error ? (
+                  <div className="text-red-400">Error: {serverEnvCheck.error}</div>
+                ) : (
+                  <>
+                    <div className="text-gray-400">Vercel ENV: {serverEnvCheck.vercel?.env || 'unknown'}</div>
+                    <div className="text-gray-400">Vercel Region: {serverEnvCheck.vercel?.region || 'unknown'}</div>
+                    <div className={serverEnvCheck.supabase?.urlConfigured ? 'text-green-400' : 'text-red-400'}>
+                      URL en servidor: {serverEnvCheck.supabase?.urlConfigured ? '✅ Configurada' : '❌ No encontrada'}
+                    </div>
+                    <div className={serverEnvCheck.supabase?.keyConfigured ? 'text-green-400' : 'text-red-400'}>
+                      Key en servidor: {serverEnvCheck.supabase?.keyConfigured ? '✅ Configurada' : '❌ No encontrada'}
+                    </div>
+                    {serverEnvCheck.supabase?.urlPrefix && (
+                      <div className="text-gray-400">URL prefix: {serverEnvCheck.supabase.urlPrefix}</div>
+                    )}
+                    {serverEnvCheck.supabase?.keyLength > 0 && (
+                      <div className="text-gray-400">Key length: {serverEnvCheck.supabase.keyLength}</div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
