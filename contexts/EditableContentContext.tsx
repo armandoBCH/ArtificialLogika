@@ -337,9 +337,9 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
   const checkAPIAvailability = async (): Promise<boolean> => {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos timeout
+      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 segundos timeout
 
-      const response = await fetch('/api/check-env', {
+      const response = await fetch('/api/status', {
         signal: controller.signal
       });
       
@@ -348,7 +348,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       if (!response.ok) return false;
       
       const envStatus = await response.json();
-      return envStatus.supabase?.urlConfigured && envStatus.supabase?.keyConfigured;
+      return envStatus.supabase?.configured || false;
     } catch (error) {
       console.log('API availability check failed:', error);
       return false;

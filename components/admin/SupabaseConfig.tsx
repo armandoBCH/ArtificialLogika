@@ -36,7 +36,7 @@ const SupabaseConfig: React.FC = () => {
   const checkServerEnvironment = async () => {
     try {
       console.log('🔍 Checking server environment...');
-      const response = await fetch('/api/check-env');
+      const response = await fetch('/api/status');
       const data = await response.json();
       console.log('📊 Server environment response:', data);
       setServerEnvCheck(data);
