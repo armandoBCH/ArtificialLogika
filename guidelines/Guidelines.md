@@ -107,23 +107,36 @@
 - **Error**: Vercel build falla por configuración incorrecta de funciones serverless en vercel.json
 - **Causa**: 
   - Configuración `"runtime": "nodejs18.x"` incorrecta en vercel.json
-  - Carpeta `/api` con archivo serverless innecesario para proyecto frontend puro
-  - Vercel detecta proyecto como fullstack cuando es solo SPA
+  - Sintaxis de runtime incorrecta para la versión actual de Vercel
 - **Solución**:
-  - Eliminar sección `"functions"` completa del vercel.json
-  - Marcar archivos de `/api` como eliminados (ya no necesarios con sistema híbrido)
-  - Configurar vercel.json solo para SPA (Single Page Application)
-  - Añadir headers de seguridad adicionales
+  - Usar runtime correcto: `"@vercel/node@3.0.7"` en lugar de `"nodejs18.x"`
+  - Añadir dependencia `@vercel/node` al package.json como devDependency
+  - Configurar CORS correctamente en el endpoint de API
 - **Configuración correcta vercel.json**:
   ```json
   {
-    "buildCommand": "npm run build",
-    "outputDirectory": "dist", 
-    "framework": "vite",
-    "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+    "functions": {
+      "api/check-env.ts": {
+        "runtime": "@vercel/node@3.0.7"
+      }
+    }
   }
   ```
-- **Lección**: Para proyectos frontend puros, no incluir configuración de funciones serverless
+- **Lección**: Usar la sintaxis correcta de runtime de Vercel y dependencias apropiadas
+
+#### 11. **Error de API Endpoint Failed to Connect (RESUELTO)**
+- **Problema**: `Error: failed to connect to API endpoint`
+- **Error**: La aplicación falla al intentar conectarse al endpoint de verificación de variables de entorno
+- **Causa**: 
+  - Endpoint `/api/check-env.ts` eliminado incorrectamente
+  - La aplicación SÍ requiere el endpoint para verificar estado del servidor
+  - Sistema híbrido necesita validar disponibilidad de Supabase desde el servidor
+- **Solución**:
+  - Restaurar endpoint `/api/check-env.ts` con sintaxis correcta de Vercel
+  - Configurar CORS apropiadamente para llamadas desde frontend
+  - Añadir manejo de errores robusto y logging
+  - Usar tipos TypeScript correctos: `VercelRequest, VercelResponse`
+- **Lección**: El sistema híbrido SÍ necesita endpoints serverless para validación completa
 
 ### 🔧 CONFIGURACIONES CRÍTICAS
 
@@ -156,6 +169,10 @@ VITE_DEBUG_DB=false
     // "motion": "^10.18.0",  // ELIMINAR (duplica framer-motion)
     
     "tailwindcss": "^3.4.0"  // NO usar V4 alpha
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.0.7",  // ✅ NECESARIO para endpoints serverless
+    // ... otras dependencias
   }
 }
 ```
@@ -174,8 +191,12 @@ VITE_DEBUG_DB=false
       "source": "/assets/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     }
-  ]
-  // ❌ NO incluir sección "functions" para proyecto SPA
+  ],
+  "functions": {
+    "api/check-env.ts": {
+      "runtime": "@vercel/node@3.0.7"
+    }
+  }
 }
 ```
 
@@ -268,6 +289,8 @@ css: {
 - **Motion/Animaciones**: Usar solo `framer-motion`, eliminar paquetes duplicados como `motion`
 - **Imports no utilizados**: TypeScript strict mode requiere eliminar variables y imports no utilizados
 - **Vercel** necesita configuración específica en vercel.json
+- **Sintaxis correcta de Vercel**: Usar `@vercel/node@3.0.7` no `nodejs18.x` para funciones serverless
+- **Endpoints API necesarios**: El sistema híbrido SÍ requiere endpoints para verificación completa
 
 ## Guidelines Técnicas
 
@@ -345,8 +368,9 @@ css: {
 - [ ] **Verificar imports correctos** (framer-motion, no motion/react)
 - [ ] **Eliminar variables e imports no utilizados**
 - [ ] **Verificar override de estilos** en componentes base según guidelines
-- [ ] **Verificar vercel.json**: Sin configuración de funciones para proyecto SPA
-- [ ] **Confirmar carpeta /api marcada como eliminada**: No necesaria con sistema híbrido
+- [ ] **Configurar vercel.json con functions**: Usar runtime `@vercel/node@3.0.7` para API
+- [ ] **Añadir @vercel/node a devDependencies**: Necesario para tipos TypeScript
+- [ ] **Verificar endpoint /api funcional**: Necesario para verificación de variables de entorno
 - [ ] **Build local exitoso**: `npm run build` (funciona con IndexedDB sin variables)
 - [ ] **Commit y push a GitHub**
 - [ ] **Deploy automático en Vercel** (variables se aplican automáticamente)
