@@ -419,7 +419,6 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       setError(null);
       
       // Actualizar estado local inmediatamente (optimistic update)
-      const previousContent = content;
       setContent(prev => ({
         ...prev,
         [type]: data

@@ -141,7 +141,9 @@ const SupabaseConfig: React.FC = () => {
     }
   };
 
-  const hasSupabaseEnv = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
+  // Las variables de entorno no están disponibles en el cliente en build de producción
+  // Verificamos a través del API endpoint en su lugar
+  const hasSupabaseEnv = !!serverEnvCheck?.supabase?.urlConfigured;
   const isSupabaseWorking = hasSupabaseEnv && !error && serverEnvCheck?.supabase?.urlConfigured;
 
   return (

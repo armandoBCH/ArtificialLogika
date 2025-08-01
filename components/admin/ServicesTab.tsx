@@ -9,10 +9,31 @@ import { Badge } from '../ui/badge';
 import { Plus, Trash2, Star } from 'lucide-react';
 import { useEditableContent } from '../../contexts/EditableContentContext';
 
+// Tipos para los servicios
+interface ServiceFeature {
+  [key: string]: any;
+}
+
+interface Service {
+  id?: string;
+  title: string;
+  description: string;
+  features: string[];
+  price?: string;
+  originalPrice?: string;
+  popular?: boolean;
+  roi: string;
+  businessValue: string;
+  icon: string;
+}
+
 const ServicesTab: React.FC = () => {
   const { content, updateContent } = useEditableContent();
 
-  const handleSave = async (section: keyof typeof content, data: any) => {
+  // Obtener servicios como array tipado
+  const services = (content.services as Service[]) || [];
+
+  const handleSave = async (section: keyof typeof content, data: Service[]) => {
     try {
       await updateContent(section, data);
     } catch (error) {
@@ -21,7 +42,7 @@ const ServicesTab: React.FC = () => {
   };
 
   const addNewService = () => {
-    const newService = {
+    const newService: Service = {
       title: "Nuevo Servicio",
       description: "Descripción del servicio",
       features: ["Característica 1", "Característica 2", "Característica 3"],
@@ -33,35 +54,35 @@ const ServicesTab: React.FC = () => {
       icon: "Globe"
     };
     
-    const updatedServices = [...content.services, newService];
+    const updatedServices = [...services, newService];
     handleSave('services', updatedServices);
   };
 
   const removeService = (index: number) => {
-    const updatedServices = content.services.filter((_, i) => i !== index);
+    const updatedServices = services.filter((_: Service, i: number) => i !== index);
     handleSave('services', updatedServices);
   };
 
   const updateService = (index: number, field: string, value: any) => {
-    const updatedServices = [...content.services];
+    const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], [field]: value };
     handleSave('services', updatedServices);
   };
 
   const addFeatureToService = (serviceIndex: number) => {
-    const updatedServices = [...content.services];
+    const updatedServices = [...services];
     updatedServices[serviceIndex].features.push("Nueva característica");
     handleSave('services', updatedServices);
   };
 
   const removeFeatureFromService = (serviceIndex: number, featureIndex: number) => {
-    const updatedServices = [...content.services];
-    updatedServices[serviceIndex].features = updatedServices[serviceIndex].features.filter((_, i) => i !== featureIndex);
+    const updatedServices = [...services];
+    updatedServices[serviceIndex].features = updatedServices[serviceIndex].features.filter((_: string, i: number) => i !== featureIndex);
     handleSave('services', updatedServices);
   };
 
   const updateServiceFeature = (serviceIndex: number, featureIndex: number, value: string) => {
-    const updatedServices = [...content.services];
+    const updatedServices = [...services];
     updatedServices[serviceIndex].features[featureIndex] = value;
     handleSave('services', updatedServices);
   };
@@ -81,7 +102,7 @@ const ServicesTab: React.FC = () => {
         </p>
         
         <div className="space-y-6">
-          {content.services.map((service, index) => (
+          {services.map((service: Service, index: number) => (
             <div key={index} className="border border-border/50 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-lg font-medium text-white">Servicio {index + 1}</h4>
@@ -183,7 +204,7 @@ const ServicesTab: React.FC = () => {
                   </Button>
                 </div>
                 <div className="space-y-2">
-                  {service.features.map((feature, featureIndex) => (
+                  {service.features.map((feature: string, featureIndex: number) => (
                     <div key={featureIndex} className="flex items-center gap-2">
                       <Input
                         type="text"
