@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
-
 import { Label } from '../ui/label';
 import { Badge } from '../ui/badge';
 import { Alert, AlertDescription } from '../ui/alert';
-
 import { 
   Database, 
   RefreshCw, 
@@ -15,36 +13,23 @@ import {
   Copy,
   Download,
   Upload,
-
   Settings,
   Cloud,
-  HardDrive,
   Info
 } from 'lucide-react';
 import { useEditableContent } from '../../contexts/EditableContentContext';
-import { validateEnvironment, getSupabaseConfig } from '../../db/config';
 
 const SupabaseConfig: React.FC = () => {
-  const {
-    getDatabaseStatus,
-    forceSyncToSupabase,
-    forceSyncFromSupabase,
-    exportData,
-    importData,
-
-  } = useEditableContent();
-
-  const [status, setStatus] = useState(getDatabaseStatus());
-  const [envValidation, setEnvValidation] = useState(validateEnvironment());
-  const [supabaseConfig, setSupabaseConfig] = useState(getSupabaseConfig());
-  const [isSyncing, setIsSyncing] = useState(false);
+  const { isOnline, error, getAllContent } = useEditableContent();
+  const [serverEnvCheck, setServerEnvCheck] = useState<any>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [showEnvVars, setShowEnvVars] = useState(false);
   const [importText, setImportText] = useState('');
   const [showImport, setShowImport] = useState(false);
-  const [serverEnvCheck, setServerEnvCheck] = useState<any>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   useEffect(() => {
-    refreshStatus();
     checkServerEnvironment();
   }, []);
 
@@ -59,54 +44,30 @@ const SupabaseConfig: React.FC = () => {
     }
   };
 
-  const refreshStatus = () => {
-    setStatus(getDatabaseStatus());
-    setEnvValidation(validateEnvironment());
-    setSupabaseConfig(getSupabaseConfig());
-  };
-
-  const handleSyncToSupabase = async () => {
-    if (!supabaseConfig.available) {
-      alert('Supabase no está configurado. Configura las variables de entorno primero.');
-      return;
-    }
-
-    setIsSyncing(true);
+  const refreshStatus = async () => {
+    setIsRefreshing(true);
     try {
-      await forceSyncToSupabase();
-      refreshStatus();
-      alert('✅ Datos sincronizados a Supabase exitosamente');
+      await checkServerEnvironment();
+      // Trigger a re-render of the context
+      window.location.reload();
     } catch (error) {
-      console.error('Sync failed:', error);
-      alert('❌ Error al sincronizar a Supabase: ' + (error as Error).message);
+      console.error('Refresh failed:', error);
     } finally {
-      setIsSyncing(false);
-    }
-  };
-
-  const handleSyncFromSupabase = async () => {
-    if (!supabaseConfig.available) {
-      alert('Supabase no está configurado. Configura las variables de entorno primero.');
-      return;
-    }
-
-    setIsSyncing(true);
-    try {
-      await forceSyncFromSupabase();
-      refreshStatus();
-      alert('✅ Datos sincronizados desde Supabase exitosamente');
-    } catch (error) {
-      console.error('Sync failed:', error);
-      alert('❌ Error al sincronizar desde Supabase: ' + (error as Error).message);
-    } finally {
-      setIsSyncing(false);
+      setIsRefreshing(false);
     }
   };
 
   const handleExport = async () => {
+    setIsExporting(true);
     try {
-      const data = await exportData();
-      const blob = new Blob([data], { type: 'application/json' });
+      const allContent = await getAllContent();
+      const exportData = {
+        version: "2.0",
+        exported_at: new Date().toISOString(),
+        data: allContent
+      };
+      
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -117,6 +78,8 @@ const SupabaseConfig: React.FC = () => {
     } catch (error) {
       console.error('Export failed:', error);
       alert('❌ Error al exportar: ' + (error as Error).message);
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -126,15 +89,45 @@ const SupabaseConfig: React.FC = () => {
       return;
     }
     
+    setIsImporting(true);
     try {
-      await importData(importText);
+      const importData = JSON.parse(importText);
+      
+      if (!importData.data || !Array.isArray(importData.data)) {
+        throw new Error('Formato de datos inválido');
+      }
+
+      // Importar cada elemento
+      for (const item of importData.data) {
+        const response = await fetch('/api/content-by-type?' + new URLSearchParams({ 
+          type: item.content_type 
+        }), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: item.id,
+            content_data: item.content_data
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error importing ${item.content_type}: ${response.statusText}`);
+        }
+      }
+      
       setImportText('');
       setShowImport(false);
-      refreshStatus();
       alert('✅ Datos importados exitosamente');
+      
+      // Refrescar página para cargar los nuevos datos
+      window.location.reload();
     } catch (error) {
       console.error('Import failed:', error);
       alert('❌ Error al importar: ' + (error as Error).message);
+    } finally {
+      setIsImporting(false);
     }
   };
 
@@ -148,23 +141,8 @@ const SupabaseConfig: React.FC = () => {
     }
   };
 
-  const getStatusColor = (provider: string) => {
-    switch (provider) {
-      case 'hybrid': return 'bg-primary/20 text-primary border-primary/20';
-      case 'supabase': return 'bg-green-500/20 text-green-400 border-green-500/20';
-      case 'indexeddb': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/20';
-      default: return 'bg-red-500/20 text-red-400 border-red-500/20';
-    }
-  };
-
-  const getStatusIcon = (provider: string) => {
-    switch (provider) {
-      case 'hybrid': return <Database className="w-4 h-4" />;
-      case 'supabase': return <Cloud className="w-4 h-4" />;
-      case 'indexeddb': return <HardDrive className="w-4 h-4" />;
-      default: return <XCircle className="w-4 h-4" />;
-    }
-  };
+  const hasSupabaseEnv = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
+  const isSupabaseWorking = hasSupabaseEnv && !error && serverEnvCheck?.supabase?.urlConfigured;
 
   return (
     <div className="space-y-6">
@@ -177,128 +155,22 @@ const SupabaseConfig: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold text-white">Estado de la Base de Datos</h3>
             <p className="text-sm text-muted-foreground">
-              Configuración y sincronización de Supabase
+              Configuración y estado de Supabase (Solo API)
             </p>
           </div>
         </div>
 
-        {/* Debug Panel - Temporal para diagnosticar el problema */}
-        <div className="p-4 bg-card/30 rounded-lg border border-primary/20 mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-medium text-primary">🔍 Debug - Variables de Entorno (Temporal)</h4>
-            <Button
-              onClick={checkServerEnvironment}
-              variant="ghost"
-              size="sm"
-              className="text-xs"
-            >
-              <RefreshCw className="w-3 h-3 mr-1" />
-              Verificar servidor
-            </Button>
-          </div>
-          <div className="text-xs space-y-2 font-mono">
-            {(() => {
-              // Safely check if import.meta.env is available
-              const getEnv = () => {
-                try {
-                  return (import.meta as any)?.env || {};
-                } catch {
-                  return {};
-                }
-              };
-              
-              const env = getEnv();
-              const metaEnvAvailable = Object.keys(env).length > 0;
-              
-              return (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-white">VITE_SUPABASE_URL:</div>
-                      <div className={env.VITE_SUPABASE_URL ? 'text-green-400' : 'text-red-400'}>
-                        {env.VITE_SUPABASE_URL ? '✅ Disponible' : '❌ No encontrada'}
-                      </div>
-                      {env.VITE_SUPABASE_URL && (
-                        <div className="text-gray-400 truncate">
-                          {env.VITE_SUPABASE_URL.substring(0, 50)}...
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <div className="text-white">VITE_SUPABASE_ANON_KEY:</div>
-                      <div className={env.VITE_SUPABASE_ANON_KEY ? 'text-green-400' : 'text-red-400'}>
-                        {env.VITE_SUPABASE_ANON_KEY ? '✅ Disponible' : '❌ No encontrada'}
-                      </div>
-                      {env.VITE_SUPABASE_ANON_KEY && (
-                        <div className="text-gray-400">
-                          Longitud: {env.VITE_SUPABASE_ANON_KEY.length} caracteres
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="pt-2 border-t border-border/30">
-                    <div className="text-white">Información del entorno (Cliente):</div>
-                    <div className={metaEnvAvailable ? 'text-green-400' : 'text-red-400'}>
-                      import.meta.env: {metaEnvAvailable ? '✅ Disponible' : '❌ No disponible'}
-                    </div>
-                    <div className="text-gray-400">NODE_ENV: {env.NODE_ENV || 'undefined'}</div>
-                    <div className="text-gray-400">MODE: {env.MODE || 'undefined'}</div>
-                    <div className="text-gray-400">
-                      Variables VITE_: {Object.keys(env).filter(k => k.startsWith('VITE_')).join(', ') || 'Ninguna'}
-                    </div>
-                    <div className="text-gray-400">
-                      Total variables: {Object.keys(env).length}
-                    </div>
-                  </div>
-                </>
-              );
-            })()}
-            
-            {serverEnvCheck && (
-              <div className="pt-2 border-t border-border/30">
-                <div className="text-white">Información del entorno (Servidor):</div>
-                {serverEnvCheck.error ? (
-                  <div className="text-red-400">Error: {serverEnvCheck.error}</div>
-                ) : (
-                  <>
-                    <div className="text-gray-400">Vercel ENV: {serverEnvCheck.vercel?.env || 'unknown'}</div>
-                    <div className="text-gray-400">Vercel Region: {serverEnvCheck.vercel?.region || 'unknown'}</div>
-                    <div className={serverEnvCheck.supabase?.urlConfigured ? 'text-green-400' : 'text-red-400'}>
-                      URL en servidor: {serverEnvCheck.supabase?.urlConfigured ? '✅ Configurada' : '❌ No encontrada'}
-                    </div>
-                    <div className={serverEnvCheck.supabase?.keyConfigured ? 'text-green-400' : 'text-red-400'}>
-                      Key en servidor: {serverEnvCheck.supabase?.keyConfigured ? '✅ Configurada' : '❌ No encontrada'}
-                    </div>
-                    {serverEnvCheck.supabase?.urlPrefix && (
-                      <div className="text-gray-400">URL prefix: {serverEnvCheck.supabase.urlPrefix}</div>
-                    )}
-                    {serverEnvCheck.supabase?.keyLength > 0 && (
-                      <div className="text-gray-400">Key length: {serverEnvCheck.supabase.keyLength}</div>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {/* New simplified status */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="flex items-center gap-3 p-3 border border-border/50 rounded-lg">
-            <Badge variant="secondary" className={getStatusColor(status.provider)}>
-              {getStatusIcon(status.provider)}
-              <span className="ml-2 capitalize">{status.provider}</span>
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Database className="w-4 h-4 text-primary" />
+              <span className="text-sm">Sistema</span>
+            </div>
             <div className="flex-1 text-right">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={refreshStatus}
-                className="text-muted-foreground hover:text-white"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </Button>
+              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/20">
+                API Only
+              </Badge>
             </div>
           </div>
           
@@ -308,21 +180,7 @@ const SupabaseConfig: React.FC = () => {
               <span className="text-sm">Supabase</span>
             </div>
             <div className="flex-1 text-right">
-              {status.supabase ? (
-                <CheckCircle className="w-4 h-4 text-green-400" />
-              ) : (
-                <XCircle className="w-4 h-4 text-red-400" />
-              )}
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-3 p-3 border border-border/50 rounded-lg">
-            <div className="flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm">Local</span>
-            </div>
-            <div className="flex-1 text-right">
-              {status.indexeddb ? (
+              {isSupabaseWorking ? (
                 <CheckCircle className="w-4 h-4 text-green-400" />
               ) : (
                 <XCircle className="w-4 h-4 text-red-400" />
@@ -331,7 +189,60 @@ const SupabaseConfig: React.FC = () => {
           </div>
         </div>
 
-        {!supabaseConfig.available && (
+        {/* Debug Panel */}
+        <div className="p-4 bg-card/30 rounded-lg border border-primary/20 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm font-medium text-primary">🔍 Estado de la Conexión</h4>
+            <Button
+              onClick={checkServerEnvironment}
+              variant="ghost"
+              size="sm"
+              className="text-xs"
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`w-3 h-3 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Verificar
+            </Button>
+          </div>
+          
+          <div className="text-xs space-y-2 font-mono">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <div className="text-white">VITE_SUPABASE_URL:</div>
+                <div className={hasSupabaseEnv ? 'text-green-400' : 'text-red-400'}>
+                  {hasSupabaseEnv ? '✅ Disponible' : '❌ No encontrada'}
+                </div>
+              </div>
+              
+              <div>
+                <div className="text-white">VITE_SUPABASE_ANON_KEY:</div>
+                <div className={hasSupabaseEnv ? 'text-green-400' : 'text-red-400'}>
+                  {hasSupabaseEnv ? '✅ Disponible' : '❌ No encontrada'}
+                </div>
+              </div>
+            </div>
+            
+            {serverEnvCheck && (
+              <div className="pt-2 border-t border-border/30">
+                <div className="text-white">Información del servidor:</div>
+                {serverEnvCheck.error ? (
+                  <div className="text-red-400">Error: {serverEnvCheck.error}</div>
+                ) : (
+                  <>
+                    <div className={serverEnvCheck.supabase?.urlConfigured ? 'text-green-400' : 'text-red-400'}>
+                      URL en servidor: {serverEnvCheck.supabase?.urlConfigured ? '✅ Configurada' : '❌ No encontrada'}
+                    </div>
+                    <div className={serverEnvCheck.supabase?.keyConfigured ? 'text-green-400' : 'text-red-400'}>
+                      Key en servidor: {serverEnvCheck.supabase?.keyConfigured ? '✅ Configurada' : '❌ No encontrada'}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {!hasSupabaseEnv && (
           <Alert className="mb-6">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
@@ -339,65 +250,39 @@ const SupabaseConfig: React.FC = () => {
               <br />
               <strong>Para Vercel:</strong> Configura VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en Project Settings.
               <br />
-              <strong>Estado actual:</strong> Funcionando con almacenamiento local (IndexedDB).
+              <strong>Estado actual:</strong> La aplicación no funcionará correctamente sin Supabase.
             </AlertDescription>
           </Alert>
         )}
 
-        {supabaseConfig.available && !status.supabase && (
+        {hasSupabaseEnv && !isSupabaseWorking && (
           <Alert className="mb-6">
             <Info className="h-4 w-4" />
             <AlertDescription>
-              <strong>Supabase configurado pero no conectado:</strong> Variables cargadas desde Vercel correctamente.
+              <strong>Supabase configurado pero no conectado:</strong> Variables cargadas desde Vercel.
               <br />
-              <strong>Posibles causas:</strong> Verificar que la tabla 'content' exista en Supabase, o problemas de conectividad.
-              <br />
-              <strong>Estado actual:</strong> Funcionando con almacenamiento local (IndexedDB).
+              <strong>Posibles causas:</strong> Verificar que la tabla 'content' exista en Supabase.
             </AlertDescription>
           </Alert>
         )}
-      </Card>
 
-      {/* Sync Controls */}
-      {supabaseConfig.available && (
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Sincronización</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Button
-              onClick={handleSyncToSupabase}
-              disabled={isSyncing || !status.supabase}
-              className="flex items-center gap-2"
-            >
-              {isSyncing ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
-              ) : (
-                <Upload className="w-4 h-4" />
-              )}
-              Subir a Supabase
-            </Button>
-            
-            <Button
-              onClick={handleSyncFromSupabase}
-              disabled={isSyncing || !status.supabase}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              {isSyncing ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
-              ) : (
-                <Download className="w-4 h-4" />
-              )}
-              Descargar de Supabase
-            </Button>
-          </div>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={refreshStatus}
+            disabled={isRefreshing}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Refrescar Estado
+          </Button>
           
-          {!status.supabase && supabaseConfig.available && (
-            <p className="text-sm text-muted-foreground mt-2">
-              ⚠️ La sincronización no está disponible. Verifica la conexión a Supabase.
-            </p>
-          )}
-        </Card>
-      )}
+          <Badge variant="secondary" className={isOnline ? 'text-green-400' : 'text-red-400'}>
+            {isOnline ? '🟢 Online' : '🔴 Offline'}
+          </Badge>
+        </div>
+      </Card>
 
       {/* Data Management */}
       <Card className="p-6">
@@ -408,8 +293,13 @@ const SupabaseConfig: React.FC = () => {
               onClick={handleExport}
               variant="outline"
               className="flex items-center gap-2"
+              disabled={isExporting || !isSupabaseWorking}
             >
-              <Download className="w-4 h-4" />
+              {isExporting ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : (
+                <Download className="w-4 h-4" />
+              )}
               Exportar Backup
             </Button>
             
@@ -417,6 +307,7 @@ const SupabaseConfig: React.FC = () => {
               onClick={() => setShowImport(!showImport)}
               variant="outline"
               className="flex items-center gap-2"
+              disabled={!isSupabaseWorking}
             >
               <Upload className="w-4 h-4" />
               Importar Datos
@@ -439,10 +330,14 @@ const SupabaseConfig: React.FC = () => {
               <div className="flex gap-2">
                 <Button
                   onClick={handleImport}
-                  disabled={!importText.trim()}
+                  disabled={!importText.trim() || isImporting}
                   className="flex items-center gap-2"
                 >
-                  <Upload className="w-4 h-4" />
+                  {isImporting ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4" />
+                  )}
                   Importar
                 </Button>
                 <Button
@@ -470,11 +365,11 @@ const SupabaseConfig: React.FC = () => {
           </Button>
         </div>
         
-        {!envValidation.valid && (
+        {!hasSupabaseEnv && (
           <Alert className="mb-4">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              <strong>Variables faltantes:</strong> {envValidation.missing.join(', ')}
+              <strong>Variables faltantes:</strong> VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY
             </AlertDescription>
           </Alert>
         )}

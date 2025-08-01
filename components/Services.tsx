@@ -15,7 +15,7 @@ import {
 import { useEditableContent } from '../contexts/EditableContentContext';
 
 const Services: React.FC = () => {
-  const { content } = useEditableContent();
+  const { content, loading, error } = useEditableContent();
 
   const scrollToContact = () => {
     const element = document.querySelector('#contacto');
@@ -57,8 +57,38 @@ const Services: React.FC = () => {
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
-          {content.services.map((service, index) => {
-            const IconComponent = iconMap[service.icon as keyof typeof iconMap] || Globe;
+          {loading ? (
+            // Loading state
+            Array(3).fill(0).map((_, index) => (
+              <Card key={index} className="relative p-6 sm:p-8 h-full border-border animate-pulse">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-muted rounded-xl sm:rounded-2xl"></div>
+                  <div className="text-right">
+                    <div className="w-16 h-4 bg-muted rounded mb-1"></div>
+                    <div className="w-12 h-5 bg-muted rounded"></div>
+                  </div>
+                </div>
+                <div className="w-3/4 h-6 bg-muted rounded mb-3"></div>
+                <div className="w-full h-4 bg-muted rounded mb-2"></div>
+                <div className="w-2/3 h-4 bg-muted rounded mb-6"></div>
+                <div className="space-y-2">
+                  {Array(4).fill(0).map((_, i) => (
+                    <div key={i} className="w-full h-4 bg-muted rounded"></div>
+                  ))}
+                </div>
+              </Card>
+            ))
+          ) : (content.services || []).length === 0 ? (
+            // No services state
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground">
+                {error ? 'Error cargando servicios. Usando contenido por defecto.' : 'No hay servicios configurados.'}
+              </p>
+            </div>
+          ) : (
+            // Services loaded
+            (content.services || []).map((service, index) => {
+            const IconComponent = iconMap[service?.icon as keyof typeof iconMap] || Globe;
             
             return (
               <motion.div
@@ -82,17 +112,17 @@ const Services: React.FC = () => {
                       <div className="text-right">
                         <div className="text-xs text-muted-foreground mb-1">Beneficio típico</div>
                         <div className="text-sm font-bold text-primary">
-                          {service.roi}
+                          {service?.roi || "Consultar"}
                         </div>
                       </div>
                     </div>
 
                     {/* Title y Description */}
                     <h3 className="text-lg sm:text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors">
-                      {service.title}
+                      {service?.title || "Servicio"}
                     </h3>
                     <p className="text-sm sm:text-base text-muted-foreground mb-6 leading-relaxed">
-                      {service.description}
+                      {service?.description || "Descripción del servicio"}
                     </p>
 
                     {/* Business Value highlight */}
@@ -102,7 +132,7 @@ const Services: React.FC = () => {
                         <span className="text-sm font-medium text-primary">Qué consigues</span>
                       </div>
                       <p className="text-sm font-semibold text-white">
-                        {service.businessValue}
+                        {service?.businessValue || "Genera valor para tu negocio"}
                       </p>
                     </div>
 
@@ -113,7 +143,7 @@ const Services: React.FC = () => {
                         Incluye:
                       </h4>
                       <ul className="space-y-2">
-                        {service.features.slice(0, 4).map((feature, featureIndex) => (
+                        {(service?.features || []).slice(0, 4).map((feature, featureIndex) => (
                           <motion.li
                             key={featureIndex}
                             className="flex items-start gap-3"
@@ -130,9 +160,9 @@ const Services: React.FC = () => {
                             </span>
                           </motion.li>
                         ))}
-                        {service.features.length > 4 && (
+                        {(service?.features || []).length > 4 && (
                           <li className="text-xs text-primary font-medium ml-7">
-                            +{service.features.length - 4} características más
+                            +{(service?.features || []).length - 4} características más
                           </li>
                         )}
                       </ul>
@@ -152,7 +182,8 @@ const Services: React.FC = () => {
                 </Card>
               </motion.div>
             );
-          })}
+          })
+        )}
         </div>
 
         {/* Specialties section with ecommerce highlight */}

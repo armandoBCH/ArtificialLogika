@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from '../contexts/RouterContext';
 import { useEditableContent } from '../contexts/EditableContentContext';
+import ConnectionStatus from '../components/ConnectionStatus';
 
 // Lazy load admin components
 const DashboardTab = lazy(() => import('../components/admin/DashboardTab'));
@@ -15,9 +16,8 @@ const PricingTab = lazy(() => import('../components/admin/PricingTab'));
 const ProjectsTab = lazy(() => import('../components/admin/ProjectsTab'));
 const SupabaseConfig = lazy(() => import('../components/admin/SupabaseConfig'));
 
-// Import constants and helpers
+// Import constants
 import { adminTabs } from '../components/admin/constants';
-import { getSaveStatusIndicator } from '../components/admin/helpers';
 
 // Loading component
 const TabLoading = () => (
@@ -31,13 +31,20 @@ const TabLoading = () => (
 
 const AdminPage: React.FC = () => {
   const { navigateTo } = useRouter();
-  const { content, isLoading, lastSaved, saveStatus, getDatabaseStatus } = useEditableContent();
+  const { content, loading, error, isOnline } = useEditableContent();
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  const statusIndicator = getSaveStatusIndicator(saveStatus);
-  const dbStatus = getDatabaseStatus();
+  // Determinar estado de la base de datos basado en error y conectividad
+  const getDbStatus = () => {
+    if (!isOnline) return { provider: 'offline', color: 'text-red-400' };
+    if (error && error.includes('404')) return { provider: 'local', color: 'text-yellow-400' };
+    if (error) return { provider: 'error', color: 'text-red-400' };
+    return { provider: 'supabase', color: 'text-green-400' };
+  };
 
-  if (isLoading) {
+  const dbStatus = getDbStatus();
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -68,7 +75,7 @@ const AdminPage: React.FC = () => {
               <div>
                 <h1 className="text-xl font-bold text-white">Panel de Administración</h1>
                 <p className="text-sm text-muted-foreground">
-                  {content.company.name} • {lastSaved ? `Guardado: ${lastSaved.toLocaleTimeString()}` : 'No guardado'}
+                  {content.company?.name || 'Artificial Lógika'} • {error ? 'Usando contenido local' : 'Conectado a Supabase'}
                 </p>
               </div>
             </div>
@@ -76,24 +83,21 @@ const AdminPage: React.FC = () => {
             <div className="flex items-center gap-4">
               {/* Database status indicator */}
               <div className="hidden sm:flex items-center gap-2 text-xs">
-                <span className="text-muted-foreground">DB:</span>
-                <span className={`font-medium ${
-                  dbStatus.provider === 'hybrid' ? 'text-primary' :
-                  dbStatus.provider === 'supabase' ? 'text-green-400' :
-                  dbStatus.provider === 'indexeddb' ? 'text-yellow-400' :
-                  'text-red-400'
-                }`}>
-                  {dbStatus.provider === 'hybrid' ? 'Híbrido' :
-                   dbStatus.provider === 'supabase' ? 'Supabase' :
-                   dbStatus.provider === 'indexeddb' ? 'Local' : 'Error'}
+                <span className="text-muted-foreground">Estado:</span>
+                <span className={`font-medium ${dbStatus.color}`}>
+                  {dbStatus.provider === 'supabase' ? 'Conectado' :
+                   dbStatus.provider === 'local' ? 'Local' :
+                   dbStatus.provider === 'offline' ? 'Sin conexión' : 'Error'}
                 </span>
               </div>
               
-              {/* Save status */}
+              {/* Connection status */}
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${statusIndicator.color}`} />
+                <div className={`w-2 h-2 rounded-full ${
+                  error ? (error.includes('404') ? 'bg-yellow-400' : 'bg-red-400') : 'bg-green-400'
+                }`} />
                 <span className="text-sm text-muted-foreground">
-                  {statusIndicator.text}
+                  {error ? 'Modo local' : 'Sincronizado'}
                 </span>
               </div>
             </div>
@@ -103,6 +107,11 @@ const AdminPage: React.FC = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Connection Status */}
+        <div className="mb-6">
+          <ConnectionStatus />
+        </div>
+        
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           {/* Tabs Navigation */}
           <TabsList className="grid grid-cols-4 lg:grid-cols-8 gap-2 bg-card/50 p-2">

@@ -86,315 +86,6 @@
   - Actualizar index.html para que apunte a `/main.tsx` (no `/src/main.tsx`)
 - **Lección**: Mantener estructura de entry points consistente y evitar archivos duplicados
 
-#### 9. **Error de Variables de Entorno import.meta.env (RESUELTO)**
-- **Problema**: `⚠️ import.meta.env is not available. Using fallback for VITE_SUPABASE_URL`
-- **Error**: Variables de entorno no disponibles en desarrollo local causando warnings en consola
-- **Causa**: Acceso no defensivo a `import.meta.env` sin validación de disponibilidad
-- **Solución**:
-  - Implementar función `getImportMeta()` con manejo de errores defensivo
-  - Silenciar warnings en modo normal, solo mostrar en modo debug (`VITE_DEBUG_DB=true`)
-  - Fallback silencioso a IndexedDB cuando las variables no están disponibles
-  - Acceso seguro a `import.meta.env` con verificación de disponibilidad
-- **Configuración mejorada**:
-  - Variables de entorno manejadas automáticamente por Vite
-  - Desarrollo local: funciona perfectamente sin variables (IndexedDB)
-  - Producción Vercel: variables aplicadas automáticamente durante build
-  - Sistema híbrido robusto que nunca falla
-- **Lección**: Siempre usar acceso defensivo a objetos globales como `import.meta.env`
-
-#### 10. **Error de Vercel Function Runtimes (RESUELTO)**
-- **Problema**: `Error: Function Runtimes must have a valid version, for example 'now-php@1.0.0'`
-- **Error**: Vercel build falla por configuración incorrecta de funciones serverless en vercel.json
-- **Causa**: 
-  - Configuración `"runtime": "nodejs18.x"` incorrecta en vercel.json
-  - Sintaxis de runtime incorrecta para la versión actual de Vercel
-- **Solución**:
-  - Usar runtime correcto: `"@vercel/node@3.0.7"` en lugar de `"nodejs18.x"`
-  - Añadir dependencia `@vercel/node` al package.json como devDependency
-  - Configurar CORS correctamente en el endpoint de API
-- **Configuración correcta vercel.json**:
-  ```json
-  {
-    "functions": {
-      "api/check-env.ts": {
-        "runtime": "@vercel/node@3.0.7"
-      }
-    }
-  }
-  ```
-- **Lección**: Usar la sintaxis correcta de runtime de Vercel y dependencias apropiadas
-
-#### 11. **Error de API Endpoint Failed to Connect (RESUELTO)**
-- **Problema**: `Error: failed to connect to API endpoint`
-- **Error**: La aplicación falla al intentar conectarse al endpoint de verificación de variables de entorno
-- **Causa**: 
-  - Endpoint `/api/check-env.ts` eliminado incorrectamente
-  - La aplicación SÍ requiere el endpoint para verificar estado del servidor
-  - Sistema híbrido necesita validar disponibilidad de Supabase desde el servidor
-- **Solución**:
-  - Restaurar endpoint `/api/check-env.ts` con sintaxis correcta de Vercel
-  - Configurar CORS apropiadamente para llamadas desde frontend
-  - Añadir manejo de errores robusto y logging
-  - Usar tipos TypeScript correctos: `VercelRequest, VercelResponse`
-- **Lección**: El sistema híbrido SÍ necesita endpoints serverless para validación completa
-
-#### 12. **Error de Node.js Version en Vercel (RESUELTO)**
-- **Problema**: `Found invalid Node.js Version: "22.x". Please set Node.js Version to 18.x`
-- **Error**: Vercel detecta Node.js 22.x pero el runtime `@vercel/node@3.0.7` requiere 18.x
-- **Causa**: Falta de configuración explícita de versión de Node.js
-- **Solución**:
-  - Crear archivo `.nvmrc` con `18.19.0` en la raíz del proyecto  
-  - Vercel detecta automáticamente este archivo y usa la versión especificada
-  - NO usar `"nodeVersion"` en vercel.json (no es válido según schema)
-- **Configuración correcta**:
-  ```bash
-  # Archivo .nvmrc (raíz del proyecto)
-  18.19.0
-  ```
-- **Lección**: ~~Usar `.nvmrc` para especificar versión de Node.js en Vercel~~ INCORRECTO
-
-#### 13. **Error de Schema vercel.json nodeVersion (RESUELTO)**
-- **Problema**: `should NOT have additional property 'nodeVersion'`
-- **Error**: La propiedad `nodeVersion` no está permitida en el schema de vercel.json
-- **Causa**: Configuración incorrecta, `nodeVersion` no es una propiedad válida
-- **Solución**:
-  - Remover `"nodeVersion": "18.x"` del vercel.json
-  - Usar archivo `.nvmrc` en su lugar para especificar la versión
-- **Lección**: Verificar el schema oficial de vercel.json antes de añadir propiedades
-
-#### 14. **Error de Node.js Version Persistente (CRÍTICO)**
-- **Problema**: ~~Error persiste: `Found invalid Node.js Version: "22.x". Please set Node.js Version to 18.x`~~ OBSOLETO
-- **Nuevo problema**: `Node.js version 18.x is deprecated. Please set Node.js Version to 22.x`
-- **Causa**: Vercel deprecó Node.js 18.x a partir del 2025-09-01
-- **Solución ACTUALIZADA 2025**:
-  - Ir a Vercel Dashboard → Proyecto → Settings → General
-  - En "Node.js Version" seleccionar manualmente **"22.x"** (no 18.x)
-  - Actualizar `"engines": { "node": "22.x" }` en package.json
-  - `@vercel/node@3.2.0` es compatible con Node.js 22.x
-- **Lección**: Configuraciones de runtime van en el panel de Vercel, no en código
-
-#### 15. **Vulnerabilidades de Seguridad NPM (RESUELTO)**
-- **Problema**: 5 vulnerabilidades (3 moderate, 2 high) en dependencias
-- **Vulnerabilidades detectadas**:
-  - `esbuild <=0.24.2` - Moderate (GHSA-67mh-4wv8-2f99)
-  - `path-to-regexp 4.0.0 - 6.2.2` - High (GHSA-9wv6-86v2-598j)
-  - `undici <=5.28.5` - Moderate (GHSA-c76h-2ccp-4975, GHSA-cxrh-j4jr-qwg3)
-- **Solución**:
-  - Actualizar `@vercel/node` de `^3.0.7` a `^3.2.0`
-  - Esto resuelve automáticamente las vulnerabilidades en dependencias transitivas
-  - Actualizar vercel.json para usar `@vercel/node@3.2.0`
-- **Lección**: Mantener dependencias actualizadas regularmente para seguridad
-
-#### 16. **Deprecación de Node.js 18.x en Vercel (CRÍTICO - 2025)**
-- **Problema**: `Node.js version 18.x is deprecated. Deployments created on or after 2025-09-01 will fail to build. Please set Node.js Version to 22.x`
-- **Cambio de política**: Vercel deprecó Node.js 18.x a partir del 1 de septiembre de 2025
-- **Error**: Las funciones serverless fallan con versiones deprecadas de Node.js
-- **Migración REQUERIDA**:
-  - Cambiar `"engines": { "node": "18.x" }` a `"engines": { "node": "22.x" }` en package.json
-  - Configurar en Vercel Dashboard: Settings > General > Node.js Version → **22.x**
-  - `@vercel/node@3.2.0` es compatible con Node.js 22.x (no requiere actualización)
-  - Todas las dependencias actuales son compatibles con Node.js 22.x
-- **Testing**: Verificar que todas las funciones serverless funcionen correctamente
-- **Lección**: Estar atento a las deprecaciones de runtime en plataformas cloud
-
-### 🏗️ ARQUITECTURA DE ENDPOINTS Y CRUD
-
-#### **¿Por qué solo un endpoint `/api/check-env.ts`?**
-
-**Tienes razón al cuestionar esto** - SÍ necesitamos hacer CRUD (agregar, modificar, reordenar, eliminar proyectos y secciones), pero la arquitectura es diferente a un backend tradicional.
-
-El sistema está diseñado como **SPA (Single Page Application) con sistema híbrido de persistencia**, NO como aplicación fullstack tradicional. Esto significa:
-
-**✅ LO QUE TENEMOS:**
-- **Frontend puro**: Toda la lógica de negocio en React
-- **Conexión directa a Supabase**: El cliente se conecta directamente a Supabase
-- **Sistema híbrido**: IndexedDB (local) + Supabase (cloud) manejados desde el frontend
-- **Un solo endpoint**: `/api/check-env.ts` solo para verificación/diagnóstico
-
-**❌ LO QUE NO NECESITAMOS:**
-- Endpoints para CRUD (`/api/content`, `/api/projects`, etc.)
-- Middleware de autenticación en el servidor
-- Endpoints de sincronización
-- APIs REST tradicionales
-
-**🔍 Función del único endpoint `/api/check-env.ts`:**
-```typescript
-// PROPÓSITO: Verificar que las variables de entorno están disponibles en el servidor de Vercel
-// USADO EN: components/admin/SupabaseConfig.tsx línea 53
-// LLAMADA: await fetch('/api/check-env')
-
-// QUÉ HACE:
-// 1. Verifica VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en el servidor
-// 2. Proporciona información de debug para diagnosticar problemas
-// 3. Ayuda a distinguir entre problemas de cliente vs servidor
-// 4. Solo se usa en el panel de administración para diagnóstico
-```
-
-**🔄 Cómo funciona el CRUD sin endpoints - EJEMPLOS REALES:**
-
-#### **1. AGREGAR un nuevo proyecto (ejemplo real del código):**
-```typescript
-// EN: components/admin/ProjectsTab.tsx
-const handleAddProject = async () => {
-  const newProject = {
-    id: crypto.randomUUID(),
-    title: "Nuevo Proyecto",
-    description: "Descripción del proyecto...",
-    image: "https://example.com/image.jpg",
-    technologies: ["React", "TypeScript"],
-    link: "https://proyecto.com"
-  };
-  
-  // ✅ DIRECTO A SUPABASE - Sin endpoint intermedio
-  await updateContent('projects', [...projects, newProject]);
-  
-  // ✅ AUTO-SAVE LOCAL - Se guarda automáticamente en IndexedDB
-  // ✅ AUTO-SYNC - hybridManager.ts se encarga de la sincronización
-};
-```
-
-#### **2. MODIFICAR proyecto existente:**
-```typescript
-// EN: components/admin/ProjectsTab.tsx  
-const handleUpdateProject = async (projectId: string, updatedData: any) => {
-  const updatedProjects = projects.map(p => 
-    p.id === projectId ? { ...p, ...updatedData } : p
-  );
-  
-  // ✅ DIRECTO A SUPABASE - Sin /api/projects/update endpoint
-  await updateContent('projects', updatedProjects);
-  
-  // ✅ AUTO-SAVE LOCAL - IndexedDB se actualiza automáticamente  
-};
-```
-
-#### **3. REORDENAR proyectos (drag & drop):**
-```typescript
-// EN: components/admin/ProjectsTab.tsx
-const handleReorderProjects = async (newOrder: Project[]) => {
-  // ✅ DIRECTO A SUPABASE - Sin /api/projects/reorder endpoint
-  await updateContent('projects', newOrder);
-  
-  // ✅ AUTO-SAVE LOCAL - Orden guardado en IndexedDB inmediatamente
-};
-```
-
-#### **4. ELIMINAR proyecto:**
-```typescript
-const handleDeleteProject = async (projectId: string) => {
-  const filteredProjects = projects.filter(p => p.id !== projectId);
-  
-  // ✅ DIRECTO A SUPABASE - Sin /api/projects/delete endpoint  
-  await updateContent('projects', filteredProjects);
-  
-  // ✅ AUTO-SAVE LOCAL - Se elimina de IndexedDB automáticamente
-};
-```
-
-#### **5. ACTUALIZAR precios:**
-```typescript
-// EN: components/admin/PricingTab.tsx
-const handleUpdatePricing = async (planId: string, newPrice: number) => {
-  const updatedPlans = pricingPlans.map(plan =>
-    plan.id === planId ? { ...plan, price: newPrice } : plan  
-  );
-  
-  // ✅ DIRECTO A SUPABASE - Sin /api/pricing/update endpoint
-  await updateContent('pricing', updatedPlans);
-  
-  // ✅ AUTO-SAVE LOCAL - Precios actualizados en IndexedDB
-};
-```
-
-#### **🔧 Cómo funciona internamente `updateContent()`:**
-```typescript
-// EN: contexts/EditableContentContext.tsx
-const updateContent = async (key: string, value: any) => {
-  // 1. Actualizar estado React inmediatamente
-  setContent(prev => ({ ...prev, [key]: value }));
-  
-  // 2. Guardar en IndexedDB (funciona offline)
-  await indexedDB.setItem(key, value);
-  
-  // 3. Si Supabase está disponible, sincronizar automáticamente
-  if (supabaseAvailable) {
-    await supabase.from('content')
-      .upsert({ 
-        id: key, 
-        content_type: key,
-        content_data: value 
-      });
-  }
-  
-  // ✅ TODO AUTOMÁTICO - Sin endpoints intermedios
-};
-```
-
-#### **🔍 Dónde está implementado en el código actual:**
-
-**1. EditableContentContext.tsx** - El corazón del sistema:
-```typescript
-// LÍNEA 89-108 - Función updateContent que maneja TODO el CRUD
-const updateContent = useCallback(async (key: ContentKey, value: any) => {
-  // Actualización inmediata en React
-  setContent(prev => ({ ...prev, [key]: value }));
-  
-  // Guardar en IndexedDB (siempre funciona)
-  await saveToDatabase(key, value);
-  
-  // Auto-sync a Supabase si está disponible
-  debouncedSync();
-}, [saveToDatabase, debouncedSync]);
-```
-
-**2. ProjectsTab.tsx** - Gestión completa de proyectos:
-```typescript
-// LÍNEAS 20-30 - Carga y actualización de proyectos
-const { content, updateContent } = useEditableContent();
-const projects = content.projects as Project[];
-
-// CRUD completo implementado:
-const addProject = () => updateContent('projects', [...projects, newProject]);
-const updateProject = (id, data) => updateContent('projects', projects.map(p => p.id === id ? {...p, ...data} : p));
-const deleteProject = (id) => updateContent('projects', projects.filter(p => p.id !== id));
-const reorderProjects = (newOrder) => updateContent('projects', newOrder);
-```
-
-**3. PricingTab.tsx** - Gestión de precios:
-```typescript
-// LÍNEA 15 - Sistema idéntico para precios
-const pricingPlans = content.pricing as PricingPlan[];
-const updatePricing = (plans) => updateContent('pricing', plans);
-```
-
-**4. hybridManager.ts** - Motor de sincronización:
-```typescript
-// LÍNEAS 45-78 - Sincronización automática bidireccional
-export const syncToSupabase = async (data: any) => {
-  // Sube cambios locales a Supabase automáticamente
-};
-
-export const syncFromSupabase = async () => {
-  // Descarga cambios de Supabase a local automáticamente
-};
-```
-
-**📊 Ventajas de esta arquitectura:**
-- **Menos complejidad**: Sin middleware, sin autenticación custom, sin endpoints CRUD
-- **Mayor velocidad**: Sin round trips a APIs intermedias, conexión directa a Supabase  
-- **Funciona offline**: IndexedDB almacena todo localmente, se sincroniza cuando vuelve conexión
-- **Menor costo**: Una sola función serverless (check-env) vs múltiples endpoints CRUD
-- **Desarrollo más rápido**: No necesitas crear y mantener APIs REST
-- **Seguridad nativa**: Supabase maneja autenticación y RLS (Row Level Security)
-- **Ideal para CMSs**: Landing pages, portfolios, sitios de contenido editable
-
-**🚀 Por qué funciona perfectamente para este proyecto:**
-- **Landing page**: No necesita autenticación compleja de usuarios
-- **Un solo administrador**: Armando es el único que edita contenido
-- **Contenido simple**: Proyectos, precios, servicios - no relaciones complejas
-- **Actualizaciones poco frecuentes**: No hay miles de usuarios editando simultáneamente
-- **Rendimiento crítico**: Velocidad de carga más importante que arquitectura enterprise
-
 ### 🔧 CONFIGURACIONES CRÍTICAS
 
 #### **Variables de Entorno (Solo Vercel)**
@@ -414,9 +105,6 @@ VITE_DEBUG_DB=false
 #### **package.json**
 ```json
 {
-  "engines": {
-    "node": "22.x"  // ✅ Actualizado 2025 - Documentación para Vercel
-  },
   "dependencies": {
     // ✅ CORRECTAS - Estas dependencias SÍ existen
     "@radix-ui/react-dialog": "^1.0.5",
@@ -429,42 +117,6 @@ VITE_DEBUG_DB=false
     // "motion": "^10.18.0",  // ELIMINAR (duplica framer-motion)
     
     "tailwindcss": "^3.4.0"  // NO usar V4 alpha
-  },
-  "devDependencies": {
-    "@vercel/node": "^3.2.0",  // ✅ ACTUALIZADO para resolver vulnerabilidades
-    // ... otras dependencias
-  }
-}
-```
-
-#### **vercel.json**
-```json
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
-    }
-  ],
-  "functions": {
-    "api/check-env.ts": {
-      "runtime": "@vercel/node@3.2.0"
-    }
-  }
-}
-```
-
-#### **package.json engines**
-```json
-{
-  "engines": {
-    "node": "22.x"
   }
 }
 ```
@@ -475,9 +127,6 @@ VITE_DEBUG_DB=false
 ├── App.tsx          ✅ PRINCIPAL - Entry point de React
 ├── main.tsx         ✅ PRINCIPAL - Entry point de Vite
 ├── index.html       ✅ Apunta a /main.tsx
-├── package.json     ✅ Con engines: { "node": "22.x" } (2025 update)
-├── api/
-│   └── check-env.ts ✅ Único endpoint - Verificación de variables de entorno
 └── src/
     ├── App.tsx      ❌ DUPLICADO - Eliminar o marcar como eliminado
     └── main.tsx     ❌ DUPLICADO - Eliminar o marcar como eliminado
@@ -540,77 +189,6 @@ css: {
 - `/main.tsx` → Entry point principal de Vite
 - `/index.html` → Configurado correctamente para apuntar a `/main.tsx`
 
-### ⚙️ CONFIGURACIÓN CRÍTICA DE VERCEL
-
-#### **🚨 MIGRACIÓN URGENTE A NODE.JS 22.X (2025)**
-
-**CAMBIO CRÍTICO**: Vercel deprecó Node.js 18.x efectivo desde el 1 de septiembre de 2025.
-
-**Todos los proyectos DEBEN migrar a Node.js 22.x o fallarán en el build.**
-
-**✅ MIGRACIÓN COMPLETA REQUERIDA:**
-
-1. **Actualizar package.json**:
-   ```json
-   {
-     "engines": {
-       "node": "22.x"  // Cambiar desde "18.x"
-     }
-   }
-   ```
-
-2. **Configurar Vercel Dashboard**:
-   - Ir a https://vercel.com/dashboard
-   - Proyecto → Settings → General → Node.js Version
-   - Cambiar de "18.x" a **"22.x"**
-   - Guardar configuración
-
-3. **Verificar compatibilidad**:
-   - `@vercel/node@3.2.0` ✅ Compatible con Node.js 22.x
-   - Todas las dependencias actuales ✅ Compatibles
-   - No se requieren cambios en el código
-
-4. **Testing post-migración**:
-   - Verificar que el endpoint `/api/check-env.ts` funcione
-   - Confirmar que el build de Vite se complete
-   - Validar funcionalidad de Supabase
-
-**💀 CONSECUENCIAS DE NO MIGRAR:**
-- Builds fallarán después del 2025-09-01
-- Deployments existentes seguirán funcionando
-- Nuevos deployments serán imposibles
-
-
-#### **🔧 Cómo resolver el error de Node.js Version definitivamente:**
-
-**Error**: `Node.js version 18.x is deprecated. Please set Node.js Version to 22.x`
-
-**❌ LO QUE NO FUNCIONA:**
-- Archivo `.nvmrc` (es para desarrollo local con nvm, no para Vercel)
-- `"nodeVersion"` en vercel.json (propiedad inválida)
-- Variables de entorno (no controlan runtime)
-
-**✅ SOLUCIÓN DEFINITIVA:**
-1. **Ir al Panel de Vercel**:
-   - Abrir https://vercel.com/dashboard
-   - Seleccionar el proyecto "artificial-logika-landing"
-   - Ir a "Settings" (en el menú lateral)
-   - Ir a "General" (primera pestaña)
-
-2. **Configurar Node.js Version**:
-   - Buscar la sección "Node.js Version" 
-   - Cambiar de "18.x" a **"22.x"** (actualización 2025)
-   - Hacer clic en "Save"
-
-3. **Redesplegar**:
-   - Ir a "Deployments" 
-   - Hacer clic en "Redeploy" en el último deployment
-   - O hacer un nuevo commit para triggerar redeploy automático
-
-**📝 Documentación en código:**
-- Agregar `"engines": { "node": "22.x" }` al package.json (actualización 2025)
-- Esto NO controla Vercel, solo documenta la versión esperada
-
 ### 🚀 PROCESO DE DEPLOY CORRECTO
 1. **Configurar variables en Vercel**: VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY
 2. **Verificar estructura de archivos**: No debe haber duplicados de entry points
@@ -618,7 +196,7 @@ css: {
 4. **Verificar imports**: Comprobar que todos los imports sean correctos (framer-motion, no motion/react)
 5. **Verificar TypeScript**: `tsc --noEmit` para eliminar variables no utilizadas
 6. **NO crear archivo .env local**: Solo usar variables de Vercel por seguridad
-7. **Build local**: `npm run build` (sin variables, funciona con IndexedDB)
+7. **Build local**: `npm run build` (REQUIERE variables de Supabase para funcionar)
 8. **Deploy Vercel**: Variables de entorno se aplican automáticamente
 
 ### 📚 LECCIONES APRENDIDAS
@@ -632,9 +210,6 @@ css: {
 - **Motion/Animaciones**: Usar solo `framer-motion`, eliminar paquetes duplicados como `motion`
 - **Imports no utilizados**: TypeScript strict mode requiere eliminar variables y imports no utilizados
 - **Vercel** necesita configuración específica en vercel.json
-- **Sintaxis correcta de Vercel**: Usar `@vercel/node@3.0.7` no `nodejs18.x` para funciones serverless
-- **Node.js Version**: Configurar en Vercel Dashboard > Settings > General → **22.x** (2025 update)
-- **Endpoints API**: Solo necesario para verificación de variables de entorno, no para CRUD
 
 ## Guidelines Técnicas
 
@@ -674,10 +249,12 @@ css: {
 - `animate-neural-pulse`: Efecto neural para backgrounds
 - **Solo usar framer-motion**: `import { motion } from 'framer-motion'`
 
-### Content Management
-- Todo el contenido editable a través de EditableContentContext
+### Content Management (ACTUALIZADO - API ONLY)
+- Todo el contenido editable a través de EditableContentContext (ACTUALIZADO)
 - Sistema de administración en `/admin` route
-- Persistencia en IndexedDB con auto-save
+- **ELIMINADO**: Persistencia en IndexedDB
+- **NUEVO**: Persistencia únicamente en Supabase vía API endpoints
+- Auto-save mediante fetch() a endpoints `/api/content.ts` y `/api/content-by-type.ts`
 
 ### SEO Optimización
 - **Meta tags completos**: Title, description, keywords, robots
@@ -712,13 +289,7 @@ css: {
 - [ ] **Verificar imports correctos** (framer-motion, no motion/react)
 - [ ] **Eliminar variables e imports no utilizados**
 - [ ] **Verificar override de estilos** en componentes base según guidelines
-- [ ] **Configurar vercel.json con functions**: Usar runtime `@vercel/node@3.0.7` (no nodeVersion)
-- [ ] **CRÍTICO: Configurar Node.js en Vercel Dashboard**: Settings > General > Node.js Version → **22.x** (2025 update - NO se puede hacer desde código)
-- [ ] **Migrar a Node.js 22.x**: Actualizar engines en package.json y configuración de Vercel (REQUERIDO 2025)
-- [ ] **Verificar @vercel/node**: Versión `^3.2.0` es compatible con Node.js 22.x
-- [ ] **Añadir @vercel/node a devDependencies**: Necesario para tipos TypeScript
-- [ ] **Verificar endpoint /api funcional**: Necesario para verificación de variables de entorno
-- [ ] **Build local exitoso**: `npm run build` (funciona con IndexedDB sin variables)
+- [ ] **Build local exitoso**: `npm run build` (REQUIERE variables de Supabase configuradas)
 - [ ] **Commit y push a GitHub**
 - [ ] **Deploy automático en Vercel** (variables se aplican automáticamente)
 
@@ -738,3 +309,114 @@ css: {
 ```
 
 **IMPORTANTE**: Mantener esta estructura para evitar conflictos de build en Vercel/Vite.
+
+## 🚨 MIGRACIÓN TOTAL A SUPABASE API-ONLY (ENERO 2025)
+
+### CAMBIO ARQUITECTÓNICO RADICAL
+- **ELIMINADO COMPLETAMENTE**: Sistema híbrido (IndexedDB + localStorage + HybridManager)
+- **RAZÓN**: Complejidad excesiva, problemas de sincronización persistentes
+- **NUEVO ENFOQUE**: API-only con Supabase como única fuente de verdad
+
+### ARCHIVOS ELIMINADOS/MODIFICADOS
+```
+❌ ELIMINADOS:
+├── /db/ (carpeta completa)
+│   ├── hybridManager.ts
+│   ├── indexedDB.ts  
+│   ├── localStorage.ts
+│   ├── operations.ts
+│   └── tipos.ts
+├── /components/DatabaseManager.tsx (reemplazado con mensaje)
+
+✅ CREADOS:
+├── /api/content.ts (CRUD completo)
+├── /api/content-by-type.ts (operaciones por tipo)
+
+🔄 ACTUALIZADOS:
+├── /contexts/EditableContentContext.tsx (completamente reescrito)
+├── /components/admin/SupabaseConfig.tsx (simplificado, sin funciones híbridas)
+├── /vercel.json (nodejs22.x, endpoints configurados)
+```
+
+### NUEVA ARQUITECTURA API-ONLY
+
+#### **Endpoints API Creados:**
+1. **`/api/content.ts`**:
+   - `GET /api/content` → Obtener todo el contenido
+   - `POST /api/content` → Crear nuevo contenido
+   - `PUT /api/content` → Actualizar contenido existente  
+   - `DELETE /api/content` → Eliminar contenido
+
+2. **`/api/content-by-type.ts`**:
+   - `GET /api/content-by-type?type=hero` → Contenido por tipo
+   - `POST /api/content-by-type?type=hero` → Crear/actualizar por tipo (upsert)
+
+#### **Context Actualizado:**
+- **`EditableContentContext.tsx`** completamente reescrito
+- **Eliminadas funciones**: `getDatabaseStatus()`, `forceSyncToSupabase()`, `forceSyncFromSupabase()`
+- **Nuevas funciones**: `updateContent()`, `getContent()`, `getAllContent()` usando fetch()
+- **Optimistic updates**: Cambios locales inmediatos + API call en background
+- **Error handling**: Revert automático en caso de fallo de API
+
+#### **Dependencias de Supabase:**
+```typescript
+// Solo en endpoints API (server-side)
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL || '',
+  process.env.VITE_SUPABASE_ANON_KEY || ''
+);
+```
+
+### MIGRACIÓN STEP-BY-STEP
+
+#### **Para desarrolladores que tenían el sistema anterior:**
+
+1. **Limpiar dependencias locales:**
+   ```bash
+   rm -rf /db/
+   # DatabaseManager.tsx → mensaje de eliminación
+   ```
+
+2. **Verificar variables de entorno en Vercel:**
+   ```bash
+   VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiI...
+   ```
+
+3. **Verificar tabla en Supabase:**
+   ```sql
+   -- Ejecutar en Supabase SQL Editor
+   CREATE TABLE IF NOT EXISTS public.content (
+     id text primary key,
+     user_id uuid references auth.users(id) default auth.uid(),
+     content_type text not null,
+     content_data jsonb not null,
+     created_at timestamptz default now(),
+     updated_at timestamptz default now()
+   );
+   ```
+
+4. **Testing:**
+   ```bash
+   npm run build  # Debe compilar exitosamente
+   # Verificar que /api/content y /api/content-by-type respondan
+   ```
+
+### VENTAJAS DE LA NUEVA ARQUITECTURA
+
+✅ **Simplicidad**: Una sola fuente de verdad (Supabase)
+✅ **Confiabilidad**: Sin problemas de sincronización
+✅ **Mantenibilidad**: Código más limpio y comprensible  
+✅ **Escalabilidad**: API REST estándar
+✅ **Testing**: Endpoints independientes fáciles de probar
+
+❌ **Desventajas aceptadas**: Requiere conexión a internet (no funciona offline)
+
+### LECCIÓN CRÍTICA
+**Los sistemas híbridos aumentan la complejidad exponencialmente.** 
+Para aplicaciones que requieren persistencia, es mejor elegir:
+- **API-only + cache inteligente** (nuestra elección)
+- **Offline-first completo** (más complejo pero factible)
+- **Evitar híbridos** que prometen "lo mejor de ambos mundos"

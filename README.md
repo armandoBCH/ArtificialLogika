@@ -1,7 +1,5 @@
 # Artificial Lógika - Landing Page
 
-> **🚨 IMPORTANTE (2025)**: Este proyecto requiere **Node.js 22.x** debido a la deprecación de Node.js 18.x en Vercel. Ver [migración](#-migración-nodejs-22x) más abajo.
-
 Landing page profesional para consultora boutique de software e IA, con sistema de administración completo y base de datos híbrida (Supabase + IndexedDB).
 
 ## 🚀 Características
@@ -153,41 +151,12 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 - **Backup/Restore**: Exportación e importación de datos
 - **Sin pérdida de datos**: Funciona sin conexión a internet
 
-## 🚨 Migración Node.js 22.x
-
-**ACCIÓN REQUERIDA**: Vercel deprecó Node.js 18.x efectivo desde septiembre 2025.
-
-### Pasos de Migración:
-1. **Actualizar Node.js local** (opcional pero recomendado):
-   ```bash
-   nvm install 22
-   nvm use 22
-   ```
-
-2. **Configurar Vercel Dashboard**:
-   - Ve a tu proyecto en Vercel
-   - Settings → General → Node.js Version
-   - Cambiar de "18.x" a **"22.x"**
-   - Guardar configuración
-
-3. **El package.json ya está actualizado** con `"engines": { "node": "22.x" }`
-
-4. **Redesplegar**:
-   ```bash
-   git commit -am "Migrate to Node.js 22.x"
-   git push
-   ```
-
-❌ **Sin migración**: Los builds fallarán después del 2025-09-01  
-✅ **Con migración**: Funcionamiento normal garantizado
-
 ## 🚀 Deploy
 
 ### Vercel (Recomendado)
-1. **PRIMERO**: Configurar Node.js 22.x en Settings (ver migración arriba)
-2. Conecta tu repositorio de GitHub a Vercel
-3. Configura las variables de entorno en Vercel
-4. Deploy automático con cada push
+1. Conecta tu repositorio de GitHub a Vercel
+2. Configura las variables de entorno en Vercel
+3. Deploy automático con cada push
 
 ### Otras Plataformas
 - **Netlify**: Compatible con configuración similar

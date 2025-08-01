@@ -11,7 +11,13 @@ const Hero: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   
-  const dynamicTexts = content.hero.dynamicTexts;
+  const dynamicTexts = content.hero?.dynamicTexts || [
+    "páginas web",
+    "ecommerce", 
+    "landing pages",
+    "chatbots",
+    "asistentes de IA"
+  ];
 
   useEffect(() => {
     const currentText = dynamicTexts[currentTextIndex];
@@ -49,7 +55,8 @@ const Hero: React.FC = () => {
   }, [displayedText, isDeleting, isPaused, currentTextIndex, dynamicTexts]);
 
   const openWhatsApp = () => {
-    const phoneNumber = content.company.phone.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    const phone = content.company?.phone || content.company?.contact?.phone || "+54 11 1234-5678";
+    const phoneNumber = phone.replace(/[^0-9]/g, ''); // Remove non-numeric characters
     const message = "¡Hola! Me interesa saber más sobre tus servicios de desarrollo web y automatización. ¿Podrías contarme cómo puedes ayudarme?";
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
@@ -67,7 +74,7 @@ const Hero: React.FC = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 sm:mb-6 mobile-text-balance">
-            {content.hero.title}
+            {content.hero?.title || "Transformamos"}
             <br />
             <span className="text-primary block mt-2 relative min-h-[1.2em]">
               {displayedText}
@@ -77,7 +84,7 @@ const Hero: React.FC = () => {
                 transition={{ duration: 0.8, repeat: Infinity }}
               />
             </span>
-            <span className="block mt-2">{content.hero.subtitle}</span>
+            <span className="block mt-2">{content.hero?.subtitle || "en ventaja competitiva"}</span>
           </h1>
         </motion.div>
 
@@ -89,7 +96,7 @@ const Hero: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
         >
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed mobile-text-balance">
-            {content.hero.description}
+            {content.hero?.description || "Desarrollamos soluciones digitales completas desde cero para PyMEs que valoran la calidad y la innovación."}
           </p>
         </motion.div>
 
@@ -111,8 +118,8 @@ const Hero: React.FC = () => {
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
                 <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="sm:hidden">{content.hero.ctaText}</span>
-                <span className="hidden sm:inline">{content.hero.ctaTextLong}</span>
+                <span className="sm:hidden">{content.hero?.ctaText || "Descubre cómo"}</span>
+                <span className="hidden sm:inline">{content.hero?.ctaTextLong || "Descubre cómo podemos ayudarte"}</span>
                 <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
               </span>
               
@@ -143,7 +150,7 @@ const Hero: React.FC = () => {
               ))}
             </div>
             <span className="mobile-text-balance text-center sm:text-left">
-              {content.hero.trustText}
+              {content.hero?.trustText || "Más de 15 proyectos entregados con éxito"}
             </span>
           </motion.div>
         </motion.div>
@@ -170,7 +177,11 @@ const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
         >
-          {content.hero.stats.map((stat, index) => (
+          {(content.hero?.stats || [
+            { number: "100%", label: "Autogestionable", sublabel: "Sin dependencias técnicas" },
+            { number: "24h", label: "Tiempo respuesta", sublabel: "Consultas y soporte" },
+            { number: "15+", label: "Proyectos exitosos", sublabel: "PyMEs satisfechas" }
+          ]).map((stat, index) => (
             <motion.div
               key={index}
               className="text-center p-4 sm:p-6 bg-card/30 backdrop-blur-sm rounded-xl border border-border/50"

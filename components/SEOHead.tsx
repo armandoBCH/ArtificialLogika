@@ -16,7 +16,34 @@ const SEOHead: React.FC<SEOHeadProps> = ({
 }) => {
   const { content } = useEditableContent();
   
-  const defaultTitle = `${content.company.name} - ${content.company.tagline}`;
+  // Valores por defecto seguros
+  const defaultCompany = {
+    name: "Artificial Lógika",
+    tagline: "Logic as Aesthetics",
+    phone: "+54 11 1234-5678",
+    email: "contacto@artificiallogika.com",
+    address: "Olavarría, Buenos Aires, Argentina",
+    founderName: "Armando Beato",
+    founderTitle: "Desarrollador Full Stack & IA",
+    socialMedia: {
+      linkedin: "https://linkedin.com/in/armando-beato",
+      twitter: "https://twitter.com/armando_beato"
+    }
+  };
+  
+  // Usar datos del contenido o valores por defecto
+  const company = content.company || defaultCompany;
+  const companyName = company.name || defaultCompany.name;
+  const companyTagline = company.tagline || defaultCompany.tagline;
+  const companyPhone = company.phone || company.contact?.phone || defaultCompany.phone;
+  const companyEmail = company.email || company.contact?.email || defaultCompany.email;
+  const companyAddress = company.address || company.contact?.location || defaultCompany.address;
+  const founderName = company.founderName || defaultCompany.founderName;
+  const founderTitle = company.founderTitle || defaultCompany.founderTitle;
+  const socialLinkedIn = company.socialMedia?.linkedin || company.social?.linkedin || defaultCompany.socialMedia.linkedin;
+  const socialTwitter = company.socialMedia?.twitter || company.social?.twitter || defaultCompany.socialMedia.twitter;
+  
+  const defaultTitle = `${companyName} - ${companyTagline}`;
   const defaultDescription = "Armando Beato - Desarrollador especializado en software e IA. Creo páginas web, ecommerce, chatbots y automatizaciones desde cero. Soluciones 100% autogestionables para tu negocio.";
   
   const seoTitle = title || defaultTitle;
@@ -104,12 +131,12 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       { property: 'og:description', content: seoDescription },
       { property: 'og:type', content: type },
       { property: 'og:url', content: canonical },
-      { property: 'og:site_name', content: content.company.name },
+      { property: 'og:site_name', content: companyName },
       { property: 'og:locale', content: 'es_ES' },
       { property: 'og:image', content: `${canonical}/og-image.jpg` },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
-      { property: 'og:image:alt', content: `${content.company.name} - Desarrollador de Software e IA` }
+      { property: 'og:image:alt', content: `${companyName} - Desarrollador de Software e IA` }
     ];
     
     ogTags.forEach(tag => {
@@ -147,20 +174,20 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       {
         "@context": "https://schema.org",
         "@type": "ProfessionalService",
-        "name": content.company.name,
+        "name": companyName,
         "alternateName": "Armando Beato Developer",
         "description": seoDescription,
         "url": canonical,
-        "telephone": content.company.phone,
-        "email": content.company.email,
+        "telephone": companyPhone,
+        "email": companyEmail,
         "address": {
           "@type": "PostalAddress", 
-          "addressLocality": content.company.address.split(',')[0] || "Olavarría",
+          "addressLocality": companyAddress.split(',')[0] || "Olavarría",
           "addressCountry": "AR"
         },
         "sameAs": [
-          content.company.socialMedia.linkedin,
-          content.company.socialMedia.twitter
+          socialLinkedIn,
+          socialTwitter
         ],
         "serviceType": ["Software Development", "AI Automation", "Web Development", "E-commerce Development"],
         "areaServed": {
@@ -169,8 +196,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
         },
         "founder": {
           "@type": "Person",
-          "name": content.company.founderName,
-          "jobTitle": content.company.founderTitle
+          "name": founderName,
+          "jobTitle": founderTitle
         },
         "aggregateRating": {
           "@type": "AggregateRating",
@@ -213,24 +240,24 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": content.company.name,
+        "name": companyName,
         "url": canonical,
         "logo": `${canonical}/logo.png`,
         "contactPoint": {
           "@type": "ContactPoint",
-          "telephone": content.company.phone,
+          "telephone": companyPhone,
           "contactType": "customer service",
-          "email": content.company.email,
+          "email": companyEmail,
           "availableLanguage": "Spanish"
         },
         "foundingDate": "2024",
         "numberOfEmployees": "1-10",
-        "slogan": content.company.tagline
+        "slogan": companyTagline
       },
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": content.company.name,
+        "name": companyName,
         "url": canonical,
         "potentialAction": {
           "@type": "SearchAction",

@@ -38,7 +38,7 @@ const Pricing: React.FC = () => {
   const [expandedService, setExpandedService] = useState<string | null>(null);
 
   const openWhatsApp = (message?: string) => {
-    const phoneNumber = content.company.phone.replace('+', '');
+    const phoneNumber = (content.company?.phone || content.company?.contact?.phone || "+54 11 1234-5678").replace('+', '');
     const defaultMessage = "¡Hola! Me interesa conocer más sobre tus precios y servicios. ¿Podrías darme información personalizada?";
     const finalMessage = message || defaultMessage;
     const encodedMessage = encodeURIComponent(finalMessage);
@@ -59,7 +59,8 @@ const Pricing: React.FC = () => {
   };
 
   const calculateEstimate = () => {
-    const selectedItems = content.pricing.customServices.filter(service => 
+    const customServices = content.pricing?.customServices || [];
+    const selectedItems = customServices.filter(service => 
       selectedServices.includes(service.id)
     );
     
@@ -157,7 +158,25 @@ const Pricing: React.FC = () => {
     'HeadphonesIcon': HeadphonesIcon
   };
 
-  const { settings } = content.pricing;
+  const settings = content.pricing?.settings || {
+    headerTitle: "Inversión Transparente",
+    headerSubtitle: "Calidad por Valor", 
+    headerDescription: "Precios claros sin sorpresas.",
+    headerHighlight: "Primera consulta gratuita",
+    exchangeRate: "1.200",
+    badges: {
+      hostingFreeText: "Hosting Gratis",
+      dynamicText: "Dinámico",
+      sqliteText: "SQLite",
+      supabaseText: "Supabase",
+      noDatabaseText: "Sin BD"
+    },
+    benefits: [],
+    bottomSectionTitle: "¿Necesitás una cotización personalizada?",
+    bottomSectionDescription: "Contáctame para un presupuesto ajustado.",
+    bottomSectionCTA: "Consulta Gratuita",
+    bottomSectionNote: "Sin compromiso"
+  };
 
   return (
     <section className="relative py-16 sm:py-20 lg:py-24 mobile-padding" id="precios">
@@ -193,7 +212,7 @@ const Pricing: React.FC = () => {
 
         {/* Value-first plans */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-          {content.pricing.plans.map((plan, index) => {
+          {(content.pricing?.plans || []).map((plan, index) => {
             const IconComponent = iconMap[plan.icon as keyof typeof iconMap] || Calendar;
             
             return (
@@ -423,7 +442,7 @@ const Pricing: React.FC = () => {
               </p>
 
               <div className="space-y-6 mb-6">
-                {content.pricing.customServices.map((service) => {
+                {(content.pricing?.customServices || []).map((service) => {
                   const ServiceIcon = iconMap[service.icon as keyof typeof iconMap] || Settings;
                   const isExpanded = expandedService === service.id;
                   

@@ -9,24 +9,33 @@ import {
   ShoppingBag,
   ArrowLeft,
   Cloud,
-  HardDrive
+  HardDrive,
+  CheckCircle,
+  XCircle
 } from 'lucide-react';
 import { useEditableContent } from '../../contexts/EditableContentContext';
 import { useRouter } from '../../contexts/RouterContext';
-import { hybridManager } from '../../db/hybridManager';
-import { isSupabaseConfigured } from '../../db/config';
 
 interface DashboardTabProps {
   setActiveTab: (tab: string) => void;
 }
 
 const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
-  const { content } = useEditableContent();
+  const { content, error, isOnline } = useEditableContent();
   const { navigateTo } = useRouter();
   
-  // Get database status
-  const dbStatus = hybridManager.getStatus();
-  const supabaseConfigured = isSupabaseConfigured();
+  // Verificar si Supabase está configurado (simple check)
+  const supabaseConfigured = !!(
+    import.meta.env.VITE_SUPABASE_URL && 
+    import.meta.env.VITE_SUPABASE_ANON_KEY
+  );
+  
+  // Status simplificado para la nueva arquitectura API-only
+  const dbStatus = {
+    provider: supabaseConfigured ? 'supabase' : 'offline',
+    initialized: supabaseConfigured && !error,
+    connected: supabaseConfigured && !error && isOnline
+  };
 
   return (
     <div className="space-y-6">
@@ -48,11 +57,11 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Servicios</span>
-              <span className="text-white">{content.services.length}</span>
+              <span className="text-white">{content.services?.length || 0}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Testimonios</span>
-              <span className="text-white">{content.testimonials.length}</span>
+              <span className="text-white">{content.testimonials?.length || 0}</span>
             </div>
           </div>
         </Card>
@@ -60,28 +69,24 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
         <Card className="p-6">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-              {dbStatus.provider === 'hybrid' ? (
-                <Cloud className="w-5 h-5 text-blue-400" />
-              ) : dbStatus.provider === 'supabase' ? (
+              {dbStatus.connected ? (
                 <Cloud className="w-5 h-5 text-blue-400" />
               ) : (
-                <HardDrive className="w-5 h-5 text-blue-400" />
+                <XCircle className="w-5 h-5 text-red-400" />
               )}
             </div>
             <div>
               <h3 className="font-semibold text-white">Base de Datos</h3>
               <p className="text-sm text-muted-foreground">
-                {dbStatus.provider === 'hybrid' ? 'Híbrida (Local + Cloud)' :
-                 dbStatus.provider === 'supabase' ? 'Supabase Cloud' :
-                 'IndexedDB Local'}
+                {dbStatus.provider === 'supabase' ? 'Supabase API' : 'Sin conexión'}
               </p>
             </div>
           </div>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Estado</span>
-              <span className="text-green-400">
-                {dbStatus.initialized ? 'Conectada' : 'Inicializando...'}
+              <span className={dbStatus.connected ? "text-green-400" : "text-red-400"}>
+                {dbStatus.connected ? 'Conectada' : 'Desconectada'}
               </span>
             </div>
             <div className="flex justify-between text-sm">
@@ -92,13 +97,15 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Auto-save</span>
-              <span className="text-green-400">Activo</span>
+              <span className={dbStatus.connected ? "text-green-400" : "text-yellow-400"}>
+                {dbStatus.connected ? 'Activo' : 'Inactivo'}
+              </span>
             </div>
           </div>
           {!supabaseConfigured && (
             <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
               <p className="text-xs text-yellow-400 mb-2">
-                📊 Usando almacenamiento local. Para habilitar sincronización en la nube:
+                ⚠️ Sin Supabase configurado. API-only requiere configuración:
               </p>
               <Button
                 onClick={() => setActiveTab('database')}
@@ -125,15 +132,15 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Planes principales</span>
-              <span className="text-white">{content.pricing.plans.length}</span>
+              <span className="text-white">{content.pricing?.plans?.length || 0}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Servicios calculadora</span>
-              <span className="text-white">{content.pricing.customServices.length}</span>
+              <span className="text-white">{content.pricing?.customServices?.length || 0}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Dólar referencia</span>
-              <span className="text-white">${content.pricing.settings.exchangeRate}</span>
+              <span className="text-white">${content.pricing?.settings?.exchangeRate || 'N/A'}</span>
             </div>
           </div>
         </Card>
@@ -151,15 +158,25 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Proyectos destacados</span>
-              <span className="text-white">{content.featuredProjects.length}</span>
+              <span className="text-white">{content.featuredProjects?.length || 0}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Categorías</span>
-              <span className="text-white">{new Set(content.featuredProjects.map(p => p.category)).size}</span>
+              <span className="text-white">
+                {content.featuredProjects?.length 
+                  ? new Set(content.featuredProjects.map((p: any) => p.category)).size 
+                  : 0
+                }
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Tecnologías</span>
-              <span className="text-white">{new Set(content.featuredProjects.flatMap(p => p.technologies)).size}</span>
+              <span className="text-white">
+                {content.featuredProjects?.length 
+                  ? new Set(content.featuredProjects.flatMap((p: any) => p.technologies || [])).size 
+                  : 0
+                }
+              </span>
             </div>
           </div>
         </Card>
