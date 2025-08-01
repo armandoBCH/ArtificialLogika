@@ -1,28 +1,25 @@
-// Endpoint de prueba para variables de entorno
+// Endpoint de prueba para variables de entorno - VERSIÓN SIMPLIFICADA
 export default async function handler(_request: Request) {
   try {
-    // Información detallada de las variables
-    const envInfo = {
+    // Respuesta inmediata sin operaciones pesadas
+    const response = {
       timestamp: new Date().toISOString(),
-      nodeEnv: process.env.NODE_ENV,
-      allKeys: Object.keys(process.env),
-      supabaseKeys: Object.keys(process.env).filter(k => k.includes('SUPABASE')),
-      viteKeys: Object.keys(process.env).filter(k => k.startsWith('VITE_')),
-      specificVars: {
+      nodeEnv: process.env.NODE_ENV || 'unknown',
+      supabase: {
         VITE_SUPABASE_URL: {
           exists: !!process.env.VITE_SUPABASE_URL,
-          length: process.env.VITE_SUPABASE_URL?.length || 0,
-          value: process.env.VITE_SUPABASE_URL ? `${process.env.VITE_SUPABASE_URL.substring(0, 30)}...` : 'NOT_FOUND'
+          length: process.env.VITE_SUPABASE_URL?.length || 0
         },
         VITE_SUPABASE_ANON_KEY: {
           exists: !!process.env.VITE_SUPABASE_ANON_KEY,
-          length: process.env.VITE_SUPABASE_ANON_KEY?.length || 0,
-          value: process.env.VITE_SUPABASE_ANON_KEY ? `${process.env.VITE_SUPABASE_ANON_KEY.substring(0, 20)}...` : 'NOT_FOUND'
+          length: process.env.VITE_SUPABASE_ANON_KEY?.length || 0
         }
-      }
+      },
+      totalEnvVars: Object.keys(process.env).length,
+      supabaseVars: Object.keys(process.env).filter(k => k.includes('SUPABASE')).length
     };
     
-    return new Response(JSON.stringify(envInfo, null, 2), {
+    return new Response(JSON.stringify(response, null, 2), {
       status: 200,
       headers: { 
         'Content-Type': 'application/json',

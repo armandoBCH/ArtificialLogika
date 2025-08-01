@@ -1,14 +1,7 @@
-// Endpoint simple para verificar el estado de la aplicación
+// Endpoint simple para verificar el estado de la aplicación - VERSIÓN SIMPLIFICADA
 export default async function handler(_request: Request) {
   try {
-    // Logs detallados para debugging
-    console.log('🔍 Environment variables check:');
-    console.log('All process.env keys:', Object.keys(process.env));
-    console.log('SUPABASE related keys:', Object.keys(process.env).filter(k => k.includes('SUPABASE')));
-    console.log('VITE_SUPABASE_URL:', process.env.VITE_SUPABASE_URL ? 'FOUND' : 'NOT_FOUND');
-    console.log('VITE_SUPABASE_ANON_KEY:', process.env.VITE_SUPABASE_ANON_KEY ? 'FOUND' : 'NOT_FOUND');
-    
-    // En API routes del servidor, usar process.env
+    // Respuesta inmediata sin logs pesados
     const hasSupabaseUrl = !!(process.env.VITE_SUPABASE_URL);
     const hasSupabaseKey = !!(process.env.VITE_SUPABASE_ANON_KEY);
     
@@ -21,11 +14,6 @@ export default async function handler(_request: Request) {
         keyConfigured: hasSupabaseKey,
         urlLength: process.env.VITE_SUPABASE_URL?.length || 0,
         keyLength: process.env.VITE_SUPABASE_ANON_KEY?.length || 0
-      },
-      debug: {
-        allEnvKeys: Object.keys(process.env),
-        supabaseKeys: Object.keys(process.env).filter(k => k.includes('SUPABASE')),
-        nodeEnv: process.env.NODE_ENV
       }
     };
     
