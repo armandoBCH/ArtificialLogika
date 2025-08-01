@@ -88,6 +88,20 @@
 
 ### 🔧 CONFIGURACIONES CRÍTICAS
 
+#### **Variables de Entorno (Solo Vercel)**
+```bash
+# ✅ CONFIGURAR ÚNICAMENTE EN VERCEL
+# Vercel Dashboard > Project Settings > Environment Variables
+
+VITE_SUPABASE_URL=https://proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=jwt-token-publico
+
+# Variables opcionales
+VITE_ENABLE_ANALYTICS=true
+VITE_ENABLE_SYNC=true
+VITE_DEBUG_DB=false
+```
+
 #### **package.json**
 ```json
 {
@@ -152,6 +166,8 @@ plugins: {
 css: {
   postcss: './postcss.config.js',  // NO plugins: []
 }
+// Variables de entorno manejadas automáticamente por Vite
+// Las variables de Vercel están disponibles durante build time
 ```
 
 #### **globals.css**
@@ -174,13 +190,14 @@ css: {
 - `/index.html` → Configurado correctamente para apuntar a `/main.tsx`
 
 ### 🚀 PROCESO DE DEPLOY CORRECTO
-1. **Verificar estructura de archivos**: No debe haber duplicados de entry points
-2. **Verificar dependencias**: Revisar que todas las dependencias existan en npm y no haya duplicados
-3. **Verificar imports**: Comprobar que todos los imports sean correctos (framer-motion, no motion/react)
-4. **Verificar TypeScript**: `tsc --noEmit` para eliminar variables no utilizadas
-5. **Build local**: `npm run build` 
-6. **Preview**: `npm run preview`
-7. **Deploy Vercel**: Solo después de verificar localmente
+1. **Configurar variables en Vercel**: VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY
+2. **Verificar estructura de archivos**: No debe haber duplicados de entry points
+3. **Verificar dependencias**: Revisar que todas las dependencias existan en npm y no haya duplicados
+4. **Verificar imports**: Comprobar que todos los imports sean correctos (framer-motion, no motion/react)
+5. **Verificar TypeScript**: `tsc --noEmit` para eliminar variables no utilizadas
+6. **NO crear archivo .env local**: Solo usar variables de Vercel por seguridad
+7. **Build local**: `npm run build` (sin variables, funciona con IndexedDB)
+8. **Deploy Vercel**: Variables de entorno se aplican automáticamente
 
 ### 📚 LECCIONES APRENDIDAS
 - **Tailwind V3** es la versión de producción estable
@@ -261,6 +278,8 @@ css: {
 - `motion` (usar `framer-motion`)
 
 ### Deploy Checklist Final
+- [ ] **Configurar variables de entorno en Vercel**: VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY
+- [ ] **NO crear archivo .env local**: Solo usar variables de Vercel por seguridad
 - [ ] **Verificar estructura de archivos**: Solo un App.tsx y main.tsx en la raíz
 - [ ] **Verificar que no hay dependencias inexistentes** en package.json
 - [ ] **Verificar que no hay dependencias duplicadas** (motion vs framer-motion)
@@ -268,10 +287,9 @@ css: {
 - [ ] **Verificar imports correctos** (framer-motion, no motion/react)
 - [ ] **Eliminar variables e imports no utilizados**
 - [ ] **Verificar override de estilos** en componentes base según guidelines
-- [ ] **Build local exitoso**: `npm run build`
-- [ ] **Preview funcional**: `npm run preview`
+- [ ] **Build local exitoso**: `npm run build` (funciona con IndexedDB sin variables)
 - [ ] **Commit y push a GitHub**
-- [ ] **Deploy automático en Vercel**
+- [ ] **Deploy automático en Vercel** (variables se aplican automáticamente)
 
 ## Estructura de Proyecto Recomendada
 

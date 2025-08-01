@@ -220,9 +220,11 @@ const SupabaseConfig: React.FC = () => {
           <Alert className="mb-6">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              <strong>Supabase no configurado:</strong> {supabaseConfig.error}
+              <strong>Supabase no configurado:</strong> Las variables de entorno no están disponibles.
               <br />
-              La aplicación funcionará solo con almacenamiento local (IndexedDB).
+              <strong>Para Vercel:</strong> Configura VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en Project Settings.
+              <br />
+              <strong>Estado actual:</strong> Funcionando con almacenamiento local (IndexedDB).
             </AlertDescription>
           </Alert>
         )}
@@ -231,7 +233,11 @@ const SupabaseConfig: React.FC = () => {
           <Alert className="mb-6">
             <Info className="h-4 w-4" />
             <AlertDescription>
-              <strong>Supabase configurado pero no conectado:</strong> Verifica la URL y clave de API, y que la tabla 'content' exista en tu proyecto.
+              <strong>Supabase configurado pero no conectado:</strong> Variables cargadas desde Vercel correctamente.
+              <br />
+              <strong>Posibles causas:</strong> Verificar que la tabla 'content' exista en Supabase, o problemas de conectividad.
+              <br />
+              <strong>Estado actual:</strong> Funcionando con almacenamiento local (IndexedDB).
             </AlertDescription>
           </Alert>
         )}
@@ -361,7 +367,7 @@ const SupabaseConfig: React.FC = () => {
         {showEnvVars && (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Para habilitar Supabase, añade estas variables a tu archivo .env:
+              <strong>Para Vercel:</strong> Configura estas variables en Project Settings → Environment Variables:
             </p>
             
             <div className="space-y-3">
@@ -372,7 +378,7 @@ const SupabaseConfig: React.FC = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => copyToClipboard('VITE_SUPABASE_URL=https://tu-proyecto.supabase.co')}
+                  onClick={() => copyToClipboard('VITE_SUPABASE_URL')}
                 >
                   <Copy className="w-4 h-4" />
                 </Button>
@@ -380,12 +386,12 @@ const SupabaseConfig: React.FC = () => {
               
               <div className="flex items-center gap-2 p-3 bg-card/50 rounded-lg">
                 <code className="flex-1 text-sm font-mono text-white">
-                  VITE_SUPABASE_ANON_KEY=tu-clave-publica-aqui
+                  VITE_SUPABASE_ANON_KEY=tu-clave-publica-jwt
                 </code>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => copyToClipboard('VITE_SUPABASE_ANON_KEY=tu-clave-publica-aqui')}
+                  onClick={() => copyToClipboard('VITE_SUPABASE_ANON_KEY')}
                 >
                   <Copy className="w-4 h-4" />
                 </Button>
@@ -395,7 +401,11 @@ const SupabaseConfig: React.FC = () => {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                <strong>Importante:</strong> Estas variables deben configurarse en tu proveedor de hosting (Vercel, Netlify, etc.) para que funcionen en producción.
+                <strong>Configuración en Vercel:</strong>
+                <br />1. Ve a tu proyecto en Vercel Dashboard
+                <br />2. Settings → Environment Variables
+                <br />3. Añade las variables para Production, Preview y Development
+                <br />4. No crear archivo .env local por seguridad
               </AlertDescription>
             </Alert>
           </div>

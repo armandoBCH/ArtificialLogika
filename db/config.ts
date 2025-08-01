@@ -1,22 +1,46 @@
 import { DatabaseConfig } from './types';
 
-// Safely get environment variables with improved detection
+// Development helpers (moved up to be used in getEnvVar)
+const isDevelopment = (): boolean => {
+  try {
+    const value = (import.meta as any)?.env?.NODE_ENV;
+    return value === 'development' || value === undefined;
+  } catch {
+    return true; // Default to development if we can't determine
+  }
+};
+
+const isDebugMode = (): boolean => {
+  try {
+    return (import.meta as any)?.env?.VITE_DEBUG_DB === 'true';
+  } catch {
+    return false;
+  }
+};
+
+// Safely get environment variables with Vercel compatibility
 const getEnvVar = (key: string, fallback: string = ''): string => {
   try {
-    // Try multiple ways to access environment variables
-    const value = 
-      (import.meta as any)?.env?.[key] || 
-      (typeof process !== 'undefined' ? process.env?.[key] : undefined) ||
-      fallback;
+    // For Vite applications, environment variables are available in import.meta.env
+    const value = (import.meta as any)?.env?.[key];
     
-    // Debug log in development
-    if (key.includes('SUPABASE') && value && value !== fallback) {
-      console.log(`✅ Environment variable ${key} found and configured`);
+    // Return the actual value or fallback
+    const result = value || fallback;
+    
+    // Only log in development mode and for debugging
+    if (isDevelopment() && isDebugMode() && key.includes('SUPABASE')) {
+      if (result && result !== fallback) {
+        console.log(`✅ Environment variable ${key} loaded from Vercel`);
+      } else {
+        console.log(`⚠️ Environment variable ${key} not found - using local storage only`);
+      }
     }
     
-    return value;
+    return result;
   } catch (error) {
-    console.warn(`Environment variable ${key} not accessible:`, error);
+    if (isDevelopment()) {
+      console.warn(`Environment variable ${key} access error:`, error);
+    }
     return fallback;
   }
 };
@@ -32,17 +56,27 @@ export const isSupabaseConfigured = (): boolean => {
   const url = databaseConfig.supabaseUrl;
   const key = databaseConfig.supabaseAnonKey;
   
-  const configured = !!(url && key && url.includes('supabase.co') && key.length > 50);
+  // Validate URL format (should be a Supabase URL)
+  const urlValid = url && url.startsWith('https://') && url.includes('.supabase.co');
   
-  if (configured) {
-    console.log('✅ Supabase is properly configured');
-  } else {
-    console.log('⚠️ Supabase not configured:', { 
-      hasUrl: !!url, 
-      hasKey: !!key,
-      urlValid: url ? url.includes('supabase.co') : false,
-      keyValid: key ? key.length > 50 : false
-    });
+  // Validate key format (JWT tokens are typically 100+ characters)
+  const keyValid = key && key.length > 100 && key.includes('.');
+  
+  const configured = !!(urlValid && keyValid);
+  
+  // Only log in debug mode to avoid console spam
+  if (isDevelopment() && isDebugMode()) {
+    if (configured) {
+      console.log('✅ Supabase configured correctly from Vercel environment variables');
+    } else {
+      console.log('⚠️ Supabase configuration status:', { 
+        hasUrl: !!url, 
+        hasKey: !!key,
+        urlValid: !!urlValid,
+        keyValid: !!keyValid,
+        source: 'Vercel environment variables'
+      });
+    }
   }
   
   return configured;
@@ -108,23 +142,8 @@ export const connectionSettings = {
   fallbackToLocal: true
 };
 
-// Development helpers
-export const isDevelopment = (): boolean => {
-  try {
-    return getEnvVar('NODE_ENV', 'development') === 'development' || 
-           getEnvVar('VITE_DEV_MODE', 'false') === 'true';
-  } catch {
-    return true; // Default to development if we can't determine
-  }
-};
-
-export const isDebugMode = (): boolean => {
-  try {
-    return getEnvVar('VITE_DEBUG_DB', 'false') === 'true';
-  } catch {
-    return false;
-  }
-};
+// Development helpers (exported for external use)
+export { isDevelopment, isDebugMode };
 
 // Log configuration status on import with more friendly messaging
 if (isDevelopment()) {
