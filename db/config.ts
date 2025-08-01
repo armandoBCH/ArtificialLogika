@@ -29,7 +29,7 @@ const getEnvVar = (key: string, fallback: string = ''): string => {
     console.log(`🔍 Checking environment variable ${key}:`, {
       value: value ? `Found (${value.substring(0, 20)}...)` : 'Not found',
       type: typeof value,
-      allEnvKeys: Object.keys(import.meta.env).filter(k => k.includes('SUPABASE')),
+      allEnvKeys: Object.keys(import.meta.env).filter(k => k.includes('TURSO')),
       environment: import.meta.env.NODE_ENV || 'unknown'
     });
     
@@ -44,33 +44,33 @@ const getEnvVar = (key: string, fallback: string = ''): string => {
 };
 
 export const databaseConfig: DatabaseConfig = {
-  supabaseUrl: getEnvVar('VITE_SUPABASE_URL', ''),
-  supabaseAnonKey: getEnvVar('VITE_SUPABASE_ANON_KEY', ''),
+  tursoUrl: getEnvVar('VITE_TURSO_DATABASE_URL', ''),
+  tursoToken: getEnvVar('VITE_TURSO_AUTH_TOKEN', ''),
   enableSync: true,
   syncInterval: 30000 // 30 seconds
 };
 
-export const isSupabaseConfigured = (): boolean => {
-  const url = databaseConfig.supabaseUrl;
-  const key = databaseConfig.supabaseAnonKey;
+export const isTursoConfigured = (): boolean => {
+  const url = databaseConfig.tursoUrl;
+  const token = databaseConfig.tursoToken;
   
-  // Validate URL format (should be a Supabase URL)
-  const urlValid = url && url.startsWith('https://') && url.includes('.supabase.co');
+  // Validate URL format (should be a Turso URL)
+  const urlValid = url && url.startsWith('libsql://');
   
-  // Validate key format (JWT tokens are typically 100+ characters)
-  const keyValid = key && key.length > 50 && key.includes('.'); // Lowered requirement temporarily
+  // Validate token format (Turso tokens are typically 50+ characters)
+  const tokenValid = token && token.length > 30;
   
-  const configured = !!(urlValid && keyValid);
+  const configured = !!(urlValid && tokenValid);
   
   // Always log for now (for debugging the Vercel issue)
-  console.log('🔧 Supabase Configuration Check:', {
+  console.log('🔧 Turso Configuration Check:', {
     configured: configured,
     url: url ? `${url.substring(0, 30)}...` : 'NOT_FOUND',
     urlLength: url?.length || 0,
     urlValid: urlValid,
-    key: key ? `${key.substring(0, 20)}...` : 'NOT_FOUND', 
-    keyLength: key?.length || 0,
-    keyValid: keyValid,
+    token: token ? `${token.substring(0, 20)}...` : 'NOT_FOUND', 
+    tokenLength: token?.length || 0,
+    tokenValid: tokenValid,
     allAvailableEnvVars: Object.keys(import.meta.env),
     platform: 'Vercel Build'
   });
@@ -78,23 +78,23 @@ export const isSupabaseConfigured = (): boolean => {
   return configured;
 };
 
-export const getSupabaseConfig = () => {
-  const url = databaseConfig.supabaseUrl;
-  const anonKey = databaseConfig.supabaseAnonKey;
+export const getTursoConfig = () => {
+  const url = databaseConfig.tursoUrl;
+  const token = databaseConfig.tursoToken;
   
-  if (!url || !anonKey) {
+  if (!url || !token) {
     return {
       available: false,
       url: '',
-      anonKey: '',
-      error: 'Supabase configuration is missing. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.'
+      token: '',
+      error: 'Turso configuration is missing. Please set VITE_TURSO_DATABASE_URL and VITE_TURSO_AUTH_TOKEN environment variables.'
     };
   }
   
   return {
     available: true,
     url,
-    anonKey,
+    token,
     error: null
   };
 };
@@ -102,8 +102,8 @@ export const getSupabaseConfig = () => {
 // Environment variables validation
 export const validateEnvironment = (): { valid: boolean; missing: string[]; warnings: string[] } => {
   const requiredEnvVars = [
-    'VITE_SUPABASE_URL',
-    'VITE_SUPABASE_ANON_KEY'
+    'VITE_TURSO_DATABASE_URL',
+    'VITE_TURSO_AUTH_TOKEN'
   ];
   
   const missingVars = requiredEnvVars.filter(
@@ -115,11 +115,11 @@ export const validateEnvironment = (): { valid: boolean; missing: string[]; warn
   if (missingVars.length > 0) {
     warnings.push(
       `📊 Database mode: IndexedDB only (local storage)\n` +
-      `Missing Supabase variables: ${missingVars.join(', ')}\n` +
+      `Missing Turso variables: ${missingVars.join(', ')}\n` +
       `Cloud sync is disabled but the app works perfectly with local storage.\n` +
       `To enable cloud sync, add these variables to a .env file:\n` +
-      `VITE_SUPABASE_URL=your_supabase_url\n` +
-      `VITE_SUPABASE_ANON_KEY=your_supabase_anon_key`
+      `VITE_TURSO_DATABASE_URL=your_turso_url\n` +
+      `VITE_TURSO_AUTH_TOKEN=your_turso_token`
     );
   }
   
@@ -160,7 +160,7 @@ if (isDevelopment()) {
         'all features available. Set VITE_DEBUG_DB=true for detailed info.'
       );
     } else {
-      console.log('✅ Database: Running with Supabase cloud sync enabled');
+      console.log('✅ Database: Running with Turso cloud sync enabled');
     }
   }
 }

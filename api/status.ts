@@ -1,19 +1,19 @@
-// Endpoint simple para verificar el estado de la aplicación - VERSIÓN SIMPLIFICADA
+// Endpoint simple para verificar el estado de la aplicación - VERSIÓN TURSO
 export default async function handler(_request: Request) {
   try {
     // Respuesta inmediata sin logs pesados
-    const hasSupabaseUrl = !!(process.env.VITE_SUPABASE_URL);
-    const hasSupabaseKey = !!(process.env.VITE_SUPABASE_ANON_KEY);
+    const hasTursoUrl = !!(process.env.VITE_TURSO_DATABASE_URL);
+    const hasTursoToken = !!(process.env.VITE_TURSO_AUTH_TOKEN);
     
     const response = {
       status: 'ok',
       timestamp: new Date().toISOString(),
-      supabase: {
-        configured: hasSupabaseUrl && hasSupabaseKey,
-        urlConfigured: hasSupabaseUrl,
-        keyConfigured: hasSupabaseKey,
-        urlLength: process.env.VITE_SUPABASE_URL?.length || 0,
-        keyLength: process.env.VITE_SUPABASE_ANON_KEY?.length || 0
+      turso: {
+        configured: hasTursoUrl && hasTursoToken,
+        urlConfigured: hasTursoUrl,
+        tokenConfigured: hasTursoToken,
+        urlLength: process.env.VITE_TURSO_DATABASE_URL?.length || 0,
+        tokenLength: process.env.VITE_TURSO_AUTH_TOKEN?.length || 0
       }
     };
     

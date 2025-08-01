@@ -1,13 +1,12 @@
 export interface DatabaseConfig {
-  supabaseUrl: string;
-  supabaseAnonKey: string;
+  tursoUrl: string;
+  tursoToken: string;
   enableSync: boolean;
   syncInterval: number;
 }
 
 export interface DBRecord {
   id: string;
-  user_id?: string;
   content_type: string;
   content_data: any;
   created_at?: string;

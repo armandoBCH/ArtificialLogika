@@ -1,28 +1,26 @@
-import { createClient } from '@supabase/supabase-js';
+import { turso } from '../db/turso';
 
 // Verificar configuración de variables de entorno
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+const tursoUrl = process.env.VITE_TURSO_DATABASE_URL;
+const tursoToken = process.env.VITE_TURSO_AUTH_TOKEN;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables:');
-  console.error('VITE_SUPABASE_URL:', supabaseUrl ? 'SET' : 'MISSING');
-  console.error('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'SET' : 'MISSING');
+if (!tursoUrl || !tursoToken) {
+  console.error('Missing Turso environment variables:');
+  console.error('VITE_TURSO_DATABASE_URL:', tursoUrl ? 'SET' : 'MISSING');
+  console.error('VITE_TURSO_AUTH_TOKEN:', tursoToken ? 'SET' : 'MISSING');
 }
-
-const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
 
 export default async function handler(request: Request) {
   const method = request.method;
 
   // Verificar configuración antes de proceder
-  if (!supabaseUrl || !supabaseAnonKey) {
+  if (!tursoUrl || !tursoToken) {
     return new Response(JSON.stringify({
-      error: 'Supabase configuration missing',
-      details: 'Configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables in Vercel',
+      error: 'Turso configuration missing',
+      details: 'Configure VITE_TURSO_DATABASE_URL and VITE_TURSO_AUTH_TOKEN environment variables in Vercel',
       configured: {
-        url: !!supabaseUrl,
-        key: !!supabaseAnonKey
+        url: !!tursoUrl,
+        token: !!tursoToken
       }
     }), {
       status: 500,
@@ -34,16 +32,21 @@ export default async function handler(request: Request) {
     switch (method) {
       case 'GET': {
         // Obtener todo el contenido
-        const { data: getAllData, error: getAllError } = await supabase
-          .from('content')
-          .select('*')
-          .order('created_at', { ascending: false });
+        const result = await turso.execute('SELECT * FROM content ORDER BY created_at DESC');
         
-        if (getAllError) {
-          console.error('Supabase GET error:', getAllError);
-          throw getAllError;
+        if (!result.rows) {
+          throw new Error('Failed to fetch data from Turso');
         }
-        return new Response(JSON.stringify(getAllData || []), {
+        
+        const contentItems = result.rows.map(row => ({
+          id: row.id,
+          content_type: row.content_type,
+          content_data: JSON.parse(row.content_data),
+          created_at: row.created_at,
+          updated_at: row.updated_at
+        }));
+        
+        return new Response(JSON.stringify(contentItems), {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
@@ -53,22 +56,19 @@ export default async function handler(request: Request) {
         const body = await request.json();
         const { content_type, content_data, id } = body;
         
-        const { data: createData, error: createError } = await supabase
-          .from('content')
-          .insert([{
-            id: id || `${content_type}-${Date.now()}`,
-            content_type,
-            content_data,
-            user_id: null // Permitir null para contenido público
-          }])
-          .select()
-          .single();
-
-        if (createError) {
-          console.error('Supabase POST error:', createError);
-          throw createError;
+        const contentId = id || `${content_type}-${Date.now()}`;
+        const contentData = JSON.stringify(content_data);
+        
+        const result = await turso.execute({
+          sql: 'INSERT INTO content (id, content_type, content_data) VALUES (?, ?, ?)',
+          args: [contentId, content_type, contentData]
+        });
+        
+        if (!result.rowsAffected || result.rowsAffected === 0) {
+          throw new Error('Failed to insert data into Turso');
         }
-        return new Response(JSON.stringify(createData), {
+        
+        return new Response(JSON.stringify({ id: contentId, success: true }), {
           status: 201,
           headers: { 'Content-Type': 'application/json' }
         });
@@ -78,21 +78,18 @@ export default async function handler(request: Request) {
         const updateBody = await request.json();
         const { id: updateId, content_data: updateData } = updateBody;
         
-        const { data: updateResult, error: updateError } = await supabase
-          .from('content')
-          .update({ 
-            content_data: updateData,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', updateId)
-          .select()
-          .single();
-
-        if (updateError) {
-          console.error('Supabase PUT error:', updateError);
-          throw updateError;
+        const contentData = JSON.stringify(updateData);
+        
+        const result = await turso.execute({
+          sql: 'UPDATE content SET content_data = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+          args: [contentData, updateId]
+        });
+        
+        if (!result.rowsAffected || result.rowsAffected === 0) {
+          throw new Error('Failed to update data in Turso');
         }
-        return new Response(JSON.stringify(updateResult), {
+        
+        return new Response(JSON.stringify({ id: updateId, success: true }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
@@ -102,15 +99,15 @@ export default async function handler(request: Request) {
         const deleteBody = await request.json();
         const { id: deleteId } = deleteBody;
         
-        const { error: deleteError } = await supabase
-          .from('content')
-          .delete()
-          .eq('id', deleteId);
-
-        if (deleteError) {
-          console.error('Supabase DELETE error:', deleteError);
-          throw deleteError;
+        const result = await turso.execute({
+          sql: 'DELETE FROM content WHERE id = ?',
+          args: [deleteId]
+        });
+        
+        if (!result.rowsAffected || result.rowsAffected === 0) {
+          throw new Error('Failed to delete data from Turso');
         }
+        
         return new Response(JSON.stringify({ success: true }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
@@ -127,39 +124,39 @@ export default async function handler(request: Request) {
         });
     }
   } catch (error: any) {
-    console.error('Content API Error:', error);
+    console.error('Turso API Error:', error);
     
     // Determinar el tipo de error
     let errorMessage = 'Database operation failed';
     let errorDetails = error.message || 'Unknown error';
     let statusCode = 500;
     
-    if (error.code === 'PGRST116') {
-      errorMessage = 'No content found';
-      errorDetails = 'The requested content does not exist';
-      statusCode = 404;
-    } else if (error.code === '23505') {
+    if (error.message?.includes('no such table')) {
+      errorMessage = 'Table not found';
+      errorDetails = 'The content table does not exist in Turso';
+      statusCode = 503;
+    } else if (error.message?.includes('UNIQUE constraint failed')) {
       errorMessage = 'Duplicate content';
       errorDetails = 'Content with this ID already exists';
       statusCode = 409;
-    } else if (error.message?.includes('Supabase configuration missing')) {
+    } else if (error.message?.includes('Turso configuration missing')) {
       errorMessage = 'Configuration error';
-      errorDetails = 'Supabase is not properly configured';
+      errorDetails = 'Turso is not properly configured';
       statusCode = 503;
-    } else if (!supabaseUrl || !supabaseAnonKey) {
+    } else if (!tursoUrl || !tursoToken) {
       errorMessage = 'Environment variables missing';
-      errorDetails = 'VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are required';
+      errorDetails = 'VITE_TURSO_DATABASE_URL and VITE_TURSO_AUTH_TOKEN are required';
       statusCode = 503;
     }
     
     return new Response(JSON.stringify({ 
       error: errorMessage,
       details: errorDetails,
-      hint: 'Check Supabase configuration and table setup',
+      hint: 'Check Turso configuration and table setup',
       timestamp: new Date().toISOString(),
       env: {
-        urlConfigured: !!supabaseUrl,
-        keyConfigured: !!supabaseAnonKey
+        urlConfigured: !!tursoUrl,
+        tokenConfigured: !!tursoToken
       }
     }), {
       status: statusCode,
