@@ -102,6 +102,29 @@
   - Sistema híbrido robusto que nunca falla
 - **Lección**: Siempre usar acceso defensivo a objetos globales como `import.meta.env`
 
+#### 10. **Error de Vercel Function Runtimes (RESUELTO)**
+- **Problema**: `Error: Function Runtimes must have a valid version, for example 'now-php@1.0.0'`
+- **Error**: Vercel build falla por configuración incorrecta de funciones serverless en vercel.json
+- **Causa**: 
+  - Configuración `"runtime": "nodejs18.x"` incorrecta en vercel.json
+  - Carpeta `/api` con archivo serverless innecesario para proyecto frontend puro
+  - Vercel detecta proyecto como fullstack cuando es solo SPA
+- **Solución**:
+  - Eliminar sección `"functions"` completa del vercel.json
+  - Marcar archivos de `/api` como eliminados (ya no necesarios con sistema híbrido)
+  - Configurar vercel.json solo para SPA (Single Page Application)
+  - Añadir headers de seguridad adicionales
+- **Configuración correcta vercel.json**:
+  ```json
+  {
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist", 
+    "framework": "vite",
+    "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  }
+  ```
+- **Lección**: Para proyectos frontend puros, no incluir configuración de funciones serverless
+
 ### 🔧 CONFIGURACIONES CRÍTICAS
 
 #### **Variables de Entorno (Solo Vercel)**
@@ -134,6 +157,25 @@ VITE_DEBUG_DB=false
     
     "tailwindcss": "^3.4.0"  // NO usar V4 alpha
   }
+}
+```
+
+#### **vercel.json**
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ]
+  // ❌ NO incluir sección "functions" para proyecto SPA
 }
 ```
 
@@ -303,6 +345,8 @@ css: {
 - [ ] **Verificar imports correctos** (framer-motion, no motion/react)
 - [ ] **Eliminar variables e imports no utilizados**
 - [ ] **Verificar override de estilos** en componentes base según guidelines
+- [ ] **Verificar vercel.json**: Sin configuración de funciones para proyecto SPA
+- [ ] **Confirmar carpeta /api marcada como eliminada**: No necesaria con sistema híbrido
 - [ ] **Build local exitoso**: `npm run build` (funciona con IndexedDB sin variables)
 - [ ] **Commit y push a GitHub**
 - [ ] **Deploy automático en Vercel** (variables se aplican automáticamente)
