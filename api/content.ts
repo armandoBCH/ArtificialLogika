@@ -118,4 +118,52 @@ export default async function handler(request: Request) {
       }
 
       default:
-        return new Response(`
+        return new Response(`Method ${method} Not Allowed`, {
+          status: 405,
+          headers: { 
+            'Allow': 'GET, POST, PUT, DELETE',
+            'Content-Type': 'text/plain'
+          }
+        });
+    }
+  } catch (error: any) {
+    console.error('Content API Error:', error);
+    
+    // Determinar el tipo de error
+    let errorMessage = 'Database operation failed';
+    let errorDetails = error.message || 'Unknown error';
+    let statusCode = 500;
+    
+    if (error.code === 'PGRST116') {
+      errorMessage = 'No content found';
+      errorDetails = 'The requested content does not exist';
+      statusCode = 404;
+    } else if (error.code === '23505') {
+      errorMessage = 'Duplicate content';
+      errorDetails = 'Content with this ID already exists';
+      statusCode = 409;
+    } else if (error.message?.includes('Supabase configuration missing')) {
+      errorMessage = 'Configuration error';
+      errorDetails = 'Supabase is not properly configured';
+      statusCode = 503;
+    } else if (!supabaseUrl || !supabaseAnonKey) {
+      errorMessage = 'Environment variables missing';
+      errorDetails = 'VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are required';
+      statusCode = 503;
+    }
+    
+    return new Response(JSON.stringify({ 
+      error: errorMessage,
+      details: errorDetails,
+      hint: 'Check Supabase configuration and table setup',
+      timestamp: new Date().toISOString(),
+      env: {
+        urlConfigured: !!supabaseUrl,
+        keyConfigured: !!supabaseAnonKey
+      }
+    }), {
+      status: statusCode,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+}
