@@ -1,59 +1,72 @@
--- Enable RLS (Row Level Security)
-alter table if exists public.content enable row level security;
+-- Esquema de base de datos para Supabase
+-- Ejecutar en Supabase SQL Editor
 
--- Create content table if it doesn't exist
-create table if not exists public.content (
-  id text primary key,
-  user_id uuid references auth.users(id) default auth.uid(),
-  content_type text not null,
-  content_data jsonb not null,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
+-- Crear tabla de contenido
+CREATE TABLE IF NOT EXISTS public.content (
+  id text PRIMARY KEY,
+  user_id uuid REFERENCES auth.users(id) DEFAULT auth.uid(),
+  content_type text NOT NULL,
+  content_data jsonb NOT NULL DEFAULT '{}',
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
 );
 
--- Create or replace function to automatically update updated_at
-create or replace function public.handle_updated_at()
-returns trigger as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$ language plpgsql;
+-- Crear índices para mejor performance
+CREATE INDEX IF NOT EXISTS idx_content_type ON public.content(content_type);
+CREATE INDEX IF NOT EXISTS idx_content_created_at ON public.content(created_at);
+CREATE INDEX IF NOT EXISTS idx_content_updated_at ON public.content(updated_at);
 
--- Create trigger for updated_at
-drop trigger if exists content_updated_at on public.content;
-create trigger content_updated_at
-  before update on public.content
-  for each row
-  execute function public.handle_updated_at();
+-- Habilitar Row Level Security (RLS)
+ALTER TABLE public.content ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies
--- Allow users to read their own content or public content
-create policy "Users can read own content" on public.content
-  for select
-  using (auth.uid() = user_id or user_id is null);
+-- Políticas de seguridad
+-- Permitir lectura pública (para contenido de landing page)
+CREATE POLICY "Allow public read access" ON public.content
+  FOR SELECT USING (true);
 
--- Allow users to insert their own content
-create policy "Users can insert own content" on public.content
-  for insert
-  with check (auth.uid() = user_id or user_id is null);
+-- Permitir inserción/actualización solo a usuarios autenticados
+CREATE POLICY "Allow authenticated users to insert" ON public.content
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
--- Allow users to update their own content
-create policy "Users can update own content" on public.content
-  for update
-  using (auth.uid() = user_id or user_id is null);
+CREATE POLICY "Allow authenticated users to update" ON public.content
+  FOR UPDATE USING (auth.role() = 'authenticated');
 
--- Allow users to delete their own content
-create policy "Users can delete own content" on public.content
-  for delete
-  using (auth.uid() = user_id or user_id is null);
+CREATE POLICY "Allow authenticated users to delete" ON public.content
+  FOR DELETE USING (auth.role() = 'authenticated');
 
--- Create index for better performance
-create index if not exists content_user_id_idx on public.content(user_id);
-create index if not exists content_type_idx on public.content(content_type);
-create index if not exists content_updated_at_idx on public.content(updated_at desc);
+-- Función para actualizar updated_at automáticamente
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
 
--- Grant permissions
-grant usage on schema public to anon, authenticated;
-grant all on public.content to anon, authenticated;
-grant usage, select on all sequences in schema public to anon, authenticated;
+-- Trigger para actualizar updated_at
+CREATE TRIGGER update_content_updated_at 
+  BEFORE UPDATE ON public.content 
+  FOR EACH ROW 
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- Insertar datos de ejemplo (opcional)
+INSERT INTO public.content (id, content_type, content_data) VALUES
+(
+  'hero',
+  'hero',
+  '{
+    "title": "Transformamos",
+    "dynamicTexts": ["páginas web", "ecommerce", "landing pages", "chatbots", "asistentes de IA", "automatizaciones"],
+    "subtitle": "en ventaja competitiva",
+    "description": "Desarrollamos soluciones digitales completas desde cero para PyMEs que valoran la calidad y la innovación por encima del precio más bajo.",
+    "ctaText": "Descubre cómo",
+    "ctaTextLong": "Descubre cómo podemos ayudarte",
+    "trustText": "Más de 15 proyectos entregados con éxito",
+    "features": ["Autogestionable", "Mobile First", "SEO Optimizado"],
+    "stats": [
+      {"number": "100%", "label": "Autogestionable", "sublabel": "Sin dependencias técnicas"},
+      {"number": "24h", "label": "Tiempo respuesta", "sublabel": "Consultas y soporte"},
+      {"number": "15+", "label": "Proyectos exitosos", "sublabel": "PyMEs satisfechas"}
+    ]
+  }'::jsonb
+) ON CONFLICT (id) DO NOTHING;

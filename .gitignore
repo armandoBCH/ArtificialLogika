@@ -49,3 +49,4 @@ coverage/
 # OS generated files
 Thumbs.db
 ehthumbs.db
+.vercel

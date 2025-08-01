@@ -6,9 +6,10 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    /* Module resolution */
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -37,7 +38,8 @@
     "contexts/**/*", 
     "hooks/**/*",
     "pages/**/*",
-    "App.tsx"
+    "App.tsx",
+    "api/**/*"
   ],
   "exclude": [
     "node_modules",

@@ -2,43 +2,36 @@
 export default async function handler(request: Request) {
   try {
     // Verificar que las variables de entorno están disponibles en el servidor
-    const supabaseUrl = process.env.VITE_SUPABASE_URL;
-    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
     
-    // Información de debug (sin exponer datos sensibles)
+    // Respuesta simplificada y rápida
     const response = {
+      status: 'ok',
       timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'unknown',
-      vercel: {
-        region: process.env.VERCEL_REGION || 'unknown',
-        env: process.env.VERCEL_ENV || 'unknown'
-      },
       supabase: {
         urlConfigured: !!supabaseUrl,
-        urlValid: supabaseUrl ? supabaseUrl.includes('.supabase.co') : false,
         keyConfigured: !!supabaseKey,
-        keyValid: supabaseKey ? supabaseKey.length > 50 : false,
-        urlPrefix: supabaseUrl ? supabaseUrl.substring(0, 30) + '...' : 'NOT_FOUND',
-        keyLength: supabaseKey ? supabaseKey.length : 0
-      },
-      allEnvKeys: Object.keys(process.env).filter(key => 
-        key.startsWith('VITE_') || 
-        key.startsWith('VERCEL_') || 
-        key === 'NODE_ENV'
-      )
+        urlValid: supabaseUrl ? supabaseUrl.includes('.supabase.co') : false
+      }
     };
     
     return new Response(JSON.stringify(response), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
+      }
     });
   } catch (error) {
     return new Response(JSON.stringify({ 
-      error: 'Failed to check environment',
-      message: (error as Error).message 
+      status: 'error',
+      message: 'Failed to check environment'
     }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json'
+      }
     });
   }
 }

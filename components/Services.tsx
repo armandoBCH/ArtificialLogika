@@ -110,9 +110,9 @@ const Services: React.FC = () => {
                         <IconComponent className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                       </div>
                       <div className="text-right">
-                        <div className="text-xs text-muted-foreground mb-1">Beneficio típico</div>
+                        <div className="text-xs text-muted-foreground mb-1">{service?.benefitTitle || "Beneficio típico"}</div>
                         <div className="text-sm font-bold text-primary">
-                          {service?.roi || "Consultar"}
+                          {service?.benefitValue || service?.roi || "Consultar"}
                         </div>
                       </div>
                     </div>
@@ -132,7 +132,7 @@ const Services: React.FC = () => {
                         <span className="text-sm font-medium text-primary">Qué consigues</span>
                       </div>
                       <p className="text-sm font-semibold text-white">
-                        {service?.businessValue || "Genera valor para tu negocio"}
+                        {service?.whatYouGet || service?.businessValue || "Genera valor para tu negocio"}
                       </p>
                     </div>
 
@@ -174,7 +174,7 @@ const Services: React.FC = () => {
                       className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300 group/btn"
                     >
                       <span className="flex items-center justify-center gap-2">
-                        <span>Quiero esto</span>
+                        <span>{service?.cta || "Quiero esto"}</span>
                         <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                       </span>
                     </Button>

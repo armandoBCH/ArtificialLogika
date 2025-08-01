@@ -356,6 +356,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
         console.log('API not available, using default content');
         setContent(getDefaultContent());
         setError('Aplicación funcionando en modo demo. Para configurar el sistema de administración, accede a /admin y sigue las instrucciones.');
+        setLoading(false);
         return;
       }
 
@@ -368,6 +369,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
             console.log('Supabase not configured, using default content');
             setContent(getDefaultContent());
             setError('Aplicación funcionando en modo demo. Para configurar el sistema de administración, accede a /admin y sigue las instrucciones.');
+            setLoading(false);
             return;
           }
         }
@@ -381,6 +383,7 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
         console.log('No content found in database, using default content');
         setContent(getDefaultContent());
         setError('Usando contenido por defecto. Configura Supabase para habilitar edición.');
+        setLoading(false);
         return;
       }
       

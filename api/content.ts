@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Verificar configuración de variables de entorno
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables:');
@@ -127,12 +127,33 @@ export default async function handler(request: Request) {
     }
   } catch (error: any) {
     console.error('Content API Error:', error);
+    
+    // Determinar el tipo de error
+    let errorMessage = 'Database operation failed';
+    let errorDetails = error.message || 'Unknown error';
+    let statusCode = 500;
+    
+    if (error.code === 'PGRST116') {
+      errorMessage = 'No content found';
+      errorDetails = 'The requested content does not exist';
+      statusCode = 404;
+    } else if (error.code === '23505') {
+      errorMessage = 'Duplicate content';
+      errorDetails = 'Content with this ID already exists';
+      statusCode = 409;
+    } else if (error.message?.includes('Supabase configuration missing')) {
+      errorMessage = 'Configuration error';
+      errorDetails = 'Supabase is not properly configured';
+      statusCode = 503;
+    }
+    
     return new Response(JSON.stringify({ 
-      error: 'Database operation failed',
-      details: error.message || 'Unknown error',
-      hint: 'Check Supabase configuration and table setup'
+      error: errorMessage,
+      details: errorDetails,
+      hint: 'Check Supabase configuration and table setup',
+      timestamp: new Date().toISOString()
     }), {
-      status: 500,
+      status: statusCode,
       headers: { 'Content-Type': 'application/json' }
     });
   }
