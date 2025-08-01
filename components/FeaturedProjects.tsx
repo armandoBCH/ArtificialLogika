@@ -133,7 +133,7 @@ const FeaturedProjects: React.FC = () => {
 
           {/* Contenido del proyecto */}
           <div className="relative h-[600px] md:h-[500px]">
-            <AnimatePresence mode="wait" custom={direction}>
+            <AnimatePresence initial={false} custom={direction} mode="wait">
               <motion.div
                 key={currentProject}
                 custom={direction}

@@ -1,5 +1,5 @@
 // Esquemas y tipos para la base de datos IndexedDB
-import { DB_CONFIG, type DBRecord } from './config';
+import { type DBRecord } from './types';
 
 // Esquema de información de la empresa
 export interface CompanyInfo {

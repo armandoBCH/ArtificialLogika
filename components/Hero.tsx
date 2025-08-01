@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { ChevronRight, Sparkles, Clock } from 'lucide-react';
@@ -11,13 +11,13 @@ const Hero: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   
-  const dynamicTexts = content.hero?.dynamicTexts || [
+  const dynamicTexts = useMemo(() => content.hero?.dynamicTexts || [
     "páginas web",
     "ecommerce", 
     "landing pages",
     "chatbots",
     "asistentes de IA"
-  ];
+  ], [content.hero?.dynamicTexts]);
 
   useEffect(() => {
     const currentText = dynamicTexts[currentTextIndex];

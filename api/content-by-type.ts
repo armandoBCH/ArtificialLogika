@@ -19,7 +19,7 @@ export default async function handler(request: Request) {
 
   try {
     switch (method) {
-      case 'GET':
+      case 'GET': {
         // Obtener contenido por tipo
         const { data: getTypeData, error: getTypeError } = await supabase
           .from('content')
@@ -32,8 +32,8 @@ export default async function handler(request: Request) {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
-
-      case 'POST':
+      }
+      case 'POST': {
         // Crear o actualizar contenido de un tipo específico
         const body = await request.json();
         const { content_data, id } = body;
@@ -57,6 +57,7 @@ export default async function handler(request: Request) {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
+      }
 
       default:
         return new Response(`Method ${method} Not Allowed`, {

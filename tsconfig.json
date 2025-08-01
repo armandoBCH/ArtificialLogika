@@ -39,13 +39,14 @@
     "hooks/**/*",
     "pages/**/*",
     "App.tsx",
-    "api/**/*"
+    "main.tsx",
+    "db/**/*",
+    "api/**/*",
+    "vite-env.d.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "*.config.ts",
-    "*.config.js"
+    "dist"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

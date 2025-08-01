@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Card } from './ui/card';
 import { Quote, Star } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback } from './ui/avatar';
 
 const testimonials = [
   {
@@ -95,7 +95,7 @@ const Testimonials: React.FC = () => {
                 {/* Author info */}
                 <div className="relative z-10 flex items-center gap-4">
                   <Avatar className="w-12 h-12 border-2 border-primary/20">
-                    <AvatarImage src={testimonial.avatar} alt={testimonial.author} />
+                    {/* Usar AvatarFallback directamente para evitar problemas con imágenes de Unsplash */}
                     <AvatarFallback>{testimonial.author.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                   </Avatar>
                   

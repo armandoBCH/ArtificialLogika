@@ -32,7 +32,7 @@ export default async function handler(request: Request) {
 
   try {
     switch (method) {
-      case 'GET':
+      case 'GET': {
         // Obtener todo el contenido
         const { data: getAllData, error: getAllError } = await supabase
           .from('content')
@@ -47,8 +47,8 @@ export default async function handler(request: Request) {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
-
-      case 'POST':
+      }
+      case 'POST': {
         // Crear nuevo contenido
         const body = await request.json();
         const { content_type, content_data, id } = body;
@@ -72,8 +72,8 @@ export default async function handler(request: Request) {
           status: 201,
           headers: { 'Content-Type': 'application/json' }
         });
-
-      case 'PUT':
+      }
+      case 'PUT': {
         // Actualizar contenido existente
         const updateBody = await request.json();
         const { id: updateId, content_data: updateData } = updateBody;
@@ -96,8 +96,8 @@ export default async function handler(request: Request) {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
-
-      case 'DELETE':
+      }
+      case 'DELETE': {
         // Eliminar contenido
         const deleteBody = await request.json();
         const { id: deleteId } = deleteBody;
@@ -115,6 +115,7 @@ export default async function handler(request: Request) {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
+      }
 
       default:
         return new Response(`Method ${method} Not Allowed`, {
