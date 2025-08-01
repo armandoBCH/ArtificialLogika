@@ -87,7 +87,7 @@ const Services: React.FC = () => {
             </div>
           ) : (
             // Services loaded
-            (content.services || []).map((service, index) => {
+            (content.services || []).map((service: any, index: number) => {
             const IconComponent = iconMap[service?.icon as keyof typeof iconMap] || Globe;
             
             return (
@@ -143,7 +143,7 @@ const Services: React.FC = () => {
                         Incluye:
                       </h4>
                       <ul className="space-y-2">
-                        {(service?.features || []).slice(0, 4).map((feature, featureIndex) => (
+                        {(service?.features || []).slice(0, 4).map((feature: any, featureIndex: number) => (
                           <motion.li
                             key={featureIndex}
                             className="flex items-start gap-3"

@@ -181,7 +181,7 @@ const Hero: React.FC = () => {
             { number: "100%", label: "Autogestionable", sublabel: "Sin dependencias técnicas" },
             { number: "24h", label: "Tiempo respuesta", sublabel: "Consultas y soporte" },
             { number: "15+", label: "Proyectos exitosos", sublabel: "PyMEs satisfechas" }
-          ]).map((stat, index) => (
+          ]).map((stat: any, index: number) => (
             <motion.div
               key={index}
               className="text-center p-4 sm:p-6 bg-card/30 backdrop-blur-sm rounded-xl border border-border/50"

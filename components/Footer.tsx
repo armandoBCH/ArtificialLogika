@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
                 {firstName} <span className="text-primary">{lastName}</span>
               </h3>
               <p className="text-muted-foreground leading-relaxed max-w-md">
-                {content.footerDescription || "Desarrollo páginas web, ecommerce, chatbots y automatizaciones desde cero. Soluciones 100% autogestionables que transforman negocios."}
+                {(content.footerDescription as string) || "Desarrollo páginas web, ecommerce, chatbots y automatizaciones desde cero. Soluciones 100% autogestionables que transforman negocios."}
               </p>
             </div>
             
@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
           >
             <h4 className="text-lg font-semibold text-white mb-4">Servicios</h4>
             <ul className="space-y-2">
-              {content.services?.map((service, index) => (
+              {(content.services as any[])?.map((service: any, index: number) => (
                 <li key={index}>
                   <a 
                     href="#servicios" 

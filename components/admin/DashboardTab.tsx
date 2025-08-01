@@ -9,8 +9,7 @@ import {
   ShoppingBag,
   ArrowLeft,
   Cloud,
-  HardDrive,
-  CheckCircle,
+
   XCircle
 } from 'lucide-react';
 import { useEditableContent } from '../../contexts/EditableContentContext';
@@ -24,11 +23,9 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
   const { content, error, isOnline } = useEditableContent();
   const { navigateTo } = useRouter();
   
-  // Verificar si Supabase está configurado (simple check)
-  const supabaseConfigured = !!(
-    import.meta.env.VITE_SUPABASE_URL && 
-    import.meta.env.VITE_SUPABASE_ANON_KEY
-  );
+  // Verificar si Supabase está configurado (a través del estado de error)
+  // En producción las variables de entorno no están disponibles en el cliente
+  const supabaseConfigured = !error || error.includes('demo');
   
   // Status simplificado para la nueva arquitectura API-only
   const dbStatus = {

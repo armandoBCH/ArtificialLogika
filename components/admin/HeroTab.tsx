@@ -24,7 +24,7 @@ const HeroTab: React.FC = () => {
   };
 
   const removeDynamicText = (index: number) => {
-    const updatedTexts = content.hero.dynamicTexts.filter((_, i) => i !== index);
+    const updatedTexts = content.hero.dynamicTexts.filter((_: any, i: number) => i !== index);
     handleSave('hero', { ...content.hero, dynamicTexts: updatedTexts });
   };
 
@@ -45,7 +45,7 @@ const HeroTab: React.FC = () => {
   };
 
   const removeStat = (index: number) => {
-    const updatedStats = content.hero.stats.filter((_, i) => i !== index);
+    const updatedStats = content.hero.stats.filter((_: any, i: number) => i !== index);
     handleSave('hero', { ...content.hero, stats: updatedStats });
   };
 

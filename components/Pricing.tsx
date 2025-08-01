@@ -60,7 +60,7 @@ const Pricing: React.FC = () => {
 
   const calculateEstimate = () => {
     const customServices = content.pricing?.customServices || [];
-    const selectedItems = customServices.filter(service => 
+    const selectedItems = customServices.filter((service: any) => 
       selectedServices.includes(service.id)
     );
     
@@ -78,7 +78,7 @@ const Pricing: React.FC = () => {
     let hasInfrastructureService = false;
     let hasSupabaseService = false;
     
-    selectedItems.forEach(item => {
+    selectedItems.forEach((item: any) => {
       if (item.developmentPrice !== 'Consultar') {
         developmentTotal += parseInt(item.developmentPrice.replace(/\./g, ''));
       }
@@ -212,7 +212,7 @@ const Pricing: React.FC = () => {
 
         {/* Value-first plans */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-          {(content.pricing?.plans || []).map((plan, index) => {
+          {(content.pricing?.plans || []).map((plan: any, index: number) => {
             const IconComponent = iconMap[plan.icon as keyof typeof iconMap] || Calendar;
             
             return (
@@ -282,7 +282,7 @@ const Pricing: React.FC = () => {
                         Incluye:
                       </h4>
                       <ul className="space-y-3">
-                        {plan.outcomes.map((outcome, outcomeIndex) => (
+                        {plan.outcomes.map((outcome: any, outcomeIndex: number) => (
                           <motion.li
                             key={outcomeIndex}
                             className="flex items-start gap-3"
@@ -351,7 +351,7 @@ const Pricing: React.FC = () => {
         >
           <Card className="bg-gradient-to-br from-card via-card to-primary/5 border-border/50 p-8 sm:p-12 max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-              {settings.benefits.map((benefit, index) => {
+              {settings.benefits.map((benefit: any, index: number) => {
                 const BenefitIcon = iconMap[benefit.icon as keyof typeof iconMap] || Server;
                 
                 return (
@@ -442,7 +442,7 @@ const Pricing: React.FC = () => {
               </p>
 
               <div className="space-y-6 mb-6">
-                {(content.pricing?.customServices || []).map((service) => {
+                {(content.pricing?.customServices || []).map((service: any) => {
                   const ServiceIcon = iconMap[service.icon as keyof typeof iconMap] || Settings;
                   const isExpanded = expandedService === service.id;
                   
@@ -489,7 +489,7 @@ const Pricing: React.FC = () => {
                                   </Badge>
                                 )}
                                 {getDatabaseBadge(service.databaseType)}
-                                {service.customBadges?.map((badge) => (
+                                {service.customBadges?.map((badge: any) => (
                                   <Badge 
                                     key={badge.id} 
                                     variant="secondary" 
@@ -560,7 +560,7 @@ const Pricing: React.FC = () => {
                                     Secciones incluidas:
                                   </h5>
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    {service.sections.map((section, index) => (
+                                    {service.sections.map((section: any, index: number) => (
                                       <div key={index} className="flex items-start gap-2 bg-muted/20 rounded-lg p-2">
                                         <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                                         <span className="text-xs text-muted-foreground">{section}</span>
@@ -576,7 +576,7 @@ const Pricing: React.FC = () => {
                                     Características técnicas:
                                   </h5>
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    {service.features.map((feature, index) => (
+                                    {service.features.map((feature: any, index: number) => (
                                       <div key={index} className="flex items-start gap-2">
                                         <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
                                         <span className="text-xs text-muted-foreground">{feature}</span>
@@ -596,7 +596,7 @@ const Pricing: React.FC = () => {
                                 Infraestructura incluida:
                               </h6>
                               <ul className="space-y-1">
-                                {service.infrastructureDetails.map((detail, index) => (
+                                {service.infrastructureDetails.map((detail: any, index: number) => (
                                   <li key={index} className="text-xs text-muted-foreground">
                                     • {detail}
                                   </li>
@@ -702,8 +702,8 @@ const Pricing: React.FC = () => {
                 <Button
                   onClick={() => {
                     setShowCustomizer(false);
-                    const selectedItems = content.pricing.customServices.filter(service => selectedServices.includes(service.id));
-                    const serviceNames = selectedItems.map(item => item.name).join(', ');
+                    const selectedItems = content.pricing.customServices.filter((service: any) => selectedServices.includes(service.id));
+                    const serviceNames = selectedItems.map((item: any) => item.name).join(', ');
                     const estimate = calculateEstimate();
                     const message = `¡Hola! Me interesa solicitar un presupuesto oficial para: ${serviceNames}
 
