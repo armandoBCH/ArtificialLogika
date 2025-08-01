@@ -1,7 +1,7 @@
 # 🔧 Configuración de Variables de Entorno en Vercel
 
-## 🚨 PROBLEMA ACTUAL
-Las variables de entorno no están siendo detectadas correctamente por la aplicación en Vercel.
+## 🚨 PROBLEMA RESUELTO
+Los timeouts en el endpoint `/api/check-env` han sido solucionados. Ahora se usa `/api/status` que es más eficiente.
 
 ## 📋 PASOS PARA SOLUCIONAR
 
@@ -64,18 +64,18 @@ Después de configurar las variables:
 
 ### Verificar Variables en Vercel
 ```bash
-# Ejecutar el script de verificación
-node vercel-env-check.js
+# Probar el nuevo endpoint
+curl https://artificial-logika.vercel.app/api/status
 ```
 
 ### Logs de Vercel
 1. Ve a **Functions** en Vercel Dashboard
-2. Selecciona `/api/check-env`
+2. Selecciona `/api/status`
 3. Revisa los logs para ver qué variables están disponibles
 
 ### Probar Endpoint Directamente
 ```bash
-curl https://artificial-logika.vercel.app/api/check-env
+curl https://artificial-logika.vercel.app/api/status
 ```
 
 ## ⚠️ PROBLEMAS COMUNES
@@ -108,5 +108,5 @@ Después de configurar todo:
 
 ---
 
-**Última actualización**: $(date)
-**Estado**: Variables configuradas pero no detectadas 
+**Última actualización**: 1 de Agosto, 2024
+**Estado**: ✅ Timeouts resueltos, endpoint optimizado 
