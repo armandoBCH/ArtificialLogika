@@ -23,51 +23,55 @@ import { useEditableContent } from '../../contexts/EditableContentContext';
 import { getBadgeColorClass } from './helpers';
 
 const PricingTab: React.FC = () => {
-  const { 
-    content, 
-    updatePricingSettings,
-    updatePricingPlan,
-    updateCustomService,
-    addCustomService,
-    removeCustomService,
-    reorderCustomServices
-  } = useEditableContent();
+  const { content, updateContent } = useEditableContent();
   
   const [editingPlan, setEditingPlan] = useState<string | null>(null);
   const [editingService, setEditingService] = useState<string | null>(null);
 
   // Funciones para pricing plans
   const addOutcomeToPlan = (planId: string) => {
-    const plan = content.pricing.plans.find(p => p.id === planId);
+    const plan = content.pricing.plans.find((p: any) => p.id === planId);
     if (plan) {
       const updatedOutcomes = [...plan.outcomes, "Nuevo beneficio"];
-      updatePricingPlan(planId, { outcomes: updatedOutcomes });
+      const updatedPlans = content.pricing.plans.map((p: any) => 
+        p.id === planId ? { ...p, outcomes: updatedOutcomes } : p
+      );
+      updateContent('pricing', { ...content.pricing, plans: updatedPlans });
     }
   };
 
   const removeOutcomeFromPlan = (planId: string, outcomeIndex: number) => {
-    const plan = content.pricing.plans.find(p => p.id === planId);
+    const plan = content.pricing.plans.find((p: any) => p.id === planId);
     if (plan) {
-      const updatedOutcomes = plan.outcomes.filter((_, i) => i !== outcomeIndex);
-      updatePricingPlan(planId, { outcomes: updatedOutcomes });
+      const updatedOutcomes = plan.outcomes.filter((_: any, i: number) => i !== outcomeIndex);
+      const updatedPlans = content.pricing.plans.map((p: any) => 
+        p.id === planId ? { ...p, outcomes: updatedOutcomes } : p
+      );
+      updateContent('pricing', { ...content.pricing, plans: updatedPlans });
     }
   };
 
   const updatePlanOutcome = (planId: string, outcomeIndex: number, value: string) => {
-    const plan = content.pricing.plans.find(p => p.id === planId);
+    const plan = content.pricing.plans.find((p: any) => p.id === planId);
     if (plan) {
       const updatedOutcomes = [...plan.outcomes];
       updatedOutcomes[outcomeIndex] = value;
-      updatePricingPlan(planId, { outcomes: updatedOutcomes });
+      const updatedPlans = content.pricing.plans.map((p: any) => 
+        p.id === planId ? { ...p, outcomes: updatedOutcomes } : p
+      );
+      updateContent('pricing', { ...content.pricing, plans: updatedPlans });
     }
   };
 
   // Funciones para custom services
   const addSectionToService = (serviceId: string) => {
-    const service = content.pricing.customServices.find(s => s.id === serviceId);
+    const service = content.pricing.customServices.find((s: any) => s.id === serviceId);
     if (service) {
       const updatedSections = [...service.sections, "Nueva sección"];
-      updateCustomService(serviceId, { sections: updatedSections });
+      const updatedServices = content.pricing.customServices.map((s: any) => 
+        s.id === serviceId ? { ...s, sections: updatedSections } : s
+      );
+      updateContent('pricing', { ...content.pricing, customServices: updatedServices });
     }
   };
 
@@ -213,8 +217,14 @@ const PricingTab: React.FC = () => {
                 <DollarSign className="w-4 h-4 text-primary" />
                 <Input
                   type="text"
-                  value={content.pricing.settings.exchangeRate}
-                  onChange={(e) => updatePricingSettings({ exchangeRate: e.target.value })}
+                  value={content.pricing?.settings?.exchangeRate || '1200'}
+                  onChange={(e) => {
+                    const updatedPricing = { 
+                      ...content.pricing, 
+                      settings: { ...content.pricing.settings, exchangeRate: e.target.value }
+                    };
+                    updateContent('pricing', updatedPricing);
+                  }}
                   placeholder="1.300"
                   className="flex-1"
                 />
@@ -331,7 +341,7 @@ const PricingTab: React.FC = () => {
         </p>
         
         <div className="space-y-6">
-          {content.pricing.plans.map((plan) => (
+          {(content.pricing?.plans || []).map((plan: any) => (
             <div key={plan.id} className="border border-border/50 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">

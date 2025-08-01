@@ -10,10 +10,6 @@ import { Plus, Trash2, Star } from 'lucide-react';
 import { useEditableContent } from '../../contexts/EditableContentContext';
 
 // Tipos para los servicios
-interface ServiceFeature {
-  [key: string]: any;
-}
-
 interface Service {
   id?: string;
   title: string;

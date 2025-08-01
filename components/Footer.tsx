@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
                 {firstName} <span className="text-primary">{lastName}</span>
               </h3>
               <p className="text-muted-foreground leading-relaxed max-w-md">
-                {(content.footerDescription as string) || "Desarrollo páginas web, ecommerce, chatbots y automatizaciones desde cero. Soluciones 100% autogestionables que transforman negocios."}
+                {(content.footerDescription as unknown as string) || "Desarrollo páginas web, ecommerce, chatbots y automatizaciones desde cero. Soluciones 100% autogestionables que transforman negocios."}
               </p>
             </div>
             

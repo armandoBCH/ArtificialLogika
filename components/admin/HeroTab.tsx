@@ -149,7 +149,7 @@ const HeroTab: React.FC = () => {
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {content.hero.dynamicTexts.map((text, index) => (
+          {content.hero.dynamicTexts.map((text: any, index: number) => (
             <div key={index} className="flex items-center gap-2">
               <Input
                 type="text"
@@ -184,7 +184,7 @@ const HeroTab: React.FC = () => {
         </p>
         
         <div className="space-y-4">
-          {content.hero.stats.map((stat, index) => (
+          {content.hero.stats.map((stat: any, index: number) => (
             <div key={index} className="border border-border/50 rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-sm font-medium text-white">Estadística {index + 1}</h4>
