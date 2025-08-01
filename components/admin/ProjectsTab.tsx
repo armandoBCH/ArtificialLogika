@@ -96,7 +96,7 @@ const ProjectsTab: React.FC = () => {
         </p>
         
         <div className="space-y-6">
-          {featuredProjects.map((project: Project, index: number) => (
+          {featuredProjects.map((project: Project) => (
             <div key={project.id} className="border border-border/50 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
