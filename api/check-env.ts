@@ -1,15 +1,15 @@
 // API endpoint para verificar variables de entorno en Vercel
 export default async function handler(_request: Request) {
   try {
-    // Verificación rápida y simple usando import.meta.env
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    // En API routes del servidor, usar process.env
+    const supabaseUrl = process.env.VITE_SUPABASE_URL;
+    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
     
     // Respuesta inmediata sin logs pesados
     const response = {
       status: 'ok',
       timestamp: new Date().toISOString(),
-      environment: import.meta.env.NODE_ENV || 'unknown',
+      environment: process.env.NODE_ENV || 'unknown',
       supabase: {
         urlConfigured: !!supabaseUrl,
         keyConfigured: !!supabaseKey,

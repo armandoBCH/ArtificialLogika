@@ -1,9 +1,9 @@
 // Endpoint simple para verificar el estado de la aplicación
 export default async function handler(_request: Request) {
   try {
-    // Verificación básica usando import.meta.env para consistencia con el cliente
-    const hasSupabaseUrl = !!(import.meta.env.VITE_SUPABASE_URL);
-    const hasSupabaseKey = !!(import.meta.env.VITE_SUPABASE_ANON_KEY);
+    // En API routes del servidor, usar process.env
+    const hasSupabaseUrl = !!(process.env.VITE_SUPABASE_URL);
+    const hasSupabaseKey = !!(process.env.VITE_SUPABASE_ANON_KEY);
     
     const response = {
       status: 'ok',
@@ -12,8 +12,8 @@ export default async function handler(_request: Request) {
         configured: hasSupabaseUrl && hasSupabaseKey,
         urlConfigured: hasSupabaseUrl,
         keyConfigured: hasSupabaseKey,
-        urlLength: import.meta.env.VITE_SUPABASE_URL?.length || 0,
-        keyLength: import.meta.env.VITE_SUPABASE_ANON_KEY?.length || 0
+        urlLength: process.env.VITE_SUPABASE_URL?.length || 0,
+        keyLength: process.env.VITE_SUPABASE_ANON_KEY?.length || 0
       }
     };
     
