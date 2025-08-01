@@ -330,16 +330,46 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
     loadAllContent();
   }, []);
 
+  // Función para verificar si las APIs están disponibles
+  const checkAPIAvailability = async (): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/check-env');
+      if (!response.ok) return false;
+      
+      const envStatus = await response.json();
+      return envStatus.supabase?.urlConfigured && envStatus.supabase?.keyConfigured;
+    } catch {
+      return false;
+    }
+  };
+
   // Función para cargar todo el contenido
   const loadAllContent = async () => {
     try {
       setLoading(true);
       setError(null);
 
+      // Primero verificar si las APIs están disponibles
+      const apiAvailable = await checkAPIAvailability();
+      
+      if (!apiAvailable) {
+        console.log('API not available, using default content');
+        setContent(getDefaultContent());
+        setError('Aplicación funcionando en modo demo. Para configurar el sistema de administración, accede a /admin y sigue las instrucciones.');
+        return;
+      }
+
       const response = await fetch('/api/content');
       if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('API endpoints no disponibles. Las variables de Supabase pueden no estar configuradas en Vercel.');
+        if (response.status === 500) {
+          // Si es error 500, probablemente es un problema de configuración de Supabase
+          const errorData = await response.json().catch(() => ({}));
+          if (errorData.error?.includes('Supabase configuration missing')) {
+            console.log('Supabase not configured, using default content');
+            setContent(getDefaultContent());
+            setError('Aplicación funcionando en modo demo. Para configurar el sistema de administración, accede a /admin y sigue las instrucciones.');
+            return;
+          }
         }
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
@@ -395,6 +425,14 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
         [type]: data
       }));
 
+      // Verificar si las APIs están disponibles antes de intentar la actualización
+      const apiAvailable = await checkAPIAvailability();
+      
+      if (!apiAvailable) {
+        setError('Cambios guardados localmente. Configura las variables de entorno en Vercel para habilitar sincronización con Supabase.');
+        return; // Mantener cambios locales sin sincronizar
+      }
+
       const response = await fetch('/api/content-by-type?' + new URLSearchParams({ type }), {
         method: 'POST',
         headers: {
@@ -406,8 +444,12 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       });
 
       if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('API no disponible. Cambios guardados localmente pero no sincronizados con Supabase.');
+        if (response.status === 500) {
+          const errorData = await response.json().catch(() => ({}));
+          if (errorData.error?.includes('Supabase configuration missing')) {
+            setError('Cambios guardados localmente. Configura las variables VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en Vercel.');
+            return; // Mantener cambios locales
+          }
         }
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
@@ -416,8 +458,8 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
     } catch (err) {
       console.error('Error updating content:', err);
       
-      // Si es error 404 (API no disponible), mantener cambios locales pero mostrar warning
-      if (err instanceof Error && err.message.includes('404')) {
+      // Si es error de configuración, mantener cambios locales pero mostrar warning
+      if (err instanceof Error && (err.message.includes('500') || err.message.includes('configuration'))) {
         setError('Cambios guardados localmente. Configura Supabase para sincronización completa.');
         return; // No revertir cambios locales
       }

@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -6,12 +5,16 @@ const supabase = createClient(
   process.env.VITE_SUPABASE_ANON_KEY || ''
 );
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { method, query } = req;
-  const { type } = query;
+export default async function handler(request: Request) {
+  const method = request.method;
+  const url = new URL(request.url);
+  const type = url.searchParams.get('type');
 
-  if (!type || typeof type !== 'string') {
-    return res.status(400).json({ error: 'Content type is required' });
+  if (!type) {
+    return new Response(JSON.stringify({ error: 'Content type is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   try {
@@ -25,11 +28,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           .order('created_at', { ascending: false });
         
         if (getTypeError) throw getTypeError;
-        return res.status(200).json(getTypeData || []);
+        return new Response(JSON.stringify(getTypeData || []), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
 
       case 'POST':
         // Crear o actualizar contenido de un tipo específico
-        const { content_data, id } = req.body;
+        const body = await request.json();
+        const { content_data, id } = body;
         const contentId = id || `${type}-${Date.now()}`;
         
         // Usar upsert para crear o actualizar
@@ -46,17 +53,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           .single();
 
         if (upsertError) throw upsertError;
-        return res.status(200).json(upsertData);
+        return new Response(JSON.stringify(upsertData), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
 
       default:
-        res.setHeader('Allow', ['GET', 'POST']);
-        return res.status(405).end(`Method ${method} Not Allowed`);
+        return new Response(`Method ${method} Not Allowed`, {
+          status: 405,
+          headers: { 
+            'Allow': 'GET, POST',
+            'Content-Type': 'text/plain'
+          }
+        });
     }
   } catch (error: any) {
     console.error('Content by Type API Error:', error);
-    return res.status(500).json({ 
+    return new Response(JSON.stringify({ 
       error: 'Database operation failed',
       details: error.message 
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 }

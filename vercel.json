@@ -42,14 +42,9 @@
       ]
     }
   ],
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
   "functions": {
-    "api/**": {
-      "runtime": "nodejs22.x"
+    "api/*.ts": {
+      "runtime": "nodejs20.x"
     }
   }
 }

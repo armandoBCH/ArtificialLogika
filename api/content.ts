@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@supabase/supabase-js';
 
 // Verificar configuración de variables de entorno
@@ -13,18 +12,21 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { method } = req;
+export default async function handler(request: Request) {
+  const method = request.method;
 
   // Verificar configuración antes de proceder
   if (!supabaseUrl || !supabaseAnonKey) {
-    return res.status(500).json({
+    return new Response(JSON.stringify({
       error: 'Supabase configuration missing',
       details: 'Configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables in Vercel',
       configured: {
         url: !!supabaseUrl,
         key: !!supabaseAnonKey
       }
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 
@@ -41,11 +43,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.error('Supabase GET error:', getAllError);
           throw getAllError;
         }
-        return res.status(200).json(getAllData || []);
+        return new Response(JSON.stringify(getAllData || []), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
 
       case 'POST':
         // Crear nuevo contenido
-        const { content_type, content_data, id } = req.body;
+        const body = await request.json();
+        const { content_type, content_data, id } = body;
         
         const { data: createData, error: createError } = await supabase
           .from('content')
@@ -62,11 +68,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.error('Supabase POST error:', createError);
           throw createError;
         }
-        return res.status(201).json(createData);
+        return new Response(JSON.stringify(createData), {
+          status: 201,
+          headers: { 'Content-Type': 'application/json' }
+        });
 
       case 'PUT':
         // Actualizar contenido existente
-        const { id: updateId, content_data: updateData } = req.body;
+        const updateBody = await request.json();
+        const { id: updateId, content_data: updateData } = updateBody;
         
         const { data: updateResult, error: updateError } = await supabase
           .from('content')
@@ -82,11 +92,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.error('Supabase PUT error:', updateError);
           throw updateError;
         }
-        return res.status(200).json(updateResult);
+        return new Response(JSON.stringify(updateResult), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
 
       case 'DELETE':
         // Eliminar contenido
-        const { id: deleteId } = req.body;
+        const deleteBody = await request.json();
+        const { id: deleteId } = deleteBody;
         
         const { error: deleteError } = await supabase
           .from('content')
@@ -97,18 +111,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.error('Supabase DELETE error:', deleteError);
           throw deleteError;
         }
-        return res.status(200).json({ success: true });
+        return new Response(JSON.stringify({ success: true }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
 
       default:
-        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
-        return res.status(405).end(`Method ${method} Not Allowed`);
+        return new Response(`Method ${method} Not Allowed`, {
+          status: 405,
+          headers: { 
+            'Allow': 'GET, POST, PUT, DELETE',
+            'Content-Type': 'text/plain'
+          }
+        });
     }
   } catch (error: any) {
     console.error('Content API Error:', error);
-    return res.status(500).json({ 
+    return new Response(JSON.stringify({ 
       error: 'Database operation failed',
       details: error.message || 'Unknown error',
       hint: 'Check Supabase configuration and table setup'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 }

@@ -12,6 +12,7 @@ import FAQ from '../components/FAQ';
 import FinalCTA from '../components/FinalCTA';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
+import ConnectionStatus from '../components/ConnectionStatus';
 
 const LandingPage: React.FC = () => {
   return (
@@ -61,6 +62,9 @@ const LandingPage: React.FC = () => {
         {/* Footer */}
         <Footer />
       </div>
+      
+      {/* Connection Status - Compact version for landing page */}
+      <ConnectionStatus variant="compact" />
     </div>
   );
 };

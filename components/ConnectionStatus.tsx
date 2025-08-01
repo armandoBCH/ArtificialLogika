@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
 import { 
   CheckCircle, 
@@ -7,11 +6,16 @@ import {
   XCircle, 
   Loader2,
   Database,
-  Cloud
+  Cloud,
+  Settings
 } from 'lucide-react';
 import { useEditableContent } from '../contexts/EditableContentContext';
 
-const ConnectionStatus: React.FC = () => {
+interface ConnectionStatusProps {
+  variant?: 'full' | 'compact';
+}
+
+const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ variant = 'full' }) => {
   const { loading, error, isOnline } = useEditableContent();
 
   // Determinar estado y configuración de visualización
@@ -41,15 +45,15 @@ const ConnectionStatus: React.FC = () => {
     }
 
     if (error) {
-      if (error.includes('404') || error.includes('API endpoints no disponibles')) {
+      if (error.includes('modo demo') || error.includes('variables de entorno') || error.includes('API not available')) {
         return {
           icon: AlertTriangle,
-          color: 'text-yellow-400',
-          bgColor: 'bg-yellow-500/10',
-          borderColor: 'border-yellow-500/20',
-          title: 'Configuración de Supabase pendiente',
-          message: 'Usando contenido por defecto. Configura las variables de entorno VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en Vercel para habilitar la edición.',
-          type: 'warning' as const
+          color: 'text-blue-400',
+          bgColor: 'bg-blue-500/10',
+          borderColor: 'border-blue-500/20',
+          title: 'Modo Demo Activo',
+          message: 'La aplicación está funcionando con contenido de demostración. Para habilitar la edición completa, configura Supabase en el panel de administración.',
+          type: 'info' as const
         };
       } else if (error.includes('guardados localmente')) {
         return {
@@ -89,6 +93,30 @@ const ConnectionStatus: React.FC = () => {
   const statusConfig = getStatusConfig();
   const Icon = statusConfig.icon;
 
+  // Versión compacta para landing page
+  if (variant === 'compact') {
+    // Solo mostrar si hay un error crítico, no en modo demo
+    if (!error || statusConfig.type === 'success' || statusConfig.type === 'info') {
+      return null;
+    }
+
+    return (
+      <div className="fixed bottom-4 right-4 z-50 max-w-sm">
+        <Alert className={`${statusConfig.bgColor} ${statusConfig.borderColor} shadow-lg`}>
+          <div className="flex items-center gap-3">
+            <Icon className={`w-4 h-4 ${statusConfig.color} flex-shrink-0`} />
+            <div className="flex-1 min-w-0">
+              <AlertDescription className="text-xs text-muted-foreground">
+                Error de conexión. Verifica tu conexión a internet.
+              </AlertDescription>
+            </div>
+          </div>
+        </Alert>
+      </div>
+    );
+  }
+
+  // Versión completa para admin
   return (
     <Alert className={`${statusConfig.bgColor} ${statusConfig.borderColor}`}>
       <div className="flex items-start gap-3">
@@ -118,6 +146,24 @@ const ConnectionStatus: React.FC = () => {
               </span>
             </div>
           </div>
+          
+          {/* Instrucciones para resolver */}
+          {statusConfig.type === 'warning' && (
+            <div className="mt-3 p-2 bg-background/50 rounded border border-border/50">
+              <div className="flex items-start gap-2">
+                <Settings className="w-3 h-3 text-muted-foreground mt-0.5 flex-shrink-0" />
+                <div className="text-xs text-muted-foreground">
+                  <p className="font-medium mb-1">Para habilitar la edición:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-xs">
+                    <li>Ve a Vercel Dashboard → Project Settings → Environment Variables</li>
+                    <li>Agrega VITE_SUPABASE_URL con tu URL de proyecto Supabase</li>
+                    <li>Agrega VITE_SUPABASE_ANON_KEY con tu clave anónima</li>
+                    <li>Redeploy el proyecto</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Alert>
