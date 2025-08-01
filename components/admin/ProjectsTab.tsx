@@ -9,18 +9,30 @@ import {
   Plus, 
   Trash2, 
   Edit3, 
-  Check, 
-  ArrowUp, 
-  ArrowDown 
+  Check 
 } from 'lucide-react';
 import { useEditableContent } from '../../contexts/EditableContentContext';
+
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  technologies: string[];
+  category: string;
+}
 
 const ProjectsTab: React.FC = () => {
   const { content, updateContent } = useEditableContent();
   const [editingProject, setEditingProject] = useState<string | null>(null);
 
+  // Ensure featuredProjects is always an array
+  const featuredProjects: Project[] = Array.isArray(content.featuredProjects) 
+    ? content.featuredProjects 
+    : [];
+
   const handleAddNewProject = () => {
-    const newProject = {
+    const newProject: Project = {
       id: Date.now().toString(),
       title: "Nuevo Proyecto",
       description: "Descripción del nuevo proyecto",
@@ -28,41 +40,44 @@ const ProjectsTab: React.FC = () => {
       technologies: ["React", "TypeScript"],
       category: "Web"
     };
-    const updatedProjects = [...(content.featuredProjects || []), newProject];
+    const updatedProjects = [...featuredProjects, newProject];
+    updateContent('featuredProjects', updatedProjects);
+  };
+
+  const removeProject = (projectId: string) => {
+    const updatedProjects = featuredProjects.filter((p: Project) => p.id !== projectId);
+    updateContent('featuredProjects', updatedProjects);
+  };
+
+  const updateProject = (projectId: string, field: string, value: any) => {
+    const updatedProjects = featuredProjects.map((p: Project) => 
+      p.id === projectId ? { ...p, [field]: value } : p
+    );
     updateContent('featuredProjects', updatedProjects);
   };
 
   const addTechnologyToProject = (projectId: string) => {
-    const project = content.featuredProjects.find((p: any) => p.id === projectId);
+    const project = featuredProjects.find((p: Project) => p.id === projectId);
     if (project) {
       const updatedTechnologies = [...project.technologies, "Nueva Tecnología"];
-      const updatedProjects = content.featuredProjects.map((p: any) => 
-        p.id === projectId ? { ...p, technologies: updatedTechnologies } : p
-      );
-      updateContent('featuredProjects', updatedProjects);
+      updateProject(projectId, 'technologies', updatedTechnologies);
     }
   };
 
   const removeTechnologyFromProject = (projectId: string, techIndex: number) => {
-    const project = content.featuredProjects.find((p: any) => p.id === projectId);
+    const project = featuredProjects.find((p: Project) => p.id === projectId);
     if (project) {
-      const updatedTechnologies = project.technologies.filter((_: any, i: number) => i !== techIndex);
-      const updatedProjects = content.featuredProjects.map((p: any) => 
-        p.id === projectId ? { ...p, technologies: updatedTechnologies } : p
-      );
-      updateContent('featuredProjects', updatedProjects);
+      const updatedTechnologies = project.technologies.filter((_: string, i: number) => i !== techIndex);
+      updateProject(projectId, 'technologies', updatedTechnologies);
     }
   };
 
   const updateProjectTechnology = (projectId: string, techIndex: number, value: string) => {
-    const project = content.featuredProjects.find((p: any) => p.id === projectId);
+    const project = featuredProjects.find((p: Project) => p.id === projectId);
     if (project) {
       const updatedTechnologies = [...project.technologies];
       updatedTechnologies[techIndex] = value;
-      const updatedProjects = content.featuredProjects.map((p: any) => 
-        p.id === projectId ? { ...p, technologies: updatedTechnologies } : p
-      );
-      updateContent('featuredProjects', updatedProjects);
+      updateProject(projectId, 'technologies', updatedTechnologies);
     }
   };
 
@@ -81,7 +96,7 @@ const ProjectsTab: React.FC = () => {
         </p>
         
         <div className="space-y-6">
-          {(content.featuredProjects || []).map((project: any, index: number) => (
+          {featuredProjects.map((project: Project, index: number) => (
             <div key={project.id} className="border border-border/50 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -91,24 +106,6 @@ const ProjectsTab: React.FC = () => {
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {}}
-                    disabled={index === 0}
-                    className="text-muted-foreground hover:text-white"
-                  >
-                    <ArrowUp className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {}}
-                    disabled={index === content.featuredProjects.length - 1}
-                    className="text-muted-foreground hover:text-white"
-                  >
-                    <ArrowDown className="w-4 h-4" />
-                  </Button>
                   <Button
                     variant={editingProject === project.id ? "default" : "outline"}
                     size="sm"
@@ -120,10 +117,7 @@ const ProjectsTab: React.FC = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => {
-                      const updatedProjects = content.featuredProjects.filter((p: any) => p.id !== project.id);
-                      updateContent('featuredProjects', updatedProjects);
-                    }}
+                    onClick={() => removeProject(project.id)}
                     className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -139,12 +133,7 @@ const ProjectsTab: React.FC = () => {
                       <Input
                         type="text"
                         value={project.title}
-                        onChange={(e) => {
-                          const updatedProjects = content.featuredProjects.map((p: any) => 
-                            p.id === project.id ? { ...p, title: e.target.value } : p
-                          );
-                          updateContent('featuredProjects', updatedProjects);
-                        }}
+                        onChange={(e) => updateProject(project.id, 'title', e.target.value)}
                         className="mt-2"
                       />
                     </div>
@@ -153,12 +142,7 @@ const ProjectsTab: React.FC = () => {
                       <Input
                         type="text"
                         value={project.category}
-                        onChange={(e) => {
-                          const updatedProjects = content.featuredProjects.map((p: any) => 
-                            p.id === project.id ? { ...p, category: e.target.value } : p
-                          );
-                          updateContent('featuredProjects', updatedProjects);
-                        }}
+                        onChange={(e) => updateProject(project.id, 'category', e.target.value)}
                         className="mt-2"
                         placeholder="E-commerce, Landing, SaaS, etc."
                       />
@@ -169,12 +153,7 @@ const ProjectsTab: React.FC = () => {
                     <Label className="text-white">Descripción</Label>
                     <Textarea
                       value={project.description}
-                      onChange={(e) => {
-                        const updatedProjects = content.featuredProjects.map((p: any) => 
-                          p.id === project.id ? { ...p, description: e.target.value } : p
-                        );
-                        updateContent('featuredProjects', updatedProjects);
-                      }}
+                      onChange={(e) => updateProject(project.id, 'description', e.target.value)}
                       className="mt-2"
                       rows={3}
                     />
@@ -185,12 +164,7 @@ const ProjectsTab: React.FC = () => {
                     <Input
                       type="text"
                       value={project.image}
-                      onChange={(e) => {
-                        const updatedProjects = content.featuredProjects.map((p: any) => 
-                          p.id === project.id ? { ...p, image: e.target.value } : p
-                        );
-                        updateContent('featuredProjects', updatedProjects);
-                      }}
+                      onChange={(e) => updateProject(project.id, 'image', e.target.value)}
                       className="mt-2"
                       placeholder="https://images.unsplash.com/..."
                     />
@@ -213,7 +187,7 @@ const ProjectsTab: React.FC = () => {
                       </Button>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                      {project.technologies.map((tech: any, techIndex: number) => (
+                      {project.technologies.map((tech: string, techIndex: number) => (
                         <div key={techIndex} className="flex items-center gap-2">
                           <Input
                             type="text"
@@ -238,6 +212,16 @@ const ProjectsTab: React.FC = () => {
               )}
             </div>
           ))}
+          
+          {featuredProjects.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">No hay proyectos destacados configurados</p>
+              <Button onClick={handleAddNewProject} className="bg-primary hover:bg-primary/90">
+                <Plus className="w-4 h-4 mr-2" />
+                Crear Primer Proyecto
+              </Button>
+            </div>
+          )}
         </div>
       </Card>
     </div>
