@@ -138,6 +138,71 @@
   - Usar tipos TypeScript correctos: `VercelRequest, VercelResponse`
 - **Lección**: El sistema híbrido SÍ necesita endpoints serverless para validación completa
 
+#### 12. **Error de Node.js Version en Vercel (RESUELTO)**
+- **Problema**: `Found invalid Node.js Version: "22.x". Please set Node.js Version to 18.x`
+- **Error**: Vercel detecta Node.js 22.x pero el runtime `@vercel/node@3.0.7` requiere 18.x
+- **Causa**: Falta de configuración explícita de versión de Node.js en vercel.json
+- **Solución**:
+  - Añadir `"nodeVersion": "18.x"` al vercel.json
+  - Esto fuerza a Vercel a usar Node.js 18.x para las funciones serverless
+- **Configuración correcta**:
+  ```json
+  {
+    "nodeVersion": "18.x",
+    "functions": {
+      "api/check-env.ts": {
+        "runtime": "@vercel/node@3.0.7"
+      }
+    }
+  }
+  ```
+- **Lección**: Siempre especificar la versión de Node.js compatible con el runtime usado
+
+### 🏗️ ARQUITECTURA DE ENDPOINTS
+
+#### **¿Por qué solo un endpoint `/api/check-env.ts`?**
+
+El sistema está diseñado como **SPA (Single Page Application) con sistema híbrido de persistencia**, NO como aplicación fullstack tradicional. Esto significa:
+
+**✅ LO QUE TENEMOS:**
+- **Frontend puro**: Toda la lógica de negocio en React
+- **Conexión directa a Supabase**: El cliente se conecta directamente a Supabase
+- **Sistema híbrido**: IndexedDB (local) + Supabase (cloud) manejados desde el frontend
+- **Un solo endpoint**: `/api/check-env.ts` solo para verificación/diagnóstico
+
+**❌ LO QUE NO NECESITAMOS:**
+- Endpoints para CRUD (`/api/content`, `/api/projects`, etc.)
+- Middleware de autenticación en el servidor
+- Endpoints de sincronización
+- APIs REST tradicionales
+
+**🔍 Función del único endpoint `/api/check-env.ts`:**
+```typescript
+// PROPÓSITO: Verificar que las variables de entorno están disponibles en el servidor de Vercel
+// USADO EN: components/admin/SupabaseConfig.tsx línea 53
+// LLAMADA: await fetch('/api/check-env')
+
+// QUÉ HACE:
+// 1. Verifica VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en el servidor
+// 2. Proporciona información de debug para diagnosticar problemas
+// 3. Ayuda a distinguir entre problemas de cliente vs servidor
+// 4. Solo se usa en el panel de administración para diagnóstico
+```
+
+**🔄 Cómo funciona el CRUD sin endpoints:**
+1. **Lectura**: `supabase.from('content').select()` directo desde el cliente
+2. **Escritura**: `supabase.from('content').upsert()` directo desde el cliente  
+3. **Eliminación**: `supabase.from('content').delete()` directo desde el cliente
+4. **Respaldo local**: Todo se guarda automáticamente en IndexedDB
+5. **Sincronización**: Se maneja automáticamente por el `hybridManager.ts`
+
+**📊 Ventajas de esta arquitectura:**
+- Menos complejidad en el servidor
+- Mayor velocidad (sin round trips a API intermedias)
+- Funciona offline con IndexedDB
+- Menor carga en funciones serverless de Vercel
+- Ideal para landing pages y sitios de contenido
+
 ### 🔧 CONFIGURACIONES CRÍTICAS
 
 #### **Variables de Entorno (Solo Vercel)**
@@ -183,6 +248,7 @@ VITE_DEBUG_DB=false
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "nodeVersion": "18.x",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
@@ -290,7 +356,8 @@ css: {
 - **Imports no utilizados**: TypeScript strict mode requiere eliminar variables y imports no utilizados
 - **Vercel** necesita configuración específica en vercel.json
 - **Sintaxis correcta de Vercel**: Usar `@vercel/node@3.0.7` no `nodejs18.x` para funciones serverless
-- **Endpoints API necesarios**: El sistema híbrido SÍ requiere endpoints para verificación completa
+- **Node.js Version**: Especificar `"nodeVersion": "18.x"` para compatibilidad con runtime
+- **Endpoints API**: Solo necesario para verificación de variables de entorno, no para CRUD
 
 ## Guidelines Técnicas
 
@@ -368,7 +435,7 @@ css: {
 - [ ] **Verificar imports correctos** (framer-motion, no motion/react)
 - [ ] **Eliminar variables e imports no utilizados**
 - [ ] **Verificar override de estilos** en componentes base según guidelines
-- [ ] **Configurar vercel.json con functions**: Usar runtime `@vercel/node@3.0.7` para API
+- [ ] **Configurar vercel.json con functions**: Usar runtime `@vercel/node@3.0.7` y `nodeVersion: "18.x"`
 - [ ] **Añadir @vercel/node a devDependencies**: Necesario para tipos TypeScript
 - [ ] **Verificar endpoint /api funcional**: Necesario para verificación de variables de entorno
 - [ ] **Build local exitoso**: `npm run build` (funciona con IndexedDB sin variables)
