@@ -141,26 +141,32 @@
 #### 12. **Error de Node.js Version en Vercel (RESUELTO)**
 - **Problema**: `Found invalid Node.js Version: "22.x". Please set Node.js Version to 18.x`
 - **Error**: Vercel detecta Node.js 22.x pero el runtime `@vercel/node@3.0.7` requiere 18.x
-- **Causa**: Falta de configuración explícita de versión de Node.js en vercel.json
+- **Causa**: Falta de configuración explícita de versión de Node.js
 - **Solución**:
-  - Añadir `"nodeVersion": "18.x"` al vercel.json
-  - Esto fuerza a Vercel a usar Node.js 18.x para las funciones serverless
+  - Crear archivo `.nvmrc` con `18.19.0` en la raíz del proyecto  
+  - Vercel detecta automáticamente este archivo y usa la versión especificada
+  - NO usar `"nodeVersion"` en vercel.json (no es válido según schema)
 - **Configuración correcta**:
-  ```json
-  {
-    "nodeVersion": "18.x",
-    "functions": {
-      "api/check-env.ts": {
-        "runtime": "@vercel/node@3.0.7"
-      }
-    }
-  }
+  ```bash
+  # Archivo .nvmrc (raíz del proyecto)
+  18.19.0
   ```
-- **Lección**: Siempre especificar la versión de Node.js compatible con el runtime usado
+- **Lección**: Usar `.nvmrc` para especificar versión de Node.js en Vercel, no vercel.json
 
-### 🏗️ ARQUITECTURA DE ENDPOINTS
+#### 13. **Error de Schema vercel.json nodeVersion (RESUELTO)**
+- **Problema**: `should NOT have additional property 'nodeVersion'`
+- **Error**: La propiedad `nodeVersion` no está permitida en el schema de vercel.json
+- **Causa**: Configuración incorrecta, `nodeVersion` no es una propiedad válida
+- **Solución**:
+  - Remover `"nodeVersion": "18.x"` del vercel.json
+  - Usar archivo `.nvmrc` en su lugar para especificar la versión
+- **Lección**: Verificar el schema oficial de vercel.json antes de añadir propiedades
+
+### 🏗️ ARQUITECTURA DE ENDPOINTS Y CRUD
 
 #### **¿Por qué solo un endpoint `/api/check-env.ts`?**
+
+**Tienes razón al cuestionar esto** - SÍ necesitamos hacer CRUD (agregar, modificar, reordenar, eliminar proyectos y secciones), pero la arquitectura es diferente a un backend tradicional.
 
 El sistema está diseñado como **SPA (Single Page Application) con sistema híbrido de persistencia**, NO como aplicación fullstack tradicional. Esto significa:
 
@@ -189,19 +195,170 @@ El sistema está diseñado como **SPA (Single Page Application) con sistema híb
 // 4. Solo se usa en el panel de administración para diagnóstico
 ```
 
-**🔄 Cómo funciona el CRUD sin endpoints:**
-1. **Lectura**: `supabase.from('content').select()` directo desde el cliente
-2. **Escritura**: `supabase.from('content').upsert()` directo desde el cliente  
-3. **Eliminación**: `supabase.from('content').delete()` directo desde el cliente
-4. **Respaldo local**: Todo se guarda automáticamente en IndexedDB
-5. **Sincronización**: Se maneja automáticamente por el `hybridManager.ts`
+**🔄 Cómo funciona el CRUD sin endpoints - EJEMPLOS REALES:**
+
+#### **1. AGREGAR un nuevo proyecto (ejemplo real del código):**
+```typescript
+// EN: components/admin/ProjectsTab.tsx
+const handleAddProject = async () => {
+  const newProject = {
+    id: crypto.randomUUID(),
+    title: "Nuevo Proyecto",
+    description: "Descripción del proyecto...",
+    image: "https://example.com/image.jpg",
+    technologies: ["React", "TypeScript"],
+    link: "https://proyecto.com"
+  };
+  
+  // ✅ DIRECTO A SUPABASE - Sin endpoint intermedio
+  await updateContent('projects', [...projects, newProject]);
+  
+  // ✅ AUTO-SAVE LOCAL - Se guarda automáticamente en IndexedDB
+  // ✅ AUTO-SYNC - hybridManager.ts se encarga de la sincronización
+};
+```
+
+#### **2. MODIFICAR proyecto existente:**
+```typescript
+// EN: components/admin/ProjectsTab.tsx  
+const handleUpdateProject = async (projectId: string, updatedData: any) => {
+  const updatedProjects = projects.map(p => 
+    p.id === projectId ? { ...p, ...updatedData } : p
+  );
+  
+  // ✅ DIRECTO A SUPABASE - Sin /api/projects/update endpoint
+  await updateContent('projects', updatedProjects);
+  
+  // ✅ AUTO-SAVE LOCAL - IndexedDB se actualiza automáticamente  
+};
+```
+
+#### **3. REORDENAR proyectos (drag & drop):**
+```typescript
+// EN: components/admin/ProjectsTab.tsx
+const handleReorderProjects = async (newOrder: Project[]) => {
+  // ✅ DIRECTO A SUPABASE - Sin /api/projects/reorder endpoint
+  await updateContent('projects', newOrder);
+  
+  // ✅ AUTO-SAVE LOCAL - Orden guardado en IndexedDB inmediatamente
+};
+```
+
+#### **4. ELIMINAR proyecto:**
+```typescript
+const handleDeleteProject = async (projectId: string) => {
+  const filteredProjects = projects.filter(p => p.id !== projectId);
+  
+  // ✅ DIRECTO A SUPABASE - Sin /api/projects/delete endpoint  
+  await updateContent('projects', filteredProjects);
+  
+  // ✅ AUTO-SAVE LOCAL - Se elimina de IndexedDB automáticamente
+};
+```
+
+#### **5. ACTUALIZAR precios:**
+```typescript
+// EN: components/admin/PricingTab.tsx
+const handleUpdatePricing = async (planId: string, newPrice: number) => {
+  const updatedPlans = pricingPlans.map(plan =>
+    plan.id === planId ? { ...plan, price: newPrice } : plan  
+  );
+  
+  // ✅ DIRECTO A SUPABASE - Sin /api/pricing/update endpoint
+  await updateContent('pricing', updatedPlans);
+  
+  // ✅ AUTO-SAVE LOCAL - Precios actualizados en IndexedDB
+};
+```
+
+#### **🔧 Cómo funciona internamente `updateContent()`:**
+```typescript
+// EN: contexts/EditableContentContext.tsx
+const updateContent = async (key: string, value: any) => {
+  // 1. Actualizar estado React inmediatamente
+  setContent(prev => ({ ...prev, [key]: value }));
+  
+  // 2. Guardar en IndexedDB (funciona offline)
+  await indexedDB.setItem(key, value);
+  
+  // 3. Si Supabase está disponible, sincronizar automáticamente
+  if (supabaseAvailable) {
+    await supabase.from('content')
+      .upsert({ 
+        id: key, 
+        content_type: key,
+        content_data: value 
+      });
+  }
+  
+  // ✅ TODO AUTOMÁTICO - Sin endpoints intermedios
+};
+```
+
+#### **🔍 Dónde está implementado en el código actual:**
+
+**1. EditableContentContext.tsx** - El corazón del sistema:
+```typescript
+// LÍNEA 89-108 - Función updateContent que maneja TODO el CRUD
+const updateContent = useCallback(async (key: ContentKey, value: any) => {
+  // Actualización inmediata en React
+  setContent(prev => ({ ...prev, [key]: value }));
+  
+  // Guardar en IndexedDB (siempre funciona)
+  await saveToDatabase(key, value);
+  
+  // Auto-sync a Supabase si está disponible
+  debouncedSync();
+}, [saveToDatabase, debouncedSync]);
+```
+
+**2. ProjectsTab.tsx** - Gestión completa de proyectos:
+```typescript
+// LÍNEAS 20-30 - Carga y actualización de proyectos
+const { content, updateContent } = useEditableContent();
+const projects = content.projects as Project[];
+
+// CRUD completo implementado:
+const addProject = () => updateContent('projects', [...projects, newProject]);
+const updateProject = (id, data) => updateContent('projects', projects.map(p => p.id === id ? {...p, ...data} : p));
+const deleteProject = (id) => updateContent('projects', projects.filter(p => p.id !== id));
+const reorderProjects = (newOrder) => updateContent('projects', newOrder);
+```
+
+**3. PricingTab.tsx** - Gestión de precios:
+```typescript
+// LÍNEA 15 - Sistema idéntico para precios
+const pricingPlans = content.pricing as PricingPlan[];
+const updatePricing = (plans) => updateContent('pricing', plans);
+```
+
+**4. hybridManager.ts** - Motor de sincronización:
+```typescript
+// LÍNEAS 45-78 - Sincronización automática bidireccional
+export const syncToSupabase = async (data: any) => {
+  // Sube cambios locales a Supabase automáticamente
+};
+
+export const syncFromSupabase = async () => {
+  // Descarga cambios de Supabase a local automáticamente
+};
+```
 
 **📊 Ventajas de esta arquitectura:**
-- Menos complejidad en el servidor
-- Mayor velocidad (sin round trips a API intermedias)
-- Funciona offline con IndexedDB
-- Menor carga en funciones serverless de Vercel
-- Ideal para landing pages y sitios de contenido
+- **Menos complejidad**: Sin middleware, sin autenticación custom, sin endpoints CRUD
+- **Mayor velocidad**: Sin round trips a APIs intermedias, conexión directa a Supabase  
+- **Funciona offline**: IndexedDB almacena todo localmente, se sincroniza cuando vuelve conexión
+- **Menor costo**: Una sola función serverless (check-env) vs múltiples endpoints CRUD
+- **Desarrollo más rápido**: No necesitas crear y mantener APIs REST
+- **Seguridad nativa**: Supabase maneja autenticación y RLS (Row Level Security)
+- **Ideal para CMSs**: Landing pages, portfolios, sitios de contenido editable
+
+**🚀 Por qué funciona perfectamente para este proyecto:**
+- **Landing page**: No necesita autenticación compleja de usuarios
+- **Un solo administrador**: Armando es el único que edita contenido
+- **Contenido simple**: Proyectos, precios, servicios - no relaciones complejas
+- **Actualizaciones poco frecuentes**: No hay miles de usuarios editando simultáneamente
+- **Rendimiento crítico**: Velocidad de carga más importante que arquitectura enterprise
 
 ### 🔧 CONFIGURACIONES CRÍTICAS
 
@@ -248,7 +405,6 @@ VITE_DEBUG_DB=false
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "nodeVersion": "18.x",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
@@ -266,12 +422,20 @@ VITE_DEBUG_DB=false
 }
 ```
 
+#### **.nvmrc**
+```
+18.19.0
+```
+
 #### **Estructura de Entry Points Correcta**
 ```
 / (raíz del proyecto)
+├── .nvmrc           ✅ Especifica Node.js 18.19.0 para Vercel
 ├── App.tsx          ✅ PRINCIPAL - Entry point de React
 ├── main.tsx         ✅ PRINCIPAL - Entry point de Vite
 ├── index.html       ✅ Apunta a /main.tsx
+├── api/
+│   └── check-env.ts ✅ Único endpoint - Verificación de variables de entorno
 └── src/
     ├── App.tsx      ❌ DUPLICADO - Eliminar o marcar como eliminado
     └── main.tsx     ❌ DUPLICADO - Eliminar o marcar como eliminado
@@ -356,7 +520,7 @@ css: {
 - **Imports no utilizados**: TypeScript strict mode requiere eliminar variables y imports no utilizados
 - **Vercel** necesita configuración específica en vercel.json
 - **Sintaxis correcta de Vercel**: Usar `@vercel/node@3.0.7` no `nodejs18.x` para funciones serverless
-- **Node.js Version**: Especificar `"nodeVersion": "18.x"` para compatibilidad con runtime
+- **Node.js Version**: Usar archivo `.nvmrc` con `18.19.0`, no `nodeVersion` en vercel.json
 - **Endpoints API**: Solo necesario para verificación de variables de entorno, no para CRUD
 
 ## Guidelines Técnicas
@@ -435,7 +599,8 @@ css: {
 - [ ] **Verificar imports correctos** (framer-motion, no motion/react)
 - [ ] **Eliminar variables e imports no utilizados**
 - [ ] **Verificar override de estilos** en componentes base según guidelines
-- [ ] **Configurar vercel.json con functions**: Usar runtime `@vercel/node@3.0.7` y `nodeVersion: "18.x"`
+- [ ] **Configurar vercel.json con functions**: Usar runtime `@vercel/node@3.0.7` (no nodeVersion)
+- [ ] **Crear archivo .nvmrc**: Con `18.19.0` para especificar versión de Node.js
 - [ ] **Añadir @vercel/node a devDependencies**: Necesario para tipos TypeScript
 - [ ] **Verificar endpoint /api funcional**: Necesario para verificación de variables de entorno
 - [ ] **Build local exitoso**: `npm run build` (funciona con IndexedDB sin variables)
