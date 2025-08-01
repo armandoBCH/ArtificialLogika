@@ -23,7 +23,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
   const { content, error, isOnline } = useEditableContent();
   const { navigateTo } = useRouter();
   
-  // Verificar si Supabase está configurado (a través del estado de error)
+      // Verificar si Turso está configurado (a través del estado de error)
   // En producción las variables de entorno no están disponibles en el cliente
   const tursoConfigured = !error || error.includes('demo');
   
@@ -75,7 +75,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
             <div>
               <h3 className="font-semibold text-white">Base de Datos</h3>
               <p className="text-sm text-muted-foreground">
-                {dbStatus.provider === 'supabase' ? 'Supabase API' : 'Sin conexión'}
+                {dbStatus.provider === 'turso' ? 'Turso API' : 'Sin conexión'}
               </p>
             </div>
           </div>
@@ -102,7 +102,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
                           {!tursoConfigured && (
             <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
               <p className="text-xs text-yellow-400 mb-2">
-                ⚠️ Sin Supabase configurado. API-only requiere configuración:
+                ⚠️ Sin Turso configurado. API-only requiere configuración:
               </p>
               <Button
                 onClick={() => setActiveTab('database')}
@@ -110,7 +110,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ setActiveTab }) => {
                 variant="outline"
                 className="text-xs h-7 bg-yellow-500/20 border-yellow-500/30 hover:bg-yellow-500/30"
               >
-                Configurar Supabase
+                                  Configurar Turso
               </Button>
             </div>
           )}

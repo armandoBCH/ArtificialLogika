@@ -39,7 +39,7 @@ const AdminPage: React.FC = () => {
     if (!isOnline) return { provider: 'offline', color: 'text-red-400' };
     if (error && error.includes('404')) return { provider: 'local', color: 'text-yellow-400' };
     if (error) return { provider: 'error', color: 'text-red-400' };
-    return { provider: 'supabase', color: 'text-green-400' };
+    return { provider: 'turso', color: 'text-green-400' };
   };
 
   const dbStatus = getDbStatus();
@@ -75,7 +75,7 @@ const AdminPage: React.FC = () => {
               <div>
                 <h1 className="text-xl font-bold text-white">Panel de Administración</h1>
                 <p className="text-sm text-muted-foreground">
-                  {content.company?.name || 'Artificial Lógika'} • {error ? 'Usando contenido local' : 'Conectado a Supabase'}
+                  {content.company?.name || 'Artificial Lógika'} • {error ? 'Usando contenido local' : 'Conectado a Turso'}
                 </p>
               </div>
             </div>
@@ -85,7 +85,7 @@ const AdminPage: React.FC = () => {
               <div className="hidden sm:flex items-center gap-2 text-xs">
                 <span className="text-muted-foreground">Estado:</span>
                 <span className={`font-medium ${dbStatus.color}`}>
-                  {dbStatus.provider === 'supabase' ? 'Conectado' :
+                  {dbStatus.provider === 'turso' ? 'Conectado' :
                    dbStatus.provider === 'local' ? 'Local' :
                    dbStatus.provider === 'offline' ? 'Sin conexión' : 'Error'}
                 </span>

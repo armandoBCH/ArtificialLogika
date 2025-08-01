@@ -52,7 +52,7 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ variant = 'full' })
           bgColor: 'bg-blue-500/10',
           borderColor: 'border-blue-500/20',
           title: 'Modo Demo Activo',
-          message: 'La aplicación está funcionando con contenido de demostración. Para habilitar la edición completa, configura Supabase en el panel de administración.',
+          message: 'La aplicación está funcionando con contenido de demostración. Para habilitar la edición completa, configura Turso en el panel de administración.',
           type: 'info' as const
         };
       } else if (error.includes('guardados localmente')) {
@@ -62,7 +62,7 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ variant = 'full' })
           bgColor: 'bg-yellow-500/10',
           borderColor: 'border-yellow-500/20',
           title: 'Sincronización limitada',
-          message: 'Los cambios se guardan localmente pero no se sincronizan con Supabase. Configura la base de datos para persistencia completa.',
+          message: 'Los cambios se guardan localmente pero no se sincronizan con Turso. Configura la base de datos para persistencia completa.',
           type: 'warning' as const
         };
       } else {
@@ -84,7 +84,7 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ variant = 'full' })
       color: 'text-green-400',
       bgColor: 'bg-green-500/10',
       borderColor: 'border-green-500/20',
-      title: 'Conectado a Supabase',
+      title: 'Conectado a Turso',
       message: 'Todos los cambios se sincronizan automáticamente con la base de datos.',
       type: 'success' as const
     };
@@ -136,7 +136,7 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ variant = 'full' })
             <div className="flex items-center gap-2">
               <Database className="w-3 h-3 text-muted-foreground" />
               <span className="text-xs text-muted-foreground">
-                {error ? 'Local' : 'Supabase'}
+                {error ? 'Local' : 'Turso'}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -156,8 +156,8 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ variant = 'full' })
                   <p className="font-medium mb-1">Para habilitar la edición:</p>
                   <ol className="list-decimal list-inside space-y-1 text-xs">
                     <li>Ve a Vercel Dashboard → Project Settings → Environment Variables</li>
-                    <li>Agrega VITE_SUPABASE_URL con tu URL de proyecto Supabase</li>
-                    <li>Agrega VITE_SUPABASE_ANON_KEY con tu clave anónima</li>
+                    <li>Agrega VITE_TURSO_DATABASE_URL con tu URL de Turso</li>
+                    <li>Agrega VITE_TURSO_AUTH_TOKEN con tu token de Turso</li>
                     <li>Redeploy el proyecto</li>
                   </ol>
                 </div>
