@@ -1,5 +1,5 @@
 // API endpoint para verificar variables de entorno en Vercel
-export default async function handler(request: Request) {
+export default async function handler(_request: Request) {
   try {
     // Verificar que las variables de entorno están disponibles en el servidor
     const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
