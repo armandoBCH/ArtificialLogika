@@ -1,11 +1,22 @@
 import { DatabaseConfig } from './types';
 
-// Safely get environment variables
+// Safely get environment variables with improved detection
 const getEnvVar = (key: string, fallback: string = ''): string => {
   try {
-    return (import.meta as any)?.env?.[key] || fallback;
+    // Try multiple ways to access environment variables
+    const value = 
+      (import.meta as any)?.env?.[key] || 
+      (typeof process !== 'undefined' ? process.env?.[key] : undefined) ||
+      fallback;
+    
+    // Debug log in development
+    if (key.includes('SUPABASE') && value && value !== fallback) {
+      console.log(`✅ Environment variable ${key} found and configured`);
+    }
+    
+    return value;
   } catch (error) {
-    console.warn(`Environment variable ${key} not available, using fallback`);
+    console.warn(`Environment variable ${key} not accessible:`, error);
     return fallback;
   }
 };
@@ -18,7 +29,23 @@ export const databaseConfig: DatabaseConfig = {
 };
 
 export const isSupabaseConfigured = (): boolean => {
-  return !!(databaseConfig.supabaseUrl && databaseConfig.supabaseAnonKey);
+  const url = databaseConfig.supabaseUrl;
+  const key = databaseConfig.supabaseAnonKey;
+  
+  const configured = !!(url && key && url.includes('supabase.co') && key.length > 50);
+  
+  if (configured) {
+    console.log('✅ Supabase is properly configured');
+  } else {
+    console.log('⚠️ Supabase not configured:', { 
+      hasUrl: !!url, 
+      hasKey: !!key,
+      urlValid: url ? url.includes('supabase.co') : false,
+      keyValid: key ? key.length > 50 : false
+    });
+  }
+  
+  return configured;
 };
 
 export const getSupabaseConfig = () => {

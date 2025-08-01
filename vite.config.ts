@@ -18,6 +18,11 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.js',
   },
+  define: {
+    // Ensure environment variables are available at build time
+    __VITE_SUPABASE_URL__: JSON.stringify(process.env.VITE_SUPABASE_URL),
+    __VITE_SUPABASE_ANON_KEY__: JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY),
+  },
   build: {
     outDir: 'dist',
     sourcemap: false,
