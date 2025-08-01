@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Verificar configuración de variables de entorno
-const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables:');
@@ -145,13 +145,21 @@ export default async function handler(request: Request) {
       errorMessage = 'Configuration error';
       errorDetails = 'Supabase is not properly configured';
       statusCode = 503;
+    } else if (!supabaseUrl || !supabaseAnonKey) {
+      errorMessage = 'Environment variables missing';
+      errorDetails = 'VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are required';
+      statusCode = 503;
     }
     
     return new Response(JSON.stringify({ 
       error: errorMessage,
       details: errorDetails,
       hint: 'Check Supabase configuration and table setup',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      env: {
+        urlConfigured: !!supabaseUrl,
+        keyConfigured: !!supabaseAnonKey
+      }
     }), {
       status: statusCode,
       headers: { 'Content-Type': 'application/json' }
