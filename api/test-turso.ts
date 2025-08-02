@@ -3,8 +3,8 @@ import { createClient } from '@libsql/client';
 export default async function handler(_request: Request) {
   try {
     // Verificar variables de entorno
-    const tursoUrl = process.env.VITE_TURSO_DATABASE_URL;
-    const tursoToken = process.env.VITE_TURSO_AUTH_TOKEN;
+    const tursoUrl = process.env.TURSO_DATABASE_URL;
+    const tursoToken = process.env.TURSO_AUTH_TOKEN;
     
     const envCheck = {
       urlConfigured: !!tursoUrl,
@@ -86,4 +86,4 @@ export default async function handler(_request: Request) {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-} 
+}
