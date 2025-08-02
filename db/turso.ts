@@ -1,8 +1,16 @@
 import { createClient } from '@libsql/client';
 
+// Detectar si estamos en el servidor o en el cliente
+const isServer = typeof process !== 'undefined' && process.env;
+
 // Configuración de Turso
-const tursoUrl = process.env.VITE_TURSO_DATABASE_URL || import.meta.env.VITE_TURSO_DATABASE_URL;
-const tursoToken = process.env.VITE_TURSO_AUTH_TOKEN || import.meta.env.VITE_TURSO_AUTH_TOKEN;
+const tursoUrl = isServer
+  ? process.env.TURSO_DATABASE_URL
+  : import.meta.env.VITE_TURSO_DATABASE_URL;
+
+const tursoToken = isServer
+  ? process.env.TURSO_AUTH_TOKEN
+  : import.meta.env.VITE_TURSO_AUTH_TOKEN;
 
 // Crear cliente de Turso
 export const turso = createClient({
@@ -47,4 +55,4 @@ export interface TursoResponse {
   success: boolean;
   data?: any;
   error?: string;
-} 
+}
