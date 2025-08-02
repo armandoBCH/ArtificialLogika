@@ -1,4 +1,13 @@
-import { turso } from '../db/turso';
+import { createClient } from '@libsql/client';
+
+// Crear cliente de Turso
+const tursoUrl = process.env.VITE_TURSO_DATABASE_URL;
+const tursoToken = process.env.VITE_TURSO_AUTH_TOKEN;
+
+const turso = createClient({
+  url: tursoUrl || '',
+  authToken: tursoToken || ''
+});
 
 export default async function handler(request: Request) {
   const method = request.method;

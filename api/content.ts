@@ -1,8 +1,14 @@
-import { turso } from '../db/turso';
+import { createClient } from '@libsql/client';
 
 // Verificar configuración de variables de entorno
 const tursoUrl = process.env.VITE_TURSO_DATABASE_URL;
 const tursoToken = process.env.VITE_TURSO_AUTH_TOKEN;
+
+// Crear cliente de Turso
+const turso = createClient({
+  url: tursoUrl || '',
+  authToken: tursoToken || ''
+});
 
 if (!tursoUrl || !tursoToken) {
   console.error('Missing Turso environment variables:');

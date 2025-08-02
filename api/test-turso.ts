@@ -1,4 +1,4 @@
-import { turso } from '../db/turso';
+import { createClient } from '@libsql/client';
 
 export default async function handler(_request: Request) {
   try {
@@ -12,6 +12,12 @@ export default async function handler(_request: Request) {
       urlLength: tursoUrl?.length || 0,
       tokenLength: tursoToken?.length || 0
     };
+
+    // Crear cliente de Turso directamente aquí
+    const turso = createClient({
+      url: tursoUrl || '',
+      authToken: tursoToken || ''
+    });
 
     // Intentar conexión real a Turso
     let connectionTest = null;
