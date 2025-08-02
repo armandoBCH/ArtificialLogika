@@ -337,9 +337,9 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
   const checkAPIAvailability = async (): Promise<boolean> => {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 segundos timeout
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos timeout
 
-      const response = await fetch('/api/status', {
+      const response = await fetch('/api/test-turso', {
         signal: controller.signal
       });
       
@@ -347,8 +347,13 @@ export const EditableContentProvider: React.FC<EditableContentProviderProps> = (
       
       if (!response.ok) return false;
       
-      const envStatus = await response.json();
-      return envStatus.turso?.configured || false;
+      const testResult = await response.json();
+      console.log('🔍 Test Turso result:', testResult);
+      
+      // Verificar que esté configurado Y conectado Y tenga tabla
+      return testResult.summary?.configured && 
+             testResult.summary?.connected && 
+             testResult.summary?.tableExists;
     } catch (error) {
       console.log('API availability check failed:', error);
       return false;

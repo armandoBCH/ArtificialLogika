@@ -1,8 +1,8 @@
 import { createClient } from '@libsql/client';
 
 // Configuración de Turso
-const tursoUrl = process.env.TURSO_DATABASE_URL || import.meta.env.VITE_TURSO_DATABASE_URL;
-const tursoToken = process.env.TURSO_AUTH_TOKEN || import.meta.env.VITE_TURSO_AUTH_TOKEN;
+const tursoUrl = process.env.VITE_TURSO_DATABASE_URL || import.meta.env.VITE_TURSO_DATABASE_URL;
+const tursoToken = process.env.VITE_TURSO_AUTH_TOKEN || import.meta.env.VITE_TURSO_AUTH_TOKEN;
 
 // Crear cliente de Turso
 export const turso = createClient({

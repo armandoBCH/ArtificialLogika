@@ -22,10 +22,21 @@ export default function TursoConfig() {
   const checkServerEnvironment = async () => {
     setIsChecking(true);
     try {
-      const response = await fetch('/api/status');
+      const response = await fetch('/api/test-turso');
       if (response.ok) {
         const data = await response.json();
-        setServerEnvCheck(data.turso);
+        console.log('🔍 TursoConfig test result:', data);
+        
+        // Convertir el resultado del test a formato TursoStatus
+        const tursoStatus = {
+          configured: data.summary?.configured || false,
+          urlConfigured: data.environment?.urlConfigured || false,
+          tokenConfigured: data.environment?.tokenConfigured || false,
+          urlLength: data.environment?.urlLength || 0,
+          tokenLength: data.environment?.tokenLength || 0
+        };
+        
+        setServerEnvCheck(tursoStatus);
         setLastCheck(new Date());
       } else {
         console.error('Failed to check server environment');
