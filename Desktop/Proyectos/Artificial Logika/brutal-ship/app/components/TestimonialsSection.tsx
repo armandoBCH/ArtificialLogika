@@ -1,0 +1,144 @@
+export default function TestimonialsSection() {
+    return (
+        <section className="relative z-10 w-full max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-8 bg-background-light dark:bg-background-dark">
+            {/* Floating Background Shapes */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-10">
+                <div className="absolute top-20 left-10 w-32 h-32 rounded-full border-4 border-primary animate-float"></div>
+                <div className="absolute top-1/2 right-10 w-24 h-24 bg-mint rounded-lg animate-float-delayed rotate-12"></div>
+                <div className="absolute bottom-20 left-1/3 w-40 h-40 border-4 border-hot-coral rounded-full animate-float opacity-50"></div>
+            </div>
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row items-start md:items-end gap-4 mb-12">
+                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-none relative z-10 text-black dark:text-white">
+                    CLIENTES<br />
+                    FELICES
+                </h1>
+                <div className="relative w-16 h-16 md:w-24 md:h-24 md:mb-4 animate-bounce">
+                    <svg className="w-full h-full text-hot-coral drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.62L12 2L9.19 8.62L2 9.24L7.45 13.97L5.82 21L12 17.27Z" stroke="black" strokeLinejoin="round" strokeWidth="1.5"></path>
+                    </svg>
+                </div>
+            </div>
+            {/* Marquee Ticker */}
+            <div className="w-screen relative left-[calc(-50vw+50%)] bg-primary border-y-2 border-black mb-16 overflow-hidden">
+                <div className="animate-marquee py-4 whitespace-nowrap flex items-center gap-8">
+                    <span className="text-3xl md:text-4xl font-bold text-white flex items-center gap-8">
+                        RESULTADOS REALES <span className="material-icons text-3xl">star</span>
+                        DISEÑO INCREÍBLE <span className="material-icons text-3xl">star</span>
+                        CLIENTES SATISFECHOS <span className="material-icons text-3xl">star</span>
+                        PROCESO SIMPLE <span className="material-icons text-3xl">star</span>
+                        CERO COMPLICACIONES <span className="material-icons text-3xl">star</span>
+                        RESULTADOS REALES <span className="material-icons text-3xl">star</span>
+                        DISEÑO INCREÍBLE <span className="material-icons text-3xl">star</span>
+                        CLIENTES SATISFECHOS <span className="material-icons text-3xl">star</span>
+                        PROCESO SIMPLE <span className="material-icons text-3xl">star</span>
+                        CERO COMPLICACIONES <span className="material-icons text-3xl">star</span>
+                    </span>
+                </div>
+            </div>
+            {/* Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                {/* Left Column: Testimonials */}
+                <div className="lg:col-span-8 space-y-8">
+                    {/* Card 1 */}
+                    <div className="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-8 shadow-neobrutalist transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] relative overflow-hidden">
+                        <div className="absolute -top-4 -right-4 text-9xl text-primary opacity-20 font-serif leading-none select-none">❝</div>
+                        <div className="relative z-10">
+                            <p className="text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
+                                &quot;Yo no sabía nada de páginas web, pero ellos se encargaron de absolutamente todo. En dos semanas ya tenía mi sitio funcionando y ahora mis clientes me encuentran por Google. Antes ni existía online.&quot;
+                            </p>
+                            <div className="flex items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img alt="Retrato de clienta satisfecha" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkYW0Flt0xW1Z3HB3NQwCqzJaGgTOWrUXGCNluYmymfDWoJiDh-UQh0Hdx9NWuTx_qiQdr2KzeaMkZ7N-QQl-4dkzIoTTSGaeaZ2tbzIGEJElJLhGWd7ydROujN0ENIj2UpffcTf9t4guY8he-CwCnCEMKa7QKx-3PXBAKeNM6IVxxsNb5-fd8qJOzrfCMg5_jfSEb9mfICiqS2r2p2IlfH-kkOZFsh6HwhgsxB1gpdvi7ThCjXF-CiziTu_MG8QUi-jcjVj54rUI" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-lg leading-tight">María López</h4>
+                                        <span className="text-sm text-gray-500">Dueña de Peluquería</span>
+                                    </div>
+                                </div>
+                                <span className="px-4 py-1 rounded-full bg-electric-blue/20 text-electric-blue border border-black text-sm font-bold shadow-neobrutalist-sm">
+                                    Servicios
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Card 2 */}
+                    <div className="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-8 shadow-neobrutalist transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] relative overflow-hidden">
+                        <div className="absolute -top-4 -right-4 text-9xl text-primary opacity-20 font-serif leading-none select-none">❝</div>
+                        <div className="relative z-10">
+                            <p className="text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
+                                &quot;Les pasé las fotos, el menú y ellos hicieron todo. Ahora recibo reservas directo desde la web y por WhatsApp. Antes dependía 100% del boca a boca.&quot;
+                            </p>
+                            <div className="flex items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img alt="Retrato de cliente satisfecho" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQAEL7ldXO17P2zxbs1YngIHQKE24NCKGj4oHGt_U2jG0qZlQJYr5_JnXBJDR2YGgjx92YrRE0A1VBRzREbR7mT3awaWFn2PLGLhFbdroVUJNp2fTW9nA2xy0EXhcPunUx9Os-ruZSBCW7eK-AEGwD9FP-TnJ6vU27MmbXLnT3QBUELyLnEkDzq5PyYCWaZaiA2RMtrwwH9Qhr4aeOIBEk5InS3zW5OPrNNoCM6Tsy1tH3DmPWRd3ajGeYXrv4ejWcHDK3jjmO13U" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-lg leading-tight">Carlos Ruiz</h4>
+                                        <span className="text-sm text-gray-500">Dueño de Restaurante</span>
+                                    </div>
+                                </div>
+                                <span className="px-4 py-1 rounded-full bg-mint/20 text-teal-700 border border-black text-sm font-bold shadow-neobrutalist-sm">
+                                    Gastronomía
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Card 3 */}
+                    <div className="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-8 shadow-neobrutalist transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] relative overflow-hidden">
+                        <div className="absolute -top-4 -right-4 text-9xl text-primary opacity-20 font-serif leading-none select-none">❝</div>
+                        <div className="relative z-10">
+                            <p className="text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
+                                &quot;Tenía una web vieja que no generaba confianza. Me hicieron una nueva profesional y las consultas por WhatsApp se triplicaron en el primer mes. Ahora la gente me contacta sin que yo busque clientes.&quot;
+                            </p>
+                            <div className="flex items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img alt="Retrato de clienta profesional" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwUxH3A7ZLuocQWfDb9tQet8_f_6u-oQQpVWTMjdpLmOS5ImkWGQ2yJOHKDj85TOdQwFhcPYptf-mugD8IWQ-w4sNC4AtJZ9J_ffQF2JxVbGqj6YfDTGIfTt3X-3p2TRPQA6g8DHQcqy6mRejoSOGIYJXeeyvv8idqZO85dwqI2a8ODmJu4qRIbVLPKefJoPsqoWl_70pqnl3Vn55pSEj4bF0QYnlSAdTcnI_Si2joxXY0K-47AmnvN-m4KWktQo8UD4nWuZCLBgQ" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-lg leading-tight">Ana Torres</h4>
+                                        <span className="text-sm text-gray-500">Abogada Independiente</span>
+                                    </div>
+                                </div>
+                                <span className="px-4 py-1 rounded-full bg-hot-coral/20 text-red-700 border border-black text-sm font-bold shadow-neobrutalist-sm">
+                                    Profesional
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/* Right Column: Stats */}
+                <div className="lg:col-span-4 flex flex-col gap-8 lg:pl-8 h-full justify-center">
+                    <div className="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-neobrutalist flex flex-col items-center justify-center text-center group hover:bg-primary/5 transition-colors duration-300">
+                        <span className="text-6xl md:text-7xl font-bold text-primary mb-2 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">10x</span>
+                        <span className="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 -rotate-1 transform">Más Visible</span>
+                        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">Un negocio con web profesional recibe hasta 10 veces más consultas que uno sin presencia online.</p>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-neobrutalist flex flex-col items-center justify-center text-center group hover:bg-mint/10 transition-colors duration-300">
+                        <span className="text-6xl md:text-7xl font-bold text-mint mb-2 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">24hs</span>
+                        <span className="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 rotate-1 transform">Tiempo de Respuesta</span>
+                        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">Te respondemos con un presupuesto y mockup gratis en menos de 24 horas.</p>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-neobrutalist flex flex-col items-center justify-center text-center group hover:bg-hot-coral/10 transition-colors duration-300">
+                        <span className="text-6xl md:text-7xl font-bold text-hot-coral mb-2 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">100%</span>
+                        <span className="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 -rotate-2 transform">Entregas a Tiempo</span>
+                        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">Cumplimos siempre con los plazos acordados. Si no, el soporte extra es gratis.</p>
+                    </div>
+                </div>
+            </div>
+            {/* CTA Button */}
+            <div className="mt-16 flex justify-center">
+                <a href="#contacto" className="bg-primary hover:bg-primary/90 text-white font-bold py-4 px-12 rounded-full border-2 border-black shadow-neobrutalist hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000] active:translate-y-[4px] active:shadow-none transition-all text-xl flex items-center gap-2">
+                    Quiero Mi Web
+                    <span className="material-icons">arrow_forward</span>
+                </a>
+            </div>
+        </section>
+    );
+}
