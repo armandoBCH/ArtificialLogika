@@ -277,3 +277,519 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ===================================================================
+   HERO SVG ANIMATION — Animated Website Assembly
+   =================================================================== */
+
+/* Transform-box for SVG children */
+.hero-anim svg * {
+  transform-box: fill-box;
+}
+
+.scene-fade {
+  animation: hero-global-fade-out 6s infinite;
+  transform-origin: center;
+}
+
+/* Assembly Reveals */
+.reveal-1 {
+  animation: hero-slide-down 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.reveal-2 {
+  animation: hero-slide-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: left;
+}
+
+.reveal-3 {
+  animation: hero-slide-left 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: right;
+}
+
+.reveal-4 {
+  animation: hero-scale-up 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.reveal-5 {
+  animation: hero-slide-up-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.reveal-6 {
+  animation: hero-pop-up 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: bottom;
+}
+
+.reveal-7 {
+  animation: hero-float-in 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.reveal-8 {
+  animation: hero-slide-up-tilt-left 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.reveal-9 {
+  animation: hero-slide-up-tilt-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+/* Micro-animations */
+.shape-intro {
+  animation: hero-pop-in 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  transform-origin: center;
+}
+
+.mint-highlight {
+  animation: hero-draw-highlight 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  transform-origin: left center;
+}
+
+.marquee-track {
+  animation: hero-marquee-scroll 6s linear infinite;
+}
+
+.hero-float {
+  animation: hero-float-y 4s ease-in-out infinite;
+}
+
+.hero-spin {
+  animation: hero-spin-slow 8s linear infinite;
+  transform-origin: center;
+}
+
+.hero-blink {
+  animation: hero-text-blink 1s step-end infinite;
+}
+
+/* Cursor and Button */
+.cursor-anim {
+  animation: hero-fly-click 6s ease-in-out infinite;
+}
+
+.btn-press {
+  animation: hero-btn-hover-down 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.starburst-anim {
+  animation: hero-explode-star 6s ease-out infinite;
+  transform-origin: center;
+}
+
+.ring-burst {
+  animation: hero-expand-ring 6s ease-out infinite;
+  transform-origin: center;
+}
+
+/* Card Details */
+.bar-grow {
+  animation: hero-bar-grow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  transform-origin: bottom;
+}
+
+.toggle-slide {
+  animation: hero-toggle-right 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.progress-fill {
+  animation: hero-fill-width 6s ease-out infinite;
+}
+
+.draw-path {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: hero-draw-line 6s ease-in-out infinite;
+}
+
+/* --- KEYFRAMES --- */
+@keyframes hero-global-fade-out {
+
+  0%,
+  94% {
+    opacity: 1;
+    filter: blur(0px);
+  }
+
+  98%,
+  100% {
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+@keyframes hero-marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes hero-pop-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  5%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-draw-highlight {
+
+  0%,
+  18% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+
+  22%,
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-slide-down {
+
+  0%,
+  2% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+
+  12%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-slide-right {
+
+  0%,
+  5% {
+    transform: translateX(-50px) skewX(5deg);
+    opacity: 0;
+  }
+
+  15%,
+  100% {
+    transform: translateX(0) skewX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-slide-left {
+
+  0%,
+  8% {
+    transform: translateX(50px);
+    opacity: 0;
+  }
+
+  18%,
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-scale-up {
+
+  0%,
+  11% {
+    transform: scale(0.7) rotate(-2deg);
+    opacity: 0;
+  }
+
+  21%,
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-slide-up-right {
+
+  0%,
+  14% {
+    transform: translate(-30px, 30px);
+    opacity: 0;
+  }
+
+  24%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-pop-up {
+
+  0%,
+  17% {
+    transform: translateY(40px) scale(0.9);
+    opacity: 0;
+  }
+
+  27%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-float-in {
+
+  0%,
+  20% {
+    transform: translate(80px, -20px) scale(0.9) rotate(5deg);
+    opacity: 0;
+  }
+
+  30%,
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-slide-up-tilt-left {
+
+  0%,
+  23% {
+    transform: translateY(60px) rotate(-6deg);
+    opacity: 0;
+  }
+
+  33%,
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-slide-up-tilt-right {
+
+  0%,
+  26% {
+    transform: translateY(60px) rotate(6deg);
+    opacity: 0;
+  }
+
+  36%,
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-float-y {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes hero-spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hero-text-blink {
+
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-fly-click {
+
+  0%,
+  43% {
+    transform: translate(1200px, 800px);
+    opacity: 0;
+  }
+
+  48% {
+    transform: translate(500px, 600px);
+    opacity: 1;
+  }
+
+  52% {
+    transform: translate(180px, 450px);
+    opacity: 1;
+  }
+
+  56%,
+  58% {
+    transform: translate(186px, 456px) scale(0.9);
+    opacity: 1;
+  }
+
+  60% {
+    transform: translate(180px, 450px) scale(1);
+    opacity: 1;
+  }
+
+  66% {
+    transform: translate(750px, 600px);
+    opacity: 1;
+  }
+
+  72%,
+  100% {
+    transform: translate(1200px, 800px);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-btn-hover-down {
+
+  0%,
+  50% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  52%,
+  55% {
+    transform: translate(-2px, -2px) scale(1.02);
+  }
+
+  56%,
+  58% {
+    transform: translate(6px, 6px) scale(0.98);
+  }
+
+  59%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes hero-explode-star {
+
+  0%,
+  55% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+
+  56% {
+    transform: scale(1.5) rotate(0deg);
+    opacity: 1;
+  }
+
+  62% {
+    transform: scale(2.5) rotate(45deg);
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-expand-ring {
+
+  0%,
+  55% {
+    r: 10;
+    opacity: 0;
+    stroke-width: 12px;
+  }
+
+  56% {
+    r: 40;
+    opacity: 1;
+    stroke-width: 6px;
+  }
+
+  62% {
+    r: 100;
+    opacity: 0;
+    stroke-width: 0px;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-bar-grow {
+
+  0%,
+  30% {
+    transform: scaleY(0);
+  }
+
+  35%,
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes hero-toggle-right {
+
+  0%,
+  38% {
+    transform: translateX(0);
+  }
+
+  42%,
+  100% {
+    transform: translateX(20px);
+  }
+}
+
+@keyframes hero-fill-width {
+
+  0%,
+  38% {
+    width: 0;
+  }
+
+  45%,
+  100% {
+    width: 140px;
+  }
+}
+
+@keyframes hero-draw-line {
+
+  0%,
+  38% {
+    stroke-dashoffset: 120;
+  }
+
+  48%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}

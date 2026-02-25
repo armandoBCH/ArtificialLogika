@@ -3,7 +3,6 @@ import HeroSection from "./components/HeroSection";
 import MarqueeBanner from "./components/MarqueeBanner";
 import FeaturesGrid from "./components/FeaturesGrid";
 import ContentSplit from "./components/ContentSplit";
-import ServicesSection from "./components/ServicesSection";
 import ProcessSection from "./components/ProcessSection";
 import PortfolioShowcase from "./components/PortfolioShowcase";
 import BeforeAfter from "./components/BeforeAfter";
@@ -22,7 +21,6 @@ export default function Home() {
       <MarqueeBanner />
       <FeaturesGrid />
       <ContentSplit />
-      <ServicesSection />
       <ProcessSection />
       <PortfolioShowcase />
       <BeforeAfter />
