@@ -6,6 +6,7 @@ import MagneticWrapper from "./MagneticWrapper";
 
 export default function HeroSection() {
     const [isVisible, setIsVisible] = useState(false);
+    const [entryComplete, setEntryComplete] = useState(false);
     const heroRef = useRef<HTMLElement>(null);
 
     const { scrollY } = useScroll();
@@ -50,29 +51,37 @@ export default function HeroSection() {
                         <div className="inline-block bg-accent-yellow border-2 border-black px-4 py-1 font-bold text-sm shadow-neobrutalism-sm transform -rotate-2 rounded">
                             ✨ NOS ENCARGAMOS DE TODO
                         </div>
-                        <motion.h1
-                            initial="hidden"
-                            animate={isVisible ? "visible" : "hidden"}
-                            variants={{ visible: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } } }}
-                            className="text-[clamp(3rem,12vw,6rem)] lg:text-[clamp(3rem,5vw,5.5rem)] font-bold leading-[0.9] tracking-tighter uppercase flex flex-col"
+                        <motion.div
+                            animate={entryComplete ? { y: [0, -6, 0] } : {}}
+                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                         >
-                            <div className="flex overflow-hidden pb-2 -mb-2">
-                                {sentence1.map((char, index) => (
-                                    <motion.span key={index} variants={letterVariants} className="inline-block">
-                                        {char === " " ? "\u00A0" : char}
-                                    </motion.span>
-                                ))}
-                            </div>
-                            <div className="flex overflow-hidden pb-4 -mb-4">
-                                <span className="text-transparent bg-clip-text bg-primary text-stroke whitespace-nowrap flex">
-                                    {sentence2.map((char, index) => (
+                            <motion.h1
+                                initial="hidden"
+                                animate={isVisible ? "visible" : "hidden"}
+                                variants={{ visible: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } } }}
+                                onAnimationComplete={(definition) => {
+                                    if (definition === "visible") setEntryComplete(true);
+                                }}
+                                className="text-[clamp(3rem,12vw,6rem)] lg:text-[clamp(3rem,5vw,5.5rem)] font-bold leading-[0.9] tracking-tighter uppercase flex flex-col"
+                            >
+                                <div className="flex overflow-hidden pb-2 -mb-2">
+                                    {sentence1.map((char, index) => (
                                         <motion.span key={index} variants={letterVariants} className="inline-block">
-                                            {char}
+                                            {char === " " ? "\u00A0" : char}
                                         </motion.span>
                                     ))}
-                                </span>
-                            </div>
-                        </motion.h1>
+                                </div>
+                                <div className="flex overflow-hidden pb-4 -mb-4">
+                                    <span className={`text-transparent bg-clip-text text-stroke whitespace-nowrap flex ${entryComplete ? 'animate-title-shimmer' : 'bg-primary'}`}>
+                                        {sentence2.map((char, index) => (
+                                            <motion.span key={index} variants={letterVariants} className="inline-block">
+                                                {char}
+                                            </motion.span>
+                                        ))}
+                                    </span>
+                                </div>
+                            </motion.h1>
+                        </motion.div>
                         <p className="text-xl md:text-2xl font-medium border-l-4 border-primary pl-6 py-2 max-w-lg">
                             Diseñamos y creamos la página web que tu negocio necesita. Vos no te preocupás por nada — nosotros nos encargamos de todo.
                         </p>
@@ -150,6 +159,8 @@ export default function HeroSection() {
                             @keyframes toggle-right { 0%, 38% { transform: translateX(0); } 42%, 100% { transform: translateX(20px); } }
                             @keyframes fill-width { 0%, 38% { width: 0; } 45%, 100% { width: 140px; } }
                             @keyframes draw-line { 0%, 38% { stroke-dashoffset: 120; } 48%, 100% { stroke-dashoffset: 0; } }
+                            @keyframes title-shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+                            .animate-title-shimmer { background: linear-gradient(120deg, #8523E1 20%, #B784EB 40%, #B784EB 60%, #8523E1 80%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: title-shimmer 4s linear infinite; }
                         `}} />
                         <div className="bg-white dark:bg-zinc-900 border-4 border-black rounded-xl shadow-[16px_16px_0px_#1A1A1A] overflow-hidden transform transition-all duration-300 hero-svg-wrapper flex flex-col">
                             {/* Browser Header */}
