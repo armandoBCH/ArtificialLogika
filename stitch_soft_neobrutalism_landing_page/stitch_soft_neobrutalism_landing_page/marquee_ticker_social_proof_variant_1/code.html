@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Marquee Ticker Social Proof - Variant 1</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Google Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8523e1",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191121",
+                        "hot-coral": "#ff6b6b",
+                        "mint": "#4ecdc4",
+                        "electric-blue": "#4d96ff",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'neobrutalist': '4px 4px 0px 0px #000000',
+                        'neobrutalist-sm': '2px 2px 0px 0px #000000',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Marquee Animation */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 20s linear infinite;
+        }
+        
+        /* Floating Shapes Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+            animation: float 8s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+
+        /* Hide scrollbar for clean look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-gray-100 overflow-x-hidden selection:bg-primary selection:text-white min-h-screen flex flex-col justify-center">
+<!-- Floating Background Shapes (Decorative) -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-10">
+<div class="absolute top-20 left-10 w-32 h-32 rounded-full border-4 border-primary animate-float"></div>
+<div class="absolute top-1/2 right-10 w-24 h-24 bg-mint rounded-lg animate-float-delayed rotate-12"></div>
+<div class="absolute bottom-20 left-1/3 w-40 h-40 border-4 border-hot-coral rounded-full animate-float opacity-50"></div>
+<svg class="absolute top-40 right-1/4 w-32 h-32 text-primary animate-float-delayed" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+</svg>
+</div>
+<main class="relative z-10 w-full max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-8">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row items-start md:items-end gap-4 mb-12">
+<h1 class="text-6xl md:text-8xl font-bold tracking-tighter leading-none relative z-10 text-black dark:text-white">
+                CLIENTES<br/>
+                FELICES
+            </h1>
+<div class="relative w-16 h-16 md:w-24 md:h-24 md:mb-4 animate-bounce">
+<svg class="w-full h-full text-hot-coral drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.62L12 2L9.19 8.62L2 9.24L7.45 13.97L5.82 21L12 17.27Z" stroke="black" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+</div>
+</div>
+<!-- Marquee Ticker -->
+<div class="w-screen relative left-[calc(-50vw+50%)] bg-primary border-y-2 border-black mb-16 overflow-hidden">
+<div class="animate-marquee py-4 whitespace-nowrap flex items-center gap-8">
+<!-- Content duplicated for seamless loop -->
+<span class="text-3xl md:text-4xl font-bold text-white flex items-center gap-8">
+                    RESULTADOS REALES <span class="material-icons text-3xl">star</span>
+                    DISEÑO INCREÍBLE <span class="material-icons text-3xl">star</span>
+                    CLIENTES SATISFECHOS <span class="material-icons text-3xl">star</span>
+                    CRECIMIENTO EXPONENCIAL <span class="material-icons text-3xl">star</span>
+                    IMPACTO VISUAL <span class="material-icons text-3xl">star</span>
+                    RESULTADOS REALES <span class="material-icons text-3xl">star</span>
+                    DISEÑO INCREÍBLE <span class="material-icons text-3xl">star</span>
+                    CLIENTES SATISFECHOS <span class="material-icons text-3xl">star</span>
+                    CRECIMIENTO EXPONENCIAL <span class="material-icons text-3xl">star</span>
+                    IMPACTO VISUAL <span class="material-icons text-3xl">star</span>
+</span>
+</div>
+</div>
+<!-- Content Grid: Testimonials vs Stats -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<!-- Left Column: Testimonials (Stacked) -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Card 1 -->
+<div class="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-8 shadow-neobrutalist transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] relative overflow-hidden">
+<div class="absolute -top-4 -right-4 text-9xl text-primary opacity-20 font-serif leading-none select-none">❝</div>
+<div class="relative z-10">
+<p class="text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
+                            "El equipo capturó perfectamente la esencia rebelde de nuestra marca. La conversión aumentó un 40% en el primer mes tras el rediseño."
+                        </p>
+<div class="flex items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden">
+<img alt="Portrait of happy client" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkYW0Flt0xW1Z3HB3NQwCqzJaGgTOWrUXGCNluYmymfDWoJiDh-UQh0Hdx9NWuTx_qiQdr2KzeaMkZ7N-QQl-4dkzIoTTSGaeaZ2tbzIGEJElJLhGWd7ydROujN0ENIj2UpffcTf9t4guY8he-CwCnCEMKa7QKx-3PXBAKeNM6IVxxsNb5-fd8qJOzrfCMg5_jfSEb9mfICiqS2r2p2IlfH-kkOZFsh6HwhgsxB1gpdvi7ThCjXF-CiziTu_MG8QUi-jcjVj54rUI"/>
+</div>
+<div>
+<h4 class="font-bold text-lg leading-tight">Sofía Martínez</h4>
+<span class="text-sm text-gray-500">CMO @ TechStart</span>
+</div>
+</div>
+<span class="px-4 py-1 rounded-full bg-electric-blue/20 text-electric-blue border border-black text-sm font-bold shadow-neobrutalist-sm">
+                                SaaS
+                            </span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-8 shadow-neobrutalist transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] relative overflow-hidden">
+<div class="absolute -top-4 -right-4 text-9xl text-primary opacity-20 font-serif leading-none select-none">❝</div>
+<div class="relative z-10">
+<p class="text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
+                            "No solo diseñan bonito, entienden cómo vender. La integración con nuestro sistema fue impecable y rápida."
+                        </p>
+<div class="flex items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden">
+<img alt="Portrait of satisfied male client" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQAEL7ldXO17P2zxbs1YngIHQKE24NCKGj4oHGt_U2jG0qZlQJYr5_JnXBJDR2YGgjx92YrRE0A1VBRzREbR7mT3awaWFn2PLGLhFbdroVUJNp2fTW9nA2xy0EXhcPunUx9Os-ruZSBCW7eK-AEGwD9FP-TnJ6vU27MmbXLnT3QBUELyLnEkDzq5PyYCWaZaiA2RMtrwwH9Qhr4aeOIBEk5InS3zW5OPrNNoCM6Tsy1tH3DmPWRd3ajGeYXrv4ejWcHDK3jjmO13U"/>
+</div>
+<div>
+<h4 class="font-bold text-lg leading-tight">Carlos Ruiz</h4>
+<span class="text-sm text-gray-500">Fundador @ CafeVibe</span>
+</div>
+</div>
+<span class="px-4 py-1 rounded-full bg-mint/20 text-teal-700 border border-black text-sm font-bold shadow-neobrutalist-sm">
+                                E-Commerce
+                            </span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-8 shadow-neobrutalist transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] relative overflow-hidden">
+<div class="absolute -top-4 -right-4 text-9xl text-primary opacity-20 font-serif leading-none select-none">❝</div>
+<div class="relative z-10">
+<p class="text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
+                            "Probablemente la mejor inversión de este año fiscal. El ROI ha superado todas nuestras expectativas más optimistas."
+                        </p>
+<div class="flex items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden">
+<img alt="Portrait of female business owner" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwUxH3A7ZLuocQWfDb9tQet8_f_6u-oQQpVWTMjdpLmOS5ImkWGQ2yJOHKDj85TOdQwFhcPYptf-mugD8IWQ-w4sNC4AtJZ9J_ffQF2JxVbGqj6YfDTGIfTt3X-3p2TRPQA6g8DHQcqy6mRejoSOGIYJXeeyvv8idqZO85dwqI2a8ODmJu4qRIbVLPKefJoPsqoWl_70pqnl3Vn55pSEj4bF0QYnlSAdTcnI_Si2joxXY0K-47AmnvN-m4KWktQo8UD4nWuZCLBgQ"/>
+</div>
+<div>
+<h4 class="font-bold text-lg leading-tight">Ana Torres</h4>
+<span class="text-sm text-gray-500">Dir. Marketing @ ShopifyStore</span>
+</div>
+</div>
+<span class="px-4 py-1 rounded-full bg-hot-coral/20 text-red-700 border border-black text-sm font-bold shadow-neobrutalist-sm">
+                                Retail
+                            </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Vertical Stats -->
+<div class="lg:col-span-4 flex flex-col gap-8 lg:pl-8 h-full justify-center">
+<!-- Stat 1 -->
+<div class="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-neobrutalist flex flex-col items-center justify-center text-center group hover:bg-primary/5 transition-colors duration-300">
+<span class="text-6xl md:text-7xl font-bold text-primary mb-2 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">50+</span>
+<span class="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 -rotate-1 transform">Proyectos Lanzados</span>
+<p class="mt-4 text-sm text-gray-600 dark:text-gray-400">Transformando ideas en realidad digital.</p>
+</div>
+<!-- Stat 2 -->
+<div class="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-neobrutalist flex flex-col items-center justify-center text-center group hover:bg-mint/10 transition-colors duration-300">
+<span class="text-6xl md:text-7xl font-bold text-mint mb-2 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] stroke-black">4.9</span>
+<div class="flex gap-1 mb-2">
+<i class="material-icons text-yellow-400 text-2xl drop-shadow-[1px_1px_0px_rgba(0,0,0,1)]">star</i>
+<i class="material-icons text-yellow-400 text-2xl drop-shadow-[1px_1px_0px_rgba(0,0,0,1)]">star</i>
+<i class="material-icons text-yellow-400 text-2xl drop-shadow-[1px_1px_0px_rgba(0,0,0,1)]">star</i>
+<i class="material-icons text-yellow-400 text-2xl drop-shadow-[1px_1px_0px_rgba(0,0,0,1)]">star</i>
+<i class="material-icons text-yellow-400 text-2xl drop-shadow-[1px_1px_0px_rgba(0,0,0,1)]">star</i>
+</div>
+<span class="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 rotate-1 transform">Calificación Promedio</span>
+</div>
+<!-- Stat 3 -->
+<div class="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-neobrutalist flex flex-col items-center justify-center text-center group hover:bg-hot-coral/10 transition-colors duration-300">
+<span class="text-6xl md:text-7xl font-bold text-hot-coral mb-2 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">100%</span>
+<span class="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 -rotate-2 transform">Entregas a Tiempo</span>
+<p class="mt-4 text-sm text-gray-600 dark:text-gray-400">Compromiso total con tus plazos.</p>
+</div>
+</div>
+</div>
+<!-- Decorative Footer Element -->
+<div class="mt-16 flex justify-center">
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-4 px-12 rounded-full border-2 border-black shadow-neobrutalist hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000] active:translate-y-[4px] active:shadow-none transition-all text-xl flex items-center gap-2">
+                Empezar Proyecto
+                <span class="material-icons">arrow_forward</span>
+</button>
+</div>
+</main>
+</body></html>

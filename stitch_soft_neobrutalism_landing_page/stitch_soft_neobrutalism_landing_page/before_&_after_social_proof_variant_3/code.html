@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Before &amp; After Showcase - Variant 3</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f06f9",
+                        "primary-dark": "#5e04b8",
+                        "secondary-mint": "#00f090",
+                        "secondary-coral": "#ff4d4d",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#190f23",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#2d1b3e",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "md": "0.375rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "neo": "4px 4px 0px 0px rgba(0,0,0,1)",
+                        "neo-lg": "8px 8px 0px 0px rgba(0,0,0,1)",
+                        "neo-dark": "4px 4px 0px 0px #7f06f9",
+                    }
+                },
+            },
+        }
+    </script>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        /* Custom Grid Background Pattern */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(127, 6, 249, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(127, 6, 249, 0.05) 1px, transparent 1px);
+        }
+        .dark .bg-grid-pattern {
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+        
+        /* Floating shapes animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-gray-100 font-display transition-colors duration-300">
+<!-- Main Wrapper -->
+<div class="relative w-full overflow-hidden">
+<!-- Technical Grid Background -->
+<div class="absolute inset-0 bg-grid-pattern pointer-events-none z-0"></div>
+<!-- Decorative Accent Shapes -->
+<div class="absolute top-20 left-10 w-32 h-32 rounded-full border-4 border-primary/20 animate-float z-0 hidden lg:block"></div>
+<div class="absolute bottom-40 right-10 w-24 h-24 rounded-full bg-secondary-mint/20 animate-float z-0 hidden lg:block" style="animation-delay: 1s;"></div>
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl z-0 pointer-events-none"></div>
+<!-- Content Container -->
+<div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24">
+<!-- Hero Header -->
+<div class="text-center mb-20 relative">
+<div class="inline-block relative">
+<h1 class="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-6">
+                        El Antes <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary-coral">y Después</span>
+</h1>
+<!-- Decorative Mint Arrow SVG -->
+<div class="absolute -right-12 -bottom-8 md:-right-24 md:-bottom-4 transform rotate-12 hidden sm:block">
+<svg fill="none" height="80" viewbox="0 0 100 80" width="100" xmlns="http://www.w3.org/2000/svg">
+<path d="M10 40 Q 50 10 90 40" fill="none" stroke="#00f090" stroke-linecap="round" stroke-width="4"></path>
+<path d="M90 40 L 80 25 M 90 40 L 75 45" stroke="#00f090" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path>
+</svg>
+<span class="absolute top-12 left-12 transform rotate-12 bg-secondary-mint text-black text-xs font-bold px-2 py-1 border-2 border-black shadow-neo -ml-2 rounded-sm">
+                            Makeover!
+                        </span>
+</div>
+</div>
+<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-4 font-medium">
+                    We don't just redesign websites. We engineer digital transformations that turn confused visitors into loyal customers.
+                </p>
+</div>
+<!-- Comparison Split Screen -->
+<div class="bg-white dark:bg-surface-dark border-4 border-black dark:border-white rounded-xl shadow-neo-lg overflow-hidden mb-24">
+<div class="grid grid-cols-1 lg:grid-cols-2 divide-y-4 lg:divide-y-0 lg:divide-x-4 divide-black dark:divide-white">
+<!-- LEFT: Before (Old Site) -->
+<div class="relative p-8 lg:p-12 bg-gray-100 dark:bg-[#1a1a1a] group">
+<!-- Badge -->
+<div class="absolute top-6 left-6 z-20">
+<span class="bg-secondary-coral text-white text-sm font-bold px-4 py-2 border-2 border-black rounded-md shadow-neo uppercase tracking-wider">
+                                Antes / Before
+                            </span>
+</div>
+<!-- Browser Mockup -->
+<div class="mt-12 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden opacity-80 group-hover:opacity-100 transition-opacity duration-300 shadow-sm grayscale hover:grayscale-0">
+<!-- Browser Bar -->
+<div class="bg-gray-200 dark:bg-gray-700 h-8 border-b border-gray-300 dark:border-gray-600 flex items-center px-4 space-x-2">
+<div class="w-3 h-3 rounded-full bg-red-300"></div>
+<div class="w-3 h-3 rounded-full bg-yellow-300"></div>
+<div class="w-3 h-3 rounded-full bg-green-300"></div>
+</div>
+<!-- Content Placeholder -->
+<div class="aspect-[4/3] bg-gray-50 dark:bg-gray-900 p-6 relative overflow-hidden">
+<img alt="Old website" class="w-full h-full object-cover object-top opacity-50 blur-[1px] mix-blend-multiply dark:mix-blend-overlay" data-alt="Screenshot of a cluttered outdated website interface with crowded text" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeB4wUeUUJTjoiI1EPrCdvnw20ImkJnORy0Wlw91FNXk7uk4LATnblBQBUDOw5CMnTfdsOREY954N3NjN8_gm52FgSUKwrZcWhu4bWj26eFAme9Y0iu43ZQ8WazdaoGN79KyeJE7uePGuue2r_sslQEQA-7r7OG2C9856y13b15E-HKUkhhWfiGc-R-IKfEcE0RJ6vwy23sjnnConSNZ2OkWnUhxlyQe0sBOCSbTmLS9Oy7MgDX5QdFLgY6_LRc9yGdomTCU2v2dE"/>
+<!-- Pain Point Annotations -->
+<div class="absolute top-1/4 left-1/4 bg-white dark:bg-gray-800 border-2 border-secondary-coral text-secondary-coral p-2 rounded shadow-md transform -rotate-3 text-xs font-bold flex items-center gap-1">
+<span class="material-icons-outlined text-sm">close</span> Cluttered UI
+                                </div>
+<div class="absolute bottom-1/3 right-10 bg-white dark:bg-gray-800 border-2 border-secondary-coral text-secondary-coral p-2 rounded shadow-md transform rotate-2 text-xs font-bold flex items-center gap-1">
+<span class="material-icons-outlined text-sm">close</span> Slow Load
+                                </div>
+</div>
+</div>
+<!-- Pain Points List -->
+<div class="mt-8 space-y-4">
+<div class="flex items-start gap-4">
+<div class="bg-secondary-coral/10 p-1 rounded border-2 border-secondary-coral/20 flex-shrink-0">
+<span class="material-icons-outlined text-secondary-coral">close</span>
+</div>
+<div>
+<h4 class="font-bold text-lg dark:text-gray-200">Outdated Aesthetic</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400">Design stuck in 2010 failing to build trust.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="bg-secondary-coral/10 p-1 rounded border-2 border-secondary-coral/20 flex-shrink-0">
+<span class="material-icons-outlined text-secondary-coral">close</span>
+</div>
+<div>
+<h4 class="font-bold text-lg dark:text-gray-200">Confusing Navigation</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400">Users drop off because they can't find info.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT: After (New Site) -->
+<div class="relative p-8 lg:p-12 bg-white dark:bg-surface-dark">
+<!-- Badge -->
+<div class="absolute top-6 left-6 z-20">
+<span class="bg-secondary-mint text-gray-900 text-sm font-bold px-4 py-2 border-2 border-black rounded-md shadow-neo uppercase tracking-wider">
+                                Después / After
+                            </span>
+</div>
+<!-- Browser Mockup -->
+<div class="mt-12 bg-white dark:bg-gray-800 border-2 border-black rounded-lg overflow-hidden shadow-neo transform lg:scale-105 lg:-translate-x-2 transition-transform duration-500 hover:scale-110 z-10 relative">
+<!-- Browser Bar -->
+<div class="bg-gray-100 dark:bg-gray-900 h-8 border-b-2 border-black flex items-center px-4 space-x-2">
+<div class="w-3 h-3 rounded-full bg-secondary-coral border border-black"></div>
+<div class="w-3 h-3 rounded-full bg-yellow-400 border border-black"></div>
+<div class="w-3 h-3 rounded-full bg-secondary-mint border border-black"></div>
+<div class="ml-4 w-full h-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-full"></div>
+</div>
+<!-- Content -->
+<div class="aspect-[4/3] bg-white relative overflow-hidden group">
+<img alt="New website" class="w-full h-full object-cover object-top" data-alt="Screenshot of a modern clean website interface with bold typography and clear layout" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt8E-gIWAW_rRUeXmw2BunyDFi3ETYiRNFMjEUjYXu6SYSd0wXq87N7GEWN_3mtYLB_sjkMYh3q4e6YKconTKb_qHe_cMufEWa3pYQvBz-_mYcXtg34NcAJbXfvJa6IBxIW1znASsTE8nU7iPlxQyc_F6kL-hYauMqvyW_2HnWcIgwF7Glj5c4xaTtMldgdwMKXlPK667_N7N9T8sTEaqhkVmifpG2dakSViEahqpnoTAXStelAt56DSHJqS25LMTs6-cBg9hAAD8"/>
+<!-- Check Annotations -->
+<div class="absolute top-1/3 left-10 bg-secondary-mint border-2 border-black text-black p-2 rounded shadow-neo transform -rotate-1 text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<span class="material-icons-outlined text-sm">check</span> High Conv.
+                                </div>
+<div class="absolute bottom-1/4 right-1/4 bg-primary text-white border-2 border-black p-2 rounded shadow-neo transform rotate-2 text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<span class="material-icons-outlined text-sm">bolt</span> Instant Load
+                                </div>
+</div>
+</div>
+<!-- Success Points List -->
+<div class="mt-10 lg:pl-4 space-y-4">
+<div class="flex items-start gap-4">
+<div class="bg-secondary-mint/20 p-1 rounded border-2 border-secondary-mint flex-shrink-0">
+<span class="material-icons-outlined text-green-700 dark:text-secondary-mint font-bold">check</span>
+</div>
+<div>
+<h4 class="font-bold text-lg text-primary dark:text-primary-300">Modern &amp; Trustworthy</h4>
+<p class="text-sm text-gray-600 dark:text-gray-300">Clean aesthetic that positions you as an industry leader.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="bg-secondary-mint/20 p-1 rounded border-2 border-secondary-mint flex-shrink-0">
+<span class="material-icons-outlined text-green-700 dark:text-secondary-mint font-bold">check</span>
+</div>
+<div>
+<h4 class="font-bold text-lg text-primary dark:text-primary-300">Conversion Focused</h4>
+<p class="text-sm text-gray-600 dark:text-gray-300">Strategic layouts designed to capture leads effectively.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Mini Case Study Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+<!-- Card 1 -->
+<div class="bg-white dark:bg-surface-dark border-2 border-black dark:border-gray-700 rounded-lg p-6 shadow-neo hover:translate-y-[-4px] hover:shadow-neo-lg transition-all duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wide">Consultas</span>
+<span class="material-icons-outlined text-primary">trending_up</span>
+</div>
+<div class="text-5xl font-black text-primary mb-2">3x</div>
+<p class="text-gray-700 dark:text-gray-300 font-medium">Más consultas en el primer mes de lanzamiento.</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-white dark:bg-surface-dark border-2 border-black dark:border-gray-700 rounded-lg p-6 shadow-neo hover:translate-y-[-4px] hover:shadow-neo-lg transition-all duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wide">Velocidad</span>
+<span class="material-icons-outlined text-secondary-mint">speed</span>
+</div>
+<div class="text-5xl font-black text-secondary-mint dark:text-secondary-mint mb-2 stroke-black">0.8s</div>
+<p class="text-gray-700 dark:text-gray-300 font-medium">Tiempo de carga promedio (antes 4.2s).</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-white dark:bg-surface-dark border-2 border-black dark:border-gray-700 rounded-lg p-6 shadow-neo hover:translate-y-[-4px] hover:shadow-neo-lg transition-all duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wide">Retención</span>
+<span class="material-icons-outlined text-secondary-coral">favorite</span>
+</div>
+<div class="text-5xl font-black text-secondary-coral mb-2">+150%</div>
+<p class="text-gray-700 dark:text-gray-300 font-medium">Aumento en el tiempo de sesión por usuario.</p>
+</div>
+</div>
+</div>
+<!-- Full Width CTA Banner -->
+<div class="w-full bg-primary relative overflow-hidden border-t-4 border-black dark:border-white">
+<!-- Background pattern for CTA -->
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 2px, transparent 2px); background-size: 24px 24px;"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="text-center md:text-left">
+<h2 class="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
+                        ¿Tu sitio web necesita un <br class="hidden md:block"/> extreme makeover?
+                    </h2>
+<p class="text-white/80 text-xl max-w-xl">
+                        Deja de perder clientes por un diseño obsoleto. Agenda tu auditoría gratuita hoy.
+                    </p>
+</div>
+<div class="flex-shrink-0">
+<button class="group relative inline-flex items-center justify-center">
+<span class="absolute top-2 left-2 w-full h-full bg-black rounded-lg opacity-100"></span>
+<span class="relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-black transition-all duration-200 bg-white border-2 border-black rounded-lg group-hover:-translate-x-1 group-hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                            Transformar mi sitio
+                            <span class="material-icons-outlined ml-2 group-hover:rotate-45 transition-transform">arrow_forward</span>
+</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

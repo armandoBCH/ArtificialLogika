@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Web Agency FAQ</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0df280", // Mint Fresh
+                        "primary-dark": "#0be076",
+                        "secondary": "#FF6B6B", // Hot Coral
+                        "background-light": "#f5f8f7", // Soft Smoke-ish
+                        "background-dark": "#102219",
+                        "neutral-900": "#111814", // Black derived from dark green
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    boxShadow: {
+                        "neobrutalism": "4px 4px 0px 0px #000",
+                        "neobrutalism-sm": "2px 2px 0px 0px #000",
+                        "neobrutalism-hover": "2px 2px 0px 0px #000",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Pattern Background Utility */
+        .bg-pattern-dots {
+            background-image: radial-gradient(#111814 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        
+        .triangle-shape {
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        /* Custom scrollbar for better aesthetic */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f8f7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #111814;
+            border: 2px solid #f5f8f7;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-neutral-900 dark:text-white min-h-screen relative overflow-x-hidden">
+<!-- Decorative Background Elements -->
+<div class="fixed inset-0 pointer-events-none opacity-5 z-0 bg-pattern-dots"></div>
+<!-- Floating Triangles (Decorative) -->
+<div class="fixed top-20 left-10 w-16 h-16 bg-neutral-900 opacity-[0.03] triangle-shape rotate-12 z-0"></div>
+<div class="fixed bottom-40 right-20 w-24 h-24 bg-primary opacity-[0.1] triangle-shape -rotate-12 z-0"></div>
+<div class="fixed top-1/2 left-1/4 w-12 h-12 bg-secondary opacity-[0.05] triangle-shape rotate-45 z-0"></div>
+<main class="relative z-10 container mx-auto px-4 py-20 max-w-5xl">
+<!-- Header Section -->
+<header class="text-center mb-16 relative">
+<div class="relative inline-block">
+<!-- Hot Coral Circle Behind Headline -->
+<div class="absolute -top-4 -left-8 w-24 h-24 bg-secondary rounded-full opacity-80 mix-blend-multiply dark:mix-blend-overlay z-0"></div>
+<h1 class="relative z-10 text-6xl md:text-7xl font-bold tracking-tight text-neutral-900 dark:text-white uppercase leading-none">
+                    Preguntas<br/>Frecuentes
+                </h1>
+</div>
+<p class="mt-6 text-xl text-neutral-900/70 dark:text-white/70 max-w-2xl mx-auto font-medium">
+                Todo lo que necesitás saber sobre cómo trabajamos, tiempos de entrega y procesos de diseño. Sin letra chica.
+            </p>
+</header>
+<!-- FAQ List -->
+<div class="space-y-6 max-w-3xl mx-auto">
+<!-- Item 1: Expanded -->
+<article class="group bg-white dark:bg-neutral-800 border-2 border-black rounded-lg shadow-neobrutalism transition-transform hover:-translate-y-1">
+<div class="p-6">
+<div class="flex justify-between items-start cursor-pointer select-none">
+<h3 class="text-xl font-bold text-neutral-900 dark:text-primary">¿Cuánto tarda en estar lista mi web?</h3>
+<span class="material-icons text-3xl font-bold transform rotate-45 transition-transform">add</span>
+</div>
+<!-- Separator -->
+<div class="h-0.5 bg-neutral-900/10 dark:bg-white/10 w-full my-4"></div>
+<!-- Answer -->
+<div class="text-lg leading-relaxed text-neutral-900/80 dark:text-white/80">
+                        Depende de la complejidad del proyecto. Para una Landing Page estándar, el tiempo estimado es de <span class="bg-primary/30 px-1 font-bold">1 a 2 semanas</span> una vez que tenemos todo el contenido. Para sitios corporativos o e-commerce, solemos tardar entre 3 y 5 semanas. Siempre trabajamos con un cronograma claro desde el día uno.
+                    </div>
+</div>
+</article>
+<!-- Item 2: Expanded -->
+<article class="group bg-white dark:bg-neutral-800 border-2 border-black rounded-lg shadow-neobrutalism transition-transform hover:-translate-y-1">
+<div class="p-6">
+<div class="flex justify-between items-start cursor-pointer select-none">
+<h3 class="text-xl font-bold text-neutral-900 dark:text-primary">¿Qué incluye el precio?</h3>
+<span class="material-icons text-3xl font-bold transform rotate-45 transition-transform">add</span>
+</div>
+<!-- Separator -->
+<div class="h-0.5 bg-neutral-900/10 dark:bg-white/10 w-full my-4"></div>
+<!-- Answer -->
+<div class="text-lg leading-relaxed text-neutral-900/80 dark:text-white/80">
+                        Incluye diseño UX/UI personalizado, desarrollo responsive (adaptable a celulares), configuración básica de SEO, integración con redes sociales y un formulario de contacto. Además, te entregamos un video tutorial para que puedas autogestionar cambios simples de texto e imágenes. <strong class="text-primary">El hosting y dominio no están incluidos</strong>, pero te asesoramos para comprarlos.
+                    </div>
+</div>
+</article>
+<!-- Item 3: Collapsed -->
+<article class="group bg-white dark:bg-neutral-800 border-2 border-black rounded-lg shadow-neobrutalism transition-all hover:shadow-neobrutalism-hover hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer">
+<div class="p-6 flex justify-between items-center">
+<h3 class="text-xl font-bold text-neutral-900 dark:text-white group-hover:text-primary transition-colors">¿Tengo que pagar mantenimiento mensual?</h3>
+<span class="material-icons text-3xl font-bold bg-neutral-100 dark:bg-neutral-700 rounded-full p-1 border-2 border-black">add</span>
+</div>
+</article>
+<!-- Item 4: Collapsed -->
+<article class="group bg-white dark:bg-neutral-800 border-2 border-black rounded-lg shadow-neobrutalism transition-all hover:shadow-neobrutalism-hover hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer">
+<div class="p-6 flex justify-between items-center">
+<h3 class="text-xl font-bold text-neutral-900 dark:text-white group-hover:text-primary transition-colors">¿Hacen diseño de marca/branding?</h3>
+<span class="material-icons text-3xl font-bold bg-neutral-100 dark:bg-neutral-700 rounded-full p-1 border-2 border-black">add</span>
+</div>
+</article>
+<!-- Item 5: Collapsed -->
+<article class="group bg-white dark:bg-neutral-800 border-2 border-black rounded-lg shadow-neobrutalism transition-all hover:shadow-neobrutalism-hover hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer">
+<div class="p-6 flex justify-between items-center">
+<h3 class="text-xl font-bold text-neutral-900 dark:text-white group-hover:text-primary transition-colors">¿Cómo es la forma de pago?</h3>
+<span class="material-icons text-3xl font-bold bg-neutral-100 dark:bg-neutral-700 rounded-full p-1 border-2 border-black">add</span>
+</div>
+</article>
+<!-- Item 6: Collapsed -->
+<article class="group bg-white dark:bg-neutral-800 border-2 border-black rounded-lg shadow-neobrutalism transition-all hover:shadow-neobrutalism-hover hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer">
+<div class="p-6 flex justify-between items-center">
+<h3 class="text-xl font-bold text-neutral-900 dark:text-white group-hover:text-primary transition-colors">¿Trabajan con clientes del exterior?</h3>
+<span class="material-icons text-3xl font-bold bg-neutral-100 dark:bg-neutral-700 rounded-full p-1 border-2 border-black">add</span>
+</div>
+</article>
+</div>
+<!-- Reassurance Banner -->
+<div class="mt-20 max-w-3xl mx-auto">
+<div class="bg-white dark:bg-neutral-800 border-2 border-black p-8 md:p-12 rounded-lg shadow-neobrutalism relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+<!-- Background decorative splash -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/20 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative z-10 text-center md:text-left">
+<h4 class="text-2xl font-bold mb-2">¿Tenés otra pregunta?</h4>
+<p class="text-neutral-600 dark:text-neutral-300">
+                        No te quedes con la duda. Escribinos por WhatsApp y hablemos de tu proyecto.
+                    </p>
+</div>
+<button class="relative z-10 bg-primary hover:bg-primary-dark text-neutral-900 font-bold text-lg px-8 py-4 rounded border-2 border-black shadow-neobrutalism active:shadow-neobrutalism-hover active:translate-x-[2px] active:translate-y-[2px] transition-all flex items-center gap-2 group">
+<span>Escribinos Ahora</span>
+<span class="material-icons group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+</body></html>
