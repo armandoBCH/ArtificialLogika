@@ -160,7 +160,7 @@ export default function HeroSection() {
                             @keyframes fill-width { 0%, 38% { width: 0; } 45%, 100% { width: 140px; } }
                             @keyframes draw-line { 0%, 38% { stroke-dashoffset: 120; } 48%, 100% { stroke-dashoffset: 0; } }
                             @keyframes title-shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-                            .animate-title-shimmer { background: linear-gradient(120deg, #8523E1 20%, #B784EB 40%, #B784EB 60%, #8523E1 80%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: title-shimmer 4s linear infinite; }
+                            .animate-title-shimmer { background: linear-gradient(120deg, #8523E1 40%, #A259ED 50%, #8523E1 60%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: title-shimmer 6s linear infinite; }
                         `}} />
                         <div className="bg-white dark:bg-zinc-900 border-4 border-black rounded-xl shadow-[16px_16px_0px_#1A1A1A] overflow-hidden transform transition-all duration-300 hero-svg-wrapper flex flex-col">
                             {/* Browser Header */}
