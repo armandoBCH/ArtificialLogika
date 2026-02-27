@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import MagneticWrapper from "./MagneticWrapper";
 
@@ -8,16 +8,34 @@ export default function Navbar() {
     const { scrollY } = useScroll();
     const [hidden, setHidden] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 1024);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = scrollY.getPrevious() ?? 0;
 
-        // Hide navbar if scrolling up and past the hero section
-        if (latest < previous && latest > 100) {
-            setHidden(true);
+        if (isMobile) {
+            // Mobile: Hide navbar if scrolling up and past the hero section
+            if (latest < previous && latest > 100) {
+                setHidden(true);
+            } else {
+                setHidden(false);
+            }
         } else {
-            // Show navbar if scrolling down or near top
-            setHidden(false);
+            // Desktop: Hide navbar if scrolling down and past the hero section
+            if (latest > previous && latest > 100) {
+                setHidden(true);
+            } else {
+                setHidden(false);
+            }
         }
     });
 
