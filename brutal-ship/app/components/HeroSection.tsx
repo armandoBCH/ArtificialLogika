@@ -52,8 +52,7 @@ export default function HeroSection() {
                             ✨ NOS ENCARGAMOS DE TODO
                         </div>
                         <motion.div
-                            animate={entryComplete ? { y: [0, -4, 0] } : {}}
-                            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                            className={entryComplete ? 'animate-hero-title-float' : ''}
                         >
                             <motion.h1
                                 initial="hidden"
@@ -159,6 +158,8 @@ export default function HeroSection() {
                             @keyframes toggle-right { 0%, 38% { transform: translateX(0); } 42%, 100% { transform: translateX(20px); } }
                             @keyframes fill-width { 0%, 38% { width: 0; } 45%, 100% { width: 140px; } }
                             @keyframes draw-line { 0%, 38% { stroke-dashoffset: 120; } 48%, 100% { stroke-dashoffset: 0; } }
+                            @keyframes slow-float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-4px); } }
+                            .animate-hero-title-float { animation: slow-float 6s ease-in-out infinite; will-change: transform; }
                         `}} />
                         <div className="bg-white dark:bg-zinc-900 border-4 border-black rounded-xl shadow-[16px_16px_0px_#1A1A1A] overflow-hidden transform transition-all duration-300 hero-svg-wrapper flex flex-col">
                             {/* Browser Header */}
