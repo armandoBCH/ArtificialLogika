@@ -52,8 +52,8 @@ export default function HeroSection() {
                             ✨ NOS ENCARGAMOS DE TODO
                         </div>
                         <motion.div
-                            animate={entryComplete ? { y: [0, -6, 0] } : {}}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                            animate={entryComplete ? { y: [0, -4, 0] } : {}}
+                            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                         >
                             <motion.h1
                                 initial="hidden"
@@ -72,7 +72,7 @@ export default function HeroSection() {
                                     ))}
                                 </div>
                                 <div className="flex overflow-hidden pb-4 -mb-4">
-                                    <span className={`text-transparent bg-clip-text text-stroke whitespace-nowrap flex ${entryComplete ? 'animate-title-shimmer' : 'bg-primary'}`}>
+                                    <span className="text-transparent bg-clip-text bg-primary text-stroke whitespace-nowrap flex">
                                         {sentence2.map((char, index) => (
                                             <motion.span key={index} variants={letterVariants} className="inline-block">
                                                 {char}
@@ -159,8 +159,6 @@ export default function HeroSection() {
                             @keyframes toggle-right { 0%, 38% { transform: translateX(0); } 42%, 100% { transform: translateX(20px); } }
                             @keyframes fill-width { 0%, 38% { width: 0; } 45%, 100% { width: 140px; } }
                             @keyframes draw-line { 0%, 38% { stroke-dashoffset: 120; } 48%, 100% { stroke-dashoffset: 0; } }
-                            @keyframes title-shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-                            .animate-title-shimmer { background: linear-gradient(120deg, #8523E1 40%, #A259ED 50%, #8523E1 60%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: title-shimmer 6s linear infinite; }
                         `}} />
                         <div className="bg-white dark:bg-zinc-900 border-4 border-black rounded-xl shadow-[16px_16px_0px_#1A1A1A] overflow-hidden transform transition-all duration-300 hero-svg-wrapper flex flex-col">
                             {/* Browser Header */}
