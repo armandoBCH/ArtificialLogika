@@ -7,7 +7,7 @@ export const SITE_URL = "https://logika.com.ar";
 
 export const BUSINESS = {
     name: "Logika",
-    legalName: "Artificial Logika",
+    legalName: "Logika",
     description:
         "Agencia de diseño y desarrollo web en Argentina. Creamos páginas web profesionales para todo tipo de negocio. Nos encargamos de todo: diseño, desarrollo, dominio, hosting y soporte.",
     shortDescription:

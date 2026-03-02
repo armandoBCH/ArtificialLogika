@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import MagneticWrapper from "./MagneticWrapper";
+import LogikaLogo from "./LogikaLogo";
 import type { SiteConfigMap } from "@/lib/types/database";
 
 interface NavbarProps {
@@ -64,11 +65,11 @@ export default function Navbar({ config }: NavbarProps) {
                 <div className="bg-white dark:bg-background-dark border-2 border-black rounded-2xl shadow-neobrutalism flex justify-between h-16 md:h-20 items-center px-4 md:px-6 transition-all">
                     {/* Logo */}
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 md:w-10 md:h-10 bg-primary border-2 border-black rounded-full flex items-center justify-center">
-                            <span className="text-white font-bold text-lg md:text-xl">A</span>
-                        </div>
-                        <a href="/" className="text-xl md:text-2xl font-bold tracking-tighter uppercase hidden sm:block text-ink-black dark:text-white">
-                            Artificial<span className="text-primary">Logika</span>
+                        <a href="/" className="flex items-center gap-2">
+                            <LogikaLogo size={36} className="md:w-10 md:h-10" />
+                            <span className="text-xl md:text-2xl font-bold tracking-tighter uppercase hidden sm:block text-ink-black dark:text-white">
+                                Logika
+                            </span>
                         </a>
                     </div>
 

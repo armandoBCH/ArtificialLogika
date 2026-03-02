@@ -1,4 +1,5 @@
 import type { SiteConfigMap } from "@/lib/types/database";
+import LogikaLogo from "./LogikaLogo";
 
 interface FooterProps {
     config: SiteConfigMap;
@@ -18,10 +19,8 @@ export default function Footer({ config }: FooterProps) {
                     {/* Brand Column */}
                     <div className="lg:col-span-1">
                         <div className="flex items-center gap-3 text-white mb-6">
-                            <div className="size-8 flex items-center justify-center rounded bg-white text-black border-2 border-primary">
-                                <span className="material-symbols-outlined">code</span>
-                            </div>
-                            <h2 className="text-xl font-bold tracking-tight">Artificial Logika</h2>
+                            <LogikaLogo size={32} />
+                            <h2 className="text-xl font-bold tracking-tight">Logika</h2>
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed mb-6">
                             Hacemos páginas web profesionales para todo tipo de negocio. Vos te enfocás en lo tuyo, nosotros nos encargamos de tu presencia digital.
@@ -126,7 +125,7 @@ export default function Footer({ config }: FooterProps) {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-                    <p>© {new Date().getFullYear()} Artificial Logika. Todos los derechos reservados.</p>
+                    <p>© {new Date().getFullYear()} Logika. Todos los derechos reservados.</p>
                     <div className="flex gap-6">
                         <a className="hover:text-white transition-colors" href="#">
                             Política de Privacidad

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuestas de Logo SVG - Logika</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --white: #FFFFFF;
+            --black: #1A1A1A;
+            --violet: #8523E1;
+            --mint: #00D68F;
+            --coral: #FF6B6B;
+            --blue: #4A90FF;
+            --smoke: #F5F5F5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--smoke);
+            color: var(--black);
+            padding: 4rem 2rem;
+            line-height: 1.6;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto 4rem auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.125rem;
+            color: #6B6B6B;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .research-section {
+            background-color: var(--white);
+            border: 2px solid var(--black);
+            border-radius: 8px;
+            padding: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto 4rem auto;
+            box-shadow: 6px 6px 0px 0px var(--black);
+        }
+
+        .research-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--violet);
+        }
+
+        .research-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .research-list li {
+            padding: 1.5rem;
+            border: 2px solid var(--black);
+            border-radius: 8px;
+            background: var(--smoke);
+            box-shadow: 4px 4px 0px 0px var(--black);
+        }
+
+        .research-list li h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--white);
+            border: 2px solid var(--black);
+            border-radius: 8px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 6px 6px 0px 0px var(--black);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 8px 8px 0px 0px var(--black);
+        }
+
+        .card-header {
+            border-bottom: 2px solid var(--black);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .card-desc {
+            font-size: 0.875rem;
+            color: #6B6B6B;
+            margin-top: 0.5rem;
+        }
+
+        .svg-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            min-height: 180px;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: rgba(245, 245, 245, 0.5);
+            border: 2px dashed rgba(26, 26, 26, 0.1);
+        }
+
+        svg.logo-svg {
+            max-width: 160px;
+            max-height: 160px;
+            width: 100%;
+            height: auto;
+        }
+
+        /* Utility classes for SVG elements */
+        .svg-stroke {
+            stroke: var(--black);
+            stroke-width: 3;
+            stroke-linejoin: round;
+        }
+
+        .svg-stroke-thick {
+            stroke: var(--black);
+            stroke-width: 5;
+            stroke-linejoin: round;
+        }
+
+        .svg-fill-violet {
+            fill: var(--violet);
+        }
+
+        .svg-fill-mint {
+            fill: var(--mint);
+        }
+
+        .svg-fill-coral {
+            fill: var(--coral);
+        }
+
+        .svg-fill-blue {
+            fill: var(--blue);
+        }
+
+        .svg-fill-white {
+            fill: var(--white);
+        }
+
+        .svg-shadow {
+            fill: var(--black);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Conceptos SVG: Logika</h1>
+        <p>14 logotipos escalables creados bajo las reglas "Clean Pop / Soft Neobrutalism". Estructura visible, sombras
+            duras, alto contraste.</p>
+    </header>
+
+    <section class="research-section">
+        <h2>¿Qué hace a un logo excelente?</h2>
+        <p style="margin: 0 0 2rem 0; max-width: 100%;">Basado en la investigación de principios de diseño (simplicidad,
+            escalabilidad y recordación), estas propuestas se apoyan en los siguientes pilares clave para el éxito:</p>
+        <ul class="research-list">
+            <li>
+                <h3>Simplicidad y Memorabilidad</h3>
+                <p>Un logo debe ser fácil de recordar y dibujar. Formas geométricas claras y minimalismo (como el
+                    "Neobrutalismo suave") aseguran esto.</p>
+            </li>
+            <li>
+                <h3>Versatilidad (Escalabilidad)</h3>
+                <p>Funcionar igual de bien en pequeño (favicon, 16x16px) que en un cartel grande. Los vectores en bloque
+                    con delineados gruesos son perfectos para esto.</p>
+            </li>
+            <li>
+                <h3>Atemporalidad</h3>
+                <p>Evitar tendencias hiper-detalladas. El uso de la letra L fuerte, bloques y colores sólidos es un
+                    enfoque que envejece muy bien en el software.</p>
+            </li>
+            <li>
+                <h3>Relevancia</h3>
+                <p>Debe comunicar lo que hace la marca. En este caso, la combinación de la 'L', interactividad
+                    (mouse/clicks), y 'lógica' (bloques/código) apelan a un estudio web estructurado.</p>
+            </li>
+        </ul>
+    </section>
+
+    <div class="grid-container">
+
+        <!-- 1. Type Block "L" -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">1. Layered "L"</h2>
+                <p class="card-desc">La letra L estructurada como un contenedor apilado, reforzando la profundidad.</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path class="svg-shadow" d="M 36 26 h 25 v 40 h 20 v 25 h -45 z" />
+                    <path class="svg-fill-white svg-stroke" d="M 32 22 h 25 v 40 h 20 v 25 h -45 z" />
+                    <path class="svg-fill-violet svg-stroke" d="M 22 12 h 25 v 40 h 20 v 25 h -45 z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 2. Logic Spark -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">2. Logic Spark</h2>
+                <p class="card-desc">Chispa geométrica lúdica, símbolo de innovación y energía creativa.</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path class="svg-shadow" d="M 55 15 L 61 39 L 85 45 L 61 51 L 55 75 L 49 51 L 25 45 L 49 39 z" />
+                    <path class="svg-fill-violet svg-stroke"
+                        d="M 50 10 L 56 34 L 80 40 L 56 46 L 50 70 L 44 46 L 20 40 L 44 34 z" />
+                    <circle cx="50" cy="40" r="6" class="svg-fill-mint svg-stroke" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 3. Pointer & Logic -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">3. Pointer & Logic</h2>
+                <p class="card-desc">Fusión entre el cursor (interacción UI) y el contenedor de código.</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path class="svg-shadow" d="M 25 35 L 45 15 L 45 35 L 65 35 L 65 75 L 25 75 z" />
+                    <rect x="20" y="30" width="40" height="40" class="svg-fill-mint svg-stroke" />
+                    <path class="svg-fill-violet svg-stroke" d="M 40 10 L 65 35 L 40 35 z" />
+                    <line x1="28" y1="42" x2="42" y2="42" class="svg-stroke" />
+                    <line x1="28" y1="52" x2="52" y2="52" class="svg-stroke" />
+                    <path class="svg-fill-white svg-stroke" d="M 55 50 L 80 80 H 70 L 65 90 L 55 50" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 4. Logic Bricks -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">4. Logic Bricks</h2>
+                <p class="card-desc">Módulos apilados asimétricamente evocando la "L" y diseño web estructurado.</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="24" y="24" width="25" height="45" class="svg-shadow" />
+                    <rect x="54" y="44" width="25" height="25" class="svg-shadow" />
+                    <rect x="20" y="20" width="25" height="45" class="svg-fill-violet svg-stroke" />
+                    <rect x="50" y="40" width="25" height="25" class="svg-fill-mint svg-stroke" />
+                    <circle cx="32.5" cy="30" r="3" fill="var(--white)" />
+                    <circle cx="32.5" cy="55" r="3" fill="var(--white)" />
+                    <circle cx="62.5" cy="52.5" r="3" fill="var(--white)" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 5. Bracket Code -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">5. The Syntax</h2>
+                <p class="card-desc">Una llave de código y una "L" formando una pieza central sólida.</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path class="svg-shadow" d="M 40 20 L 25 50 L 40 80 H 60 L 45 50 L 60 20 Z" />
+                    <path class="svg-fill-violet svg-stroke" d="M 35 15 L 20 45 L 35 75 H 55 L 40 45 L 55 15 Z" />
+                    <!-- The "L" component nested -->
+                    <path class="svg-fill-white svg-stroke" d="M 60 40 v 25 h 15 v -10 h -5 v -15 z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 6. Playful Geometric -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">6. Geo-Pop "L"</h2>
+                <p class="card-desc">Formas básicas puras (círculo, rectángulo) colisionando para formar una "L".</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="25" y="25" width="20" height="50" class="svg-shadow" />
+                    <circle cx="65" cy="65" r="15" class="svg-shadow" />
+
+                    <rect x="20" y="20" width="20" height="50" class="svg-fill-violet svg-stroke" />
+                    <circle cx="60" cy="60" r="15" class="svg-fill-coral svg-stroke" />
+                    <rect x="40" y="55" width="10" height="15" class="svg-fill-white svg-stroke" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 7. Abstract Growth -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">7. Stairway</h2>
+                <p class="card-desc">Bloques ascendentes (escaleras) que representan crecimiento y estructuran la
+                    metafora de una L.</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="15" y="65" width="20" height="20" class="svg-shadow" />
+                    <rect x="40" y="45" width="20" height="40" class="svg-shadow" />
+                    <rect x="65" y="25" width="20" height="60" class="svg-shadow" />
+
+                    <rect x="10" y="60" width="20" height="20" class="svg-fill-mint svg-stroke" />
+                    <rect x="35" y="40" width="20" height="40" class="svg-fill-blue svg-stroke" />
+                    <rect x="60" y="20" width="20" height="60" class="svg-fill-violet svg-stroke" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 8. Grid System -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">8. Layout Pixel</h2>
+                <p class="card-desc">Minimalismo radical: una matriz de cuadrados simulando la L, el UI y el pixel art.
+                </p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Shadows -->
+                    <rect x="28" y="20" width="16" height="16" class="svg-shadow" />
+                    <rect x="28" y="44" width="16" height="16" class="svg-shadow" />
+                    <rect x="28" y="68" width="16" height="16" class="svg-shadow" />
+                    <rect x="52" y="68" width="16" height="16" class="svg-shadow" />
+                    <rect x="76" y="68" width="16" height="16" class="svg-shadow" />
+
+                    <!-- Blocks -->
+                    <rect x="24" y="16" width="16" height="16" class="svg-fill-violet svg-stroke" />
+                    <rect x="24" y="40" width="16" height="16" class="svg-fill-violet svg-stroke" />
+                    <rect x="24" y="64" width="16" height="16" class="svg-fill-violet svg-stroke" />
+
+                    <rect x="48" y="64" width="16" height="16" class="svg-fill-mint svg-stroke" />
+                    <rect x="72" y="64" width="16" height="16" class="svg-fill-coral svg-stroke" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 9. Target Star -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">9. Pop Sticker</h2>
+                <p class="card-desc">Diseño lúdico como un sello o sticker (insignia web 2.0 moderna).</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="54" cy="54" r="35" class="svg-shadow" />
+                    <path class="svg-fill-violet svg-stroke"
+                        d="M 50 15 C 30 15, 15 30, 15 50 C 15 70, 30 85, 50 85 C 70 85, 85 70, 85 50 C 85 30, 70 15, 50 15 Z" />
+                    <path class="svg-fill-white svg-stroke" d="M 40 35 h 10 v 20 h 15 v 10 h -25 z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 10. Abstract Cut -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">10. Abstract Slice</h2>
+                <p class="card-desc">La L rebanada dinámicamente, dando ilusión de velocidad e impacto.</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path class="svg-shadow" d="M 25 20 h 20 L 35 45 h -10 z" />
+                    <path class="svg-shadow" d="M 15 55 h 20 v 30 h 40 v -15 h 15 v 30 h -75 z" />
+
+                    <path class="svg-fill-coral svg-stroke" d="M 20 15 h 20 L 30 40 h -10 z" />
+                    <path class="svg-fill-violet svg-stroke" d="M 10 50 h 20 v 30 h 40 v -15 h 15 v 30 h -75 z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 11. Folder/Tab Logika -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">11. Digital Tab</h2>
+                <p class="card-desc">Referenciando la web y la organización digital (una carpeta/tabulador "L").</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path class="svg-shadow" d="M 25 25 h 30 l 15 15 h 15 v 45 h -60 z" />
+                    <path class="svg-fill-white svg-stroke" d="M 20 20 h 30 l 15 15 h 15 v 45 h -60 z" />
+                    <path class="svg-fill-blue svg-stroke" d="M 20 35 h 60 v 10 h -60 z" />
+                    <!-- L Shape inset -->
+                    <path class="svg-fill-violet svg-stroke" d="M 35 55 h 10 v 10 h 15 v 10 h -25 z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 12. Arrow Motion -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">12. Arrow Motion</h2>
+                <p class="card-desc">Combinando la L con una direccionalidad implícita de una flecha hacia
+                    arriba/derecha.</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path class="svg-shadow" d="M 25 75 L 25 25 L 45 45 L 45 55 L 75 55 L 75 75 Z" />
+                    <path class="svg-fill-mint svg-stroke" d="M 20 70 L 20 20 L 40 40 L 40 50 L 70 50 L 70 70 Z" />
+                    <circle cx="20" cy="20" r="5" class="svg-fill-violet svg-stroke" />
+                    <polygon points="70,50 85,60 70,70" class="svg-fill-violet svg-stroke" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 13. Wavy Flag/Terminal -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">13. The Output</h2>
+                <p class="card-desc">Referencia visual directa a un prompt de consola ("_") tras una "L".</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="25" y="25" width="15" height="40" class="svg-shadow" />
+                    <rect x="20" y="20" width="15" height="40" class="svg-fill-violet svg-stroke" />
+
+                    <!-- L bottom -->
+                    <rect x="45" y="55" width="25" height="15" class="svg-shadow" />
+                    <rect x="40" y="50" width="25" height="15" class="svg-fill-violet svg-stroke" />
+
+                    <!-- Blinking cursor / Terminal block -->
+                    <rect x="75" y="55" width="10" height="15" class="svg-shadow" />
+                    <rect x="70" y="50" width="10" height="15" class="svg-fill-coral svg-stroke" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 14. Infinite L -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">14. 3D Infinity "L"</h2>
+                <p class="card-desc">Cinta isométrica formando una estructura continua que se asemeja a una "L".</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Sombra gruesa base toda de un bloque -->
+                    <path class="svg-shadow" d="M 45 15 L 25 35 V 75 L 75 75 L 75 55 L 45 55 Z" />
+
+                    <path class="svg-fill-white svg-stroke" d="M 40 10 L 20 30 V 70 L 70 70 L 70 50 L 40 50 Z" />
+                    <path class="svg-fill-violet svg-stroke" d="M 20 50 L 40 30 V 50 Z" />
+                    <path class="svg-fill-mint svg-stroke" d="M 40 50 H 70 L 50 70 H 20 Z" />
+                </svg>
+            </div>
+        </div>
+        <!-- 15. User's Design (Original) -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">15. The Framework</h2>
+                <p class="card-desc">El diseño modular propuesto por ti. Marco interactivo con nuestros 4 colores.
+                    ¡Excelente base!</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Sombra Global -->
+                    <rect x="22" y="22" width="62" height="62" rx="6" fill="#1A1A1A"></rect>
+
+                    <!-- 1. Left (Blue) - Base, será tapado por Coral y Violeta -->
+                    <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" stroke-width="4">
+                    </rect>
+                    <!-- 2. Bottom (Coral) - Tapa a Blue en esquina inferior-izquierda ✓ -->
+                    <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="#1A1A1A" stroke-width="4">
+                    </rect>
+                    <!-- 3. Right (Mint) - Tapa a Coral en esquina inferior-derecha ✓ -->
+                    <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="#1A1A1A" stroke-width="4">
+                    </rect>
+                    <!-- 4. Top (Violet) - Tapa a Mint en esquina superior-derecha ✓ -->
+                    <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4">
+                    </rect>
+
+                    <!-- 5. TRUCO: Parche de Blue SOLO en la esquina superior-izquierda -->
+                    <!-- para que Blue tape a Violeta ahí, cerrando el loop cíclico ✓ -->
+                    <defs>
+                        <clipPath id="blue-corner-clip">
+                            <rect x="0" y="0" width="36" height="36"></rect>
+                        </clipPath>
+                    </defs>
+                    <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" stroke-width="4"
+                        clip-path="url(#blue-corner-clip)"></rect>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 16. User's Design (Refined) -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">16. Framework (Refined)</h2>
+                <p class="card-desc">Versión depurada eliminando cruces de bordes. Perímetro continuo y sombra con
+                    calado central perfecto.</p>
+            </div>
+            <div class="svg-container">
+                <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Sombra Externa Ajustada (Solo la forma del anillo) -->
+                    <path fill="#1A1A1A"
+                        d="M 28 22 h 50 a 6 6 0 0 1 6 6 v 50 a 6 6 0 0 1 -6 6 h -50 a 6 6 0 0 1 -6 -6 v -50 a 6 6 0 0 1 6 -6 Z M 44 44 v 18 h 18 v -18 h -18 Z" />
+
+                    <!-- Color Fills (No strokes) -->
+                    <!-- Top (Violet) -->
+                    <path fill="#8523E1" d="M 14 20 a 6 6 0 0 1 6 -6 h 50 a 6 6 0 0 1 6 6 v 16 h -62 Z" />
+                    <!-- Right (Mint) -->
+                    <path fill="#00D68F" d="M 76 36 v 34 a 6 6 0 0 1 -6 6 h -16 v -40 h 22 Z" />
+                    <!-- Bottom (Coral) -->
+                    <path fill="#FF6B6B" d="M 54 76 h -34 a 6 6 0 0 1 -6 -6 v -16 h 40 Z" />
+                    <!-- Left (Blue) -->
+                    <rect x="14" y="36" width="22" height="18" fill="#4A90FF" />
+
+                    <!-- Outer Stroke Boundary -->
+                    <rect x="14" y="14" width="62" height="62" rx="6" fill="none" stroke="#1A1A1A" stroke-width="4">
+                    </rect>
+                    <!-- Inner Stroke Hole -->
+                    <rect x="36" y="36" width="18" height="18" fill="none" stroke="#1A1A1A" stroke-width="4"
+                        stroke-linejoin="round"></rect>
+
+                    <!-- Dividing Lines (Tucked neatly behind the outer & inner strokes) -->
+                    <line x1="14" y1="36" x2="36" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+                    <line x1="54" y1="36" x2="76" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+                    <line x1="14" y1="54" x2="36" y2="54" stroke="#1A1A1A" stroke-width="4"></line>
+                    <line x1="54" y1="54" x2="54" y2="76" stroke="#1A1A1A" stroke-width="4"></line>
+                </svg>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
