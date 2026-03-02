@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import type { SiteConfigMap } from "@/lib/types/database";
 
-export default function StickyMobileCTA() {
+interface StickyMobileCTAProps {
+    config: SiteConfigMap;
+}
+
+export default function StickyMobileCTA({ config }: StickyMobileCTAProps) {
     const { scrollY } = useScroll();
     const [hidden, setHidden] = useState(true);
+
+    const whatsappUrl = `https://wa.me/${config.whatsapp_number}?text=${encodeURIComponent(config.whatsapp_message || "Hola! Quiero consultar por una web para mi negocio")}`;
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = scrollY.getPrevious() ?? 0;
@@ -31,7 +38,7 @@ export default function StickyMobileCTA() {
         >
             <div className="flex items-center gap-3 max-w-lg mx-auto">
                 <a
-                    href="https://wa.me/5491112345678?text=Hola!%20Quiero%20consultar%20por%20una%20web%20para%20mi%20negocio"
+                    href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 py-3 px-4 bg-secondary text-black font-bold text-sm uppercase tracking-wider rounded border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition-all whitespace-nowrap"

@@ -1,8 +1,8 @@
-"use client";
-
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk } from "next/font/google";
-import WhatsAppChatWidget from "./components/WhatsAppChatWidget";
-import { AnimatePresence, motion, useScroll } from "framer-motion";
+import { SITE_URL, BUSINESS, SEO_KEYWORDS, DEFAULT_OG_IMAGE } from "@/lib/seo/constants";
+import ScrollProgress from "./components/ScrollProgress";
+import PageTransition from "./components/PageTransition";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -12,18 +12,95 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#1A1A1A" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+};
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+
+  // Core
+  title: {
+    default: `${BUSINESS.name} — ${BUSINESS.slogan}`,
+    template: `%s | ${BUSINESS.name}`,
+  },
+  description: BUSINESS.description,
+  keywords: SEO_KEYWORDS,
+  authors: [{ name: BUSINESS.legalName, url: SITE_URL }],
+  creator: BUSINESS.legalName,
+  publisher: BUSINESS.legalName,
+  category: "technology",
+
+  // Robots
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  // Open Graph
+  openGraph: {
+    type: "website",
+    locale: BUSINESS.locale,
+    url: SITE_URL,
+    siteName: BUSINESS.name,
+    title: `${BUSINESS.name} — ${BUSINESS.slogan}`,
+    description: BUSINESS.shortDescription,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: `${BUSINESS.name} — Agencia de diseño y desarrollo web`,
+        type: "image/png",
+      },
+    ],
+  },
+
+  // Twitter Cards
+  twitter: {
+    card: "summary_large_image",
+    title: `${BUSINESS.name} — ${BUSINESS.slogan}`,
+    description: BUSINESS.shortDescription,
+    images: [DEFAULT_OG_IMAGE],
+  },
+
+  // Canonical & Alternates
+  alternates: {
+    canonical: SITE_URL,
+  },
+
+  // Icons
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
+
+  // Verification placeholders (uncomment when you have them)
+  // verification: {
+  //   google: "your-google-verification-code",
+  // },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { scrollYProgress } = useScroll();
-
   return (
-    <html lang="es" className="scroll-smooth scroll-pt-20">
+    <html lang="es-AR" className="scroll-smooth scroll-pt-20">
       <head>
-        <title>Artificial Logika — Tu Web Profesional, Sin Complicaciones</title>
-        <meta name="description" content="Diseñamos y creamos la página web que tu negocio necesita. Nosotros nos encargamos de todo — vos solo disfrutá el resultado." />
         {/* Material Icons */}
         <link
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -48,21 +125,11 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} font-display bg-background-light dark:bg-background-dark text-black dark:text-white overflow-x-hidden`}
       >
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-1 bg-primary origin-left z-[100]"
-          style={{ scaleX: scrollYProgress }}
-        />
-        <AnimatePresence mode="wait">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4 }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
-        {/* Interactive Desktop WhatsApp Widget */}
-        <WhatsAppChatWidget />
+        <ScrollProgress />
+        <PageTransition>
+          {children}
+        </PageTransition>
+
       </body>
     </html>
   );

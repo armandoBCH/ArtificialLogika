@@ -2,20 +2,57 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { SiteConfigMap } from "@/lib/types/database";
 
-export default function ContactSection() {
-    const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+interface ContactSectionProps {
+    config: SiteConfigMap;
+}
 
-    const handleSubmit = (e: React.FormEvent) => {
+export default function ContactSection({ config }: ContactSectionProps) {
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const whatsappUrl = `https://wa.me/${config.whatsapp_number}?text=${encodeURIComponent(config.whatsapp_message || "Hola! Quiero consultar por una web para mi negocio")}`;
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (status !== 'idle') return;
 
         setStatus('loading');
-        setTimeout(() => {
-            setStatus('success');
+        setErrorMessage('');
+
+        const formData = new FormData(e.currentTarget);
+        const body = {
+            name: formData.get('name') as string,
+            contact: formData.get('contact') as string,
+            business_type: formData.get('business_type') as string,
+            message: formData.get('message') as string,
+        };
+
+        try {
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+
+            if (res.ok) {
+                setStatus('success');
+                (e.target as HTMLFormElement).reset();
+                setTimeout(() => setStatus('idle'), 3000);
+            } else {
+                const data = await res.json();
+                setErrorMessage(data.error || 'Error al enviar. Intentá de nuevo.');
+                setStatus('error');
+                setTimeout(() => setStatus('idle'), 3000);
+            }
+        } catch {
+            setErrorMessage('Error de conexión. Intentá de nuevo.');
+            setStatus('error');
             setTimeout(() => setStatus('idle'), 3000);
-        }, 1200);
+        }
     };
+
     return (
         <section id="contacto" className="relative bg-primary px-4 py-20 md:px-10 lg:px-20 overflow-hidden">
             {/* Geometric Background Shapes */}
@@ -30,7 +67,7 @@ export default function ContactSection() {
                         ¿Listo Para Tu <br className="hidden md:block" />Nueva Web?
                     </h1>
                     <p className="text-white/90 text-lg md:text-xl font-medium max-w-2xl mx-auto">
-                        Contanos sobre tu negocio y te enviamos <strong className="text-white underline decoration-2 underline-offset-4">un presupuesto + mockup gratis</strong> en menos de 48 horas.
+                        Contanos sobre tu negocio y te enviamos <strong className="text-white underline decoration-2 underline-offset-4">un presupuesto + mockup gratis</strong> en menos de {config.response_time || '48hs'}.
                     </p>
                 </div>
 
@@ -51,6 +88,8 @@ export default function ContactSection() {
                                 <label className="flex flex-col gap-2">
                                     <span className="text-black font-bold text-sm uppercase">Tu Nombre</span>
                                     <input
+                                        name="name"
+                                        required
                                         className="w-full rounded border-2 border-black bg-gray-50 px-4 py-3 text-black placeholder-gray-400 focus:bg-white focus:-translate-y-1 focus:border-primary focus:ring-0 focus:shadow-[4px_4px_0px_0px_#8523e1] transition-all duration-300 outline-none font-medium"
                                         placeholder="Juan Pérez"
                                         type="text"
@@ -59,6 +98,8 @@ export default function ContactSection() {
                                 <label className="flex flex-col gap-2">
                                     <span className="text-black font-bold text-sm uppercase">Tu Email o Teléfono</span>
                                     <input
+                                        name="contact"
+                                        required
                                         className="w-full rounded border-2 border-black bg-gray-50 px-4 py-3 text-black placeholder-gray-400 focus:bg-white focus:-translate-y-1 focus:border-primary focus:ring-0 focus:shadow-[4px_4px_0px_0px_#8523e1] transition-all duration-300 outline-none font-medium"
                                         placeholder="juan@ejemplo.com o 11-1234-5678"
                                         type="text"
@@ -68,6 +109,7 @@ export default function ContactSection() {
                             <label className="flex flex-col gap-2">
                                 <span className="text-black font-bold text-sm uppercase">¿Qué tipo de negocio tenés?</span>
                                 <select
+                                    name="business_type"
                                     className="w-full rounded border-2 border-black bg-gray-50 px-4 py-3 text-black focus:bg-white focus:-translate-y-1 focus:border-primary focus:ring-0 focus:shadow-[4px_4px_0px_0px_#8523e1] transition-all duration-300 outline-none font-medium appearance-none"
                                     defaultValue="Otro"
                                 >
@@ -82,13 +124,15 @@ export default function ContactSection() {
                             <label className="flex flex-col gap-2">
                                 <span className="text-black font-bold text-sm uppercase">Contanos qué necesitás</span>
                                 <textarea
+                                    name="message"
+                                    required
                                     className="w-full rounded border-2 border-black bg-gray-50 px-4 py-3 text-black placeholder-gray-400 focus:bg-white focus:-translate-y-1 focus:border-primary focus:ring-0 focus:shadow-[4px_4px_0px_0px_#8523e1] transition-all duration-300 outline-none font-medium resize-none"
                                     placeholder="Ej: Necesito una web para mi peluquería con fotos de mis trabajos, precios y un botón de WhatsApp..."
                                     rows={4}
                                 ></textarea>
                             </label>
                             <button
-                                className={`w-full md:w-auto px-8 py-3 text-white font-bold uppercase tracking-wider rounded border-2 border-black transition-all shadow-neobrutalism-sm ${status === 'success' ? 'bg-[#00D68F]' : 'bg-primary hover:bg-primary/90 hover:shadow-neobrutalism active:scale-95'} flex items-center justify-center gap-2 overflow-hidden relative`}
+                                className={`w-full md:w-auto px-8 py-3 text-white font-bold uppercase tracking-wider rounded border-2 border-black transition-all shadow-neobrutalism-sm ${status === 'success' ? 'bg-[#00D68F]' : status === 'error' ? 'bg-red-500' : 'bg-primary hover:bg-primary/90 hover:shadow-neobrutalism active:scale-95'} flex items-center justify-center gap-2 overflow-hidden relative`}
                                 type="submit"
                                 disabled={status !== 'idle'}
                                 style={{ minHeight: '52px', minWidth: '320px' }}
@@ -133,6 +177,18 @@ export default function ContactSection() {
                                             ¡Mensaje Enviado!
                                         </motion.div>
                                     )}
+                                    {status === 'error' && (
+                                        <motion.div
+                                            key="error"
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="material-icons">error</span>
+                                            {errorMessage}
+                                        </motion.div>
+                                    )}
                                 </AnimatePresence>
                             </button>
                             {/* Trust signals under button */}
@@ -143,7 +199,7 @@ export default function ContactSection() {
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span className="material-icons text-green-600 text-sm">check_circle</span>
-                                    Respuesta en 48hs
+                                    Respuesta en {config.response_time || '48hs'}
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span className="material-icons text-green-600 text-sm">check_circle</span>
@@ -168,7 +224,7 @@ export default function ContactSection() {
                                 </p>
                                 <a
                                     className="inline-flex items-center justify-center gap-2 w-full py-3 bg-secondary text-black font-bold uppercase tracking-wider rounded border-2 border-black shadow-[4px_4px_0px_0px_#fff] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#fff] transition-all"
-                                    href="https://wa.me/5491112345678?text=Hola!%20Quiero%20consultar%20por%20una%20web%20para%20mi%20negocio"
+                                    href={whatsappUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -191,7 +247,7 @@ export default function ContactSection() {
                                 </div>
                                 <p className="text-white text-sm font-bold">&quot;Me respondieron en 2 horas&quot;</p>
                             </div>
-                            <p className="text-white/60 text-xs">— María L., clienta de Artificial Logika</p>
+                            <p className="text-white/60 text-xs">— María L., clienta de Logika</p>
                         </div>
 
                         {/* Info Box */}
@@ -203,12 +259,12 @@ export default function ContactSection() {
                                 <li className="flex items-start gap-3 text-gray-300">
                                     <span className="material-symbols-outlined text-secondary shrink-0">location_on</span>
                                     <span>
-                                        Buenos Aires, <br />Argentina
+                                        {config.location || 'Buenos Aires, Argentina'}
                                     </span>
                                 </li>
                                 <li className="flex items-center gap-3 text-gray-300">
                                     <span className="material-symbols-outlined text-secondary shrink-0">mail</span>
-                                    <span>hola@artificiallogika.com</span>
+                                    <span>{config.email || 'Configurar en admin'}</span>
                                 </li>
                             </ul>
                         </div>

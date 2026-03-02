@@ -866,3 +866,45 @@ body {
     stroke-dashoffset: 0;
   }
 }
+
+/* ===================================================================
+   ADMIN DASHBOARD STYLES
+   =================================================================== */
+
+.admin-input {
+  padding: 0.625rem 0.875rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.admin-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: #8523e1;
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 2px rgba(133, 35, 225, 0.15);
+}
+
+.admin-th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}

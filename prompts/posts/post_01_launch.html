@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080">
+    <title>IG Post 1 — Logika Launch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+        <defs>
+            <!-- Dot pattern -->
+            <pattern id="dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+                <circle cx="12" cy="12" r="1.5" fill="#1A1A1A" opacity="0.07" />
+            </pattern>
+            <!-- Diagonal lines -->
+            <pattern id="diags" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="30" x2="30" y2="0" stroke="#8523E1" stroke-width="0.8" opacity="0.04" />
+            </pattern>
+        </defs>
+
+        <!-- BG -->
+        <rect width="1080" height="1080" fill="#FFFFFF" />
+        <rect width="1080" height="1080" fill="url(#dots)" />
+        <rect width="1080" height="1080" fill="url(#diags)" />
+
+        <!-- CAPA 2: Formas grandes -->
+        <circle cx="-40" cy="120" r="280" fill="#8523E1" opacity="0.07" />
+        <circle cx="1120" cy="950" r="320" fill="#00D68F" opacity="0.06" />
+        <rect x="850" y="-60" width="300" height="300" rx="20" fill="#FDE047" opacity="0.06"
+            transform="rotate(20, 1000, 90)" />
+
+        <!-- CAPA 3: Formas medianas/decorativas -->
+        <!-- Estrella 4 puntas top-right -->
+        <path d="M980 80 L990 60 L1000 80 L1020 70 L1000 80 L990 100 L980 80 L960 70 Z" fill="#8523E1" opacity="0.3" />
+        <!-- Cuadrado rotado mid-left -->
+        <rect x="40" y="480" width="28" height="28" rx="4" fill="#FF6B6B" opacity="0.25"
+            transform="rotate(30, 54, 494)" />
+        <!-- Cruz bottom-left -->
+        <line x1="80" y1="850" x2="80" y2="890" stroke="#4A90FF" stroke-width="4" opacity="0.25" />
+        <line x1="60" y1="870" x2="100" y2="870" stroke="#4A90FF" stroke-width="4" opacity="0.25" />
+        <!-- Círculos sueltos -->
+        <circle cx="950" cy="350" r="12" fill="#00D68F" opacity="0.3" />
+        <circle cx="130" cy="720" r="8" fill="#8523E1" opacity="0.35" />
+        <circle cx="900" cy="680" r="18" fill="#FDE047" opacity="0.2" />
+        <!-- Anillo dash -->
+        <circle cx="200" cy="250" r="50" fill="none" stroke="#8523E1" stroke-width="2.5" stroke-dasharray="8 6"
+            opacity="0.12" />
+        <!-- Sparkle top-center -->
+        <g transform="translate(540, 100)" opacity="0.2">
+            <line x1="0" y1="-12" x2="0" y2="12" stroke="#FDE047" stroke-width="2.5" />
+            <line x1="-12" y1="0" x2="12" y2="0" stroke="#FDE047" stroke-width="2.5" />
+            <line x1="-8" y1="-8" x2="8" y2="8" stroke="#FDE047" stroke-width="2" />
+            <line x1="8" y1="-8" x2="-8" y2="8" stroke="#FDE047" stroke-width="2" />
+        </g>
+        <!-- Triángulo bottom-right -->
+        <polygon points="1020,780 1060,840 980,840" fill="#FF6B6B" opacity="0.15" />
+
+        <!-- CAPA 4: Detalles de borde -->
+        <!-- L corner top-left -->
+        <line x1="40" y1="40" x2="40" y2="120" stroke="#1A1A1A" stroke-width="3" opacity="0.15" />
+        <line x1="40" y1="40" x2="120" y2="40" stroke="#1A1A1A" stroke-width="3" opacity="0.15" />
+        <!-- L corner bottom-right -->
+        <line x1="1040" y1="1040" x2="1040" y2="960" stroke="#1A1A1A" stroke-width="3" opacity="0.15" />
+        <line x1="1040" y1="1040" x2="960" y2="1040" stroke="#1A1A1A" stroke-width="3" opacity="0.15" />
+        <!-- Barra decorativa lateral izq -->
+        <rect x="0" y="400" width="8" height="200" fill="#8523E1" opacity="0.2" rx="4" />
+        <!-- Dashes top -->
+        <line x1="300" y1="50" x2="500" y2="50" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="10 8"
+            opacity="0.08" />
+
+        <!-- ===== CONTENIDO PRINCIPAL ===== -->
+
+        <!-- Badge rotado "LANZAMIENTO" -->
+        <g transform="translate(540, 200) rotate(-3)">
+            <rect x="-120" y="-22" width="240" height="44" rx="22" fill="#FDE047" stroke="#1A1A1A" stroke-width="3" />
+            <text x="0" y="6" font-family="Space Grotesk" font-weight="600" font-size="16" fill="#1A1A1A"
+                text-anchor="middle" letter-spacing="0.08em">🚀 ESTAMOS ONLINE</text>
+        </g>
+
+        <!-- Título Principal -->
+        <text x="540" y="340" font-family="Space Grotesk" font-weight="700" font-size="64" fill="#1A1A1A"
+            text-anchor="middle" letter-spacing="-0.02em">TU NEGOCIO</text>
+        <text x="540" y="420" font-family="Space Grotesk" font-weight="700" font-size="64" fill="#1A1A1A"
+            text-anchor="middle" letter-spacing="-0.02em">MERECE UNA WEB</text>
+        <text x="540" y="510" font-family="Space Grotesk" font-weight="700" font-size="72" fill="#8523E1"
+            text-anchor="middle" letter-spacing="-0.02em">PROFESIONAL.</text>
+
+        <!-- Subtítulo -->
+        <text x="540" y="590" font-family="Space Grotesk" font-weight="400" font-size="26" fill="#6B6B6B"
+            text-anchor="middle">Nosotros la hacemos por vos.</text>
+
+        <!-- Línea separadora -->
+        <line x1="420" y1="640" x2="660" y2="640" stroke="#8523E1" stroke-width="3" />
+
+        <!-- Mini features con checks -->
+        <g transform="translate(280, 690)">
+            <!-- Check 1 -->
+            <rect x="0" y="0" width="32" height="32" rx="8" fill="#00D68F" stroke="#1A1A1A" stroke-width="2.5" />
+            <text x="16" y="23" font-size="18" text-anchor="middle" fill="white">✓</text>
+            <text x="46" y="23" font-family="Space Grotesk" font-weight="500" font-size="22" fill="#1A1A1A">Diseño que
+                enamora</text>
+        </g>
+        <g transform="translate(280, 740)">
+            <rect x="0" y="0" width="32" height="32" rx="8" fill="#00D68F" stroke="#1A1A1A" stroke-width="2.5" />
+            <text x="16" y="23" font-size="18" text-anchor="middle" fill="white">✓</text>
+            <text x="46" y="23" font-family="Space Grotesk" font-weight="500" font-size="22" fill="#1A1A1A">Nos
+                encargamos de todo</text>
+        </g>
+        <g transform="translate(280, 790)">
+            <rect x="0" y="0" width="32" height="32" rx="8" fill="#00D68F" stroke="#1A1A1A" stroke-width="2.5" />
+            <text x="16" y="23" font-size="18" text-anchor="middle" fill="white">✓</text>
+            <text x="46" y="23" font-family="Space Grotesk" font-weight="500" font-size="22" fill="#1A1A1A">Sin
+                complicaciones técnicas</text>
+        </g>
+
+        <!-- CTA card -->
+        <g transform="translate(540, 900)">
+            <rect x="-180" y="-28" width="360" height="56" rx="12" fill="#8523E1" stroke="#1A1A1A" stroke-width="3" />
+            <rect x="-176" y="-24" width="360" height="56" rx="12" fill="none" stroke="none" />
+            <!-- shadow -->
+            <rect x="-176" y="-24" width="360" height="56" rx="12" fill="#1A1A1A" opacity="0" />
+            <text x="0" y="8" font-family="Space Grotesk" font-weight="700" font-size="20" fill="#FFFFFF"
+                text-anchor="middle" letter-spacing="0.03em">CONOCÉ NUESTRO TRABAJO →</text>
+        </g>
+
+        <!-- ===== FIRMA DE MARCA ===== -->
+        <line x1="340" y1="990" x2="740" y2="990" stroke="#8523E1" stroke-width="3" />
+        <text x="540" y="1020" font-family="Space Grotesk" font-weight="700" font-size="20" fill="#1A1A1A"
+            text-anchor="middle" letter-spacing="0.05em">LOGIKA</text>
+        <text x="540" y="1045" font-family="Space Grotesk" font-weight="400" font-size="14" fill="#6B6B6B"
+            text-anchor="middle">artificiallogika.com</text>
+    </svg>
+</body>
+
+</html>

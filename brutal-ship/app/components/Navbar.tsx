@@ -1,10 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import MagneticWrapper from "./MagneticWrapper";
+import type { SiteConfigMap } from "@/lib/types/database";
 
-export default function Navbar() {
+interface NavbarProps {
+    config: SiteConfigMap;
+}
+
+export default function Navbar({ config }: NavbarProps) {
+    const pathname = usePathname();
+    const isHome = pathname === "/";
+    const getHref = (hash: string) => isHome ? hash : `/${hash}`;
+
+    const whatsappUrl = `https://wa.me/${config.whatsapp_number}?text=${encodeURIComponent(config.whatsapp_message || 'Hola! Quiero consultar por una web para mi negocio')}`;
     const { scrollY } = useScroll();
     const [hidden, setHidden] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -56,19 +67,19 @@ export default function Navbar() {
                         <div className="w-8 h-8 md:w-10 md:h-10 bg-primary border-2 border-black rounded-full flex items-center justify-center">
                             <span className="text-white font-bold text-lg md:text-xl">A</span>
                         </div>
-                        <span className="text-xl md:text-2xl font-bold tracking-tighter uppercase hidden sm:block text-ink-black dark:text-white">
+                        <a href="/" className="text-xl md:text-2xl font-bold tracking-tighter uppercase hidden sm:block text-ink-black dark:text-white">
                             Artificial<span className="text-primary">Logika</span>
-                        </span>
+                        </a>
                     </div>
 
                     {/* Desktop Links */}
                     <div className="hidden lg:flex items-center space-x-6 lg:space-x-8">
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href="#servicios">Servicios</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href="#proceso">Proceso</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href="#portafolio">Trabajos</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href="#precios">Precios</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href="#clientes">Clientes</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href="#faq">FAQ</a>
+                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#servicios")}>Servicios</a>
+                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#proceso")}>Proceso</a>
+                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href="/portafolio">Trabajos</a>
+                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#precios")}>Precios</a>
+                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#clientes")}>Clientes</a>
+                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#faq")}>FAQ</a>
                     </div>
 
                     {/* Actions */}
@@ -82,7 +93,7 @@ export default function Navbar() {
                                     transition={{ duration: 0.3 }}
                                 >
                                     <MagneticWrapper>
-                                        <a href="#contacto" className="bg-primary hover:bg-primary/90 text-white border-2 border-black font-bold py-2 px-4 md:px-6 text-sm md:text-base rounded-xl transition-all block whitespace-nowrap shadow-[2px_2px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-y-[1px] hover:translate-x-[1px]">
+                                        <a href={getHref("#contacto")} className="bg-primary hover:bg-primary/90 text-white border-2 border-black font-bold py-2 px-4 md:px-6 text-sm md:text-base rounded-xl transition-all block whitespace-nowrap shadow-[2px_2px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-y-[1px] hover:translate-x-[1px]">
                                             Contactanos
                                         </a>
                                     </MagneticWrapper>
@@ -112,16 +123,16 @@ export default function Navbar() {
                             className="lg:hidden absolute top-[110%] left-0 right-0 bg-white dark:bg-background-dark border-2 border-black rounded-2xl shadow-neobrutalism flex flex-col p-4 z-40"
                         >
                             <div className="flex flex-col gap-2">
-                                <a href="#servicios" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Servicios <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href="#proceso" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Proceso <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href="#portafolio" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Trabajos <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href="#precios" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Precios <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href="#clientes" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Clientes <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href="#faq" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">FAQ <span className="material-icons text-gray-400">arrow_forward</span></a>
+                                <a href={getHref("#servicios")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Servicios <span className="material-icons text-gray-400">arrow_forward</span></a>
+                                <a href={getHref("#proceso")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Proceso <span className="material-icons text-gray-400">arrow_forward</span></a>
+                                <a href="/portafolio" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Trabajos <span className="material-icons text-gray-400">arrow_forward</span></a>
+                                <a href={getHref("#precios")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Precios <span className="material-icons text-gray-400">arrow_forward</span></a>
+                                <a href={getHref("#clientes")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Clientes <span className="material-icons text-gray-400">arrow_forward</span></a>
+                                <a href={getHref("#faq")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">FAQ <span className="material-icons text-gray-400">arrow_forward</span></a>
 
                                 <div className="mt-4 pt-2">
                                     <a
-                                        href="#contacto"
+                                        href={getHref("#contacto")}
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className="w-full bg-[#25D366] hover:bg-[#20BD5A] text-ink-black border-2 border-black font-extrabold py-4 px-6 text-xl shadow-[4px_4px_0px_#000] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] flex items-center justify-center gap-3 rounded-xl transition-all"
                                     >

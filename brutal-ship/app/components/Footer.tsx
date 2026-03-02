@@ -1,4 +1,13 @@
-export default function Footer() {
+import type { SiteConfigMap } from "@/lib/types/database";
+
+interface FooterProps {
+    config: SiteConfigMap;
+}
+
+export default function Footer({ config }: FooterProps) {
+    const whatsappUrl = `https://wa.me/${config.whatsapp_number}`;
+    const emailUrl = config.email ? `mailto:${config.email}` : '#';
+    const instagramUrl = config.instagram_url || '#';
     return (
         <footer className="bg-ink-black border-t-2 border-white/10 text-white pt-16 pb-8 px-6 md:px-10 relative overflow-hidden">
             {/* Geometric Footer Decoration */}
@@ -20,21 +29,25 @@ export default function Footer() {
                         <div className="flex gap-4">
                             <a
                                 className="size-10 flex items-center justify-center rounded-full border border-white/20 hover:bg-primary hover:border-primary hover:text-white transition-all text-gray-400 group"
-                                href="#"
+                                href={instagramUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 aria-label="Instagram"
                             >
                                 <span className="material-symbols-outlined text-lg">photo_camera</span>
                             </a>
                             <a
                                 className="size-10 flex items-center justify-center rounded-full border border-white/20 hover:bg-primary hover:border-primary hover:text-white transition-all text-gray-400 group"
-                                href="#"
+                                href={emailUrl}
                                 aria-label="Email"
                             >
                                 <span className="material-symbols-outlined text-lg">alternate_email</span>
                             </a>
                             <a
                                 className="size-10 flex items-center justify-center rounded-full border border-white/20 hover:bg-primary hover:border-primary hover:text-white transition-all text-gray-400 group"
-                                href="#"
+                                href={whatsappUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 aria-label="WhatsApp"
                             >
                                 <span className="material-symbols-outlined text-lg">chat</span>
@@ -113,7 +126,7 @@ export default function Footer() {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-                    <p>© 2024 Artificial Logika. Todos los derechos reservados.</p>
+                    <p>© {new Date().getFullYear()} Artificial Logika. Todos los derechos reservados.</p>
                     <div className="flex gap-6">
                         <a className="hover:text-white transition-colors" href="#">
                             Política de Privacidad

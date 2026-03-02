@@ -1,8 +1,13 @@
 "use client";
 
 import CountUp from "react-countup";
+import type { Testimonial } from "@/lib/types/database";
 
-export default function TestimonialsSection() {
+interface TestimonialsSectionProps {
+    testimonials: Testimonial[];
+}
+
+export default function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
     return (
         <section id="clientes" className="relative z-10 w-full max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-8 bg-background-light dark:bg-background-dark">
             {/* Floating Background Shapes */}
@@ -45,78 +50,31 @@ export default function TestimonialsSection() {
                 {/* Left Column: Testimonials */}
                 <div className="lg:col-span-8">
                     <div className="flex flex-col gap-6 md:gap-8">
-                        {/* Card 1 */}
-                        <div className="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-6 md:p-8 shadow-neobrutalism hover:-translate-y-1 hover:shadow-neobrutalism-sm transition-all relative overflow-hidden">
-                            <div className="absolute -top-4 -right-4 text-9xl text-primary opacity-10 md:opacity-20 font-serif leading-none select-none pointer-events-none">❝</div>
-                            <div className="relative z-10 flex flex-col h-full justify-between">
-                                <p className="text-lg md:text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
-                                    &quot;Yo no sabía nada de páginas web, pero ellos se encargaron de absolutamente todo. En dos semanas ya tenía mi sitio funcionando y ahora mis clientes me encuentran por Google. Antes ni existía online.&quot;
-                                </p>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4 gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden flex-shrink-0">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img alt="Retrato de clienta satisfecha" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkYW0Flt0xW1Z3HB3NQwCqzJaGgTOWrUXGCNluYmymfDWoJiDh-UQh0Hdx9NWuTx_qiQdr2KzeaMkZ7N-QQl-4dkzIoTTSGaeaZ2tbzIGEJElJLhGWd7ydROujN0ENIj2UpffcTf9t4guY8he-CwCnCEMKa7QKx-3PXBAKeNM6IVxxsNb5-fd8qJOzrfCMg5_jfSEb9mfICiqS2r2p2IlfH-kkOZFsh6HwhgsxB1gpdvi7ThCjXF-CiziTu_MG8QUi-jcjVj54rUI" />
+                        {testimonials.map((t) => (
+                            <div key={t.id} className="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-6 md:p-8 shadow-neobrutalism hover:-translate-y-1 hover:shadow-neobrutalism-sm transition-all relative overflow-hidden">
+                                <div className="absolute -top-4 -right-4 text-9xl text-primary opacity-10 md:opacity-20 font-serif leading-none select-none pointer-events-none">❝</div>
+                                <div className="relative z-10 flex flex-col h-full justify-between">
+                                    <p className="text-lg md:text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
+                                        &quot;{t.quote}&quot;
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4 gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden flex-shrink-0">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img alt={`Retrato de ${t.name}`} className="w-full h-full object-cover" src={t.avatar_url} />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-lg leading-tight">{t.name}</h4>
+                                                <span className="text-sm text-gray-500">{t.role}</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 className="font-bold text-lg leading-tight">María López</h4>
-                                            <span className="text-sm text-gray-500">Dueña de Peluquería</span>
-                                        </div>
+                                        <span className={`self-start sm:self-auto px-4 py-1 rounded-full ${t.badge_color} border-2 border-black text-xs font-bold shadow-[2px_2px_0px_#000]`}>
+                                            {t.badge_text}
+                                        </span>
                                     </div>
-                                    <span className="self-start sm:self-auto px-4 py-1 rounded-full bg-electric-blue/20 text-electric-blue border-2 border-black text-xs font-bold shadow-[2px_2px_0px_#000]">
-                                        Servicios
-                                    </span>
                                 </div>
                             </div>
-                        </div>
-                        {/* Card 2 */}
-                        <div className="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-6 md:p-8 shadow-neobrutalism hover:-translate-y-1 hover:shadow-neobrutalism-sm transition-all relative overflow-hidden">
-                            <div className="absolute -top-4 -right-4 text-9xl text-primary opacity-10 md:opacity-20 font-serif leading-none select-none pointer-events-none">❝</div>
-                            <div className="relative z-10 flex flex-col h-full justify-between">
-                                <p className="text-lg md:text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
-                                    &quot;Les pasé las fotos, el menú y ellos hicieron todo. Ahora recibo reservas directo desde la web y por WhatsApp. Antes dependía 100% del boca a boca.&quot;
-                                </p>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4 gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden flex-shrink-0">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img alt="Retrato de cliente satisfecho" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQAEL7ldXO17P2zxbs1YngIHQKE24NCKGj4oHGt_U2jG0qZlQJYr5_JnXBJDR2YGgjx92YrRE0A1VBRzREbR7mT3awaWFn2PLGLhFbdroVUJNp2fTW9nA2xy0EXhcPunUx9Os-ruZSBCW7eK-AEGwD9FP-TnJ6vU27MmbXLnT3QBUELyLnEkDzq5PyYCWaZaiA2RMtrwwH9Qhr4aeOIBEk5InS3zW5OPrNNoCM6Tsy1tH3DmPWRd3ajGeYXrv4ejWcHDK3jjmO13U" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-lg leading-tight">Carlos Ruiz</h4>
-                                            <span className="text-sm text-gray-500">Dueño de Restaurante</span>
-                                        </div>
-                                    </div>
-                                    <span className="self-start sm:self-auto px-4 py-1 rounded-full bg-mint/20 text-teal-700 border-2 border-black text-xs font-bold shadow-[2px_2px_0px_#000]">
-                                        Gastronomía
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        {/* Card 3 */}
-                        <div className="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-6 md:p-8 shadow-neobrutalism hover:-translate-y-1 hover:shadow-neobrutalism-sm transition-all relative overflow-hidden">
-                            <div className="absolute -top-4 -right-4 text-9xl text-primary opacity-10 md:opacity-20 font-serif leading-none select-none pointer-events-none">❝</div>
-                            <div className="relative z-10 flex flex-col h-full justify-between">
-                                <p className="text-lg md:text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
-                                    &quot;Tenía una web vieja que no generaba confianza. Me hicieron una nueva profesional y las consultas por WhatsApp se triplicaron en el primer mes. Ahora la gente me contacta sin que yo busque clientes.&quot;
-                                </p>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4 gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden flex-shrink-0">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img alt="Retrato de clienta profesional" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwUxH3A7ZLuocQWfDb9tQet8_f_6u-oQQpVWTMjdpLmOS5ImkWGQ2yJOHKDj85TOdQwFhcPYptf-mugD8IWQ-w4sNC4AtJZ9J_ffQF2JxVbGqj6YfDTGIfTt3X-3p2TRPQA6g8DHQcqy6mRejoSOGIYJXeeyvv8idqZO85dwqI2a8ODmJu4qRIbVLPKefJoPsqoWl_70pqnl3Vn55pSEj4bF0QYnlSAdTcnI_Si2joxXY0K-47AmnvN-m4KWktQo8UD4nWuZCLBgQ" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-lg leading-tight">Ana Torres</h4>
-                                            <span className="text-sm text-gray-500">Abogada Independiente</span>
-                                        </div>
-                                    </div>
-                                    <span className="self-start sm:self-auto px-4 py-1 rounded-full bg-hot-coral/20 text-red-700 border-2 border-black text-xs font-bold shadow-[2px_2px_0px_#000]">
-                                        Profesional
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
 
                         {/* Ver más testimonios */}
                         <div className="flex justify-center mt-8">

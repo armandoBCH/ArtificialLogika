@@ -1,11 +1,16 @@
 "use client";
 
 import { useState } from 'react';
+import type { SiteConfigMap } from "@/lib/types/database";
 
-export default function WhatsAppChatWidget() {
+interface WhatsAppChatWidgetProps {
+    config: SiteConfigMap;
+}
+
+export default function WhatsAppChatWidget({ config }: WhatsAppChatWidgetProps) {
     const [isOpen, setIsOpen] = useState(false);
 
-    const phoneNumber = "5491112345678"; // Replace with actual number
+    const phoneNumber = config.whatsapp_number;
 
     const handleSendMessage = (message: string) => {
         const encodedMessage = encodeURIComponent(message);
@@ -26,7 +31,7 @@ export default function WhatsAppChatWidget() {
                             <span className="material-icons text-black text-2xl">support_agent</span>
                         </div>
                         <div>
-                            <h4 className="font-bold text-lg leading-tight">Artificial Logika</h4>
+                            <h4 className="font-bold text-lg leading-tight">Logika</h4>
                             <p className="text-xs text-white/90 font-medium">En línea</p>
                         </div>
                     </div>
@@ -40,10 +45,10 @@ export default function WhatsAppChatWidget() {
                 </div>
 
                 {/* Chat Body */}
-                <div className="p-4 bg-[url('https://lelogama.go-fastly.net/file/showcase-images/whatsapp-chat-bg.png')] bg-cover bg-center flex flex-col gap-3 min-h-[320px]">
+                <div className="p-4 bg-[#E5DDD5] flex flex-col gap-3 min-h-[320px]">
                     {/* Welcome Message */}
                     <div className="bg-white border-2 border-black rounded-lg rounded-tl-none p-3 shadow-[2px_2px_0px_#000] self-start max-w-[85%] relative">
-                        <p className="text-sm font-medium">¡Hola! 👋 Bienvenido a Artificial Logika.</p>
+                        <p className="text-sm font-medium">¡Hola! 👋 Bienvenido a Logika.</p>
                         <p className="text-sm font-medium mt-1">¿En qué te podemos ayudar hoy? Presioná una opción abajo:</p>
                     </div>
 
