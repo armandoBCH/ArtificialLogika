@@ -65,6 +65,7 @@ export interface PortfolioProject {
     id: string;
     title: string;
     category: string;
+    categories: string[];
     external_url: string | null;
     applied_services: string[];
     applied_features: string[];

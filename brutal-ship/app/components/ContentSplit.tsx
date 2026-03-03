@@ -1,6 +1,6 @@
 export default function ContentSplit() {
     return (
-        <section id="servicios" className="border-y-2 border-black bg-background-light dark:bg-background-dark">
+        <section className="border-y-2 border-black bg-background-light dark:bg-background-dark">
             <div className="grid grid-cols-1 lg:grid-cols-2">
                 <div className="p-12 md:p-20 flex flex-col justify-center border-b-2 lg:border-b-0 lg:border-r-2 border-black">
                     <h2 className="text-4xl md:text-5xl font-bold uppercase mb-6 leading-tight">

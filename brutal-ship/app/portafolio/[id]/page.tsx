@@ -102,9 +102,14 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                     {/* Text Block (Order 2 in mobile, Order 1 in Desktop) */}
                     <div className="w-full md:w-1/2 flex flex-col items-start pr-0 md:pr-8 order-2 md:order-1">
                         <div className="flex flex-wrap gap-2 mb-4">
-                            <span className="px-3 py-1 bg-black text-white font-black uppercase tracking-widest text-[10px] md:text-xs border-2 border-transparent">
-                                {project.category}
-                            </span>
+                            {(project.categories && project.categories.length > 0
+                                ? project.categories
+                                : project.category ? [project.category] : []
+                            ).map((cat, idx) => (
+                                <span key={idx} className="px-3 py-1 bg-black text-white font-black uppercase tracking-widest text-[10px] md:text-xs border-2 border-transparent">
+                                    {cat}
+                                </span>
+                            ))}
                             {project.is_sample && (
                                 <span className="px-3 py-1 bg-red-500 text-white font-black uppercase tracking-widest text-[10px] md:text-xs border-2 border-black shadow-[2px_2px_0px_#000] rotate-2">
                                     Proyecto de Muestra

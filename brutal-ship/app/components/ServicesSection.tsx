@@ -26,12 +26,12 @@ interface ServicesSectionProps {
 
 /* "Who is this for?" micro-copy per service type */
 const serviceTargetMap: Record<string, string> = {
-    "Página Web One-Page": "Emprendedores o locales buscando clientes sin vueltas.",
-    "Landing Page Conversión": "Para vender con Ads, promos u ofertas específicas.",
-    "Web Multi-Página": "Empresas con múltiples servicios, blog o catálogo.",
+    "Landing Page": "Emprendedores, freelancers y negocios locales que quieren empezar a recibir clientes.",
+    "Sitio Institucional": "Empresas con múltiples servicios que necesitan presencia profesional y SEO.",
+    "E-commerce / Plataforma": "Negocios que necesitan vender, gestionar turnos o administrar productos online.",
 };
 
-const fallbackTarget = "Para saltar al mundo profesional y atraer clientes.";
+const fallbackTarget = "Para dar el salto al mundo digital y atraer más clientes.";
 
 function ServiceRow({ service, index }: { service: Service; index: number }) {
     // Colors
@@ -111,7 +111,7 @@ function ServiceRow({ service, index }: { service: Service; index: number }) {
 
 export default function ServicesSection({ services }: ServicesSectionProps) {
     return (
-        <section className="py-16 bg-background-light dark:bg-background-dark relative overflow-hidden border-b-4 border-black">
+        <section id="servicios" className="py-16 bg-background-light dark:bg-background-dark relative overflow-hidden border-b-4 border-black">
             {/* Background elements */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 

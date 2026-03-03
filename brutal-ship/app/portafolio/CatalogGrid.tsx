@@ -14,15 +14,21 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
     // Extract unique categories from active projects
     const categories = useMemo(() => {
         const cats = new Set<string>();
-        initialProjects.filter(p => p.is_active).forEach(p => cats.add(p.category));
-        return ["Todos", ...Array.from(cats)].sort();
+        initialProjects.filter(p => p.is_active).forEach(p => {
+            const projectCats = p.categories && p.categories.length > 0 ? p.categories : (p.category ? [p.category] : []);
+            projectCats.forEach(c => cats.add(c));
+        });
+        return ["Todos", ...Array.from(cats).sort()];
     }, [initialProjects]);
 
     // Filter projects
     const filteredProjects = useMemo(() => {
         const active = initialProjects.filter(p => p.is_active);
         if (activeCategory === "Todos") return active;
-        return active.filter(p => p.category === activeCategory);
+        return active.filter(p => {
+            const projectCats = p.categories && p.categories.length > 0 ? p.categories : (p.category ? [p.category] : []);
+            return projectCats.includes(activeCategory);
+        });
     }, [initialProjects, activeCategory]);
 
     return (
@@ -90,9 +96,14 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                             {/* Content */}
                             <div className="p-4 md:p-5 flex flex-col flex-grow">
                                 <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                                    <span className="px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider border border-transparent">
-                                        {project.category}
-                                    </span>
+                                    {(project.categories && project.categories.length > 0
+                                        ? project.categories
+                                        : project.category ? [project.category] : []
+                                    ).map((cat, ci) => (
+                                        <span key={ci} className="px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider border border-transparent">
+                                            {cat}
+                                        </span>
+                                    ))}
                                     {project.tags.slice(0, 2).map((tag, i) => (
                                         <span key={i} className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-black dark:text-white text-[10px] font-bold uppercase tracking-wider border border-black dark:border-white/20">
                                             {tag}

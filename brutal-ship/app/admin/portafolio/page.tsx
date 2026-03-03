@@ -21,6 +21,7 @@ interface PortfolioProject {
     id: string;
     title: string;
     category: string;
+    categories: string[];
     external_url: string | null;
     applied_services: string[];
     applied_features: string[];
@@ -73,7 +74,7 @@ export default function PortafolioPage() {
     const [tagInput, setTagInput] = useState("");
 
     const empty: Partial<PortfolioProject> = {
-        title: "", description: "", description_long: "", category: "",
+        title: "", description: "", description_long: "", category: "", categories: [],
         image_url: "", image_alt: "", accent_color: "primary",
         external_url: "", applied_services: [], applied_features: [],
         tags: [], stats: [], is_active: true, is_sample: false, display_order: 0,
@@ -86,7 +87,7 @@ export default function PortafolioPage() {
 
     // Merge base categories + categories from existing projects + custom added ones
     const allCategories = useMemo(() => {
-        const fromDb = data.map((p) => p.category).filter(Boolean);
+        const fromDb = data.flatMap((p) => p.categories || (p.category ? [p.category] : [])).filter(Boolean);
         const merged = new Set([...BASE_CATEGORIES, ...fromDb, ...customCategories]);
         return Array.from(merged).sort((a, b) => a.localeCompare(b, "es"));
     }, [data, customCategories]);
@@ -196,21 +197,31 @@ export default function PortafolioPage() {
                                     <input className="admin-input w-full" value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} />
                                 </label>
                                 <label className="space-y-1">
-                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Categoría</span>
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Categorías <span className="text-primary">(podés elegir varias)</span></span>
                                     <div className="flex flex-wrap gap-2 mt-1">
-                                        {allCategories.map((cat: string) => (
-                                            <button
-                                                key={cat}
-                                                type="button"
-                                                onClick={() => setForm({ ...form, category: cat })}
-                                                className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border-2 rounded-sm transition-all ${form.category === cat
-                                                    ? "bg-primary text-white border-primary shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]"
-                                                    : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30 hover:text-white"
-                                                    }`}
-                                            >
-                                                {cat}
-                                            </button>
-                                        ))}
+                                        {allCategories.map((cat: string) => {
+                                            const cats = form.categories || [];
+                                            const isSelected = cats.includes(cat);
+                                            return (
+                                                <button
+                                                    key={cat}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newCats = isSelected
+                                                            ? cats.filter(c => c !== cat)
+                                                            : [...cats, cat];
+                                                        setForm({ ...form, categories: newCats, category: newCats[0] || "" });
+                                                    }}
+                                                    className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border-2 rounded-sm transition-all ${isSelected
+                                                        ? "bg-primary text-white border-primary shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]"
+                                                        : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30 hover:text-white"
+                                                        }`}
+                                                >
+                                                    {isSelected && <span className="material-icons text-[14px] mr-1">check</span>}
+                                                    {cat}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                     <div className="flex gap-2 mt-2">
                                         <input
@@ -405,7 +416,8 @@ export default function PortafolioPage() {
 
                             {/* Category-based tag suggestions */}
                             {(() => {
-                                const catTags = TAG_SUGGESTIONS[form.category || ""] || [];
+                                const selectedCats = form.categories || [];
+                                const catTags = selectedCats.flatMap(cat => TAG_SUGGESTIONS[cat] || []);
                                 const allSuggestions = [...new Set([...catTags, ...COMMON_TAGS])];
                                 const unusedSuggestions = allSuggestions.filter(t => !(form.tags || []).includes(t));
                                 if (unusedSuggestions.length === 0) return null;
@@ -413,7 +425,7 @@ export default function PortafolioPage() {
                                     <div>
                                         <p className="text-[10px] text-gray-500 mb-1.5 flex items-center gap-1">
                                             <span className="material-icons text-[12px]">auto_awesome</span>
-                                            Sugerencias {form.category ? `para "${form.category}"` : "generales"} — clic para agregar:
+                                            Sugerencias {selectedCats.length > 0 ? `para ${selectedCats.map(c => `"${c}"`).join(", ")}` : "generales"} — clic para agregar:
                                         </p>
                                         <div className="flex flex-wrap gap-1.5">
                                             {unusedSuggestions.map((tag) => (
@@ -422,8 +434,8 @@ export default function PortafolioPage() {
                                                     type="button"
                                                     onClick={() => setForm({ ...form, tags: [...(form.tags || []), tag] })}
                                                     className={`px-2 py-0.5 text-[11px] font-bold border rounded-sm transition-all ${catTags.includes(tag)
-                                                            ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/30"
-                                                            : "bg-white/5 text-gray-500 border-white/10 hover:bg-white/10 hover:text-white"
+                                                        ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/30"
+                                                        : "bg-white/5 text-gray-500 border-white/10 hover:bg-white/10 hover:text-white"
                                                         }`}
                                                 >
                                                     + {tag}
