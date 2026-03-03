@@ -48,13 +48,18 @@ const TAG_SUGGESTIONS: Record<string, string[]> = {
     "Educación": ["Cursos", "Plataforma", "E-learning", "Inscripciones", "Academia", "Instituto"],
     "Inmobiliaria": ["Propiedades", "Listado", "Filtros", "Mapa", "Alquiler", "Venta", "Inmuebles"],
     "Tecnología": ["SaaS", "Dashboard", "API", "App Web", "Software", "Startup", "Plataforma"],
+    "Concesionaria": ["Vehículos", "Catálogo Autos", "Fichas Técnicas", "Usado", "0km", "Financiación", "Test Drive"],
+    "CONSECIONARIA": ["Vehículos", "Catálogo Autos", "Fichas Técnicas", "Usado", "0km", "Financiación", "Test Drive"],
+    "Automotriz": ["Taller", "Repuestos", "Turnos", "Presupuestos", "Mecánica"],
+    "Otro": ["Landing Page", "Contacto", "Portfolio", "Servicios", "Sobre Nosotros"],
 };
 
-const COMMON_TAGS = ["Diseño Web", "Responsive", "SEO", "React", "Next.js", "Diseño UI/UX", "Mobile First", "WordPress", "Branding", "Redes Sociales"];
+const COMMON_TAGS = ["Diseño Web", "Responsive", "SEO", "React", "Next.js", "Diseño UI/UX", "Mobile First", "WordPress", "Branding", "Redes Sociales", "AUTO-GESTIONABLE"];
 
 const BASE_CATEGORIES = [
     "E-commerce", "Restaurante", "Peluquería", "Profesional",
-    "Salud", "Educación", "Inmobiliaria", "Tecnología", "Otro",
+    "Salud", "Educación", "Inmobiliaria", "Tecnología",
+    "Concesionaria", "Automotriz", "Otro",
 ];
 
 export default function PortafolioPage() {

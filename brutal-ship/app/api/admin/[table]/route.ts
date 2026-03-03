@@ -30,10 +30,10 @@ const ALLOWED_FIELDS: Record<AllowedTable, string[]> = {
         "cta_text", "cta_style", "display_order", "is_active",
     ],
     portfolio_projects: [
-        "title", "category", "tags", "description", "image_url",
-        "image_alt", "accent_color", "stats", "display_order",
-        "is_active", "is_sample", "external_url", "applied_services",
-        "applied_features",
+        "title", "category", "categories", "tags", "description", "description_long",
+        "image_url", "image_url_wide", "image_alt", "accent_color", "stats",
+        "display_order", "is_active", "is_sample", "external_url",
+        "applied_services", "applied_features",
     ],
     testimonials: [
         "name", "role", "quote", "avatar_url", "badge_text",
