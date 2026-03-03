@@ -93,7 +93,7 @@ export default function ProcessSection() {
                             Nos escribís por WhatsApp o completás el formulario. Nos contás sobre tu negocio y qué querés lograr con tu web.
                         </p>
                         <div className="mt-auto pt-4 flex w-full justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span className="material-icons-round text-primary transform rotate-45 text-2xl">arrow_upward</span>
+                            <span className="material-icons text-primary transform rotate-45 text-2xl">arrow_upward</span>
                         </div>
                     </motion.div>
 
@@ -107,7 +107,7 @@ export default function ProcessSection() {
                             Creamos un boceto visual de tu web. Lo revisás, nos decís qué cambiar y lo ajustamos hasta que te encante.
                         </p>
                         <div className="mt-auto pt-4 flex w-full justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span className="material-icons-round text-accent-mint transform rotate-45 text-2xl">arrow_upward</span>
+                            <span className="material-icons text-accent-mint transform rotate-45 text-2xl">arrow_upward</span>
                         </div>
                     </motion.div>
 
@@ -121,7 +121,7 @@ export default function ProcessSection() {
                             Desarrollamos tu web completa. Vos seguís con tu negocio tranquilo mientras nosotros trabajamos.
                         </p>
                         <div className="mt-auto pt-4 flex w-full justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span className="material-icons-round text-accent-coral transform rotate-45 text-2xl">arrow_upward</span>
+                            <span className="material-icons text-accent-coral transform rotate-45 text-2xl">arrow_upward</span>
                         </div>
                     </motion.div>
 
@@ -135,7 +135,7 @@ export default function ProcessSection() {
                             Publicamos tu sitio, configuramos dominio y todo lo técnico. Te enseñamos a usarlo y listo — ¡a recibir clientes!
                         </p>
                         <div className="mt-auto pt-4 flex w-full justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span className="material-icons-round text-accent-blue transform rotate-45 text-2xl">arrow_upward</span>
+                            <span className="material-icons text-accent-blue transform rotate-45 text-2xl">arrow_upward</span>
                         </div>
                     </motion.div>
                 </motion.div>
@@ -149,15 +149,15 @@ export default function ProcessSection() {
                 className="mt-20 flex flex-wrap justify-center gap-6 relative z-10"
             >
                 <div className="pill-neo bg-white dark:bg-gray-800 px-6 py-3 rounded-full flex items-center space-x-3 border-2 border-primary hover:bg-primary/5 transition-colors cursor-default">
-                    <span className="material-icons-round text-primary">bolt</span>
+                    <span className="material-icons text-primary">bolt</span>
                     <span className="font-bold text-ink-black dark:text-white">Entrega en 1-2 Semanas</span>
                 </div>
                 <div className="pill-neo bg-white dark:bg-gray-800 px-6 py-3 rounded-full flex items-center space-x-3 border-2 border-ink-black hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-default">
-                    <span className="material-icons-round text-gray-700 dark:text-gray-300">support_agent</span>
+                    <span className="material-icons text-gray-700 dark:text-gray-300">support_agent</span>
                     <span className="font-bold text-ink-black dark:text-white">Soporte Post-Entrega</span>
                 </div>
                 <div className="pill-neo bg-white dark:bg-gray-800 px-6 py-3 rounded-full flex items-center space-x-3 border-2 border-ink-black hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-default">
-                    <span className="material-icons-round text-gray-700 dark:text-gray-300">credit_card</span>
+                    <span className="material-icons text-gray-700 dark:text-gray-300">credit_card</span>
                     <span className="font-bold text-ink-black dark:text-white">Pago Flexible</span>
                 </div>
             </motion.div>

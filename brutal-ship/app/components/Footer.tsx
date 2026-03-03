@@ -32,14 +32,14 @@ export default function Footer({ config }: FooterProps) {
                                 rel="noopener noreferrer"
                                 aria-label="Instagram"
                             >
-                                <span className="material-symbols-outlined text-lg">photo_camera</span>
+                                <span className="material-icons text-lg">photo_camera</span>
                             </a>
                             <a
                                 className="size-10 flex items-center justify-center rounded-full border border-white/20 hover:bg-primary hover:border-primary hover:text-white transition-all text-gray-400 group"
                                 href={emailUrl}
                                 aria-label="Email"
                             >
-                                <span className="material-symbols-outlined text-lg">alternate_email</span>
+                                <span className="material-icons text-lg">alternate_email</span>
                             </a>
                             <a
                                 className="size-10 flex items-center justify-center rounded-full border border-white/20 hover:bg-primary hover:border-primary hover:text-white transition-all text-gray-400 group"
@@ -48,7 +48,7 @@ export default function Footer({ config }: FooterProps) {
                                 rel="noopener noreferrer"
                                 aria-label="WhatsApp"
                             >
-                                <span className="material-symbols-outlined text-lg">chat</span>
+                                <span className="material-icons text-lg">chat</span>
                             </a>
                         </div>
                     </div>
