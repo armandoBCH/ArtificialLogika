@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
         microlinkUrl.searchParams.set("waitForTimeout", "3000");
         microlinkUrl.searchParams.set("viewport.width", "1280");
         microlinkUrl.searchParams.set("viewport.height", "900");
-        microlinkUrl.searchParams.set("viewport.deviceScaleFactor", "2");
+        microlinkUrl.searchParams.set("viewport.deviceScaleFactor", "1");
 
         const apiRes = await fetch(microlinkUrl.toString());
         if (!apiRes.ok) {

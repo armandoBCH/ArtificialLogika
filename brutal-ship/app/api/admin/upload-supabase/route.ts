@@ -25,8 +25,11 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        // Parse base64 string
+        // Parse base64 string and detect content type
         const base64Data = image.includes(",") ? image.split(",")[1] : image;
+        const detectedType = image.includes("image/jpeg") ? "image/jpeg"
+            : image.includes("image/webp") ? "image/webp"
+                : "image/png";
         const buffer = Buffer.from(base64Data, "base64");
 
         // Use the existing supabase client to upload to "Images" bucket
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest) {
             .storage
             .from("Images")
             .upload(`portfolio/${safeFilename}`, buffer, {
-                contentType: "image/png",
+                contentType: detectedType,
                 upsert: true,
             });
 
