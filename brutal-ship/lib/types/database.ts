@@ -71,6 +71,7 @@ export interface PortfolioProject {
     is_sample: boolean;
     tags: string[];
     description: string;
+    description_long: string;
     image_url: string;
     image_alt: string;
     accent_color: string;

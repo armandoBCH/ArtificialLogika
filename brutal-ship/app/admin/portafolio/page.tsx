@@ -26,6 +26,7 @@ interface PortfolioProject {
     applied_features: string[];
     tags: string[];
     description: string;
+    description_long: string;
     image_url: string;
     image_alt: string;
     accent_color: string;
@@ -34,6 +35,20 @@ interface PortfolioProject {
     is_active: boolean;
     is_sample: boolean;
 }
+
+// Tag suggestions by category
+const TAG_SUGGESTIONS: Record<string, string[]> = {
+    "E-commerce": ["Tienda Online", "Carrito de Compras", "Pagos Online", "MercadoPago", "Catálogo", "Stock", "Envíos", "WooCommerce", "Shopify"],
+    "Restaurante": ["Menú Digital", "Reservas", "Delivery", "Carta Online", "WhatsApp Pedidos", "Gastronomía", "QR"],
+    "Peluquería": ["Turnos Online", "Galería", "Reservas", "Belleza", "Estética", "Barbería", "Salón"],
+    "Profesional": ["Portfolio", "CV Online", "Landing Page", "Contacto", "Freelancer", "Consultoría"],
+    "Salud": ["Turnos", "Pacientes", "Clínica", "Consultorio", "Médico", "Odontología", "Nutrición"],
+    "Educación": ["Cursos", "Plataforma", "E-learning", "Inscripciones", "Academia", "Instituto"],
+    "Inmobiliaria": ["Propiedades", "Listado", "Filtros", "Mapa", "Alquiler", "Venta", "Inmuebles"],
+    "Tecnología": ["SaaS", "Dashboard", "API", "App Web", "Software", "Startup", "Plataforma"],
+};
+
+const COMMON_TAGS = ["Diseño Web", "Responsive", "SEO", "React", "Next.js", "Diseño UI/UX", "Mobile First", "WordPress", "Branding", "Redes Sociales"];
 
 const BASE_CATEGORIES = [
     "E-commerce", "Restaurante", "Peluquería", "Profesional",
@@ -55,8 +70,10 @@ export default function PortafolioPage() {
             .catch(() => setAvailableServices([]));
     }, []);
 
+    const [tagInput, setTagInput] = useState("");
+
     const empty: Partial<PortfolioProject> = {
-        title: "", description: "", category: "",
+        title: "", description: "", description_long: "", category: "",
         image_url: "", image_alt: "", accent_color: "primary",
         external_url: "", applied_services: [], applied_features: [],
         tags: [], stats: [], is_active: true, is_sample: false, display_order: 0,
@@ -214,8 +231,14 @@ export default function PortafolioPage() {
                                     </div>
                                 </label>
                                 <label className="space-y-1 md:col-span-2">
-                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Descripción del proyecto</span>
-                                    <textarea className="admin-input w-full" rows={3} value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Descripción corta (tarjetas)</span>
+                                    <textarea className="admin-input w-full" rows={2} placeholder="Breve descripción que aparece en las tarjetas del catálogo" value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                                    <p className="text-[10px] text-gray-500">Se muestra en las tarjetas del catálogo y la sección de inicio. Máximo 2-3 líneas.</p>
+                                </label>
+                                <label className="space-y-1 md:col-span-2">
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Descripción extendida (detalle)</span>
+                                    <textarea className="admin-input w-full" rows={5} placeholder="Descripción completa del proyecto, proceso, desafíos y resultados. Se muestra en la página de detalle." value={form.description_long || ""} onChange={(e) => setForm({ ...form, description_long: e.target.value })} />
+                                    <p className="text-[10px] text-gray-500">Se muestra en la página de detalle de cada proyecto. Podés ser más extenso y detallado.</p>
                                 </label>
                             </div>
                         </div>
@@ -323,13 +346,93 @@ export default function PortafolioPage() {
                         )}
 
                         {/* ── SECTION 5: Tags ── */}
-                        <div className="space-y-1 border-t border-white/10 pt-4">
+                        <div className="space-y-3 border-t border-white/10 pt-4">
                             <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
                                 <span className="material-icons text-base">label</span>
                                 Etiquetas / Tags
                             </h3>
-                            <input className="admin-input w-full" placeholder="React, Next.js, Diseño Web" value={(form.tags || []).join(", ")} onChange={(e) => setForm({ ...form, tags: e.target.value.split(",").map((t) => t.trim()).filter(Boolean) })} />
-                            <p className="text-[10px] text-gray-500">Tags extra visibles en la tarjeta de preview (separados por coma).</p>
+
+                            {/* Current tags as removable chips */}
+                            {(form.tags || []).length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                    {(form.tags || []).map((tag, i) => (
+                                        <button
+                                            key={`${tag}-${i}`}
+                                            type="button"
+                                            onClick={() => setForm({ ...form, tags: (form.tags || []).filter((_, idx) => idx !== i) })}
+                                            className="inline-flex items-center gap-1 bg-primary/20 text-primary border border-primary/30 px-2.5 py-1 rounded-sm text-xs font-bold hover:bg-red-500/20 hover:text-red-400 hover:border-red-400/30 transition-colors group"
+                                        >
+                                            {tag}
+                                            <span className="material-icons text-[14px] opacity-50 group-hover:opacity-100">close</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Manual tag input */}
+                            <div className="flex gap-2">
+                                <input
+                                    className="admin-input flex-1 text-sm"
+                                    placeholder="Escribí un tag y presioná Enter o coma..."
+                                    value={tagInput}
+                                    onChange={(e) => setTagInput(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ',') {
+                                            e.preventDefault();
+                                            const newTag = tagInput.replace(/,/g, '').trim();
+                                            if (newTag && !(form.tags || []).includes(newTag)) {
+                                                setForm({ ...form, tags: [...(form.tags || []), newTag] });
+                                            }
+                                            setTagInput("");
+                                        }
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const newTag = tagInput.replace(/,/g, '').trim();
+                                        if (newTag && !(form.tags || []).includes(newTag)) {
+                                            setForm({ ...form, tags: [...(form.tags || []), newTag] });
+                                        }
+                                        setTagInput("");
+                                    }}
+                                    disabled={!tagInput.trim()}
+                                    className="bg-mint text-black font-bold px-4 py-1.5 text-xs uppercase tracking-wider border-2 border-black rounded-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all shadow-[2px_2px_0px_#000] disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
+                                    + Tag
+                                </button>
+                            </div>
+
+                            {/* Category-based tag suggestions */}
+                            {(() => {
+                                const catTags = TAG_SUGGESTIONS[form.category || ""] || [];
+                                const allSuggestions = [...new Set([...catTags, ...COMMON_TAGS])];
+                                const unusedSuggestions = allSuggestions.filter(t => !(form.tags || []).includes(t));
+                                if (unusedSuggestions.length === 0) return null;
+                                return (
+                                    <div>
+                                        <p className="text-[10px] text-gray-500 mb-1.5 flex items-center gap-1">
+                                            <span className="material-icons text-[12px]">auto_awesome</span>
+                                            Sugerencias {form.category ? `para "${form.category}"` : "generales"} — clic para agregar:
+                                        </p>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {unusedSuggestions.map((tag) => (
+                                                <button
+                                                    key={tag}
+                                                    type="button"
+                                                    onClick={() => setForm({ ...form, tags: [...(form.tags || []), tag] })}
+                                                    className={`px-2 py-0.5 text-[11px] font-bold border rounded-sm transition-all ${catTags.includes(tag)
+                                                            ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/30"
+                                                            : "bg-white/5 text-gray-500 border-white/10 hover:bg-white/10 hover:text-white"
+                                                        }`}
+                                                >
+                                                    + {tag}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
                         </div>
 
                         {/* ── SECTION 6: Stats ── */}

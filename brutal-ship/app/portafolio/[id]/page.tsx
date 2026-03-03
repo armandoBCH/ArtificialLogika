@@ -115,7 +115,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                             {project.title}
                         </h1>
                         <p className="text-base md:text-lg text-black/80 font-medium mb-6">
-                            {project.description}
+                            {project.description_long || project.description}
                         </p>
 
                         {/* CTA Buttons in Hero */}
