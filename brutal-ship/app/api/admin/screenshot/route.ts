@@ -35,19 +35,23 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const { chromium } = await import("playwright");
-        const browser = await chromium.launch({ headless: true });
-        const context = await browser.newContext({
-            viewport: { width: 1280, height: 900 },
-            deviceScaleFactor: 2, // Retina quality
+        const chromium = (await import("@sparticuz/chromium")).default;
+        const puppeteer = (await import("puppeteer-core")).default;
+
+        const browser = await puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: { width: 1280, height: 900, deviceScaleFactor: 2 },
+            executablePath: await chromium.executablePath(),
+            headless: "shell",
         });
-        const page = await context.newPage();
+
+        const page = await browser.newPage();
 
         // Navigate and wait for the page to fully load
-        await page.goto(url, { waitUntil: "networkidle", timeout: 15000 });
+        await page.goto(url, { waitUntil: "networkidle2", timeout: 15000 });
 
         // Extra wait for CSS animations, lazy images, etc.
-        await page.waitForTimeout(3000);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
 
         // Take screenshot of the viewport (what the user sees first)
         const screenshotBuffer = await page.screenshot({
@@ -58,7 +62,7 @@ export async function POST(request: NextRequest) {
         await browser.close();
 
         // Convert to base64 data URL
-        const base64 = screenshotBuffer.toString("base64");
+        const base64 = Buffer.from(screenshotBuffer).toString("base64");
         const dataUrl = `data:image/png;base64,${base64}`;
 
         return NextResponse.json({ image: dataUrl, width: 1280, height: 900 });
