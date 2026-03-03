@@ -29,6 +29,7 @@ interface PortfolioProject {
     description: string;
     description_long: string;
     image_url: string;
+    image_url_wide: string;
     image_alt: string;
     accent_color: string;
     stats: PortfolioStat[];
@@ -75,7 +76,7 @@ export default function PortafolioPage() {
 
     const empty: Partial<PortfolioProject> = {
         title: "", description: "", description_long: "", category: "", categories: [],
-        image_url: "", image_alt: "", accent_color: "primary",
+        image_url: "", image_url_wide: "", image_alt: "", accent_color: "primary",
         external_url: "", applied_services: [], applied_features: [],
         tags: [], stats: [], is_active: true, is_sample: false, display_order: 0,
     };
@@ -286,41 +287,45 @@ export default function PortafolioPage() {
                                 </label>
 
                                 {/* Image Preview */}
-                                {form.image_url && (
+                                {(form.image_url || form.image_url_wide) && (
                                     <div className="md:col-span-2 space-y-3">
                                         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
                                             <span className="material-icons text-[14px]">visibility</span>
-                                            Vista previa — así se ve tu imagen en cada sección:
+                                            Vista previa — así se ve cada imagen recortada:
                                         </p>
-                                        <div className="grid grid-cols-3 gap-3">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            {/* 4:3 preview (detail + homepage) */}
                                             <div className="space-y-1">
-                                                <p className="text-[10px] text-primary font-bold uppercase">Detalle (4:3)</p>
+                                                <p className="text-[10px] text-primary font-bold uppercase">🖼️ Detalle + Inicio (4:3)</p>
                                                 <div className="aspect-[4/3] bg-gray-900 border border-white/10 rounded overflow-hidden">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img src={form.image_url} alt="Preview 4:3" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                    {form.image_url ? (
+                                                        <>
+                                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                            <img src={form.image_url} alt="Preview 4:3" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                        </>
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs">Sin imagen 4:3</div>
+                                                    )}
                                                 </div>
+                                                <p className="text-[10px] text-gray-500">Se usa en la página de detalle y en &quot;Nuestro Trabajo&quot;</p>
                                             </div>
+                                            {/* 16:9 preview (catalog) */}
                                             <div className="space-y-1">
-                                                <p className="text-[10px] text-primary font-bold uppercase">Catálogo (16:9)</p>
+                                                <p className="text-[10px] text-mint font-bold uppercase">🎥 Catálogo (16:9)</p>
                                                 <div className="aspect-video bg-gray-900 border border-white/10 rounded overflow-hidden">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img src={form.image_url} alt="Preview 16:9" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                    {(form.image_url_wide || form.image_url) ? (
+                                                        <>
+                                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                            <img src={form.image_url_wide || form.image_url} alt="Preview 16:9" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                        </>
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs">Sin imagen 16:9</div>
+                                                    )}
                                                 </div>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] text-primary font-bold uppercase">Inicio (4:3 browser)</p>
-                                                <div className="aspect-[4/3] bg-gray-900 border border-white/10 rounded overflow-hidden">
-                                                    <div className="bg-gray-700 h-3 flex items-center px-1 gap-0.5">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
-                                                    </div>
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img src={form.image_url} alt="Preview inicio" className="w-full h-[calc(100%-12px)] object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                                                </div>
+                                                <p className="text-[10px] text-gray-500">Se usa en las tarjetas del catálogo</p>
                                             </div>
                                         </div>
-                                        <p className="text-[10px] text-gray-500">💡 Usamos la misma imagen en todas las secciones con <code className="text-primary">object-cover</code>. Para mejores resultados, usá imágenes horizontales de al menos 1200x900px.</p>
+                                        <p className="text-[10px] text-gray-500">💡 Usá &quot;📸 Capturar&quot; para generar ambos recortes automáticamente de una sola captura.</p>
                                     </div>
                                 )}
                             </div>
@@ -626,10 +631,11 @@ export default function PortafolioPage() {
             <ScreenshotCropModal
                 isOpen={showScreenshotModal}
                 onClose={() => setShowScreenshotModal(false)}
-                onComplete={(imageUrl: string) => {
+                onComplete={(result: { imageUrl: string; imageUrlWide: string }) => {
                     setForm((prev) => ({
                         ...prev,
-                        image_url: imageUrl,
+                        image_url: result.imageUrl,
+                        image_url_wide: result.imageUrlWide,
                         image_alt: `Screenshot de ${prev.title || "proyecto"}`,
                     }));
                     setShowScreenshotModal(false);

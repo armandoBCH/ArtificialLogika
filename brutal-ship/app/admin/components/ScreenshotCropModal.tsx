@@ -5,7 +5,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 interface ScreenshotCropModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onComplete: (imageUrl: string) => void;
+    onComplete: (result: { imageUrl: string; imageUrlWide: string }) => void;
     externalUrl: string;
     projectTitle: string;
 }
@@ -17,14 +17,19 @@ interface CropArea {
     height: number;
 }
 
-type ModalStep = "idle" | "capturing" | "cropping" | "uploading" | "done" | "error";
+type ModalStep = "idle" | "capturing" | "cropping-43" | "cropping-169" | "uploading" | "done" | "error";
 type DragMode = "none" | "move" | "nw" | "ne" | "sw" | "se";
 
 // Aspect ratio presets for portfolio cards
-const ASPECT_PRESETS = [
-    { label: "Tarjeta (16:10)", ratio: 16 / 10 },
+const ASPECT_PRESETS_43 = [
+    { label: "Detalle (4:3)", ratio: 4 / 3 },
     { label: "Cuadrado (1:1)", ratio: 1 },
-    { label: "Panorámico (16:9)", ratio: 16 / 9 },
+    { label: "Libre", ratio: 0 },
+];
+
+const ASPECT_PRESETS_169 = [
+    { label: "Catálogo (16:9)", ratio: 16 / 9 },
+    { label: "Tarjeta (16:10)", ratio: 16 / 10 },
     { label: "Libre", ratio: 0 },
 ];
 
@@ -43,7 +48,8 @@ export default function ScreenshotCropModal({
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const [cropAtDragStart, setCropAtDragStart] = useState<CropArea>({ x: 0, y: 0, width: 0, height: 0 });
     const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
-    const [lockedRatio, setLockedRatio] = useState<number>(16 / 10); // Default: card ratio
+    const [lockedRatio, setLockedRatio] = useState<number>(4 / 3); // Default: 4:3
+    const [croppedUrl43, setCroppedUrl43] = useState<string>(""); // Stores first crop result
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);
 
@@ -54,7 +60,8 @@ export default function ScreenshotCropModal({
             setScreenshotSrc("");
             setErrorMsg("");
             setCrop({ x: 0, y: 0, width: 0, height: 0 });
-            setLockedRatio(16 / 10);
+            setLockedRatio(4 / 3);
+            setCroppedUrl43("");
         }
     }, [isOpen]);
 
@@ -79,7 +86,7 @@ export default function ScreenshotCropModal({
             if (!res.ok) throw new Error(data.error || "Error al capturar");
             setScreenshotSrc(data.image);
             setCrop({ x: 0, y: 0, width: data.width, height: data.height });
-            setStep("cropping");
+            setStep("cropping-43");
         } catch (err) {
             setErrorMsg(err instanceof Error ? err.message : "Error desconocido");
             setStep("error");
@@ -91,11 +98,13 @@ export default function ScreenshotCropModal({
             const w = imgRef.current.naturalWidth;
             const h = imgRef.current.naturalHeight;
             setImgDimensions({ width: w, height: h });
-            // Apply default 16:10 crop centered
-            applyCropPreset(16 / 10, w, h);
+            // Apply crop based on current step
+            const ratio = step === "cropping-169" ? 16 / 9 : 4 / 3;
+            setLockedRatio(ratio);
+            applyCropPreset(ratio, w, h);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [step]);
 
     const applyCropPreset = (ratio: number, imgW?: number, imgH?: number) => {
         const w = imgW || imgDimensions.width;
@@ -145,7 +154,7 @@ export default function ScreenshotCropModal({
     };
 
     const handleMouseDown = (e: React.MouseEvent, mode: DragMode) => {
-        if (step !== "cropping") return;
+        if (step !== "cropping-43" && step !== "cropping-169") return;
         e.preventDefault();
         e.stopPropagation();
         const pos = getMousePos(e);
@@ -155,7 +164,7 @@ export default function ScreenshotCropModal({
     };
 
     const handleContainerMouseDown = (e: React.MouseEvent) => {
-        if (step !== "cropping") return;
+        if (step !== "cropping-43" && step !== "cropping-169") return;
         const pos = getMousePos(e);
         // Check if clicking inside the crop area → move mode
         if (
@@ -174,7 +183,7 @@ export default function ScreenshotCropModal({
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        if (dragMode === "none" || step !== "cropping") return;
+        if (dragMode === "none" || (step !== "cropping-43" && step !== "cropping-169")) return;
         const pos = getMousePos(e);
         const dx = pos.x - dragStart.x;
         const dy = pos.y - dragStart.y;
@@ -232,50 +241,72 @@ export default function ScreenshotCropModal({
         setDragMode("none");
     };
 
-    const performCropAndUpload = async () => {
-        if (!screenshotSrc || crop.width < 10 || crop.height < 10) return;
+    const cropToBase64 = async (): Promise<string> => {
+        const canvas = canvasRef.current;
+        if (!canvas) throw new Error("Canvas no disponible");
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        await new Promise<void>((resolve, reject) => {
+            img.onload = () => resolve();
+            img.onerror = () => reject(new Error("Error al cargar imagen"));
+            img.src = screenshotSrc;
+        });
+
+        canvas.width = crop.width;
+        canvas.height = crop.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("Canvas context no disponible");
+        ctx.drawImage(img, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
+        return canvas.toDataURL("image/webp", 0.85);
+    };
+
+    const uploadBase64 = async (base64: string, suffix: string): Promise<string> => {
+        const safeName = (projectTitle || "screenshot")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "")
+            .slice(0, 50);
+        const filename = `${safeName}-${suffix}-${Date.now()}.webp`;
+
+        const uploadRes = await fetch("/api/admin/upload-supabase", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ image: base64, filename }),
+        });
+
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) throw new Error(uploadData.error || "Error al subir");
+        return uploadData.url;
+    };
+
+    // Step 1: Crop 4:3 and move to 16:9
+    const handleCrop43Done = async () => {
+        if (crop.width < 10 || crop.height < 10) return;
         setStep("uploading");
-
         try {
-            const canvas = canvasRef.current;
-            if (!canvas) throw new Error("Canvas no disponible");
+            const base64 = await cropToBase64();
+            const url = await uploadBase64(base64, "4x3");
+            setCroppedUrl43(url);
+            // Reset crop for 16:9
+            setLockedRatio(16 / 9);
+            applyCropPreset(16 / 9);
+            setStep("cropping-169");
+        } catch (err) {
+            setErrorMsg(err instanceof Error ? err.message : "Error desconocido");
+            setStep("error");
+        }
+    };
 
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            await new Promise<void>((resolve, reject) => {
-                img.onload = () => resolve();
-                img.onerror = () => reject(new Error("Error al cargar imagen"));
-                img.src = screenshotSrc;
-            });
-
-            canvas.width = crop.width;
-            canvas.height = crop.height;
-            const ctx = canvas.getContext("2d");
-            if (!ctx) throw new Error("Canvas context no disponible");
-            ctx.drawImage(img, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
-
-            // Use WebP for best compression + quality balance
-            const croppedBase64 = canvas.toDataURL("image/webp", 0.85);
-
-            const safeName = (projectTitle || "screenshot")
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-|-$/g, "")
-                .slice(0, 50);
-            const filename = `${safeName}-${Date.now()}.webp`;
-
-            // Upload to Supabase
-            const uploadRes = await fetch("/api/admin/upload-supabase", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ image: croppedBase64, filename }),
-            });
-
-            const uploadData = await uploadRes.json();
-            if (!uploadRes.ok) throw new Error(uploadData.error || "Error al subir");
-
+    // Step 2: Crop 16:9 and finish
+    const handleCrop169Done = async () => {
+        if (crop.width < 10 || crop.height < 10) return;
+        setStep("uploading");
+        try {
+            const base64 = await cropToBase64();
+            const urlWide = await uploadBase64(base64, "16x9");
             setStep("done");
-            onComplete(uploadData.url);
+            onComplete({ imageUrl: croppedUrl43, imageUrlWide: urlWide });
         } catch (err) {
             setErrorMsg(err instanceof Error ? err.message : "Error desconocido");
             setStep("error");
@@ -303,6 +334,8 @@ export default function ScreenshotCropModal({
                     <div>
                         <h2 className="text-xl font-black text-white font-display flex items-center gap-2">
                             📸 Captura de Screenshot
+                            {step === "cropping-43" && <span className="text-xs bg-primary px-2 py-0.5 rounded">Paso 1/2 — Recorte 4:3</span>}
+                            {step === "cropping-169" && <span className="text-xs bg-mint text-black px-2 py-0.5 rounded">Paso 2/2 — Recorte 16:9</span>}
                         </h2>
                         <p className="text-xs text-gray-400 mt-1 truncate max-w-md">{externalUrl}</p>
                     </div>
@@ -334,13 +367,22 @@ export default function ScreenshotCropModal({
                         </div>
                     )}
 
-                    {/* Cropping */}
-                    {step === "cropping" && (
+                    {/* Cropping: both steps */}
+                    {(step === "cropping-43" || step === "cropping-169") && (
                         <>
+                            {/* Step indicator */}
+                            <div className={`p-3 rounded-sm border-2 ${step === "cropping-43" ? "bg-primary/10 border-primary/30" : "bg-mint/10 border-mint/30"}`}>
+                                <p className="text-sm font-bold text-white">
+                                    {step === "cropping-43"
+                                        ? "🖼️ Recortá la imagen para la página de DETALLE e INICIO (4:3)"
+                                        : "🎥 Ahora recortá para las TARJETAS del CATÁLOGO (16:9)"}
+                                </p>
+                            </div>
+
                             {/* Aspect ratio presets */}
                             <div className="flex items-center justify-between flex-wrap gap-2">
                                 <div className="flex gap-2">
-                                    {ASPECT_PRESETS.map((preset) => (
+                                    {(step === "cropping-43" ? ASPECT_PRESETS_43 : ASPECT_PRESETS_169).map((preset) => (
                                         <button
                                             key={preset.label}
                                             type="button"
@@ -446,12 +488,20 @@ export default function ScreenshotCropModal({
                             {/* Actions */}
                             <div className="flex gap-3 pt-2">
                                 <button
-                                    onClick={performCropAndUpload}
+                                    onClick={step === "cropping-43" ? handleCrop43Done : handleCrop169Done}
                                     disabled={crop.width < 10 || crop.height < 10}
                                     className="bg-mint text-black font-bold px-6 py-2.5 border-2 border-black shadow-neobrutalism-sm rounded-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                                 >
-                                    ✂️ Recortar y Subir
+                                    {step === "cropping-43" ? "✂️ Recortar 4:3 → Siguiente" : "✂️ Recortar 16:9 y Finalizar"}
                                 </button>
+                                {step === "cropping-169" && (
+                                    <button
+                                        onClick={() => { setStep("cropping-43"); setLockedRatio(4 / 3); applyCropPreset(4 / 3); }}
+                                        className="bg-white/10 text-white font-bold px-5 py-2 border-2 border-white/20 rounded-sm hover:bg-white/20 transition-all"
+                                    >
+                                        ⬅ Volver al 4:3
+                                    </button>
+                                )}
                                 <button
                                     onClick={captureScreenshot}
                                     className="bg-white/10 text-white font-bold px-5 py-2 border-2 border-white/20 rounded-sm hover:bg-white/20 transition-all"

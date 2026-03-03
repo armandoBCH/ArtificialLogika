@@ -87,7 +87,7 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                             <div className="aspect-video w-full bg-gray-100 border-b-2 border-black relative overflow-hidden">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
-                                    src={project.image_url}
+                                    src={project.image_url_wide || project.image_url}
                                     alt={project.image_alt || project.title}
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />

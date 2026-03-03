@@ -74,6 +74,7 @@ export interface PortfolioProject {
     description: string;
     description_long: string;
     image_url: string;
+    image_url_wide: string;
     image_alt: string;
     accent_color: string;
     stats: PortfolioStat[];
