@@ -254,15 +254,15 @@ export default function ScreenshotCropModal({
             if (!ctx) throw new Error("Canvas context no disponible");
             ctx.drawImage(img, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
 
-            // Use JPEG at 85% quality to keep file size small
-            const croppedBase64 = canvas.toDataURL("image/jpeg", 0.85);
+            // Use WebP for best compression + quality balance
+            const croppedBase64 = canvas.toDataURL("image/webp", 0.85);
 
             const safeName = (projectTitle || "screenshot")
                 .toLowerCase()
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/^-|-$/g, "")
                 .slice(0, 50);
-            const filename = `${safeName}-${Date.now()}.jpg`;
+            const filename = `${safeName}-${Date.now()}.webp`;
 
             // Upload to Supabase
             const uploadRes = await fetch("/api/admin/upload-supabase", {
@@ -346,8 +346,8 @@ export default function ScreenshotCropModal({
                                             type="button"
                                             onClick={() => applyCropPreset(preset.ratio)}
                                             className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border-2 rounded-sm transition-all ${lockedRatio === preset.ratio
-                                                    ? "bg-mint text-black border-black shadow-[2px_2px_0px_#000]"
-                                                    : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30 hover:text-white"
+                                                ? "bg-mint text-black border-black shadow-[2px_2px_0px_#000]"
+                                                : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30 hover:text-white"
                                                 }`}
                                         >
                                             {preset.label}
