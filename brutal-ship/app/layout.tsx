@@ -108,16 +108,22 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
 
-        {/* Material Icons — single font, loaded async (non-render-blocking) */}
+        {/* Material Icons — 3 lightweight fonts loaded async (non-render-blocking) */}
+        {/* Removed Material Symbols Outlined (1076KB) — replaced with Material Icons Outlined */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function(){
-                var l=document.createElement("link");
-                l.rel="stylesheet";
-                l.href="https://fonts.googleapis.com/icon?family=Material+Icons";
-                l.crossOrigin="anonymous";
-                document.head.appendChild(l);
+                var fonts=[
+                  "https://fonts.googleapis.com/icon?family=Material+Icons",
+                  "https://fonts.googleapis.com/icon?family=Material+Icons+Outlined",
+                  "https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+                ];
+                fonts.forEach(function(href){
+                  var l=document.createElement("link");
+                  l.rel="stylesheet";l.href=href;l.crossOrigin="anonymous";
+                  document.head.appendChild(l);
+                });
               })();
             `,
           }}
@@ -125,6 +131,8 @@ export default function RootLayout({
         {/* Fallback for no-JS */}
         <noscript>
           <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
         </noscript>
       </head>
       <body

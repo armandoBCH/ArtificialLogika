@@ -81,7 +81,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                             🎁 PRESUPUESTO + MOCKUP GRATIS
                         </div>
                         <h3 className="text-black text-2xl font-bold mb-2 flex items-center gap-2 mt-4">
-                            <span className="material-icons text-primary">mail</span>
+                            <span className="material-icons-outlined text-primary">mail</span>
                             Recibí tu presupuesto sin compromiso
                         </h3>
                         <p className="text-gray-500 text-sm mb-6">Completá el formulario y te enviamos un mockup de cómo se vería tu web + presupuesto detallado. 100% gratis.</p>
@@ -157,7 +157,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                             exit={{ opacity: 0, y: -20 }}
                                             className="flex items-center gap-2"
                                         >
-                                            Quiero Mi Presupuesto Gratis <span className="material-icons text-sm">arrow_forward</span>
+                                            Quiero Mi Presupuesto Gratis <span className="material-icons-outlined text-sm">arrow_forward</span>
                                         </motion.div>
                                     )}
                                     {status === 'loading' && (
@@ -184,7 +184,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                             transition={{ type: "spring", stiffness: 200, damping: 10 }}
                                             className="flex items-center gap-2 text-black"
                                         >
-                                            <span className="material-icons">check_circle</span>
+                                            <span className="material-icons-outlined">check_circle</span>
                                             ¡Mensaje Enviado!
                                         </motion.div>
                                     )}
@@ -196,7 +196,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                             exit={{ opacity: 0, y: -20 }}
                                             className="flex items-center gap-2"
                                         >
-                                            <span className="material-icons">error</span>
+                                            <span className="material-icons-outlined">error</span>
                                             {errorMessage}
                                         </motion.div>
                                     )}
@@ -205,15 +205,15 @@ export default function ContactSection({ config }: ContactSectionProps) {
                             {/* Trust signals under button */}
                             <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 font-medium pt-1">
                                 <span className="flex items-center gap-1">
-                                    <span className="material-icons text-green-600 text-sm">check_circle</span>
+                                    <span className="material-icons-outlined text-green-600 text-sm">check_circle</span>
                                     Sin compromiso
                                 </span>
                                 <span className="flex items-center gap-1">
-                                    <span className="material-icons text-green-600 text-sm">check_circle</span>
+                                    <span className="material-icons-outlined text-green-600 text-sm">check_circle</span>
                                     Respuesta en {config.response_time || '48hs'}
                                 </span>
                                 <span className="flex items-center gap-1">
-                                    <span className="material-icons text-green-600 text-sm">check_circle</span>
+                                    <span className="material-icons-outlined text-green-600 text-sm">check_circle</span>
                                     Mockup incluido
                                 </span>
                             </div>
@@ -227,7 +227,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -mr-16 -mt-16 transition-all group-hover:bg-secondary/20"></div>
                             <div className="relative z-10">
                                 <div className="size-12 bg-secondary rounded-lg flex items-center justify-center border-2 border-black mb-4 shadow-[2px_2px_0px_0px_#fff]">
-                                    <span className="material-icons text-black text-2xl">chat</span>
+                                    <span className="material-icons-outlined text-black text-2xl">chat</span>
                                 </div>
                                 <h3 className="text-white text-2xl font-bold mb-2">¿Preferís WhatsApp?</h3>
                                 <p className="text-gray-400 mb-6 font-light">
@@ -240,7 +240,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                     rel="noopener noreferrer"
                                 >
                                     <span>Chatear por WhatsApp</span>
-                                    <span className="material-icons text-sm">arrow_outward</span>
+                                    <span className="material-icons-outlined text-sm">arrow_outward</span>
                                 </a>
                             </div>
                         </div>
@@ -265,13 +265,13 @@ export default function ContactSection({ config }: ContactSectionProps) {
                             </h4>
                             <ul className="space-y-4">
                                 <li className="flex items-start gap-3 text-gray-300">
-                                    <span className="material-icons text-secondary shrink-0">location_on</span>
+                                    <span className="material-icons-outlined text-secondary shrink-0">location_on</span>
                                     <span>
                                         {config.location || 'Buenos Aires, Argentina'}
                                     </span>
                                 </li>
                                 <li className="flex items-center gap-3 text-gray-300">
-                                    <span className="material-icons text-secondary shrink-0">mail</span>
+                                    <span className="material-icons-outlined text-secondary shrink-0">mail</span>
                                     <span>{config.email || 'Configurar en admin'}</span>
                                 </li>
                             </ul>

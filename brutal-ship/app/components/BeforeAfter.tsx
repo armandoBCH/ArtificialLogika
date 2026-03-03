@@ -54,17 +54,17 @@ export default function BeforeAfter() {
                                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeB4wUeUUJTjoiI1EPrCdvnw20ImkJnORy0Wlw91FNXk7uk4LATnblBQBUDOw5CMnTfdsOREY954N3NjN8_gm52FgSUKwrZcWhu4bWj26eFAme9Y0iu43ZQ8WazdaoGN79KyeJE7uePGuue2r_sslQEQA-7r7OG2C9856y13b15E-HKUkhhWfiGc-R-IKfEcE0RJ6vwy23sjnnConSNZ2OkWnUhxlyQe0sBOCSbTmLS9Oy7MgDX5QdFLgY6_LRc9yGdomTCU2v2dE"
                                     />
                                     <div className="absolute top-1/4 left-1/4 bg-white dark:bg-gray-800 border-2 border-secondary-coral text-secondary-coral p-2 rounded shadow-md transform -rotate-3 text-xs font-bold flex items-center gap-1">
-                                        <span className="material-icons text-sm">close</span> UI Desordenada
+                                        <span className="material-icons-outlined text-sm">close</span> UI Desordenada
                                     </div>
                                     <div className="absolute bottom-1/3 right-10 bg-white dark:bg-gray-800 border-2 border-secondary-coral text-secondary-coral p-2 rounded shadow-md transform rotate-2 text-xs font-bold flex items-center gap-1">
-                                        <span className="material-icons text-sm">close</span> Carga Lenta
+                                        <span className="material-icons-outlined text-sm">close</span> Carga Lenta
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-8 space-y-4">
                                 <div className="flex items-start gap-4">
                                     <div className="bg-secondary-coral/10 p-1 rounded border-2 border-secondary-coral/20 flex-shrink-0">
-                                        <span className="material-icons text-secondary-coral">close</span>
+                                        <span className="material-icons-outlined text-secondary-coral">close</span>
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-lg dark:text-gray-200">Estética Desactualizada</h4>
@@ -73,7 +73,7 @@ export default function BeforeAfter() {
                                 </div>
                                 <div className="flex items-start gap-4">
                                     <div className="bg-secondary-coral/10 p-1 rounded border-2 border-secondary-coral/20 flex-shrink-0">
-                                        <span className="material-icons text-secondary-coral">close</span>
+                                        <span className="material-icons-outlined text-secondary-coral">close</span>
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-lg dark:text-gray-200">Navegación Confusa</h4>
@@ -104,17 +104,17 @@ export default function BeforeAfter() {
                                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt8E-gIWAW_rRUeXmw2BunyDFi3ETYiRNFMjEUjYXu6SYSd0wXq87N7GEWN_3mtYLB_sjkMYh3q4e6YKconTKb_qHe_cMufEWa3pYQvBz-_mYcXtg34NcAJbXfvJa6IBxIW1znASsTE8nU7iPlxQyc_F6kL-hYauMqvyW_2HnWcIgwF7Glj5c4xaTtMldgdwMKXlPK667_N7N9T8sTEaqhkVmifpG2dakSViEahqpnoTAXStelAt56DSHJqS25LMTs6-cBg9hAAD8"
                                     />
                                     <div className="absolute top-1/3 left-10 bg-secondary-mint border-2 border-black text-black p-2 rounded shadow-neo transform -rotate-1 text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <span className="material-icons text-sm">check</span> Alta Conv.
+                                        <span className="material-icons-outlined text-sm">check</span> Alta Conv.
                                     </div>
                                     <div className="absolute bottom-1/4 right-1/4 bg-primary text-white border-2 border-black p-2 rounded shadow-neo transform rotate-2 text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <span className="material-icons text-sm">bolt</span> Carga Instantánea
+                                        <span className="material-icons-outlined text-sm">bolt</span> Carga Instantánea
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-10 lg:pl-4 space-y-4">
                                 <div className="flex items-start gap-4">
                                     <div className="bg-secondary-mint/20 p-1 rounded border-2 border-secondary-mint flex-shrink-0">
-                                        <span className="material-icons text-green-700 dark:text-secondary-mint font-bold">check</span>
+                                        <span className="material-icons-outlined text-green-700 dark:text-secondary-mint font-bold">check</span>
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-lg text-primary">Moderno y Confiable</h4>
@@ -123,7 +123,7 @@ export default function BeforeAfter() {
                                 </div>
                                 <div className="flex items-start gap-4">
                                     <div className="bg-secondary-mint/20 p-1 rounded border-2 border-secondary-mint flex-shrink-0">
-                                        <span className="material-icons text-green-700 dark:text-secondary-mint font-bold">check</span>
+                                        <span className="material-icons-outlined text-green-700 dark:text-secondary-mint font-bold">check</span>
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-lg text-primary">Enfocado en Resultados</h4>
@@ -139,7 +139,7 @@ export default function BeforeAfter() {
                     <div className="bg-white dark:bg-surface-dark border-2 border-black dark:border-gray-700 rounded-lg p-6 shadow-neo hover:translate-y-[-4px] hover:shadow-neo-lg transition-all duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wide">Consultas</span>
-                            <span className="material-icons text-primary">trending_up</span>
+                            <span className="material-icons-outlined text-primary">trending_up</span>
                         </div>
                         <div className="text-5xl font-black text-primary mb-2">3x</div>
                         <p className="text-gray-700 dark:text-gray-300 font-medium">Más consultas en el primer mes con la web nueva.</p>
@@ -147,7 +147,7 @@ export default function BeforeAfter() {
                     <div className="bg-white dark:bg-surface-dark border-2 border-black dark:border-gray-700 rounded-lg p-6 shadow-neo hover:translate-y-[-4px] hover:shadow-neo-lg transition-all duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wide">Velocidad</span>
-                            <span className="material-icons text-secondary-mint">speed</span>
+                            <span className="material-icons-outlined text-secondary-mint">speed</span>
                         </div>
                         <div className="text-5xl font-black text-secondary-mint dark:text-secondary-mint mb-2">0.8s</div>
                         <p className="text-gray-700 dark:text-gray-300 font-medium">Tiempo de carga promedio (antes 4.2s).</p>
@@ -155,7 +155,7 @@ export default function BeforeAfter() {
                     <div className="bg-white dark:bg-surface-dark border-2 border-black dark:border-gray-700 rounded-lg p-6 shadow-neo hover:translate-y-[-4px] hover:shadow-neo-lg transition-all duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wide">Visibilidad</span>
-                            <span className="material-icons text-secondary-coral">favorite</span>
+                            <span className="material-icons-outlined text-secondary-coral">favorite</span>
                         </div>
                         <div className="text-5xl font-black text-secondary-coral mb-2">+150%</div>
                         <p className="text-gray-700 dark:text-gray-300 font-medium">Aumento en el tiempo de sesión por usuario.</p>
@@ -179,7 +179,7 @@ export default function BeforeAfter() {
                             <span className="absolute top-2 left-2 w-full h-full bg-black rounded-lg opacity-100"></span>
                             <span className="relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-black transition-all duration-200 bg-white border-2 border-black rounded-lg group-hover:-translate-x-1 group-hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                                 Quiero Mi Web Nueva
-                                <span className="material-icons ml-2 group-hover:rotate-45 transition-transform">arrow_forward</span>
+                                <span className="material-icons-outlined ml-2 group-hover:rotate-45 transition-transform">arrow_forward</span>
                             </span>
                         </button>
                     </div>
