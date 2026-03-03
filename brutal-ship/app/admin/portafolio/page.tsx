@@ -102,7 +102,7 @@ export default function PortafolioPage() {
         if (current.includes(svcName)) {
             // Remove service and its features
             const svc = availableServices.find(s => s.name === svcName);
-            const featsToRemove = svc?.features || [];
+            const featsToRemove = (svc?.features || []).map((f: any) => typeof f === 'string' ? f : f.text);
             setForm({
                 ...form,
                 applied_services: current.filter(s => s !== svcName),
@@ -126,7 +126,9 @@ export default function PortafolioPage() {
     // Get all features from selected services
     const selectedServiceFeatures = availableServices
         .filter(s => (form.applied_services || []).includes(s.name))
-        .flatMap(s => s.features);
+        .flatMap(s => s.features)
+        .map((f: any) => typeof f === 'string' ? f : f.text)
+        .filter((v: string, i: number, a: string[]) => a.indexOf(v) === i); // deduplicate
 
     // Helpers for stats array
     const addStat = () => {
