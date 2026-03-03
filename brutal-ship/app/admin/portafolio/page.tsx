@@ -265,7 +265,11 @@ export default function PortafolioPage() {
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">URL de la Imagen</span>
                                     <input className="admin-input w-full" placeholder="https://..." value={form.image_url || ""} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
                                 </label>
-                                <label className="space-y-1 md:col-span-2">
+                                <label className="space-y-1">
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Texto Alt (SEO)</span>
+                                    <input className="admin-input w-full" placeholder="Descripción de la imagen para SEO" value={form.image_alt || ""} onChange={(e) => setForm({ ...form, image_alt: e.target.value })} />
+                                </label>
+                                <label className="space-y-1">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">URL del Sitio Web del Cliente</span>
                                     <div className="flex gap-2">
                                         <input className="admin-input flex-1" placeholder="https://www.ejemplo-cliente.com" value={form.external_url || ""} onChange={(e) => setForm({ ...form, external_url: e.target.value || null })} />
@@ -280,6 +284,45 @@ export default function PortafolioPage() {
                                     </div>
                                     <p className="text-[10px] text-gray-500">Pegá la URL y tocá &quot;Capturar&quot; para generar un screenshot automáticamente.</p>
                                 </label>
+
+                                {/* Image Preview */}
+                                {form.image_url && (
+                                    <div className="md:col-span-2 space-y-3">
+                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                                            <span className="material-icons text-[14px]">visibility</span>
+                                            Vista previa — así se ve tu imagen en cada sección:
+                                        </p>
+                                        <div className="grid grid-cols-3 gap-3">
+                                            <div className="space-y-1">
+                                                <p className="text-[10px] text-primary font-bold uppercase">Detalle (4:3)</p>
+                                                <div className="aspect-[4/3] bg-gray-900 border border-white/10 rounded overflow-hidden">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img src={form.image_url} alt="Preview 4:3" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <p className="text-[10px] text-primary font-bold uppercase">Catálogo (16:9)</p>
+                                                <div className="aspect-video bg-gray-900 border border-white/10 rounded overflow-hidden">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img src={form.image_url} alt="Preview 16:9" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <p className="text-[10px] text-primary font-bold uppercase">Inicio (4:3 browser)</p>
+                                                <div className="aspect-[4/3] bg-gray-900 border border-white/10 rounded overflow-hidden">
+                                                    <div className="bg-gray-700 h-3 flex items-center px-1 gap-0.5">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
+                                                    </div>
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img src={form.image_url} alt="Preview inicio" className="w-full h-[calc(100%-12px)] object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p className="text-[10px] text-gray-500">💡 Usamos la misma imagen en todas las secciones con <code className="text-primary">object-cover</code>. Para mejores resultados, usá imágenes horizontales de al menos 1200x900px.</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
