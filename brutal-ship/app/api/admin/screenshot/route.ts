@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-export const maxDuration = 30; // Allow up to 30s for screenshot
+export const maxDuration = 30;
 
 // Verify admin auth
 async function checkAdminAuth() {
@@ -12,10 +12,6 @@ async function checkAdminAuth() {
     if (!user) return false;
     return user.email === "armadobeatochang@gmail.com";
 }
-
-// Chromium version must match @sparticuz/chromium-min version
-const CHROMIUM_PACK_URL =
-    "https://github.com/nicedoc/browserless/releases/download/chromium-v143.0.0/chromium-v143.0.0-pack.tar";
 
 export async function POST(request: NextRequest) {
     const isAdmin = await checkAdminAuth();
@@ -39,35 +35,37 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const chromium = (await import("@sparticuz/chromium-min")).default;
-        const puppeteer = (await import("puppeteer-core")).default;
+        // Use Microlink API — free screenshot service, no binaries needed
+        const microlinkUrl = new URL("https://api.microlink.io");
+        microlinkUrl.searchParams.set("url", url);
+        microlinkUrl.searchParams.set("screenshot", "true");
+        microlinkUrl.searchParams.set("meta", "false");
+        microlinkUrl.searchParams.set("waitForTimeout", "3000");
+        microlinkUrl.searchParams.set("viewport.width", "1280");
+        microlinkUrl.searchParams.set("viewport.height", "900");
+        microlinkUrl.searchParams.set("viewport.deviceScaleFactor", "2");
 
-        const browser = await puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: { width: 1280, height: 900, deviceScaleFactor: 2 },
-            executablePath: await chromium.executablePath(CHROMIUM_PACK_URL),
-            headless: "shell",
-        });
+        const apiRes = await fetch(microlinkUrl.toString());
+        if (!apiRes.ok) {
+            throw new Error(`Microlink API respondió con ${apiRes.status}`);
+        }
 
-        const page = await browser.newPage();
+        const data = await apiRes.json();
 
-        // Navigate and wait for the page to fully load
-        await page.goto(url, { waitUntil: "networkidle2", timeout: 15000 });
+        if (data.status !== "success" || !data.data?.screenshot?.url) {
+            throw new Error(data.message || "No se pudo obtener el screenshot");
+        }
 
-        // Extra wait for CSS animations, lazy images, etc.
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        // Fetch the actual screenshot image
+        const imgRes = await fetch(data.data.screenshot.url);
+        if (!imgRes.ok) {
+            throw new Error("No se pudo descargar la imagen del screenshot");
+        }
 
-        // Take screenshot of the viewport (what the user sees first)
-        const screenshotBuffer = await page.screenshot({
-            type: "png",
-            clip: { x: 0, y: 0, width: 1280, height: 900 },
-        });
-
-        await browser.close();
-
-        // Convert to base64 data URL
-        const base64 = Buffer.from(screenshotBuffer).toString("base64");
-        const dataUrl = `data:image/png;base64,${base64}`;
+        const imgBuffer = await imgRes.arrayBuffer();
+        const base64 = Buffer.from(imgBuffer).toString("base64");
+        const contentType = imgRes.headers.get("content-type") || "image/png";
+        const dataUrl = `data:${contentType};base64,${base64}`;
 
         return NextResponse.json({ image: dataUrl, width: 1280, height: 900 });
     } catch (err) {
