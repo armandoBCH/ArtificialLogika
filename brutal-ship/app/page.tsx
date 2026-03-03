@@ -24,7 +24,7 @@ import { getTestimonials } from "@/lib/data/testimonials";
 import { getFaqs } from "@/lib/data/faqs";
 import { getSiteConfig } from "@/lib/data/config";
 
-export const revalidate = 3600; // ISR: revalidate every hour
+export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 export default async function Home() {
   const [plans, services, projects, testimonials, faqs, config] =

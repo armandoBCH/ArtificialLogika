@@ -13,7 +13,7 @@ interface ProjectPageProps {
     }>;
 }
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
     const projects = await getPortfolioProjects();
