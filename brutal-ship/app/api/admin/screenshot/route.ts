@@ -13,6 +13,10 @@ async function checkAdminAuth() {
     return user.email === "armadobeatochang@gmail.com";
 }
 
+// Chromium version must match @sparticuz/chromium-min version
+const CHROMIUM_PACK_URL =
+    "https://github.com/nicedoc/browserless/releases/download/chromium-v143.0.0/chromium-v143.0.0-pack.tar";
+
 export async function POST(request: NextRequest) {
     const isAdmin = await checkAdminAuth();
     if (!isAdmin) {
@@ -35,13 +39,13 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const chromium = (await import("@sparticuz/chromium")).default;
+        const chromium = (await import("@sparticuz/chromium-min")).default;
         const puppeteer = (await import("puppeteer-core")).default;
 
         const browser = await puppeteer.launch({
             args: chromium.args,
             defaultViewport: { width: 1280, height: 900, deviceScaleFactor: 2 },
-            executablePath: await chromium.executablePath(),
+            executablePath: await chromium.executablePath(CHROMIUM_PACK_URL),
             headless: "shell",
         });
 
