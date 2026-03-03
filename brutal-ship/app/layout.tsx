@@ -101,26 +101,38 @@ export default function RootLayout({
   return (
     <html lang="es-AR" className="scroll-smooth scroll-pt-20">
       <head>
-        {/* Material Icons */}
-        <link
-          href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet"
+        {/* Preconnect to external domains for faster resource loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
+
+        {/* Material Icons — loaded async via script (non-render-blocking) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                var fonts=[
+                  "https://fonts.googleapis.com/icon?family=Material+Icons",
+                  "https://fonts.googleapis.com/icon?family=Material+Icons+Outlined",
+                  "https://fonts.googleapis.com/icon?family=Material+Icons+Round",
+                  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+                ];
+                fonts.forEach(function(href){
+                  var l=document.createElement("link");
+                  l.rel="stylesheet";l.href=href;l.crossOrigin="anonymous";
+                  document.head.appendChild(l);
+                });
+              })();
+            `,
+          }}
         />
-        {/* Material Icons Outlined */}
-        <link
-          href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
-          rel="stylesheet"
-        />
-        {/* Material Icons Round */}
-        <link
-          href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
-          rel="stylesheet"
-        />
-        {/* Material Symbols Outlined */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-          rel="stylesheet"
-        />
+        {/* Fallback for no-JS */}
+        <noscript>
+          <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+        </noscript>
       </head>
       <body
         className={`${spaceGrotesk.variable} font-display bg-background-light dark:bg-background-dark text-black dark:text-white overflow-x-hidden`}

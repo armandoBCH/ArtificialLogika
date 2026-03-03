@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import CountUp from "react-countup";
 import type { Testimonial } from "@/lib/types/database";
 
@@ -11,7 +12,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
     return (
         <section id="clientes" className="relative z-10 w-full max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-8 bg-background-light dark:bg-background-dark">
             {/* Floating Background Shapes */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-10">
+            <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-10">
                 <div className="absolute top-20 left-10 w-32 h-32 rounded-full border-4 border-primary animate-float"></div>
                 <div className="absolute top-1/2 right-10 w-24 h-24 bg-mint rounded-lg animate-float-delayed rotate-12"></div>
                 <div className="absolute bottom-20 left-1/3 w-40 h-40 border-4 border-hot-coral rounded-full animate-float opacity-50"></div>
@@ -60,8 +61,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4 gap-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden flex-shrink-0">
-                                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img alt={`Retrato de ${t.name}`} className="w-full h-full object-cover" src={t.avatar_url} />
+                                                <Image alt={`Retrato de ${t.name}`} className="w-full h-full object-cover" src={t.avatar_url} width={40} height={40} loading="lazy" />
                                             </div>
                                             <div>
                                                 <h4 className="font-bold text-lg leading-tight">{t.name}</h4>

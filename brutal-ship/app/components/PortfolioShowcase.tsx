@@ -1,3 +1,4 @@
+import Image from "next/image";
 import BlockReveal from "./BlockReveal";
 import type { PortfolioProject } from "@/lib/types/database";
 
@@ -101,11 +102,14 @@ function ProjectCard({ project, index }: { project: PortfolioProject; index: num
                             </div>
                             <div className="aspect-[4/3] bg-gray-50 relative">
                                 <BlockReveal bgColor={`${colors.bg}`}>
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
+                                    <Image
                                         alt={project.image_alt}
                                         className={`w-full h-full object-cover ${project.accent_color === 'mint' ? 'grayscale group-hover:grayscale-0 transition-all duration-500' : ''}`}
                                         src={project.image_url}
+                                        width={800}
+                                        height={600}
+                                        sizes="(max-width: 1024px) 100vw, 50vw"
+                                        loading="lazy"
                                     />
                                 </BlockReveal>
                             </div>

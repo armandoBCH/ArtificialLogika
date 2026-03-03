@@ -19,8 +19,7 @@ export default function Footer({ config }: FooterProps) {
                     {/* Brand Column */}
                     <div className="lg:col-span-1">
                         <div className="flex items-center gap-3 text-white mb-6">
-                            <LogikaLogo size={32} />
-                            <h2 className="text-xl font-bold tracking-tight">Logika</h2>
+                            <LogikaLogo className="h-10 md:h-12 w-auto" />
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed mb-6">
                             Hacemos páginas web profesionales para todo tipo de negocio. Vos te enfocás en lo tuyo, nosotros nos encargamos de tu presencia digital.

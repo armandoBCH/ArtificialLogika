@@ -105,62 +105,7 @@ export default function HeroSection() {
                         </div>
                     </div>
                     <div className="relative w-full max-w-lg lg:max-w-xl mx-auto -mt-6 lg:-mt-12">
-                        <style dangerouslySetInnerHTML={{
-                            __html: `
-                            .hero-svg-wrapper * { box-sizing: border-box; }
-                            .hero-svg-wrapper svg * { transform-box: fill-box; }
-                            .hero-svg-wrapper .scene-fade { animation: global-fade-out 6s infinite; transform-origin: center; }
-                            .hero-svg-wrapper .reveal-1 { animation: slide-down 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite; transform-origin: center; }
-                            .hero-svg-wrapper .reveal-2 { animation: slide-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite; transform-origin: left; }
-                            .hero-svg-wrapper .reveal-3 { animation: slide-left 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite; transform-origin: right; }
-                            .hero-svg-wrapper .reveal-4 { animation: scale-up 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite; transform-origin: center; }
-                            .hero-svg-wrapper .reveal-5 { animation: slide-up-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite; transform-origin: center; }
-                            .hero-svg-wrapper .reveal-6 { animation: pop-up 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite; transform-origin: bottom; }
-                            .hero-svg-wrapper .reveal-7 { animation: float-in 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite; transform-origin: center; }
-                            .hero-svg-wrapper .reveal-8 { animation: slide-up-tilt-left 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite; transform-origin: center; }
-                            .hero-svg-wrapper .reveal-9 { animation: slide-up-tilt-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite; transform-origin: center; }
-                            .hero-svg-wrapper .shape-intro { animation: pop-in 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; transform-origin: center; }
-                            .hero-svg-wrapper .mint-highlight { animation: draw-highlight 6s cubic-bezier(0.22, 1, 0.36, 1) infinite; transform-origin: left center; }
-                            .hero-svg-wrapper .marquee-track { animation: marquee-scroll 6s linear infinite; }
-                            .hero-svg-wrapper .float { animation: float-y 4s ease-in-out infinite; }
-                            .hero-svg-wrapper .spin { animation: spin-slow 8s linear infinite; transform-origin: center; }
-                            .hero-svg-wrapper .blink { animation: text-blink 1s step-end infinite; }
-                            .hero-svg-wrapper .cursor-anim { animation: fly-click 6s ease-in-out infinite; }
-                            .hero-svg-wrapper .btn-press { animation: btn-hover-down 6s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
-                            .hero-svg-wrapper .starburst-anim { animation: explode-star 6s ease-out infinite; transform-origin: center; }
-                            .hero-svg-wrapper .ring-burst { animation: expand-ring 6s ease-out infinite; transform-origin: center; }
-                            .hero-svg-wrapper .bar-grow { animation: bar-grow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite; transform-origin: bottom; }
-                            .hero-svg-wrapper .toggle-slide { animation: toggle-right 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; }
-                            .hero-svg-wrapper .progress-fill { animation: fill-width 6s ease-out infinite; }
-                            .hero-svg-wrapper .draw-path { stroke-dasharray: 120; stroke-dashoffset: 120; animation: draw-line 6s ease-in-out infinite; }
-
-                            @keyframes global-fade-out { 0%, 94% { opacity: 1; filter: blur(0px); } 98%, 100% { opacity: 0; filter: blur(4px); } }
-                            @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-                            @keyframes pop-in { 0% { transform: scale(0); opacity: 0; } 5%, 100% { transform: scale(1); opacity: 1; } }
-                            @keyframes draw-highlight { 0%, 18% { transform: scaleX(0); opacity: 0; } 22%, 100% { transform: scaleX(1); opacity: 1; } }
-                            @keyframes slide-down { 0%, 2% { transform: translateY(-30px); opacity: 0; } 12%, 100% { transform: translateY(0); opacity: 1; } }
-                            @keyframes slide-right { 0%, 5% { transform: translateX(-50px) skewX(5deg); opacity: 0; } 15%, 100% { transform: translateX(0) skewX(0); opacity: 1; } }
-                            @keyframes slide-left { 0%, 8% { transform: translateX(50px); opacity: 0; } 18%, 100% { transform: translateX(0); opacity: 1; } }
-                            @keyframes scale-up { 0%, 11% { transform: scale(0.7) rotate(-2deg); opacity: 0; } 21%, 100% { transform: scale(1) rotate(0); opacity: 1; } }
-                            @keyframes slide-up-right { 0%, 14% { transform: translate(-30px, 30px); opacity: 0; } 24%, 100% { transform: translate(0, 0); opacity: 1; } }
-                            @keyframes pop-up { 0%, 17% { transform: translateY(40px) scale(0.9); opacity: 0; } 27%, 100% { transform: translateY(0) scale(1); opacity: 1; } }
-                            @keyframes float-in { 0%, 20% { transform: translate(80px, -20px) scale(0.9) rotate(5deg); opacity: 0; } 30%, 100% { transform: translate(0, 0) scale(1) rotate(0); opacity: 1; } }
-                            @keyframes slide-up-tilt-left { 0%, 23% { transform: translateY(60px) rotate(-6deg); opacity: 0; } 33%, 100% { transform: translateY(0) rotate(0); opacity: 1; } }
-                            @keyframes slide-up-tilt-right { 0%, 26% { transform: translateY(60px) rotate(6deg); opacity: 0; } 36%, 100% { transform: translateY(0) rotate(0); opacity: 1; } }
-                            @keyframes float-y { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
-                            @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-                            @keyframes text-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
-                            @keyframes fly-click { 0%, 43% { transform: translate(1200px, 800px); opacity: 0; } 48% { transform: translate(500px, 600px); opacity: 1; } 52% { transform: translate(180px, 450px); opacity: 1; } 56%, 58% { transform: translate(186px, 456px) scale(0.9); opacity: 1; } 60% { transform: translate(180px, 450px) scale(1); opacity: 1; } 66% { transform: translate(750px, 600px); opacity: 1; } 72%, 100% { transform: translate(1200px, 800px); opacity: 0; } }
-                            @keyframes btn-hover-down { 0%, 50% { transform: translate(0, 0) scale(1); } 52%, 55% { transform: translate(-2px, -2px) scale(1.02); } 56%, 58% { transform: translate(6px, 6px) scale(0.98); } 59%, 100% { transform: translate(0, 0) scale(1); } }
-                            @keyframes explode-star { 0%, 55% { transform: scale(0) rotate(-45deg); opacity: 0; } 56% { transform: scale(1.5) rotate(0deg); opacity: 1; } 62% { transform: scale(2.5) rotate(45deg); opacity: 0; } 100% { opacity: 0; } }
-                            @keyframes expand-ring { 0%, 55% { r: 10; opacity: 0; stroke-width: 12px; } 56% { r: 40; opacity: 1; stroke-width: 6px; } 62% { r: 100; opacity: 0; stroke-width: 0px; } 100% { opacity: 0; } }
-                            @keyframes bar-grow { 0%, 30% { transform: scaleY(0); } 35%, 100% { transform: scaleY(1); } }
-                            @keyframes toggle-right { 0%, 38% { transform: translateX(0); } 42%, 100% { transform: translateX(20px); } }
-                            @keyframes fill-width { 0%, 38% { width: 0; } 45%, 100% { width: 140px; } }
-                            @keyframes draw-line { 0%, 38% { stroke-dashoffset: 120; } 48%, 100% { stroke-dashoffset: 0; } }
-                            @keyframes slow-float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-4px); } }
-                            .animate-hero-title-float { animation: slow-float 6s ease-in-out infinite; will-change: transform; }
-                        `}} />
+                        {/* SVG animations are handled by scoped CSS in globals.css via .hero-svg-wrapper */}
                         <div className="bg-white dark:bg-zinc-900 border-4 border-black rounded-xl shadow-[16px_16px_0px_#1A1A1A] overflow-hidden transform transition-all duration-300 hero-svg-wrapper flex flex-col">
                             {/* Browser Header */}
                             <div className="bg-[#E5E5E5] border-b-4 border-black px-5 py-3.5 flex items-center gap-2.5 relative z-10 w-full">

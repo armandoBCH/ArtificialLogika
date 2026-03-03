@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IG Post — Logika Carousel (Footer Nuevo)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: #1a1a1a;
+      padding: 40px;
+      display: flex;
+      gap: 50px;
+      overflow-x: auto;
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    .slide-card {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2c2c2c;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 2px solid #3c3c3c;
+    }
+
+    .toolbar-title {
+      color: #fff;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .copy-btn {
+      background: #4A90FF;
+      color: #1A1A1A;
+      border: 3px solid #1A1A1A;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #1A1A1A;
+      transition: all 0.1s ease;
+    }
+
+    .copy-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px #1A1A1A;
+    }
+
+    .slide-wrapper {
+      flex: 0 0 1080px;
+      width: 1080px;
+      height: 1080px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      background-color: #FFFFFF;
+      display: block;
+    }
+
+    ::-webkit-scrollbar {
+      height: 16px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #2c2c2c;
+      border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #00D68F;
+      border-radius: 8px;
+      border: 3px solid #2c2c2c;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ==========================================
+       SLIDE 1: HOOK
+       ========================================== -->
+  <div class="slide-card">
+    <div class="toolbar">
+      <span class="toolbar-title">Slide 01 - Hook</span>
+      <button class="copy-btn" onclick="copySVG(this, 0)">Copiar Código SVG</button>
+    </div>
+
+    <div class="slide-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
+        <defs>
+          <pattern id="gridPattern1" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1A1A1A" stroke-width="1.5" opacity="0.05" />
+          </pattern>
+          <filter id="hardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feOffset result="offOut" in="SourceGraphic" dx="8" dy="8" />
+            <feColorMatrix result="matrixOut" in="offOut" type="matrix"
+              values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 1 0" />
+            <feBlend in="SourceGraphic" in2="matrixOut" mode="normal" />
+          </filter>
+          <filter id="hardShadowSmall" x="-20%" y="-20%" width="140%" height="140%">
+            <feOffset result="offOut" in="SourceGraphic" dx="4" dy="4" />
+            <feColorMatrix result="matrixOut" in="offOut" type="matrix"
+              values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 1 0" />
+            <feBlend in="SourceGraphic" in2="matrixOut" mode="normal" />
+          </filter>
+          <clipPath id="blue-corner-clip">
+            <rect x="0" y="0" width="36" height="36"></rect>
+          </clipPath>
+          <style>
+            .font-main {
+              font-family: 'Space Grotesk', sans-serif;
+            }
+
+            .stroke-black {
+              stroke: #1A1A1A;
+              stroke-width: 4;
+              stroke-linejoin: round;
+            }
+          </style>
+        </defs>
+
+        <rect width="1080" height="1080" fill="#FFFFFF" />
+        <rect width="1080" height="1080" fill="url(#gridPattern1)" />
+
+        <!-- Capa 2: Formas Grandes -->
+        <circle cx="950" cy="150" r="350" fill="#8523E1" opacity="0.08" />
+        <rect x="-100" y="700" width="450" height="450" transform="rotate(20 -100 700)" fill="#00D68F" opacity="0.1" />
+        <text x="780" y="800" class="font-main" font-size="450" font-weight="800" fill="#1A1A1A" opacity="0.03"
+          letter-spacing="-15">01</text>
+
+        <!-- Capa 3: Decoración Mediana -->
+        <circle cx="120" cy="520" r="24" fill="#00D68F" class="stroke-black" filter="url(#hardShadowSmall)" />
+        <path d="M 940 350 l 15 -35 l 15 35 l 35 15 l -35 15 l -15 35 l -15 -35 l -35 -15 z" fill="#FF6B6B"
+          class="stroke-black" filter="url(#hardShadowSmall)" />
+        <polyline points="720,850 750,810 780,850 810,810" fill="none" stroke="#4A90FF" stroke-width="6"
+          stroke-linejoin="round" stroke-linecap="round" />
+
+        <circle cx="820" cy="480" r="50" fill="none" stroke="#FF6B6B" stroke-width="4" stroke-dasharray="10 10"
+          opacity="0.6" />
+        <rect x="680" y="100" width="100" height="30" rx="15" fill="none" stroke="#8523E1" stroke-width="4"
+          transform="rotate(-15 680 100)" opacity="0.5" />
+        <path d="M 180 250 L 210 250 M 195 235 L 195 265" stroke="#FDE047" stroke-width="5"
+          transform="rotate(25 195 250)" />
+
+        <!-- Capa 4: Detalles Bordes -->
+        <path d="M 40 120 L 40 40 L 120 40" fill="none" stroke="#1A1A1A" stroke-width="5" stroke-linecap="square" />
+        <line x1="1040" y1="400" x2="1040" y2="700" stroke="#1A1A1A" stroke-width="4" stroke-dasharray="12 12"
+          opacity="0.5" />
+
+        <!-- MEGA BADGE BIENVENIDA CON DECORACION -->
+        <g transform="translate(60, 90) rotate(-2)">
+          <!-- Destellos decorativos NEOBRUTALES alrededor del banner -->
+          <path d="M -20 -30 L 0 -10 L -20 10 L -40 -10 Z" fill="#FDE047" class="stroke-black"
+            filter="url(#hardShadowSmall)" opacity="0.9" />
+          <circle cx="630" cy="-10" r="14" fill="#8523E1" class="stroke-black" filter="url(#hardShadowSmall)" />
+          <path d="M 640 90 L 650 75 L 660 90 L 675 100 L 660 110 L 650 125 L 640 110 L 625 100 Z" fill="#FF6B6B"
+            class="stroke-black" filter="url(#hardShadowSmall)" />
+
+          <rect x="0" y="0" width="600" height="90" rx="20" fill="#00D68F" class="stroke-black"
+            filter="url(#hardShadow)" />
+
+          <!-- Icono SVG Estrella Magica -->
+          <g transform="translate(45, 25)">
+            <path d="M 20 0 L 25 15 L 40 20 L 25 25 L 20 40 L 15 25 L 0 20 L 15 15 Z" fill="#FDE047"
+              class="stroke-black" />
+          </g>
+
+          <text x="330" y="60" class="font-main" fill="#1A1A1A" font-size="40" font-weight="800" text-anchor="middle"
+            letter-spacing="1">BIENVENIDOS A LOGIKA!</text>
+        </g>
+
+        <!-- BADGE DURA VERDAD (ACHICADO / DESPLAZADO ARRIBA) -->
+        <g transform="translate(80, 215)">
+          <rect x="0" y="0" width="220" height="46" rx="23" fill="#FF6B6B" class="stroke-black"
+            filter="url(#hardShadowSmall)" />
+
+          <!-- Icono SVG Alerta (Rombo con exclamacion) -->
+          <g transform="translate(20, 11)">
+            <path d="M 12 0 L 24 12 L 12 24 L 0 12 Z" fill="#FDE047" class="stroke-black" />
+            <circle cx="12" cy="12" r="4" fill="#1A1A1A" />
+          </g>
+
+          <text x="130" y="29" class="font-main" fill="#1A1A1A" font-size="16" font-weight="700" text-anchor="middle"
+            letter-spacing="1.5">DURA VERDAD</text>
+        </g>
+
+        <!-- TEXTO PRINCIPAL CORTO Y PUNCHY -->
+        <text x="80" y="320" class="font-main" fill="#1A1A1A" font-size="75" font-weight="800" letter-spacing="-1.5">Si
+          no estás en</text>
+
+        <g transform="translate(480, 245) rotate(-2)">
+          <rect x="0" y="0" width="310" height="95" rx="16" fill="#00D68F" class="stroke-black"
+            filter="url(#hardShadowSmall)" />
+          <text x="155" y="70" class="font-main" fill="#1A1A1A" font-size="70" font-weight="800" text-anchor="middle"
+            letter-spacing="-1">Google,</text>
+        </g>
+
+        <text x="80" y="440" class="font-main" fill="#1A1A1A" font-size="75" font-weight="800" letter-spacing="-1.5">ya
+          le regalaste</text>
+        <text x="80" y="540" class="font-main" fill="#1A1A1A" font-size="75" font-weight="800" letter-spacing="-1.5">el
+          cliente a tu</text>
+
+        <!-- HIGHLIGHT COMPETENCIA -->
+        <g transform="translate(60, 610) rotate(1)">
+          <rect x="0" y="0" width="800" height="140" rx="16" fill="#FDE047" class="stroke-black"
+            filter="url(#hardShadow)" />
+          <text x="400" y="100" class="font-main" fill="#1A1A1A" font-size="95" font-weight="800" text-anchor="middle"
+            letter-spacing="-2">COMPETENCIA.</text>
+        </g>
+
+        <!-- Flecha curva guía hacia COMPETENCIA -->
+        <g transform="translate(830, 620)">
+          <path d="M 0 0 C 60 20 80 60 40 120" fill="none" stroke="#FF6B6B" stroke-width="7" stroke-linecap="round"
+            stroke-dasharray="12 8" />
+          <polygon points="35,110 50,135 25,130" fill="#FF6B6B" />
+        </g>
+
+        <!-- FOOTER UNIFICADO (DOCK STYLE) -->
+        <g transform="translate(0, 960)">
+          <!-- Barra de fondo general que cubre todo el ancho abajo -->
+          <rect x="0" y="0" width="1080" height="120" fill="#F5F5F5" />
+          <line x1="0" y1="0" x2="1080" y2="0" stroke="#1A1A1A" stroke-width="4" />
+
+          <!-- CONTENEDOR DE MARCA (Izquierda) -->
+          <g transform="translate(60, 30)">
+            <!-- LOGO FRAMEWORK (Refinado) escalado a 60x60px -->
+            <g transform="scale(0.6)">
+              <path fill="#1A1A1A"
+                d="M 28 22 h 50 a 6 6 0 0 1 6 6 v 50 a 6 6 0 0 1 -6 6 h -50 a 6 6 0 0 1 -6 -6 v -50 a 6 6 0 0 1 6 -6 Z M 44 44 v 18 h 18 v -18 h -18 Z" />
+              <path fill="#8523E1" d="M 14 20 a 6 6 0 0 1 6 -6 h 50 a 6 6 0 0 1 6 6 v 16 h -62 Z" />
+              <path fill="#00D68F" d="M 76 36 v 34 a 6 6 0 0 1 -6 6 h -16 v -40 h 22 Z" />
+              <path fill="#FF6B6B" d="M 54 76 h -34 a 6 6 0 0 1 -6 -6 v -16 h 40 Z" />
+              <rect x="14" y="36" width="22" height="18" fill="#4A90FF" />
+              <rect x="14" y="14" width="62" height="62" rx="6" fill="none" stroke="#1A1A1A" stroke-width="4"></rect>
+              <rect x="36" y="36" width="18" height="18" fill="none" stroke="#1A1A1A" stroke-width="4"
+                stroke-linejoin="round"></rect>
+              <line x1="14" y1="36" x2="36" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+              <line x1="54" y1="36" x2="76" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+              <line x1="14" y1="54" x2="36" y2="54" stroke="#1A1A1A" stroke-width="4"></line>
+              <line x1="54" y1="54" x2="54" y2="76" stroke="#1A1A1A" stroke-width="4"></line>
+            </g>
+
+            <text x="75" y="42" class="font-main" fill="#1A1A1A" font-size="32" font-weight="800"
+              letter-spacing="-0.5">LOGIKA</text>
+          </g>
+
+          <!-- SEPARADOR Y REDES (Centro-Izquierda) -->
+          <g transform="translate(300, 30)">
+            <line x1="0" y1="10" x2="0" y2="40" stroke="#1A1A1A" stroke-width="2" opacity="0.3" />
+
+            <!-- WhatsApp Icon -->
+            <g transform="translate(20, 16) scale(0.6)">
+              <path
+                d="M 20 0 C 8.95 0 0 8.95 0 20 c 0 3.5 0.9 6.8 2.5 9.8 L 0 40 l 10.5 -2.7 C 13.4 38.9 16.6 40 20 40 c 11.05 0 20 -8.95 20 -20 S 31.05 0 20 0 Z m 10 28.5 c -0.4 1 -2 2 -2.8 2.1 C 26.5 30.7 25.6 31 20 28.8 M 20 28.8"
+                fill="none" stroke="#25D366" stroke-width="3" stroke-linecap="round" />
+              <path
+                d="M20,0 C8.954,0 0,8.954 0,20 C0,3.504 0.902,6.812 2.502,9.845 L0,40 L10.51,37.243 C13.435,38.941 16.621,40 20,40 C31.046,40 40,31.046 40,20 C40,8.954 31.046,0 20,0 Z"
+                fill="#25D366" />
+              <path
+                d="M11.9,13.6 C11.5,12.7 11.1,12.7 10.7,12.7 C10.4,12.7 10.0,12.7 9.6,12.7 C9.3,12.7 8.8,12.8 8.4,13.2 C7.9,13.7 6.5,15.1 6.5,17.8 C6.5,20.5 8.5,23.1 8.8,23.5 C9.1,23.9 12.7,29.5 18.2,31.8 C19.5,32.3 20.6,32.7 21.4,32.9 C22.7,33.3 23.9,33.3 24.8,33.1 C25.8,33.0 27.9,31.8 28.3,30.6 C28.8,29.3 28.8,28.2 28.6,28.0 C28.5,27.8 28.1,27.6 27.6,27.4 C27.0,27.1 24.3,25.8 23.8,25.6 C23.3,25.4 22.9,25.3 22.5,25.9 C22.2,26.5 21.1,27.8 20.8,28.1 C20.5,28.5 20.1,28.5 19.6,28.3 C19.0,28.0 17.2,27.4 15.1,25.5 C13.5,24.0 12.4,22.1 12.1,21.6 C11.8,21.1 12.0,20.8 12.3,20.6 C12.5,20.3 12.8,19.9 13.1,19.6 C13.3,19.4 13.4,19.1 13.6,18.8 C13.8,18.4 13.7,18.1 13.5,17.8 C13.3,17.5 12.3,14.6 11.9,13.6"
+                fill="#FFFFFF" />
+            </g>
+
+            <text x="50" y="38" class="font-main" fill="#1A1A1A" font-size="24" font-weight="700">2284638361</text>
+            <circle cx="230" cy="30" r="4" fill="#6B6B6B" opacity="0.3" />
+            <text x="255" y="38" class="font-main" fill="#1A1A1A" font-size="22" font-weight="700">@logika</text>
+          </g>
+
+          <!-- BADGE CTA INDICADOR (Derecha) -->
+          <g transform="translate(800, 25)">
+            <rect x="0" y="0" width="220" height="60" rx="30" fill="#8523E1" class="stroke-black"
+              filter="url(#hardShadowSmall)" />
+            <text x="110" y="38" class="font-main" fill="#FFFFFF" font-size="22" font-weight="700" text-anchor="middle"
+              letter-spacing="0.5">DESLIZÁ ➔</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 2: CONTEXTO / VALOR
+       ========================================== -->
+  <div class="slide-card">
+    <div class="toolbar">
+      <span class="toolbar-title">Slide 02 - Contexto</span>
+      <button class="copy-btn" onclick="copySVG(this, 1)">Copiar Código SVG</button>
+    </div>
+
+    <div class="slide-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
+        <defs>
+          <pattern id="dotPattern2" width="24" height="24" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="2" fill="#1A1A1A" opacity="0.08" />
+          </pattern>
+        </defs>
+
+        <rect width="1080" height="1080" fill="#F5F5F5" />
+        <rect width="1080" height="1080" fill="url(#dotPattern2)" />
+
+        <!-- Capa 2: Formas Grandes -->
+        <path d="M 0 1080 Q 540 700 1080 1080 Z" fill="#4A90FF" opacity="0.1" />
+        <rect x="850" y="-100" width="300" height="400" transform="rotate(45 850 -100)" fill="#FF6B6B" opacity="0.05" />
+        <text x="780" y="800" class="font-main" font-size="450" font-weight="800" fill="#1A1A1A" opacity="0.03"
+          letter-spacing="-15">02</text>
+
+        <!-- Capa 3: Decoración -->
+        <circle cx="950" cy="250" r="18" fill="#FDE047" class="stroke-black" filter="url(#hardShadowSmall)" />
+        <rect x="80" y="820" width="40" height="40" transform="rotate(15 80 820)" fill="#8523E1" class="stroke-black"
+          filter="url(#hardShadowSmall)" />
+        <path d="M 950 700 L 980 700 M 965 685 L 965 715" stroke="#1A1A1A" stroke-width="5" stroke-linecap="round"
+          opacity="0.4" />
+
+        <!-- ELEMENTOS NUEVOS: "El Toque" -->
+        <path d="M 0 -20 Q 0 0 20 0 Q 0 0 0 20 Q 0 0 -20 0 Q 0 0 0 -20 Z" fill="#FF6B6B" class="stroke-black"
+          transform="translate(850, 480)" filter="url(#hardShadowSmall)" />
+        <path d="M 100 450 L 130 450 L 115 425 Z" fill="none" stroke="#00D68F" stroke-width="4"
+          transform="rotate(-15 115 440)" />
+        <circle cx="780" cy="180" r="8" fill="#4A90FF" class="stroke-black" />
+
+        <!-- BADGE -->
+        <g transform="translate(80, 150)">
+          <rect x="0" y="0" width="260" height="54" rx="27" fill="#8523E1" class="stroke-black"
+            filter="url(#hardShadowSmall)" />
+          <text x="130" y="34" class="font-main" fill="#FFFFFF" font-size="18" font-weight="700" text-anchor="middle"
+            letter-spacing="1.5">💡 QUIÉNES SOMOS</text>
+        </g>
+
+        <!-- TEXTO PRINCIPAL -->
+        <text x="80" y="290" class="font-main" fill="#1A1A1A" font-size="52" font-weight="800"
+          letter-spacing="-1">Somos</text>
+
+        <!-- HIGHLIGHT LOGIKA -->
+        <g transform="translate(250, 235) rotate(-2)">
+          <rect x="0" y="0" width="220" height="70" rx="12" fill="#FDE047" class="stroke-black"
+            filter="url(#hardShadowSmall)" />
+          <!-- Detalle decorativo -->
+          <path d="M -10 -15 L 0 -5 L -5 10 L -20 0 Z" fill="#00D68F" class="stroke-black" />
+          <text x="110" y="52" class="font-main" fill="#1A1A1A" font-size="52" font-weight="800" text-anchor="middle"
+            letter-spacing="-1">Logika.</text>
+        </g>
+
+        <text x="490" y="290" class="font-main" fill="#1A1A1A" font-size="52" font-weight="800"
+          letter-spacing="-1">Hacemos webs</text>
+
+        <text x="80" y="360" class="font-main" fill="#1A1A1A" font-size="52" font-weight="800" letter-spacing="-1">para
+          negocios que quieren</text>
+        <text x="80" y="430" class="font-main" fill="#8523E1" font-size="56" font-weight="800"
+          letter-spacing="-1">VENDER MÁS...</text>
+
+        <!-- Flecha hacia las cajas de beneficios -->
+        <g transform="translate(480, 410) rotate(15)">
+          <path d="M 0 0 Q 30 40 10 90" fill="none" stroke="#4A90FF" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="10 10" />
+          <polygon points="0,80 -10,105 15,95" fill="#4A90FF" />
+        </g>
+
+        <!-- CAJAS NEOBRUTALES -->
+        <g transform="translate(60, 530) rotate(-1)">
+          <rect x="0" y="0" width="960" height="120" rx="16" fill="#00D68F" class="stroke-black"
+            filter="url(#hardShadow)" />
+          <text x="40" y="75" class="font-main" fill="#1A1A1A" font-size="38" font-weight="700">✅ Tener su negocio
+            abierto y vendiendo 24/7</text>
+        </g>
+
+        <g transform="translate(60, 680) rotate(1)">
+          <rect x="0" y="0" width="960" height="120" rx="16" fill="#00D68F" class="stroke-black"
+            filter="url(#hardShadow)" />
+          <text x="40" y="75" class="font-main" fill="#1A1A1A" font-size="38" font-weight="700">✅ Destacar en Google
+            sobre su competencia</text>
+        </g>
+
+        <!-- FOOTER UNIFICADO (DOCK STYLE) - IDÉNTICO AL 1 -->
+        <g transform="translate(0, 960)">
+          <rect x="0" y="0" width="1080" height="120" fill="#FFFFFF" />
+          <line x1="0" y1="0" x2="1080" y2="0" stroke="#1A1A1A" stroke-width="4" />
+
+          <g transform="translate(60, 30)">
+            <g transform="scale(0.6)">
+              <path fill="#1A1A1A"
+                d="M 28 22 h 50 a 6 6 0 0 1 6 6 v 50 a 6 6 0 0 1 -6 6 h -50 a 6 6 0 0 1 -6 -6 v -50 a 6 6 0 0 1 6 -6 Z M 44 44 v 18 h 18 v -18 h -18 Z" />
+              <path fill="#8523E1" d="M 14 20 a 6 6 0 0 1 6 -6 h 50 a 6 6 0 0 1 6 6 v 16 h -62 Z" />
+              <path fill="#00D68F" d="M 76 36 v 34 a 6 6 0 0 1 -6 6 h -16 v -40 h 22 Z" />
+              <path fill="#FF6B6B" d="M 54 76 h -34 a 6 6 0 0 1 -6 -6 v -16 h 40 Z" />
+              <rect x="14" y="36" width="22" height="18" fill="#4A90FF" />
+              <rect x="14" y="14" width="62" height="62" rx="6" fill="none" stroke="#1A1A1A" stroke-width="4"></rect>
+              <rect x="36" y="36" width="18" height="18" fill="none" stroke="#1A1A1A" stroke-width="4"
+                stroke-linejoin="round"></rect>
+              <line x1="14" y1="36" x2="36" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+              <line x1="54" y1="36" x2="76" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+              <line x1="14" y1="54" x2="36" y2="54" stroke="#1A1A1A" stroke-width="4"></line>
+              <line x1="54" y1="54" x2="54" y2="76" stroke="#1A1A1A" stroke-width="4"></line>
+            </g>
+            <text x="75" y="42" class="font-main" fill="#1A1A1A" font-size="32" font-weight="800"
+              letter-spacing="-0.5">LOGIKA</text>
+          </g>
+
+          <g transform="translate(300, 30)">
+            <line x1="0" y1="10" x2="0" y2="40" stroke="#1A1A1A" stroke-width="2" opacity="0.3" />
+
+            <!-- WhatsApp Icon -->
+            <g transform="translate(20, 16) scale(0.6)">
+              <path
+                d="M 20 0 C 8.95 0 0 8.95 0 20 c 0 3.5 0.9 6.8 2.5 9.8 L 0 40 l 10.5 -2.7 C 13.4 38.9 16.6 40 20 40 c 11.05 0 20 -8.95 20 -20 S 31.05 0 20 0 Z m 10 28.5 c -0.4 1 -2 2 -2.8 2.1 C 26.5 30.7 25.6 31 20 28.8 M 20 28.8"
+                fill="none" stroke="#25D366" stroke-width="3" stroke-linecap="round" />
+              <path
+                d="M20,0 C8.954,0 0,8.954 0,20 C0,3.504 0.902,6.812 2.502,9.845 L0,40 L10.51,37.243 C13.435,38.941 16.621,40 20,40 C31.046,40 40,31.046 40,20 C40,8.954 31.046,0 20,0 Z"
+                fill="#25D366" />
+              <path
+                d="M11.9,13.6 C11.5,12.7 11.1,12.7 10.7,12.7 C10.4,12.7 10.0,12.7 9.6,12.7 C9.3,12.7 8.8,12.8 8.4,13.2 C7.9,13.7 6.5,15.1 6.5,17.8 C6.5,20.5 8.5,23.1 8.8,23.5 C9.1,23.9 12.7,29.5 18.2,31.8 C19.5,32.3 20.6,32.7 21.4,32.9 C22.7,33.3 23.9,33.3 24.8,33.1 C25.8,33.0 27.9,31.8 28.3,30.6 C28.8,29.3 28.8,28.2 28.6,28.0 C28.5,27.8 28.1,27.6 27.6,27.4 C27.0,27.1 24.3,25.8 23.8,25.6 C23.3,25.4 22.9,25.3 22.5,25.9 C22.2,26.5 21.1,27.8 20.8,28.1 C20.5,28.5 20.1,28.5 19.6,28.3 C19.0,28.0 17.2,27.4 15.1,25.5 C13.5,24.0 12.4,22.1 12.1,21.6 C11.8,21.1 12.0,20.8 12.3,20.6 C12.5,20.3 12.8,19.9 13.1,19.6 C13.3,19.4 13.4,19.1 13.6,18.8 C13.8,18.4 13.7,18.1 13.5,17.8 C13.3,17.5 12.3,14.6 11.9,13.6"
+                fill="#FFFFFF" />
+            </g>
+
+            <text x="50" y="38" class="font-main" fill="#1A1A1A" font-size="24" font-weight="700">2284638361</text>
+            <circle cx="230" cy="30" r="4" fill="#6B6B6B" opacity="0.3" />
+            <text x="255" y="38" class="font-main" fill="#1A1A1A" font-size="22" font-weight="700">@logika</text>
+          </g>
+
+          <g transform="translate(800, 25)">
+            <rect x="0" y="0" width="220" height="60" rx="30" fill="#8523E1" class="stroke-black"
+              filter="url(#hardShadowSmall)" />
+            <text x="110" y="38" class="font-main" fill="#FFFFFF" font-size="22" font-weight="700" text-anchor="middle"
+              letter-spacing="0.5">DESLIZÁ ➔</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 3: SOLUCIÓN / EL ACUERDO
+       ========================================== -->
+  <div class="slide-card">
+    <div class="toolbar">
+      <span class="toolbar-title">Slide 03 - Solución</span>
+      <button class="copy-btn" onclick="copySVG(this, 2)">Copiar Código SVG</button>
+    </div>
+
+    <div class="slide-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
+        <defs>
+          <pattern id="diagPattern3" width="30" height="30" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="30" stroke="#1A1A1A" stroke-width="1.5" opacity="0.05" />
+          </pattern>
+        </defs>
+
+        <rect width="1080" height="1080" fill="#FFFFFF" />
+        <rect width="1080" height="1080" fill="url(#diagPattern3)" />
+
+        <!-- Capa 2: Formas Grandes -->
+        <circle cx="100" cy="900" r="250" fill="#FDE047" opacity="0.1" />
+        <rect x="900" y="80" width="250" height="250" transform="rotate(45 900 80)" fill="#00D68F" opacity="0.08" />
+        <text x="780" y="800" class="font-main" font-size="450" font-weight="800" fill="#1A1A1A" opacity="0.03"
+          letter-spacing="-15">03</text>
+
+        <!-- Capa 3: Decoración Periférica -->
+        <circle cx="950" cy="540" r="24" fill="#8523E1" class="stroke-black" filter="url(#hardShadowSmall)" />
+        <circle cx="150" cy="850" r="16" fill="#4A90FF" class="stroke-black" filter="url(#hardShadowSmall)" />
+        <path d="M 80 480 L 110 480 M 95 465 L 95 495" stroke="#FF6B6B" stroke-width="5" stroke-linecap="round"
+          opacity="0.6" />
+        <path d="M 980 820 l 12 -28 l 12 28 l 28 12 l -28 12 l -12 28 l -12 -28 l -28 -12 z" fill="#FDE047"
+          class="stroke-black" transform="scale(0.8) translate(250, 200)" filter="url(#hardShadowSmall)" />
+        <path d="M 880 280 L 920 320 M 920 280 L 880 320" stroke="#4A90FF" stroke-width="4" stroke-linecap="round"
+          opacity="0.4" />
+        <circle cx="850" cy="120" r="30" fill="none" stroke="#FFE047" stroke-width="3" stroke-dasharray="10 6"
+          opacity="0.5" />
+
+        <!-- Icono Lupa de búsqueda (Google visual) -->
+        <g transform="translate(850, 480) rotate(15)">
+          <circle cx="0" cy="0" r="40" fill="#4A90FF" class="stroke-black" filter="url(#hardShadowSmall)" />
+          <line x1="25" y1="25" x2="65" y2="65" class="stroke-black" stroke-width="12" stroke-linecap="round" />
+        </g>
+
+        <!-- Icono Local Comercial (Negocio visual) -->
+        <g transform="translate(750, 180) rotate(10)">
+          <rect x="0" y="0" width="80" height="60" fill="#FF6B6B" class="stroke-black" filter="url(#hardShadowSmall)" />
+          <path d="M -10 0 L 90 0 L 70 -30 L 10 -30 Z" fill="#FDE047" class="stroke-black" />
+          <rect x="30" y="20" width="20" height="40" fill="#FFFFFF" class="stroke-black" />
+        </g>
+
+        <!-- BADGE -->
+        <g transform="translate(80, 150)">
+          <rect x="0" y="0" width="220" height="54" rx="27" fill="#4A90FF" class="stroke-black"
+            filter="url(#hardShadowSmall)" />
+          <text x="110" y="34" class="font-main" fill="#1A1A1A" font-size="18" font-weight="700" text-anchor="middle"
+            letter-spacing="1.5">🤝 EL TRATO</text>
+        </g>
+
+        <!-- BOX 1: EL CLIENTE -->
+        <g transform="translate(80, 260) rotate(-1)">
+          <rect x="0" y="0" width="760" height="150" rx="16" fill="#FDE047" class="stroke-black"
+            filter="url(#hardShadow)" />
+
+          <rect x="40" y="45" width="60" height="60" rx="30" fill="#FFFFFF" class="stroke-black" />
+          <text x="70" y="85" class="font-main" fill="#1A1A1A" font-size="30" font-weight="800"
+            text-anchor="middle">1</text>
+
+          <text x="130" y="75" class="font-main" fill="#1A1A1A" font-size="44" font-weight="800" letter-spacing="-1">Vos
+            te ocupás de</text>
+          <text x="130" y="125" class="font-main" fill="#1A1A1A" font-size="52" font-weight="800" letter-spacing="-1">TU
+            NEGOCIO.</text>
+
+          <!-- Gráfico Interno: Flecha subiendo -->
+          <g transform="translate(620, 50)">
+            <path d="M 0 45 L 25 25 L 45 40 L 75 -5" fill="none" class="stroke-black" stroke-width="8"
+              stroke-linecap="round" />
+            <polygon points="65,-10 90,-15 80,10" fill="#1A1A1A" />
+          </g>
+        </g>
+
+        <!-- FLECHA CONECTORA -->
+        <g transform="translate(430, 440)">
+          <path d="M 0 0 L 0 60" fill="none" stroke="#1A1A1A" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="15 15" />
+          <polygon points="-15,50 15,50 0,75" fill="#1A1A1A" />
+        </g>
+
+        <!-- BOX 2: LOGIKA -->
+        <g transform="translate(160, 540) rotate(1)">
+          <rect x="0" y="0" width="840" height="200" rx="16" fill="#00D68F" class="stroke-black"
+            filter="url(#hardShadow)" />
+
+          <rect x="40" y="70" width="60" height="60" rx="30" fill="#FFFFFF" class="stroke-black" />
+          <text x="70" y="110" class="font-main" fill="#1A1A1A" font-size="30" font-weight="800"
+            text-anchor="middle">2</text>
+
+          <text x="130" y="70" class="font-main" fill="#1A1A1A" font-size="42" font-weight="700"
+            letter-spacing="-1">Nosotros de que te</text>
+          <text x="130" y="120" class="font-main" fill="#1A1A1A" font-size="42" font-weight="700"
+            letter-spacing="-1">encuentren en Google</text>
+          <!-- TEXTO ACTUALIZADO: -->
+          <text x="130" y="175" class="font-main" fill="#1A1A1A" font-size="56" font-weight="800" letter-spacing="-1">Y
+            TE ELIJAN.</text>
+
+          <!-- Gráfico Interno: Moneda Brillante RESTAURADA -->
+          <g transform="translate(720, 100) rotate(-10)">
+            <circle cx="0" cy="0" r="35" fill="#FDE047" class="stroke-black" />
+            <circle cx="0" cy="0" r="22" fill="none" stroke="#1A1A1A" stroke-width="2" opacity="0.4" />
+            <text x="0" y="15" class="font-main" fill="#1A1A1A" font-size="45" font-weight="800"
+              text-anchor="middle">$</text>
+            <!-- Chispas -->
+            <path d="M -50 -50 L -40 -40 M 50 -50 L 40 -40 M -50 50 L -40 40 M 50 50 L 40 40" stroke="#1A1A1A"
+              stroke-width="4" stroke-linecap="round" />
+          </g>
+        </g>
+
+        <!-- FOOTER UNIFICADO (DOCK STYLE) -->
+        <g transform="translate(0, 960)">
+          <rect x="0" y="0" width="1080" height="120" fill="#F5F5F5" />
+          <line x1="0" y1="0" x2="1080" y2="0" stroke="#1A1A1A" stroke-width="4" />
+
+          <g transform="translate(60, 30)">
+            <g transform="scale(0.6)">
+              <path fill="#1A1A1A"
+                d="M 28 22 h 50 a 6 6 0 0 1 6 6 v 50 a 6 6 0 0 1 -6 6 h -50 a 6 6 0 0 1 -6 -6 v -50 a 6 6 0 0 1 6 -6 Z M 44 44 v 18 h 18 v -18 h -18 Z" />
+              <path fill="#8523E1" d="M 14 20 a 6 6 0 0 1 6 -6 h 50 a 6 6 0 0 1 6 6 v 16 h -62 Z" />
+              <path fill="#00D68F" d="M 76 36 v 34 a 6 6 0 0 1 -6 6 h -16 v -40 h 22 Z" />
+              <path fill="#FF6B6B" d="M 54 76 h -34 a 6 6 0 0 1 -6 -6 v -16 h 40 Z" />
+              <rect x="14" y="36" width="22" height="18" fill="#4A90FF" />
+              <rect x="14" y="14" width="62" height="62" rx="6" fill="none" stroke="#1A1A1A" stroke-width="4"></rect>
+              <rect x="36" y="36" width="18" height="18" fill="none" stroke="#1A1A1A" stroke-width="4"
+                stroke-linejoin="round"></rect>
+              <line x1="14" y1="36" x2="36" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+              <line x1="54" y1="36" x2="76" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+              <line x1="14" y1="54" x2="36" y2="54" stroke="#1A1A1A" stroke-width="4"></line>
+              <line x1="54" y1="54" x2="54" y2="76" stroke="#1A1A1A" stroke-width="4"></line>
+            </g>
+            <text x="75" y="42" class="font-main" fill="#1A1A1A" font-size="32" font-weight="800"
+              letter-spacing="-0.5">LOGIKA</text>
+          </g>
+
+          <g transform="translate(300, 30)">
+            <line x1="0" y1="10" x2="0" y2="40" stroke="#1A1A1A" stroke-width="2" opacity="0.3" />
+
+            <!-- WhatsApp Icon -->
+            <g transform="translate(20, 16) scale(0.6)">
+              <path
+                d="M 20 0 C 8.95 0 0 8.95 0 20 c 0 3.5 0.9 6.8 2.5 9.8 L 0 40 l 10.5 -2.7 C 13.4 38.9 16.6 40 20 40 c 11.05 0 20 -8.95 20 -20 S 31.05 0 20 0 Z m 10 28.5 c -0.4 1 -2 2 -2.8 2.1 C 26.5 30.7 25.6 31 20 28.8 M 20 28.8"
+                fill="none" stroke="#25D366" stroke-width="3" stroke-linecap="round" />
+              <path
+                d="M20,0 C8.954,0 0,8.954 0,20 C0,3.504 0.902,6.812 2.502,9.845 L0,40 L10.51,37.243 C13.435,38.941 16.621,40 20,40 C31.046,40 40,31.046 40,20 C40,8.954 31.046,0 20,0 Z"
+                fill="#25D366" />
+              <path
+                d="M11.9,13.6 C11.5,12.7 11.1,12.7 10.7,12.7 C10.4,12.7 10.0,12.7 9.6,12.7 C9.3,12.7 8.8,12.8 8.4,13.2 C7.9,13.7 6.5,15.1 6.5,17.8 C6.5,20.5 8.5,23.1 8.8,23.5 C9.1,23.9 12.7,29.5 18.2,31.8 C19.5,32.3 20.6,32.7 21.4,32.9 C22.7,33.3 23.9,33.3 24.8,33.1 C25.8,33.0 27.9,31.8 28.3,30.6 C28.8,29.3 28.8,28.2 28.6,28.0 C28.5,27.8 28.1,27.6 27.6,27.4 C27.0,27.1 24.3,25.8 23.8,25.6 C23.3,25.4 22.9,25.3 22.5,25.9 C22.2,26.5 21.1,27.8 20.8,28.1 C20.5,28.5 20.1,28.5 19.6,28.3 C19.0,28.0 17.2,27.4 15.1,25.5 C13.5,24.0 12.4,22.1 12.1,21.6 C11.8,21.1 12.0,20.8 12.3,20.6 C12.5,20.3 12.8,19.9 13.1,19.6 C13.3,19.4 13.4,19.1 13.6,18.8 C13.8,18.4 13.7,18.1 13.5,17.8 C13.3,17.5 12.3,14.6 11.9,13.6"
+                fill="#FFFFFF" />
+            </g>
+
+            <text x="50" y="38" class="font-main" fill="#1A1A1A" font-size="24" font-weight="700">2284638361</text>
+            <circle cx="230" cy="30" r="4" fill="#6B6B6B" opacity="0.3" />
+            <text x="255" y="38" class="font-main" fill="#1A1A1A" font-size="22" font-weight="700">@logika</text>
+          </g>
+
+          <g transform="translate(800, 25)">
+            <rect x="0" y="0" width="220" height="60" rx="30" fill="#8523E1" class="stroke-black"
+              filter="url(#hardShadowSmall)" />
+            <text x="110" y="38" class="font-main" fill="#FFFFFF" font-size="22" font-weight="700" text-anchor="middle"
+              letter-spacing="0.5">DESLIZÁ ➔</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 4: CTA DIRECTO
+       ========================================== -->
+  <div class="slide-card">
+    <div class="toolbar">
+      <span class="toolbar-title">Slide 04 - Cierre</span>
+      <button class="copy-btn" onclick="copySVG(this, 3)">Copiar Código SVG</button>
+    </div>
+
+    <div class="slide-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
+        <defs>
+          <pattern id="crossPattern4" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 20 15 L 20 25 M 15 20 L 25 20" stroke="#FFFFFF" stroke-width="2" opacity="0.15" />
+          </pattern>
+        </defs>
+
+        <!-- FONDO DISRUPTIVO VIOLETA -->
+        <rect width="1080" height="1080" fill="#8523E1" />
+        <rect width="1080" height="1080" fill="url(#crossPattern4)" />
+
+        <!-- Capa 2: Formas Grandes -->
+        <circle cx="0" cy="0" r="400" fill="#FFFFFF" opacity="0.05" />
+        <rect x="800" y="800" width="400" height="400" transform="rotate(15 800 800)" fill="#FDE047" opacity="0.1" />
+
+        <!-- Capa 3: Decoración -->
+        <path d="M 850 200 l 20 -40 l 20 40 l 40 20 l -40 20 l -20 40 l -20 -40 l -40 -20 z" fill="#FDE047"
+          class="stroke-black" filter="url(#hardShadowSmall)" />
+        <circle cx="150" cy="750" r="30" fill="#00D68F" class="stroke-black" filter="url(#hardShadowSmall)" />
+        <polyline points="900,600 930,570 960,600 990,570" fill="none" stroke="#FF6B6B" stroke-width="6"
+          stroke-linejoin="round" stroke-linecap="round" />
+
+        <path d="M 120 200 L 160 200 M 140 180 L 140 220" stroke="#00D68F" stroke-width="5"
+          transform="rotate(45 140 200)" />
+        <circle cx="850" cy="450" r="10" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" />
+
+        <!-- BADGE "TU TURNO" -->
+        <g transform="translate(380, 160)">
+          <rect x="0" y="0" width="320" height="70" rx="35" fill="#FDE047" class="stroke-black"
+            filter="url(#hardShadowSmall)" />
+          <text x="160" y="46" class="font-main" fill="#1A1A1A" font-size="28" font-weight="800" text-anchor="middle"
+            letter-spacing="2">🚀 TU TURNO</text>
+        </g>
+
+        <!-- TEXTO CTA -->
+        <text x="540" y="340" class="font-main" fill="#FFFFFF" font-size="65" font-weight="800" text-anchor="middle"
+          letter-spacing="-1">¿Listo para tener</text>
+        <text x="540" y="425" class="font-main" fill="#FFFFFF" font-size="65" font-weight="800" text-anchor="middle"
+          letter-spacing="-1">la web profesional que</text>
+        <text x="540" y="510" class="font-main" fill="#FDE047" font-size="65" font-weight="800" text-anchor="middle"
+          letter-spacing="-1">tu negocio merece?</text>
+
+        <!-- BOTÓN GIGANTE -->
+        <g transform="translate(240, 600) rotate(-1)">
+          <rect x="0" y="0" width="600" height="120" rx="20" fill="#00D68F" class="stroke-black"
+            filter="url(#hardShadow)" />
+          <text x="300" y="75" class="font-main" fill="#1A1A1A" font-size="42" font-weight="800" text-anchor="middle"
+            letter-spacing="-0.5">ESCRIBINOS POR DM</text>
+
+          <!-- Cursor pointer -->
+          <g transform="translate(520, 80)">
+            <path d="M 0 0 L 20 45 L 30 30 L 50 50 L 58 42 L 38 22 L 55 15 Z" fill="#FFFFFF" class="stroke-black" />
+          </g>
+        </g>
+
+        <!-- HIGHLIGHT -->
+        <g transform="translate(140, 800) rotate(1)">
+          <rect x="0" y="0" width="800" height="75" rx="12" fill="#1A1A1A" class="stroke-black"
+            filter="url(#hardShadowSmall)" />
+          <text x="400" y="50" class="font-main" fill="#FDE047" font-size="34" font-weight="800" text-anchor="middle"
+            letter-spacing="0.5">¡NOSOTROS NOS ENCARGAMOS DE TODO!</text>
+        </g>
+
+        <!-- FOOTER UNIFICADO VERSIÓN CONTRASTE INVERTIDO (DOCK STYLE OSCURO) -->
+        <g transform="translate(0, 960)">
+          <!-- Barra de fondo general oscura y borde superior amarillo neón para contraste sobre violeta -->
+          <rect x="0" y="0" width="1080" height="120" fill="#1A1A1A" />
+          <line x1="0" y1="0" x2="1080" y2="0" stroke="#FDE047" stroke-width="4" />
+
+          <g transform="translate(60, 30)">
+            <g transform="scale(0.6)">
+              <!-- El logo se mantiene igual, ya está delineado con #1A1A1A internamente -->
+              <path fill="#8523E1" d="M 14 20 a 6 6 0 0 1 6 -6 h 50 a 6 6 0 0 1 6 6 v 16 h -62 Z" />
+              <path fill="#00D68F" d="M 76 36 v 34 a 6 6 0 0 1 -6 6 h -16 v -40 h 22 Z" />
+              <path fill="#FF6B6B" d="M 54 76 h -34 a 6 6 0 0 1 -6 -6 v -16 h 40 Z" />
+              <rect x="14" y="36" width="22" height="18" fill="#4A90FF" />
+              <!-- Bordes exteriores cambiados a blanco o color muy claro para contraste en on-dark -->
+              <rect x="14" y="14" width="62" height="62" rx="6" fill="none" stroke="#FDE047" stroke-width="4"></rect>
+              <rect x="36" y="36" width="18" height="18" fill="none" stroke="#FDE047" stroke-width="4"
+                stroke-linejoin="round"></rect>
+              <line x1="14" y1="36" x2="36" y2="36" stroke="#FDE047" stroke-width="4"></line>
+              <line x1="54" y1="36" x2="76" y2="36" stroke="#FDE047" stroke-width="4"></line>
+              <line x1="14" y1="54" x2="36" y2="54" stroke="#FDE047" stroke-width="4"></line>
+              <line x1="54" y1="54" x2="54" y2="76" stroke="#FDE047" stroke-width="4"></line>
+            </g>
+
+            <text x="75" y="42" class="font-main" fill="#FFFFFF" font-size="32" font-weight="800"
+              letter-spacing="-0.5">LOGIKA</text>
+          </g>
+
+          <g transform="translate(300, 30)">
+            <!-- Separador claro -->
+            <line x1="0" y1="10" x2="0" y2="40" stroke="#FFFFFF" stroke-width="2" opacity="0.3" />
+
+            <!-- WhatsApp Icon Blanco -->
+            <g transform="translate(20, 16) scale(0.6)">
+              <path
+                d="M 20 0 C 8.95 0 0 8.95 0 20 c 0 3.5 0.9 6.8 2.5 9.8 L 0 40 l 10.5 -2.7 C 13.4 38.9 16.6 40 20 40 c 11.05 0 20 -8.95 20 -20 S 31.05 0 20 0 Z m 10 28.5 c -0.4 1 -2 2 -2.8 2.1 C 26.5 30.7 25.6 31 20 28.8 M 20 28.8"
+                fill="none" stroke="#F5F5F5" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+              <path
+                d="M20,0 C8.954,0 0,8.954 0,20 C0,3.504 0.902,6.812 2.502,9.845 L0,40 L10.51,37.243 C13.435,38.941 16.621,40 20,40 C31.046,40 40,31.046 40,20 C40,8.954 31.046,0 20,0 Z"
+                fill="#F5F5F5" opacity="0.8" />
+              <path
+                d="M11.9,13.6 C11.5,12.7 11.1,12.7 10.7,12.7 C10.4,12.7 10.0,12.7 9.6,12.7 C9.3,12.7 8.8,12.8 8.4,13.2 C7.9,13.7 6.5,15.1 6.5,17.8 C6.5,20.5 8.5,23.1 8.8,23.5 C9.1,23.9 12.7,29.5 18.2,31.8 C19.5,32.3 20.6,32.7 21.4,32.9 C22.7,33.3 23.9,33.3 24.8,33.1 C25.8,33.0 27.9,31.8 28.3,30.6 C28.8,29.3 28.8,28.2 28.6,28.0 C28.5,27.8 28.1,27.6 27.6,27.4 C27.0,27.1 24.3,25.8 23.8,25.6 C23.3,25.4 22.9,25.3 22.5,25.9 C22.2,26.5 21.1,27.8 20.8,28.1 C20.5,28.5 20.1,28.5 19.6,28.3 C19.0,28.0 17.2,27.4 15.1,25.5 C13.5,24.0 12.4,22.1 12.1,21.6 C11.8,21.1 12.0,20.8 12.3,20.6 C12.5,20.3 12.8,19.9 13.1,19.6 C13.3,19.4 13.4,19.1 13.6,18.8 C13.8,18.4 13.7,18.1 13.5,17.8 C13.3,17.5 12.3,14.6 11.9,13.6"
+                fill="#1A1A1A" />
+            </g>
+
+            <!-- Texto claro para el dark mode footer -->
+            <text x="50" y="38" class="font-main" fill="#F5F5F5" font-size="24" font-weight="700"
+              opacity="0.8">2284638361</text>
+            <circle cx="230" cy="30" r="4" fill="#FFFFFF" opacity="0.4" />
+            <text x="255" y="38" class="font-main" fill="#00D68F" font-size="22" font-weight="700">@logika</text>
+          </g>
+
+          <g transform="translate(800, 25)">
+            <!-- En fondo oscuro, queda genial poner el badge en mint o amarillo -->
+            <rect x="0" y="0" width="220" height="60" rx="30" fill="#FDE047" class="stroke-black"
+              filter="url(#hardShadowSmall)" />
+            <text x="110" y="38" class="font-main" fill="#1A1A1A" font-size="22" font-weight="800" text-anchor="middle"
+              letter-spacing="0.5">ESCRIBINOS ✓</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    function copySVG(button, slideIndex) {
+      const svgElement = document.querySelectorAll('.slide-wrapper svg')[slideIndex];
+      const serializer = new XMLSerializer();
+      let svgString = serializer.serializeToString(svgElement);
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = svgString;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextArea);
+
+      const originalText = button.innerText;
+      button.innerText = "¡Copiado! ✅";
+      button.style.backgroundColor = "#FDE047";
+      setTimeout(() => {
+        button.innerText = originalText;
+        button.style.backgroundColor = "#4A90FF";
+      }, 2000);
+    }
+  </script>
+</body>
+
+</html>

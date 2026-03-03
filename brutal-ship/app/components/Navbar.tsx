@@ -66,21 +66,18 @@ export default function Navbar({ config }: NavbarProps) {
                     {/* Logo */}
                     <div className="flex items-center gap-2">
                         <a href="/" className="flex items-center gap-2">
-                            <LogikaLogo size={36} className="md:w-10 md:h-10" />
-                            <span className="text-xl md:text-2xl font-bold tracking-tighter uppercase hidden sm:block text-ink-black dark:text-white">
-                                Logika
-                            </span>
+                            <LogikaLogo className="h-10 md:h-14 w-auto" />
                         </a>
                     </div>
 
                     {/* Desktop Links */}
-                    <div className="hidden lg:flex items-center space-x-6 lg:space-x-8">
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#servicios")}>Servicios</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#proceso")}>Proceso</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href="/portafolio">Trabajos</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#precios")}>Precios</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#clientes")}>Clientes</a>
-                        <a className="text-black dark:text-white font-bold hover:text-primary transition-colors text-sm uppercase tracking-wide" href={getHref("#faq")}>FAQ</a>
+                    <div className="hidden lg:flex items-center gap-1 xl:gap-2">
+                        <a className="px-3 xl:px-4 py-2 text-sm xl:text-base font-bold uppercase tracking-wider text-ink-black dark:text-white border-2 border-transparent hover:border-black hover:bg-[#8523E1] hover:text-white dark:hover:text-white rounded-lg hover:shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-y-[2px] transition-all" href={getHref("#servicios")}>Servicios</a>
+                        <a className="px-3 xl:px-4 py-2 text-sm xl:text-base font-bold uppercase tracking-wider text-ink-black dark:text-white border-2 border-transparent hover:border-black hover:bg-[#00D68F] hover:text-black dark:hover:text-black rounded-lg hover:shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-y-[2px] transition-all" href={getHref("#proceso")}>Proceso</a>
+                        <a className="px-3 xl:px-4 py-2 text-sm xl:text-base font-bold uppercase tracking-wider text-ink-black dark:text-white border-2 border-transparent hover:border-black hover:bg-[#FF6B6B] hover:text-black dark:hover:text-black rounded-lg hover:shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-y-[2px] transition-all" href="/portafolio">Trabajos</a>
+                        <a className="px-3 xl:px-4 py-2 text-sm xl:text-base font-bold uppercase tracking-wider text-ink-black dark:text-white border-2 border-transparent hover:border-black hover:bg-[#4A90FF] hover:text-white dark:hover:text-white rounded-lg hover:shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-y-[2px] transition-all" href={getHref("#precios")}>Precios</a>
+                        <a className="px-3 xl:px-4 py-2 text-sm xl:text-base font-bold uppercase tracking-wider text-ink-black dark:text-white border-2 border-transparent hover:border-black hover:bg-[#FFD93D] hover:text-black dark:hover:text-black rounded-lg hover:shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-y-[2px] transition-all" href={getHref("#clientes")}>Clientes</a>
+                        <a className="px-3 xl:px-4 py-2 text-sm xl:text-base font-bold uppercase tracking-wider text-ink-black dark:text-white border-2 border-transparent hover:border-black hover:bg-[#8523E1] hover:text-white dark:hover:text-white rounded-lg hover:shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-y-[2px] transition-all" href={getHref("#faq")}>FAQ</a>
                     </div>
 
                     {/* Actions */}
@@ -94,7 +91,7 @@ export default function Navbar({ config }: NavbarProps) {
                                     transition={{ duration: 0.3 }}
                                 >
                                     <MagneticWrapper>
-                                        <a href={getHref("#contacto")} className="bg-primary hover:bg-primary/90 text-white border-2 border-black font-bold py-2 px-4 md:px-6 text-sm md:text-base rounded-xl transition-all block whitespace-nowrap shadow-[2px_2px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-y-[1px] hover:translate-x-[1px]">
+                                        <a href={getHref("#contacto")} className="bg-primary hover:bg-primary/90 text-white border-2 border-black font-bold py-2.5 px-6 xl:px-8 text-sm xl:text-base uppercase tracking-wider rounded-xl transition-all block whitespace-nowrap shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-y-[2px] hover:translate-x-[2px] font-space">
                                             Contactanos
                                         </a>
                                     </MagneticWrapper>
@@ -123,13 +120,13 @@ export default function Navbar({ config }: NavbarProps) {
                             transition={{ duration: 0.2, ease: "easeOut" }}
                             className="lg:hidden absolute top-[110%] left-0 right-0 bg-white dark:bg-background-dark border-2 border-black rounded-2xl shadow-neobrutalism flex flex-col p-4 z-40"
                         >
-                            <div className="flex flex-col gap-2">
-                                <a href={getHref("#servicios")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Servicios <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href={getHref("#proceso")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Proceso <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href="/portafolio" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Trabajos <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href={getHref("#precios")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Precios <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href={getHref("#clientes")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">Clientes <span className="material-icons text-gray-400">arrow_forward</span></a>
-                                <a href={getHref("#faq")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 border-b-2 border-gray-100 flex items-center justify-between hover:text-primary transition-colors text-ink-black dark:text-white">FAQ <span className="material-icons text-gray-400">arrow_forward</span></a>
+                            <div className="flex flex-col gap-2 p-2">
+                                <a href={getHref("#servicios")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 px-4 border-2 border-transparent hover:border-black hover:bg-[#8523E1] hover:text-white dark:hover:text-white rounded-xl hover:shadow-[4px_4px_0px_0px_#1A1A1A] hover:-translate-y-[2px] hover:-translate-x-[2px] transition-all flex items-center justify-between text-ink-black dark:text-white">Servicios <span className="material-icons opacity-70">arrow_forward</span></a>
+                                <a href={getHref("#proceso")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 px-4 border-2 border-transparent hover:border-black hover:bg-[#00D68F] hover:text-black dark:hover:text-black rounded-xl hover:shadow-[4px_4px_0px_0px_#1A1A1A] hover:-translate-y-[2px] hover:-translate-x-[2px] transition-all flex items-center justify-between text-ink-black dark:text-white">Proceso <span className="material-icons opacity-70">arrow_forward</span></a>
+                                <a href="/portafolio" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 px-4 border-2 border-transparent hover:border-black hover:bg-[#FF6B6B] hover:text-black dark:hover:text-black rounded-xl hover:shadow-[4px_4px_0px_0px_#1A1A1A] hover:-translate-y-[2px] hover:-translate-x-[2px] transition-all flex items-center justify-between text-ink-black dark:text-white">Trabajos <span className="material-icons opacity-70">arrow_forward</span></a>
+                                <a href={getHref("#precios")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 px-4 border-2 border-transparent hover:border-black hover:bg-[#4A90FF] hover:text-white dark:hover:text-white rounded-xl hover:shadow-[4px_4px_0px_0px_#1A1A1A] hover:-translate-y-[2px] hover:-translate-x-[2px] transition-all flex items-center justify-between text-ink-black dark:text-white">Precios <span className="material-icons opacity-70">arrow_forward</span></a>
+                                <a href={getHref("#clientes")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 px-4 border-2 border-transparent hover:border-black hover:bg-[#FFD93D] hover:text-black dark:hover:text-black rounded-xl hover:shadow-[4px_4px_0px_0px_#1A1A1A] hover:-translate-y-[2px] hover:-translate-x-[2px] transition-all flex items-center justify-between text-ink-black dark:text-white">Clientes <span className="material-icons opacity-70">arrow_forward</span></a>
+                                <a href={getHref("#faq")} onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold uppercase py-3 px-4 border-2 border-transparent hover:border-black hover:bg-[#8523E1] hover:text-white dark:hover:text-white rounded-xl hover:shadow-[4px_4px_0px_0px_#1A1A1A] hover:-translate-y-[2px] hover:-translate-x-[2px] transition-all flex items-center justify-between text-ink-black dark:text-white">FAQ <span className="material-icons opacity-70">arrow_forward</span></a>
 
                                 <div className="mt-4 pt-2">
                                     <a

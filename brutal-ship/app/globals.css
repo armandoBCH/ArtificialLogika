@@ -868,6 +868,150 @@ body {
 }
 
 /* ===================================================================
+   HERO SVG WRAPPER — Scoped animation classes for the hero SVG
+   (moved here from inline <style> in HeroSection.tsx)
+   =================================================================== */
+.hero-svg-wrapper * {
+  box-sizing: border-box;
+}
+
+.hero-svg-wrapper svg * {
+  transform-box: fill-box;
+}
+
+.hero-svg-wrapper .scene-fade {
+  animation: hero-global-fade-out 6s infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .reveal-1 {
+  animation: hero-slide-down 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .reveal-2 {
+  animation: hero-slide-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: left;
+}
+
+.hero-svg-wrapper .reveal-3 {
+  animation: hero-slide-left 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: right;
+}
+
+.hero-svg-wrapper .reveal-4 {
+  animation: hero-scale-up 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .reveal-5 {
+  animation: hero-slide-up-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .reveal-6 {
+  animation: hero-pop-up 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: bottom;
+}
+
+.hero-svg-wrapper .reveal-7 {
+  animation: hero-float-in 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .reveal-8 {
+  animation: hero-slide-up-tilt-left 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .reveal-9 {
+  animation: hero-slide-up-tilt-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .shape-intro {
+  animation: hero-pop-in 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .mint-highlight {
+  animation: hero-draw-highlight 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  transform-origin: left center;
+}
+
+.hero-svg-wrapper .marquee-track {
+  animation: hero-marquee-scroll 6s linear infinite;
+}
+
+.hero-svg-wrapper .float {
+  animation: hero-float-y 4s ease-in-out infinite;
+}
+
+.hero-svg-wrapper .spin {
+  animation: hero-spin-slow 8s linear infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .blink {
+  animation: hero-text-blink 1s step-end infinite;
+}
+
+.hero-svg-wrapper .cursor-anim {
+  animation: hero-fly-click 6s ease-in-out infinite;
+}
+
+.hero-svg-wrapper .btn-press {
+  animation: hero-btn-hover-down 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.hero-svg-wrapper .starburst-anim {
+  animation: hero-explode-star 6s ease-out infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .ring-burst {
+  animation: hero-expand-ring 6s ease-out infinite;
+  transform-origin: center;
+}
+
+.hero-svg-wrapper .bar-grow {
+  animation: hero-bar-grow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  transform-origin: bottom;
+}
+
+.hero-svg-wrapper .toggle-slide {
+  animation: hero-toggle-right 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.hero-svg-wrapper .progress-fill {
+  animation: hero-fill-width 6s ease-out infinite;
+}
+
+.hero-svg-wrapper .draw-path {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: hero-draw-line 6s ease-in-out infinite;
+}
+
+/* Hero title slow float animation */
+@keyframes slow-float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-hero-title-float {
+  animation: slow-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ===================================================================
    ADMIN DASHBOARD STYLES
    =================================================================== */
 

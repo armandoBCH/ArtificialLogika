@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Logika — Logo Original</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            background: #f5f5f5;
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            color: #1A1A1A;
+        }
+
+        .row {
+            display: flex;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            border: 3px solid #1A1A1A;
+            border-radius: 16px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 8px 8px 0px #1A1A1A;
+        }
+
+        .card.dark {
+            background: #1A1A1A;
+        }
+
+        .card.dark h2 {
+            color: white;
+        }
+
+        .label {
+            margin-top: 16px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .card.dark .label {
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Logo Original — Logika</h1>
+
+    <div class="row">
+        <!-- Tamaño pequeño -->
+        <div class="card">
+            <h2>32px</h2>
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+                <defs>
+                    <clipPath id="wc1">
+                        <rect x="45" y="0" width="60" height="100" />
+                    </clipPath>
+                </defs>
+                <rect x="22" y="22" width="62" height="62" rx="6" fill="#1A1A1A" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4"
+                    clip-path="url(#wc1)" />
+            </svg>
+            <span class="label">Header / Nav</span>
+        </div>
+
+        <!-- Tamaño mediano -->
+        <div class="card">
+            <h2>64px</h2>
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+                <defs>
+                    <clipPath id="wc2">
+                        <rect x="45" y="0" width="60" height="100" />
+                    </clipPath>
+                </defs>
+                <rect x="22" y="22" width="62" height="62" rx="6" fill="#1A1A1A" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4"
+                    clip-path="url(#wc2)" />
+            </svg>
+            <span class="label">Footer / Cards</span>
+        </div>
+
+        <!-- Tamaño grande -->
+        <div class="card">
+            <h2>128px</h2>
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="128" height="128">
+                <defs>
+                    <clipPath id="wc3">
+                        <rect x="45" y="0" width="60" height="100" />
+                    </clipPath>
+                </defs>
+                <rect x="22" y="22" width="62" height="62" rx="6" fill="#1A1A1A" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4"
+                    clip-path="url(#wc3)" />
+            </svg>
+            <span class="label">Hero / Splash</span>
+        </div>
+    </div>
+
+    <!-- Versión en fondo oscuro -->
+    <div class="row">
+        <div class="card dark">
+            <h2>Fondo Oscuro — 64px</h2>
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+                <defs>
+                    <clipPath id="wc4">
+                        <rect x="45" y="0" width="60" height="100" />
+                    </clipPath>
+                </defs>
+                <rect x="22" y="22" width="62" height="62" rx="6" fill="#000" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4"
+                    clip-path="url(#wc4)" />
+            </svg>
+            <span class="label">Footer</span>
+        </div>
+
+        <div class="card dark">
+            <h2>Fondo Oscuro — 128px</h2>
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="128" height="128">
+                <defs>
+                    <clipPath id="wc5">
+                        <rect x="45" y="0" width="60" height="100" />
+                    </clipPath>
+                </defs>
+                <rect x="22" y="22" width="62" height="62" rx="6" fill="#000" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="#1A1A1A" stroke-width="4" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4"
+                    clip-path="url(#wc5)" />
+            </svg>
+            <span class="label">Hero Oscuro</span>
+        </div>
+    </div>
+
+</body>
+
+</html>

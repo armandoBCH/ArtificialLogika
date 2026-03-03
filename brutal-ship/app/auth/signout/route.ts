@@ -14,7 +14,10 @@ export async function POST(req: NextRequest) {
     }
 
     revalidatePath("/", "layout");
-    return NextResponse.redirect(new URL("/admin/login", req.url), {
+
+    // Use origin from request to prevent open redirect attacks
+    const origin = req.nextUrl.origin;
+    return NextResponse.redirect(new URL("/admin/login", origin), {
         status: 302,
     });
 }
