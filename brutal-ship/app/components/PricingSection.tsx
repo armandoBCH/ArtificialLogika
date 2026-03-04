@@ -68,9 +68,18 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
                         <span className="text-xl font-bold text-gray-400 line-through">${plan.original_price}</span>
                     </div>
                 )}
-                <div className="flex items-end justify-center gap-2 mb-2">
-                    <span className="text-5xl font-bold">${plan.price}</span>
-                    <span className="text-lg font-bold text-gray-500 mb-1">{plan.currency}</span>
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2 lg:gap-3 mb-3 mt-2 flex-wrap lg:flex-nowrap">
+                    <div className="flex items-end gap-0.5 sm:gap-1">
+                        <span className="text-4xl lg:text-5xl font-bold">${plan.price}</span>
+                        <span className="text-base lg:text-lg font-bold text-gray-500 mb-1">{plan.currency}</span>
+                    </div>
+                    <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 bg-hot-coral text-white font-black text-lg lg:text-xl border-[2px] border-black rounded-full shadow-[2px_2px_0px_#000] rotate-12 relative z-10">
+                        +
+                    </span>
+                    <span className={`inline-flex items-center gap-1 border-[2px] border-black px-2 lg:px-3 py-1 rounded-md text-[9px] lg:text-xs font-black uppercase tracking-widest ${isFeatured ? 'bg-accent-yellow text-black shadow-[3px_3px_0px_#1A1A1A] -rotate-1 hover:rotate-0' : 'bg-primary text-white shadow-[3px_3px_0px_#1A1A1A] rotate-1 hover:rotate-0'} transition-transform whitespace-nowrap`}>
+                        <span className={`material-icons text-[14px] lg:text-[16px] ${isFeatured ? 'text-[#059669]' : 'text-accent-yellow'}`}>bolt</span>
+                        Soporte Mensual
+                    </span>
                 </div>
                 <div className="flex justify-center mb-1">
                     <div className={`inline-flex items-center gap-1.5 ${isFeatured ? 'bg-hot-coral/20 border-2 border-hot-coral text-hot-coral shadow-[2px_2px_0px_#E11D48] animate-pulse' : 'bg-mint/20 border-2 border-mint text-mint shadow-[2px_2px_0px_#059669]'} px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest`}>
@@ -126,11 +135,103 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true, margin: "-100px" }}
-                    className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-start"
+                    className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl lg:max-w-[85rem] mx-auto items-start relative z-10"
                 >
                     {plans.map((plan) => (
                         <PlanCard key={plan.id} plan={plan} />
                     ))}
+                </motion.div>
+
+                {/* Monthly Fee Section */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    className="mt-20 max-w-5xl mx-auto w-full px-4 sm:px-0 relative z-10"
+                >
+                    <div className="bg-white border-[3px] border-black shadow-neobrutalism-lg overflow-hidden flex flex-col lg:flex-row rounded-xl relative">
+                        <div className="absolute top-0 right-0 bg-hot-coral text-white text-xs sm:text-sm font-black px-4 py-1.5 sm:px-5 sm:py-2 border-b-[3px] border-l-[3px] border-black rounded-bl-xl shadow-[-2px_2px_0px_#000] uppercase tracking-widest z-20">
+                            Imprescindible
+                        </div>
+                        <div className="bg-primary p-6 md:p-10 lg:p-12 lg:w-3/5 border-b-[3px] lg:border-b-0 lg:border-r-[3px] border-black flex flex-col justify-center relative">
+                            {/* Decorative element hidden on mobile */}
+                            <div className="absolute -left-4 -top-4 w-12 h-12 bg-accent-yellow border-[3px] border-black rounded-full shadow-[4px_4px_0px_#000] z-20 hidden sm:block"></div>
+
+                            <h3 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4 sm:mb-5 text-white relative z-10 leading-none mt-2 sm:mt-0">
+                                ¿Por qué hay un<br />
+                                <span className="bg-accent-yellow text-black px-2 mt-2 inline-block -rotate-2 border-[3px] border-black shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000]">pago mensual?</span>
+                            </h3>
+                            <p className="text-lg sm:text-xl font-bold mb-6 text-white/90 relative z-10">
+                                Tu web es un ecosistema vivo. Nosotros nos hacemos cargo de la parte técnica para que funcione rapidísima y segura las 24 horas.
+                            </p>
+
+                            <div className="bg-white/10 p-4 sm:p-5 border-[3px] border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] relative z-10">
+                                <p className="font-extrabold uppercase text-xs sm:text-sm mb-4 text-white border-b-2 border-white/20 pb-2">Todo esto está incluido:</p>
+                                <div className="space-y-3">
+                                    {[
+                                        "Hosting en servidores ultrarrápidos",
+                                        "Dominio web anual (www.tu-marca.com)",
+                                        "Base de datos y almacenamiento en la nube",
+                                        "Certificado de Seguridad SSL (candado HTTPS)",
+                                        "Backups automáticos periódicos",
+                                        "Actualizaciones y mantenimiento continuo",
+                                        "Soporte directo por WhatsApp"
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex items-start gap-3">
+                                            <div className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 sm:mt-0 bg-mint border-2 border-black shadow-[2px_2px_0px_0px_#000] flex items-center justify-center flex-shrink-0">
+                                                <span className="material-icons text-black text-[12px] sm:text-[14px] font-black leading-none">check</span>
+                                            </div>
+                                            <span className="font-bold text-white text-sm sm:text-base md:text-lg leading-snug">{item}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-[#F5F5F5] p-6 md:p-10 lg:p-12 lg:w-2/5 flex flex-col justify-center relative bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+                            <h4 className="text-xl sm:text-2xl font-black uppercase mb-6 sm:mb-8 text-center decoration-wavy underline decoration-hot-coral decoration-2 underline-offset-4 relative z-10 bg-white inline-block px-3 py-1 sm:px-4 sm:py-2 border-2 border-black -rotate-1 shadow-[4px_4px_0px_#000] mx-auto leading-tight">
+                                Valores Mensuales<br />
+                                <span className="text-[10px] sm:text-xs tracking-wide bg-black text-white px-2 py-0.5 mt-2 inline-block rotate-1 rounded-sm border border-black shadow-[2px_2px_0px_#8523E1]">DE SOPORTE Y MANTENIMIENTO</span>
+                            </h4>
+                            <div className="space-y-4 sm:space-y-5 relative z-10">
+                                <div className="bg-white border-[3px] border-black shadow-[4px_4px_0px_0px_#059669] sm:shadow-[6px_6px_0px_0px_#059669] p-4 sm:p-5 rounded-xl flex flex-col justify-between transform transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#059669] sm:hover:shadow-[8px_8px_0px_0px_#059669]">
+                                    <div className="flex justify-between items-center w-full">
+                                        <span className="font-bold text-sm sm:text-base md:text-lg uppercase w-1/2">Landing Page</span>
+                                        <div className="flex items-end text-black relative bg-[#f4f4f5] px-2 sm:px-3 py-1 border-[2px] border-black rounded-lg shadow-sm">
+                                            <span className="font-black text-xl sm:text-2xl md:text-3xl">$15</span>
+                                            <span className="font-bold text-gray-500 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-white border-[3px] border-black shadow-[4px_4px_0px_0px_#E11D48] sm:shadow-[6px_6px_0px_0px_#E11D48] p-4 sm:p-5 rounded-xl flex flex-col justify-between transform transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#E11D48] sm:hover:shadow-[8px_8px_0px_0px_#E11D48]">
+                                    <div className="flex justify-between items-center w-full">
+                                        <span className="font-bold text-sm sm:text-base md:text-lg uppercase w-1/2">Institucional</span>
+                                        <div className="flex items-end text-black relative bg-[#f4f4f5] px-2 sm:px-3 py-1 border-[2px] border-black rounded-lg shadow-sm">
+                                            <span className="font-black text-xl sm:text-2xl md:text-3xl">$25</span>
+                                            <span className="font-bold text-gray-500 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-white border-[3px] border-black shadow-[4px_4px_0px_0px_#8523e1] sm:shadow-[6px_6px_0px_0px_#8523e1] p-4 sm:p-5 rounded-xl flex flex-col justify-between transform transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#8523e1] sm:hover:shadow-[8px_8px_0px_0px_#8523e1] relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 bg-accent-yellow text-black text-[9px] sm:text-[10px] font-black px-2 py-0.5 border-b-[2px] border-l-[2px] border-black shadow-[-2px_2px_0px_#000] rounded-bl-lg z-10 uppercase tracking-wider">
+                                        Precio Base
+                                    </div>
+                                    <div className="flex justify-between items-center w-full mt-2">
+                                        <span className="font-bold text-sm sm:text-base md:text-lg uppercase w-1/2">E-commerce</span>
+                                        <div className="flex items-end text-black relative bg-[#f4f4f5] px-2 sm:px-3 py-1 border-[2px] border-black rounded-lg shadow-sm">
+                                            <span className="font-black text-xl sm:text-2xl md:text-3xl">$35</span>
+                                            <span className="font-bold text-gray-500 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-6 sm:mt-10 flex w-full relative z-10">
+                                <div className="flex-1 items-center justify-center gap-2 sm:gap-3 bg-hot-coral border-[3px] border-black px-4 py-3 sm:py-4 rounded-xl shadow-[4px_4px_0px_#000] flex flex-row hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] transition-transform cursor-default">
+                                    <span className="material-icons text-white text-xl sm:text-2xl font-black">lock_open</span>
+                                    <p className="text-[11px] sm:text-sm md:text-base font-black text-white uppercase tracking-wider text-center">¡Sin ataduras! Cancelá cuando quieras.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </motion.div>
 
                 {/* Trust signals & Guarantee */}
@@ -174,7 +275,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                         </a>
                     </div>
                 </div>
-            </div>
-        </section>
+            </div >
+        </section >
     );
 }
