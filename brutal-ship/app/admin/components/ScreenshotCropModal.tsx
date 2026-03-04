@@ -73,20 +73,23 @@ export default function ScreenshotCropModal({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, externalUrl]);
 
-    const captureScreenshot = async () => {
+    const captureScreenshot = async (opts?: { width?: number; height?: number; nextStep?: ModalStep }) => {
+        const vw = opts?.width || 1024;
+        const vh = opts?.height || 768;
+        const targetStep = opts?.nextStep || "cropping-43";
         setStep("capturing");
         setErrorMsg("");
         try {
             const res = await fetch("/api/admin/screenshot", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url: externalUrl }),
+                body: JSON.stringify({ url: externalUrl, viewportWidth: vw, viewportHeight: vh }),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Error al capturar");
             setScreenshotSrc(data.image);
             setCrop({ x: 0, y: 0, width: data.width, height: data.height });
-            setStep("cropping-43");
+            setStep(targetStep);
         } catch (err) {
             setErrorMsg(err instanceof Error ? err.message : "Error desconocido");
             setStep("error");
@@ -280,7 +283,7 @@ export default function ScreenshotCropModal({
         return uploadData.url;
     };
 
-    // Step 1: Crop 4:3 and move to 16:9
+    // Step 1: Crop 4:3, then re-capture at 16:9 viewport for next step
     const handleCrop43Done = async () => {
         if (crop.width < 10 || crop.height < 10) return;
         setStep("uploading");
@@ -288,10 +291,8 @@ export default function ScreenshotCropModal({
             const base64 = await cropToBase64();
             const url = await uploadBase64(base64, "4x3");
             setCroppedUrl43(url);
-            // Reset crop for 16:9
-            setLockedRatio(16 / 9);
-            applyCropPreset(16 / 9);
-            setStep("cropping-169");
+            // Re-capture with 16:9 viewport for the wide crop
+            await captureScreenshot({ width: 1280, height: 720, nextStep: "cropping-169" });
         } catch (err) {
             setErrorMsg(err instanceof Error ? err.message : "Error desconocido");
             setStep("error");
@@ -359,7 +360,7 @@ export default function ScreenshotCropModal({
                             <span className="text-4xl">❌</span>
                             <p className="text-hot-coral font-bold text-lg">{errorMsg}</p>
                             <div className="flex gap-3 justify-center">
-                                <button onClick={captureScreenshot} className="bg-primary text-white font-bold px-5 py-2 border-2 border-black rounded-sm shadow-neobrutalism-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
+                                <button onClick={() => captureScreenshot()} className="bg-primary text-white font-bold px-5 py-2 border-2 border-black rounded-sm shadow-neobrutalism-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
                                     🔄 Reintentar
                                 </button>
                                 <button onClick={onClose} className="text-gray-400 font-bold px-4 py-2 hover:text-white transition-colors">Cancelar</button>
@@ -496,14 +497,17 @@ export default function ScreenshotCropModal({
                                 </button>
                                 {step === "cropping-169" && (
                                     <button
-                                        onClick={() => { setStep("cropping-43"); setLockedRatio(4 / 3); applyCropPreset(4 / 3); }}
+                                        onClick={() => captureScreenshot({ width: 1024, height: 768, nextStep: "cropping-43" })}
                                         className="bg-white/10 text-white font-bold px-5 py-2 border-2 border-white/20 rounded-sm hover:bg-white/20 transition-all"
                                     >
                                         ⬅ Volver al 4:3
                                     </button>
                                 )}
                                 <button
-                                    onClick={captureScreenshot}
+                                    onClick={() => {
+                                        const isWide = step === "cropping-169";
+                                        captureScreenshot(isWide ? { width: 1280, height: 720, nextStep: "cropping-169" } : { width: 1024, height: 768, nextStep: "cropping-43" });
+                                    }}
                                     className="bg-white/10 text-white font-bold px-5 py-2 border-2 border-white/20 rounded-sm hover:bg-white/20 transition-all"
                                 >
                                     🔄 Recapturar

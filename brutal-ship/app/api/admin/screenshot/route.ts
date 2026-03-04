@@ -19,10 +19,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    const { url } = await request.json();
+    const { url, viewportWidth, viewportHeight } = await request.json();
     if (!url || typeof url !== "string") {
         return NextResponse.json({ error: "URL requerida" }, { status: 400 });
     }
+
+    const vw = typeof viewportWidth === "number" && viewportWidth > 0 ? viewportWidth : 1280;
+    const vh = typeof viewportHeight === "number" && viewportHeight > 0 ? viewportHeight : 900;
 
     // Validate URL format
     try {
@@ -41,8 +44,8 @@ export async function POST(request: NextRequest) {
         microlinkUrl.searchParams.set("screenshot", "true");
         microlinkUrl.searchParams.set("meta", "false");
         microlinkUrl.searchParams.set("waitForTimeout", "3000");
-        microlinkUrl.searchParams.set("viewport.width", "1280");
-        microlinkUrl.searchParams.set("viewport.height", "900");
+        microlinkUrl.searchParams.set("viewport.width", String(vw));
+        microlinkUrl.searchParams.set("viewport.height", String(vh));
         microlinkUrl.searchParams.set("viewport.deviceScaleFactor", "1");
 
         const apiRes = await fetch(microlinkUrl.toString());
@@ -67,7 +70,7 @@ export async function POST(request: NextRequest) {
         const contentType = imgRes.headers.get("content-type") || "image/png";
         const dataUrl = `data:${contentType};base64,${base64}`;
 
-        return NextResponse.json({ image: dataUrl, width: 1280, height: 900 });
+        return NextResponse.json({ image: dataUrl, width: vw, height: vh });
     } catch (err) {
         console.error("Screenshot error:", err);
         return NextResponse.json(
