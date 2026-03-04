@@ -4,7 +4,7 @@ import type { SiteConfigMap } from "@/lib/types/database";
 const DEFAULT_CONFIG: SiteConfigMap = {
     whatsapp_number: "5492284638361",
     whatsapp_message: "Hola! Quiero consultar por una web para mi negocio",
-    email: "",
+    email: "contactologika@gmail.com",
     location: "Buenos Aires, Argentina",
     instagram_url: "",
     response_time: "48hs",
