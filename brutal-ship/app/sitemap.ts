@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo/constants";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
+import { BLOG_POSTS } from "./blog/page";
 
 // Force dynamic rendering — sitemap needs runtime Supabase access
 export const dynamic = "force-dynamic";
@@ -20,7 +21,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: "weekly",
             priority: 0.8,
         },
+        {
+            url: `${SITE_URL}/blog`,
+            lastModified: new Date(),
+            changeFrequency: "weekly",
+            priority: 0.7,
+        },
     ];
+
+    // Blog posts
+    const blogPages: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
+        url: `${SITE_URL}/blog/${post.slug}`,
+        lastModified: new Date(post.date),
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+    }));
 
     // Dynamic portfolio project pages
     let projectPages: MetadataRoute.Sitemap = [];
@@ -36,5 +51,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         // Silently fail — sitemap will still have static pages
     }
 
-    return [...staticPages, ...projectPages];
+    return [...staticPages, ...blogPages, ...projectPages];
 }
+

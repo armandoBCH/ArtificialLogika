@@ -12,9 +12,9 @@ export default function BeforeAfter() {
                 {/* Hero Header */}
                 <div className="text-center mb-20 relative">
                     <div className="inline-block relative">
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-6">
+                        <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-6">
                             El Antes <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary-coral">y Después</span>
-                        </h1>
+                        </h2>
                         {/* Decorative Mint Arrow SVG */}
                         <div className="absolute -right-12 -bottom-8 md:-right-24 md:-bottom-4 transform rotate-12 hidden sm:block">
                             <svg fill="none" height="80" viewBox="0 0 100 80" width="100" xmlns="http://www.w3.org/2000/svg">

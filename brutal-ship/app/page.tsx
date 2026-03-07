@@ -16,6 +16,7 @@ import StickyMobileCTA from "./components/StickyMobileCTA";
 import WhatsAppChatWidget from "./components/WhatsAppChatWidget";
 import JsonLd from "./components/JsonLd";
 import FAQJsonLd from "./components/FAQJsonLd";
+import PricingJsonLd from "./components/PricingJsonLd";
 
 import { getPricingPlans } from "@/lib/data/pricing";
 import { getServices } from "@/lib/data/services";
@@ -39,8 +40,9 @@ export default async function Home() {
 
   return (
     <>
-      <JsonLd services={services} />
+      <JsonLd services={services} testimonials={testimonials} />
       <FAQJsonLd faqs={faqs} />
+      <PricingJsonLd plans={plans} />
       <Navbar config={config} />
       <HeroSection />
       <MarqueeBanner />

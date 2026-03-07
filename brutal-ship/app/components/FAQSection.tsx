@@ -37,7 +37,7 @@ export default function FAQSection({ faqs, config }: FAQSectionProps) {
     };
 
     return (
-        <section id="faq" ref={containerRef} className="relative bg-background-light dark:bg-background-dark">
+        <section id="faq" ref={containerRef} aria-labelledby="faq-heading" className="relative bg-background-light dark:bg-background-dark">
             {/* Decorative Background Elements */}
             <div className="absolute inset-0 pointer-events-none opacity-5 z-0 bg-pattern-dots"></div>
             {/* Floating Triangles */}
@@ -49,9 +49,9 @@ export default function FAQSection({ faqs, config }: FAQSectionProps) {
                 <header className="text-center mb-16 relative">
                     <div className="relative inline-block">
                         <div className="absolute -top-4 -left-8 w-24 h-24 bg-secondary-coral rounded-full opacity-80 mix-blend-multiply dark:mix-blend-overlay z-0"></div>
-                        <h1 className="relative z-10 text-6xl md:text-7xl font-bold tracking-tight text-neutral-900 dark:text-white uppercase leading-none">
+                        <h2 id="faq-heading" className="relative z-10 text-6xl md:text-7xl font-bold tracking-tight text-neutral-900 dark:text-white uppercase leading-none">
                             Preguntas<br />Frecuentes
-                        </h1>
+                        </h2>
                     </div>
                     <p className="mt-6 text-xl text-neutral-900/70 dark:text-white/70 max-w-2xl mx-auto font-medium">
                         Todo lo que necesitás saber antes de arrancar. Sin letra chica, sin sorpresas.

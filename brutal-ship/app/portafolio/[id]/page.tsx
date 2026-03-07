@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getSiteConfig } from "@/lib/data/config";
-import { SITE_URL, BUSINESS } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, buildBreadcrumbs } from "@/lib/seo/constants";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import StickyMobileCTA from "@/app/components/StickyMobileCTA";
@@ -80,8 +80,38 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     const hasServices = project.applied_services && project.applied_services.length > 0;
     const hasFeatures = project.applied_features && project.applied_features.length > 0;
 
+    // Breadcrumb + CreativeWork JSON-LD
+    const breadcrumbSchema = buildBreadcrumbs([
+        { name: "Inicio", url: SITE_URL },
+        { name: "Portafolio", url: `${SITE_URL}/portafolio` },
+        { name: project.title },
+    ]);
+
+    const creativeWorkSchema = {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        name: project.title,
+        description: project.description,
+        image: project.image_url,
+        url: `${SITE_URL}/portafolio/${project.id}`,
+        creator: {
+            "@type": "Organization",
+            name: BUSINESS.legalName,
+        },
+        dateModified: project.updated_at,
+        keywords: project.tags?.join(", ") || project.category,
+    };
+
     return (
         <main className="min-h-screen bg-white dark:bg-background-dark text-ink-black dark:text-white font-sans selection:bg-primary selection:text-white pt-20" suppressHydrationWarning>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkSchema) }}
+            />
             <Navbar config={config} />
 
             {/* Hero Section */}

@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { SITE_URL, BUSINESS, DEFAULT_OG_IMAGE } from "@/lib/seo/constants";
+import {
+    SITE_URL,
+    BUSINESS,
+    DEFAULT_OG_IMAGE,
+    buildBreadcrumbs,
+} from "@/lib/seo/constants";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getSiteConfig } from "@/lib/data/config";
 import Navbar from "@/app/components/Navbar";
@@ -39,8 +44,43 @@ export default async function PortafolioPage() {
         getSiteConfig(),
     ]);
 
+    const breadcrumbSchema = buildBreadcrumbs([
+        { name: "Inicio", url: SITE_URL },
+        { name: "Portafolio" },
+    ]);
+
+    // ItemList schema for portfolio — helps Google understand the catalog
+    const itemListSchema = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: `Catálogo de Proyectos | ${BUSINESS.name}`,
+        description:
+            "Explorá nuestro historial de trabajos reales y proyectos de demostración.",
+        url: `${SITE_URL}/portafolio`,
+        mainEntity: {
+            "@type": "ItemList",
+            itemListElement: projects
+                .filter((p) => p.is_active)
+                .map((project, index) => ({
+                    "@type": "ListItem",
+                    position: index + 1,
+                    url: `${SITE_URL}/portafolio/${project.id}`,
+                    name: project.title,
+                    image: project.image_url,
+                })),
+        },
+    };
+
     return (
         <main className="min-h-screen bg-white dark:bg-background-dark text-ink-black dark:text-white font-sans selection:bg-primary selection:text-white pt-24 bg-dot-pattern">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+            />
             <Navbar config={config} />
 
             <CatalogGrid initialProjects={projects} />

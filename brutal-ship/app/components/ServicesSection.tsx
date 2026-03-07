@@ -111,7 +111,7 @@ function ServiceRow({ service, index }: { service: Service; index: number }) {
 
 export default function ServicesSection({ services }: ServicesSectionProps) {
     return (
-        <section id="servicios" className="py-16 bg-background-light dark:bg-background-dark relative overflow-hidden border-b-4 border-black">
+        <section id="servicios" aria-labelledby="servicios-heading" className="py-16 bg-background-light dark:bg-background-dark relative overflow-hidden border-b-4 border-black">
             {/* Background elements */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
@@ -127,7 +127,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
                         <div className="absolute -top-4 -right-4 md:-top-6 md:-right-8 bg-[#00f090] border-2 border-black rounded-full w-14 h-14 md:w-16 md:h-16 flex items-center justify-center font-black uppercase text-[8px] md:text-[9px] text-center transform rotate-12 shadow-[3px_3px_0_#000] z-20 animate-spin-slow">
                             Elegí<br />Bien
                         </div>
-                        <h2 className="text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter mb-4 leading-none relative z-10">
+                        <h2 id="servicios-heading" className="text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter mb-4 leading-none relative z-10">
                             <span className="bg-black text-white px-4 py-1 rounded inline-block transform -rotate-2 shadow-[6px_6px_0_#000] mb-2 border-4 border-black">Opciones</span> Claras
                         </h2>
                     </div>

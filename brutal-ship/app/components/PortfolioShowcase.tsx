@@ -110,15 +110,21 @@ function ProjectCard({ project, index }: { project: PortfolioProject; index: num
                             </div>
                             <div className="aspect-[4/3] bg-gray-50 relative">
                                 <BlockReveal bgColor={`${colors.bg}`}>
-                                    <Image
-                                        alt={project.image_alt}
-                                        className={`w-full h-full object-cover ${project.accent_color === 'mint' ? 'grayscale group-hover:grayscale-0 transition-all duration-500' : ''}`}
-                                        src={project.image_url}
-                                        width={800}
-                                        height={600}
-                                        sizes="(max-width: 1024px) 100vw, 50vw"
-                                        loading="lazy"
-                                    />
+                                    {project.image_url ? (
+                                        <Image
+                                            alt={project.image_alt}
+                                            className={`w-full h-full object-cover ${project.accent_color === 'mint' ? 'grayscale group-hover:grayscale-0 transition-all duration-500' : ''}`}
+                                            src={project.image_url}
+                                            width={800}
+                                            height={600}
+                                            sizes="(max-width: 1024px) 100vw, 50vw"
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                            <span className="text-gray-400 text-sm">Sin imagen</span>
+                                        </div>
+                                    )}
                                 </BlockReveal>
                             </div>
                         </div>
@@ -156,9 +162,9 @@ export default function PortfolioShowcase({ projects }: PortfolioShowcaseProps) 
                         </svg>
                     </div>
                     <div className="flex flex-col">
-                        <h1 className="text-4xl md:text-7xl font-bold uppercase tracking-tight text-black dark:text-white drop-shadow-sm leading-none">
+                        <h2 className="text-4xl md:text-7xl font-bold uppercase tracking-tight text-black dark:text-white drop-shadow-sm leading-none">
                             Nuestro <span className="text-primary dark:text-primary">Trabajo</span>
-                        </h1>
+                        </h2>
                         <p className="mt-3 md:mt-4 text-base md:text-2xl font-medium text-gray-600 dark:text-gray-300 max-w-2xl border-l-4 border-black dark:border-white pl-3 md:pl-4 md:ml-1">
                             Explorá proyectos entregados y demos que construimos para que veas nuestro nivel.
                         </p>

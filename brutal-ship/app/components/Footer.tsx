@@ -132,6 +132,9 @@ export default function Footer({ config }: FooterProps) {
                 <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
                     <p>© {new Date().getFullYear()} Logika. Todos los derechos reservados.</p>
                     <div className="flex gap-6">
+                        <a className="hover:text-white transition-colors" href="/blog">
+                            Blog
+                        </a>
                         <a className="hover:text-white transition-colors" href="#">
                             Política de Privacidad
                         </a>

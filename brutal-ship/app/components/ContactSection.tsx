@@ -56,7 +56,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
     };
 
     return (
-        <section id="contacto" className="relative bg-primary px-4 py-20 md:px-10 lg:px-20 overflow-hidden">
+        <section id="contacto" aria-labelledby="contacto-heading" className="relative bg-primary px-4 py-20 md:px-10 lg:px-20 overflow-hidden">
             {/* Geometric Background Shapes */}
             <div className="geometric-shape top-10 left-10 w-32 h-32 rounded-full border-4 border-white"></div>
             <div className="geometric-shape bottom-20 right-20 w-48 h-48 rotate-45 border-4 border-white"></div>
@@ -65,9 +65,9 @@ export default function ContactSection({ config }: ContactSectionProps) {
             <div className="relative z-10 max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-16 text-center">
-                    <h1 className="text-white text-5xl md:text-7xl font-bold tracking-tight leading-tight mb-4 drop-shadow-md">
+                    <h2 id="contacto-heading" className="text-white text-5xl md:text-7xl font-bold tracking-tight leading-tight mb-4 drop-shadow-md">
                         ¿Listo Para Tu <br className="hidden md:block" />Nueva Web?
-                    </h1>
+                    </h2>
                     <p className="text-white/90 text-lg md:text-xl font-medium max-w-2xl mx-auto">
                         Contanos sobre tu negocio y te enviamos <strong className="text-white underline decoration-2 underline-offset-4">un presupuesto + mockup gratis</strong> en menos de {config.response_time || '48hs'}.
                     </p>
@@ -249,9 +249,9 @@ export default function ContactSection({ config }: ContactSectionProps) {
                         <div className="bg-white/10 backdrop-blur-sm rounded-lg border-2 border-white/20 p-6">
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="flex -space-x-2">
-                                    <Image alt="Cliente" className="w-8 h-8 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkYW0Flt0xW1Z3HB3NQwCqzJaGgTOWrUXGCNluYmymfDWoJiDh-UQh0Hdx9NWuTx_qiQdr2KzeaMkZ7N-QQl-4dkzIoTTSGaeaZ2tbzIGEJElJLhGWd7ydROujN0ENIj2UpffcTf9t4guY8he-CwCnCEMKa7QKx-3PXBAKeNM6IVxxsNb5-fd8qJOzrfCMg5_jfSEb9mfICiqS2r2p2IlfH-kkOZFsh6HwhgsxB1gpdvi7ThCjXF-CiziTu_MG8QUi-jcjVj54rUI" width={32} height={32} loading="lazy" />
-                                    <Image alt="Cliente" className="w-8 h-8 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQAEL7ldXO17P2zxbs1YngIHQKE24NCKGj4oHGt_U2jG0qZlQJYr5_JnXBJDR2YGgjx92YrRE0A1VBRzREbR7mT3awaWFn2PLGLhFbdroVUJNp2fTW9nA2xy0EXhcPunUx9Os-ruZSBCW7eK-AEGwD9FP-TnJ6vU27MmbXLnT3QBUELyLnEkDzq5PyYCWaZaiA2RMtrwwH9Qhr4aeOIBEk5InS3zW5OPrNNoCM6Tsy1tH3DmPWRd3ajGeYXrv4ejWcHDK3jjmO13U" width={32} height={32} loading="lazy" />
-                                    <Image alt="Cliente" className="w-8 h-8 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwUxH3A7ZLuocQWfDb9tQet8_f_6u-oQQpVWTMjdpLmOS5ImkWGQ2yJOHKDj85TOdQwFhcPYptf-mugD8IWQ-w4sNC4AtJZ9J_ffQF2JxVbGqj6YfDTGIfTt3X-3p2TRPQA6g8DHQcqy6mRejoSOGIYJXeeyvv8idqZO85dwqI2a8ODmJu4qRIbVLPKefJoPsqoWl_70pqnl3Vn55pSEj4bF0QYnlSAdTcnI_Si2joxXY0K-47AmnvN-m4KWktQo8UD4nWuZCLBgQ" width={32} height={32} loading="lazy" />
+                                    <Image alt="Foto de cliente satisfecho de Logika" className="w-8 h-8 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkYW0Flt0xW1Z3HB3NQwCqzJaGgTOWrUXGCNluYmymfDWoJiDh-UQh0Hdx9NWuTx_qiQdr2KzeaMkZ7N-QQl-4dkzIoTTSGaeaZ2tbzIGEJElJLhGWd7ydROujN0ENIj2UpffcTf9t4guY8he-CwCnCEMKa7QKx-3PXBAKeNM6IVxxsNb5-fd8qJOzrfCMg5_jfSEb9mfICiqS2r2p2IlfH-kkOZFsh6HwhgsxB1gpdvi7ThCjXF-CiziTu_MG8QUi-jcjVj54rUI" width={32} height={32} loading="lazy" />
+                                    <Image alt="Testimonio de cliente de diseño web" className="w-8 h-8 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQAEL7ldXO17P2zxbs1YngIHQKE24NCKGj4oHGt_U2jG0qZlQJYr5_JnXBJDR2YGgjx92YrRE0A1VBRzREbR7mT3awaWFn2PLGLhFbdroVUJNp2fTW9nA2xy0EXhcPunUx9Os-ruZSBCW7eK-AEGwD9FP-TnJ6vU27MmbXLnT3QBUELyLnEkDzq5PyYCWaZaiA2RMtrwwH9Qhr4aeOIBEk5InS3zW5OPrNNoCM6Tsy1tH3DmPWRd3ajGeYXrv4ejWcHDK3jjmO13U" width={32} height={32} loading="lazy" />
+                                    <Image alt="Reseña de cliente web profesional Argentina" className="w-8 h-8 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwUxH3A7ZLuocQWfDb9tQet8_f_6u-oQQpVWTMjdpLmOS5ImkWGQ2yJOHKDj85TOdQwFhcPYptf-mugD8IWQ-w4sNC4AtJZ9J_ffQF2JxVbGqj6YfDTGIfTt3X-3p2TRPQA6g8DHQcqy6mRejoSOGIYJXeeyvv8idqZO85dwqI2a8ODmJu4qRIbVLPKefJoPsqoWl_70pqnl3Vn55pSEj4bF0QYnlSAdTcnI_Si2joxXY0K-47AmnvN-m4KWktQo8UD4nWuZCLBgQ" width={32} height={32} loading="lazy" />
                                 </div>
                                 <p className="text-white text-sm font-bold">&quot;Me respondieron en 2 horas&quot;</p>
                             </div>

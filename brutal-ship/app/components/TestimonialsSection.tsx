@@ -10,7 +10,7 @@ interface TestimonialsSectionProps {
 
 export default function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
     return (
-        <section id="clientes" className="relative z-10 w-full max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-8 bg-background-light dark:bg-background-dark">
+        <section id="clientes" aria-labelledby="clientes-heading" className="relative z-10 w-full max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-8 bg-background-light dark:bg-background-dark">
             {/* Floating Background Shapes */}
             <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-10">
                 <div className="absolute top-20 left-10 w-32 h-32 rounded-full border-4 border-primary animate-float"></div>
@@ -19,10 +19,10 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
             </div>
             {/* Header Section */}
             <div className="flex flex-col md:flex-row items-start md:items-end gap-4 mb-12">
-                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-none relative z-10 text-black dark:text-white">
+                <h2 id="clientes-heading" className="text-6xl md:text-8xl font-bold tracking-tighter leading-none relative z-10 text-black dark:text-white">
                     CLIENTES<br />
                     FELICES
-                </h1>
+                </h2>
                 <div className="relative w-16 h-16 md:w-24 md:h-24 md:mb-4 animate-bounce">
                     <svg className="w-full h-full text-hot-coral drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.62L12 2L9.19 8.62L2 9.24L7.45 13.97L5.82 21L12 17.27Z" stroke="black" strokeLinejoin="round" strokeWidth="1.5"></path>
