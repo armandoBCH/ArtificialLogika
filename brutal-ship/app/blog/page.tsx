@@ -72,55 +72,65 @@ export default async function BlogPage() {
     ]);
 
     return (
-        <main className="min-h-screen bg-background-light dark:bg-background-dark text-ink-black dark:text-white pt-24">
+        <main className="min-h-screen bg-background-light dark:bg-background-dark text-ink-black dark:text-white pt-24 relative overflow-hidden">
+            {/* Elementos decorativos de fondo */}
+            <div className="absolute top-0 inset-0 pattern-grid-lg text-black/[0.03] dark:text-white/[0.03] pointer-events-none z-0"></div>
+            <div className="absolute top-40 right-[-100px] w-64 h-64 bg-mint rounded-full blur-[100px] opacity-40 z-0 pointer-events-none hidden md:block"></div>
+            <div className="absolute bottom-40 left-[-50px] w-48 h-48 bg-hot-coral rounded-full blur-[80px] opacity-20 z-0 pointer-events-none"></div>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
             <Navbar config={config} />
 
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-                <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight mb-4">
-                    Blog
-                </h1>
-                <p className="text-lg text-gray-600 dark:text-gray-400 mb-12 border-l-4 border-primary pl-4">
-                    Consejos prácticos sobre diseño web, tiendas online y presencia
-                    digital para tu negocio.
-                </p>
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24 relative z-10">
+                <div className="text-center mb-16 md:mb-24">
+                    <h1 className="text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-tight mb-6 text-black dark:text-white drop-shadow-sm leading-none">
+                        Nuestro <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-hot-coral">Blog</span>
+                    </h1>
+                    <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto font-medium border-x-4 border-black px-6 py-2">
+                        Estrategias, consejos e ideas sin filtro para hacer crecer tu negocio en internet.
+                    </p>
+                </div>
 
-                <div className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                     {BLOG_POSTS.map((post) => (
                         <article
                             key={post.slug}
-                            className="group bg-white dark:bg-zinc-900 border-2 border-black rounded-lg p-6 md:p-8 shadow-[4px_4px_0_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0_#000] transition-all"
+                            className="group flex flex-col justify-between bg-white dark:bg-zinc-900 border-4 border-black rounded-xl p-8 shadow-[8px_8px_0_#000] hover:-translate-y-2 hover:-translate-x-1 hover:shadow-[12px_12px_0_#E93D82] transition-all duration-300"
                         >
-                            <div className="flex items-center gap-3 mb-3">
-                                <span className="bg-primary text-white text-xs font-bold px-2 py-1 uppercase rounded">
-                                    {post.category}
-                                </span>
-                                <span className="text-sm text-gray-500">
-                                    {new Date(post.date).toLocaleDateString("es-AR", {
-                                        day: "numeric",
-                                        month: "long",
-                                        year: "numeric",
-                                    })}
-                                </span>
-                                <span className="text-sm text-gray-400">· {post.readTime}</span>
+                            <div>
+                                <div className="flex items-center gap-3 mb-6 flex-wrap">
+                                    <span className="bg-primary text-white text-xs md:text-sm font-bold px-3 py-1.5 border-2 border-black shadow-[2px_2px_0_#000] uppercase rounded-full">
+                                        {post.category}
+                                    </span>
+                                    <span className="text-sm font-medium text-gray-500 bg-gray-100 dark:bg-zinc-800 px-3 py-1.5 rounded-full border-2 border-transparent">
+                                        {new Date(post.date).toLocaleDateString("es-AR", {
+                                            day: "numeric",
+                                            month: "short",
+                                            year: "numeric",
+                                        })}
+                                    </span>
+                                    <span className="text-sm font-medium text-gray-400 flex items-center gap-1">
+                                        <span className="material-icons text-sm">schedule</span>
+                                        {post.readTime}
+                                    </span>
+                                </div>
+                                <Link href={`/blog/${post.slug}`}>
+                                    <h2 className="text-3xl md:text-4xl font-black mb-4 group-hover:text-primary transition-colors leading-tight tracking-tight">
+                                        {post.title}
+                                    </h2>
+                                </Link>
+                                <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg leading-relaxed">
+                                    {post.excerpt}
+                                </p>
                             </div>
-                            <Link href={`/blog/${post.slug}`}>
-                                <h2 className="text-2xl md:text-3xl font-bold mb-3 group-hover:text-primary transition-colors">
-                                    {post.title}
-                                </h2>
-                            </Link>
-                            <p className="text-gray-600 dark:text-gray-400 mb-4">
-                                {post.excerpt}
-                            </p>
                             <Link
                                 href={`/blog/${post.slug}`}
-                                className="inline-flex items-center gap-1 text-primary font-bold text-sm uppercase hover:gap-3 transition-all"
+                                className="inline-flex w-max items-center gap-2 bg-black dark:bg-white text-white dark:text-black font-bold text-sm md:text-base uppercase py-3 px-6 rounded-md hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-colors"
                             >
                                 Leer artículo
-                                <span className="material-icons text-sm">arrow_forward</span>
+                                <span className="material-icons text-sm group-hover:translate-x-2 transition-transform">arrow_forward</span>
                             </Link>
                         </article>
                     ))}

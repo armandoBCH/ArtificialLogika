@@ -2,126 +2,132 @@
 // Each article targets a specific high-volume keyword
 
 const articles: Record<string, string> = {
-    "cuanto-cuesta-una-pagina-web-en-argentina": `
+  "cuanto-cuesta-una-pagina-web-en-argentina": `
     <h2>Precios de páginas web en Argentina (actualizado 2026)</h2>
-    <p>Una de las preguntas más buscadas en internet por emprendedores argentinos es <strong>"¿cuánto cuesta una página web?"</strong>. La respuesta depende del tipo de sitio que necesitás, pero acá te lo desglosamos con precios reales y sin letra chica.</p>
+    <p>Una de las preguntas más buscadas en internet por los emprendedores argentinos es: <strong>"¿Cuánto cuesta una página web?"</strong>.</p>
+    
+    <p>La respuesta corta es que depende del tipo de sitio que necesites. La respuesta larga (y la que realmente te sirve) te la desglosamos acá abajo con precios reales y <strong>sin letra chica</strong>.</p>
 
-    <h3>💰 Precios según tipo de web</h3>
-    <p>En Argentina, los precios de una página web profesional varían según la complejidad del proyecto:</p>
+    <blockquote>No todas las páginas web son iguales. Pagar de más por funciones que no vas a usar es tan peligroso como pagar de menos por un sitio que no funciona.</blockquote>
+
+    <h3>💰 Precios según el tipo de web</h3>
+    <p>En Argentina, los valores de un desarrollo web profesional varían fuertemente según la complejidad y el objetivo del proyecto:</p>
+    
     <ul>
-      <li><strong>Landing Page</strong> (una sola página): desde <strong>USD 149</strong>. Ideal para emprendedores y freelancers que necesitan presencia digital rápida.</li>
-      <li><strong>Sitio Institucional</strong> (hasta 5 páginas): desde <strong>USD 249</strong>. Perfecto para negocios establecidos que necesitan un sitio completo con múltiples secciones.</li>
-      <li><strong>Tienda Online / E-commerce</strong>: desde <strong>USD 399</strong>. Para vender productos online con carrito, checkout y medios de pago integrados.</li>
+      <li><strong>Landing Page</strong> (una sola página): desde <strong>USD 149</strong>. Resulta ideal para emprendedores y servicios que necesitan presencia digital rápida y efectiva para empezar a captar consultas ya mismo.</li>
+      <li><strong>Sitio Institucional</strong> (hasta 5 páginas): desde <strong>USD 249</strong>. Perfecto para negocios ya establecidos (como estudios, consultorios o agencias) que necesitan mostrar sus servicios en detalle, quiénes son y generar confianza.</li>
+      <li><strong>Tienda Online / E-commerce</strong>: desde <strong>USD 399</strong>. Pensado para vender productos físicos o digitales las 24 horas, con carrito de compras, automatización de stock y medios de pago integrados.</li>
     </ul>
 
-    <h3>¿Qué incluye el precio?</h3>
-    <p>Un servicio profesional debería incluir, como mínimo:</p>
+    <h3>¿Qué debe incluir ese precio sí o sí?</h3>
+    <p>Si vas a invertir en un servicio profesional de diseño, asegurate de que te incluyan como piso indispensable:</p>
     <ul>
-      <li>Diseño personalizado (no templates genéricos)</li>
-      <li>Diseño responsive (que se vea bien en celulares)</li>
-      <li>Optimización SEO básica (que aparezca en Google)</li>
-      <li>Certificado SSL (conexión segura HTTPS)</li>
-      <li>Formulario de contacto y botón de WhatsApp</li>
-      <li>Soporte post-lanzamiento</li>
+      <li>Diseño completamente personalizado (huí de los templates genéricos y aburridos).</li>
+      <li>Diseño <strong>100% responsive</strong> (el 80% de tus clientes te va a ver desde un celular).</li>
+      <li>Optimización SEO básica para que Google entienda de qué trata tu negocio.</li>
+      <li>Certificado de seguridad SSL (el candadito verde en el navegador).</li>
+      <li>Accesos directos de contacto: formulario rápido y botón flotante de WhatsApp.</li>
     </ul>
 
-    <h3>¿Pago único o mensualidad?</h3>
-    <p>La mayoría de las agencias cobran un pago único por el desarrollo. Sin embargo, el <strong>hosting y dominio</strong> son gastos recurrentes que suelen rondar los USD 10-20 mensuales. Algunas agencias incluyen estos costos en un plan mensual de mantenimiento.</p>
+    <h3>El gran debate: ¿Pago único o mensualidad?</h3>
+    <p>Históricamente, la mayoría de las agencias cobran un pago único y fuerte por el desarrollo de la web. Sin embargo, no te olvides de que el <strong>hosting (donde vive tu web) y el dominio (.com.ar)</strong> son gastos recurrentes.</p>
+    <p>Estos costos mensuales suelen rondar entre los USD 10 y USD 20 para servidores de calidad. Hoy en día, muchas agencias prefieren atarte a planes mensuales costosos "de mantenimiento". Analizá qué te rinde más a largo plazo.</p>
 
-    <h3>¿Cómo elegir la mejor opción?</h3>
-    <p>Antes de contratar, pedí un <strong>presupuesto detallado</strong> que incluya exactamente qué va a tener tu web. Desconfiá de precios demasiado bajos (suelen usar templates genéricos) o demasiado altos (estás pagando por la marca, no por el servicio).</p>
-
-    <p>En <strong>Logika</strong>, te enviamos un presupuesto + mockup gratis para que veas cómo quedaría tu sitio antes de comprometerte.</p>
+    <blockquote>En <strong>Logika</strong> creemos en la transparencia. Te enviamos un presupuesto detallado y creamos un mockup visual completamente gratis para que veas cómo quedaría tu web antes de poner un solo peso.</blockquote>
   `,
 
-    "5-razones-para-tener-pagina-web-profesional": `
-    <h2>¿Por qué tu negocio necesita una página web profesional?</h2>
-    <p>En 2026, tener solo redes sociales no alcanza. Si tu negocio no tiene <strong>página web profesional</strong>, estás perdiendo clientes todos los días sin darte cuenta. Acá te explicamos por qué.</p>
+  "5-razones-para-tener-pagina-web-profesional": `
+    <h2>¿Por qué depender solo de Instagram es un riesgo?</h2>
+    <p>Llegamos a 2026. Si tu negocio todavía se mueve exclusivamente por historias de Instagram o cadenas de WhatsApp, <strong>estás dejando plata sobre la mesa todos los días</strong> sin darte cuenta.</p>
+    
+    <p>Acá te explicamos, sin vueltas, por qué una página web propia cambia por completo las reglas de juego para tu facturación.</p>
 
-    <h3>1. Instagram puede cerrar tu cuenta sin aviso</h3>
-    <p>Las redes sociales son terreno alquilado. Si Instagram bloquea tu cuenta, perdés todos tus seguidores, tu catálogo y tu canal de ventas de un día para otro. Tu web es <strong>tu propiedad</strong> y nadie te la puede quitar.</p>
+    <blockquote>Un negocio gigante no opera desde un terreno prestado. Las redes sociales son terreno alquilado; tu página web es tu casa propia en internet.</blockquote>
 
-    <h3>2. Aparecés en Google cuando te buscan</h3>
-    <p>Cuando alguien busca tu rubro en Google (por ejemplo, "peluquería en Palermo"), los primeros resultados son siempre <strong>páginas web</strong>, no perfiles de Instagram. Sin web, sos invisible para el buscador más usado del mundo.</p>
+    <h3>1. Las redes pueden cerrar tu cuenta sin previo aviso</h3>
+    <p>Pasa todos los días. Un error del algoritmo, un reporte masivo injustificado o un hackeo, y tu cuenta de Instagram desaparece. Perdés tus seguidores, tu catálogo, tu reputación y tu único canal de ventas de manera fulminante.</p>
+    <p>Tu web, en cambio, es <strong>tu propiedad intelectual y comercial</strong>. Nadie puede "apagarte" el negocio.</p>
 
-    <h3>3. Generás confianza al instante</h3>
-    <p>Un negocio con web profesional transmite seriedad. El 75% de los usuarios juzga la credibilidad de una empresa por su sitio web. Si no tenés, o tenés uno desactualizado, perdés credibilidad frente a la competencia.</p>
+    <h3>2. Aparecés en Google (donde está la intención de compra)</h3>
+    <p>Cuando la gente scrollea en TikTok, busca entretenerse. Pero cuando alguien busca en Google "agencia constructora cerca mío", <strong>quiere comprar ya</strong>.</p>
+    <p>Los primeros resultados frente a una búsqueda seria son siempre páginas web estructuradas, nunca perfiles de redes sociales. Sin web, sos completamente invisible para el motor de búsqueda más usado del mundo.</p>
 
-    <h3>4. Recibís consultas mientras dormís</h3>
-    <p>Tu web trabaja 24/7. Un formulario de contacto o botón de WhatsApp en tu sitio recibe consultas incluso a las 3 de la mañana. Las redes tienen algoritmo; tu web no depende de ninguno.</p>
+    <h3>3. La primera impresión (y la credibilidad)</h3>
+    <p>Un negocio con una web pulida, rápida y profesional transmite solidez. De hecho, más del 75% de los consumidores aseguran que evalúan la credibilidad de una empresa basándose únicamente en cómo se ve su sitio web.</p>
+    <p>¿No tenés web? ¿O tenés una de hace 10 años que no carga en el celular? Tu cliente potencial acaba de irse a la pestaña de tu competencia.</p>
 
-    <h3>5. Es más barato de lo que pensás</h3>
-    <p>Una landing page profesional puede costar menos que lo que gastás en publicidad de Instagram en un mes. Y a diferencia de un posteo, <strong>tu web no desaparece</strong> del feed: está ahí siempre.</p>
+    <h3>4. Ventas automatizadas mientras dormís</h3>
+    <p>A diferencia tuya, tu web no necesita dormir, no se toma domingos y no tiene horarios de atención. Está trabajando intensamente las 24 horas del día, los 7 días de la semana.</p>
+    <p>Un formulario de contacto bien puesto o un catálogo claro aseguran que sigas recibiendo pedidos de presupuesto o consultas a las 3 de la mañana de un martes.</p>
 
-    <h2>Conclusión</h2>
-    <p>Las redes sociales son un complemento, no un reemplazo. Si querés que tu negocio crezca en serio, necesitás una <strong>web profesional</strong> que trabaje por vos las 24 horas.</p>
+    <h3>Resumiendo...</h3>
+    <p>Las redes sociales son fantásticas para <strong>atraer tráfico</strong>, pero son un complemento. El cierre de la venta, la seriedad y la conversión real suceden en tu web.</p>
   `,
 
-    "tienda-online-argentina-guia-completa": `
-    <h2>Guía para crear tu tienda online en Argentina</h2>
-    <p>El <strong>e-commerce en Argentina</strong> creció más del 30% en el último año, y cada vez más negocios quieren vender online. Pero, ¿por dónde empezar? En esta guía te contamos todo lo que necesitás saber para crear tu <strong>tienda online</strong>.</p>
+  "tienda-online-argentina-guia-completa": `
+    <h2>El salto definitivo a vender por internet en Argentina</h2>
+    <p>El mercado del <strong>e-commerce en Argentina</strong> se disparó un 30% en el último año. Todo el mundo quiere vender online. Sin embargo, armar una tienda desde cero puede parecer un dolor de cabeza enorme si no sabés por dónde arrancar.</p>
+    
+    <p>En esta guía rápida te bajamos a tierra todo lo necesario para montar tu <strong>tienda online</strong> sin frustraciones.</p>
 
-    <h3>1. ¿Qué plataforma usar?</h3>
-    <p>Las opciones más populares son:</p>
+    <blockquote>Una tienda online mal diseñada es como un local hermoso en el medio del desierto. Necesitás estética, pero por sobre todo, necesitás que funcione de forma impecable.</blockquote>
+
+    <h3>1. La decisión más importante: ¿Qué plataforma utilizar?</h3>
+    <p>Antes de subir una sola foto, tenés que decidir dónde va a vivir tu tienda:</p>
     <ul>
-      <li><strong>Tienda Nube</strong>: la más usada en Argentina, fácil de usar, pero limitada en personalización.</li>
-      <li><strong>WooCommerce (WordPress)</strong>: más flexible, pero requiere conocimientos técnicos.</li>
-      <li><strong>Desarrollo a medida</strong>: máxima personalización, rendimiento y SEO. Es la opción que ofrecemos en Logika.</li>
+      <li><strong>SaaS Locales (ej. Tienda Nube)</strong>: Súper populares y fáciles de configurar. La contra: te cobran comisiones por venta, estás atado a sus plantillas y tu tienda termina viéndose idéntica a miles de otras.</li>
+      <li><strong>WooCommerce (WordPress)</strong>: Muchísimo más potente, sin comisiones por venta y 100% tuya, pero exige conocimientos técnicos fuertes para mantener la seguridad y que cargue rápido.</li>
+      <li><strong>Desarrollo Custom / A Medida</strong>: Para quienes buscan velocidad extrema, una estética brutal y cero limitaciones. Es exactamente lo que desarrollamos en Logika.</li>
     </ul>
 
-    <h3>2. Medios de pago</h3>
-    <p>Para vender en Argentina necesitás integrar al menos estos medios:</p>
+    <h3>2. Conectando el dinero: Medios de pago</h3>
+    <p>El consumidor argentino tiene hábitos muy claros. Para maximizar tus ventas, necesitás ofrecer un mix inteligente:</p>
     <ul>
-      <li><strong>Mercado Pago</strong>: el más popular, acepta tarjetas, transferencias y pagos en efectivo.</li>
-      <li><strong>Transferencia bancaria</strong>: para clientes que prefieren pagar directo.</li>
-      <li><strong>Pagos en cuotas</strong>: clave para ticket altos.</li>
+      <li><strong>Mercado Pago / Ualá Bis</strong>: Indispensables para aceptar todas las tarjetas y cobrar rápido.</li>
+      <li><strong>Transferencia bancaria directa</strong>: Fundamental. Al evitar comisiones de intermediarios, podés tentar al cliente con un 10% o 15% de descuento, beneficiando a ambas partes.</li>
+      <li><strong>Cuotas (Plan Cuota Simple)</strong>: Si vendés productos de ticket medio/alto, tener cuotas sin interés dispara la conversión de inmediato.</li>
     </ul>
 
-    <h3>3. Envíos</h3>
-    <p>Los servicios de envío más usados son Correo Argentino, Andreani y OCA. También podés ofrecer retiro en local para reducir costos y mejorar la conversión.</p>
+    <h3>3. La logística (Envíos)</h3>
+    <p>La integración con Andreani, Correo Argentino, o servicios de logística de última milla (moto mensajería en CABA/AMBA) debe ser automática. El cliente tiene que poder cotizar su envío poniendo solo el código postal desde el carrito.</p>
 
-    <h3>4. Fotos y descripciones de producto</h3>
-    <p>Las fotos venden. Invertí en fotos de buena calidad con fondo limpio y múltiples ángulos. Las descripciones deben ser claras, con medidas, materiales y beneficios.</p>
+    <h3>4. La regla de oro: Fotos y descripciones</h3>
+    <p>En internet, el cliente no puede tocar la tela, sentir el peso ni oler el producto. <strong>Tu fotografía y tu texto son el vendedor.</strong> Es obligatorio usar imágenes nítidas de varios ángulos y redactar beneficios reales (no solo medidas).</p>
 
-    <h3>5. SEO para tu tienda</h3>
-    <p>El <strong>80% del tráfico de una tienda online</strong> puede venir de Google si optimizás bien tu SEO. Eso incluye títulos descriptivos, URLs limpias, y fichas de producto bien escritas.</p>
-
-    <h3>¿Cuánto cuesta una tienda online?</h3>
-    <p>Una tienda online a medida con diseño profesional, carrito, checkout, y medios de pago integrados empieza en <strong>USD 399</strong> en Logika. Incluye mockup previo gratis para que veas cómo quedaría antes de arrancar.</p>
+    <h3>¿Vale la pena la inversión?</h3>
+    <p>Una tienda online 100% a medida, veloz y lista para vender, desarrollada por nosotros en Logika arranca en los <strong>USD 399</strong>. Incluye un diseño pensado exclusivamente para convertir visitas en dólares o pesos reales.</p>
   `,
 
-    "landing-page-que-es-y-para-que-sirve": `
-    <h2>Landing page: tu primer paso en internet</h2>
-    <p>Si sos emprendedor y querés empezar a recibir consultas por internet sin gastar una fortuna, una <strong>landing page</strong> es exactamente lo que necesitás. Pero, ¿qué es y para qué sirve?</p>
+  "landing-page-que-es-y-para-que-sirve": `
+    <h2>Landing page: El francotirador de internet</h2>
+    <p>Si alguna vez hiciste publicidad en Google o Instagram de tus servicios y mandaste a la gente a tu perfil o a tu "página de inicio genérica"... te tengo una mala noticia: tiraste la plata.</p>
+    
+    <p>Lo que necesitás para que la publicidad te sea rentable tiene nombre y apellido: <strong>Landing Page</strong> (o página de aterrizaje). Acá te cuento por qué es el arma secreta de los grandes emprendedores y agencias.</p>
 
-    <h3>¿Qué es una landing page?</h3>
-    <p>Una landing page es una <strong>página web de una sola pantalla</strong> diseñada con un objetivo claro: que el visitante te contacte, se suscriba, o compre algo. A diferencia de un sitio web completo, una landing tiene una sola misión y no distrae al usuario con menús o secciones innecesarias.</p>
+    <blockquote>A diferencia de un sitio web común (que tiene mil opciones como un supermercado), una Landing Page tiene <strong>un solo botón, un solo objetivo y una sola salida</strong>. Concentración absoluta para generar leads.</blockquote>
 
-    <h3>¿Para qué sirve?</h3>
+    <h3>¿Para qué sirve exactamente?</h3>
+    <p>Una landing page es una web de una sola pantalla ultra optimizada. No tiene menú superior complejo, ni distracciones. Sirve para:</p>
     <ul>
-      <li><strong>Captar clientes</strong>: un formulario o botón de WhatsApp directo para que te contacten.</li>
-      <li><strong>Promocionar un servicio</strong>: mostrar qué hacés, cómo lo hacés, y por qué deberían elegirte.</li>
-      <li><strong>Validar una idea</strong>: si estás arrancando un emprendimiento, una landing es la forma más rápida y barata de ver si hay demanda.</li>
-      <li><strong>Publicidad pagada</strong>: cuando hacés anuncios en Instagram o Google, el link debería llevar a una landing, no a tu perfil de Instagram.</li>
+      <li><strong>Captura de Leads (Contactos)</strong>: Entregar información precisa y lograr que llenen un formulario. Sin rodeos.</li>
+      <li><strong>Campañas Pagas (Ads)</strong>: Es a donde debe "aterrizar" la gente que hace click en tus anuncios en Instagram o en resultados de búsquedas de Google.</li>
+      <li><strong>Validación rápida</strong>: ¿Tenés una idea nueva de negocio pero no sabés si a alguien le interesa? Subís una landing en 3 días para testear el mercado y medir el interés antes de invertir fortunas.</li>
     </ul>
 
-    <h3>¿Qué debe tener una buena landing page?</h3>
+    <h3>El esqueleto (anatómico) de una Landing Page perfecta</h3>
+    <p>Ninguna parte de esta página debe quedar librada al azar. Esto es lo que no puede faltar:</p>
     <ul>
-      <li>Un <strong>título claro</strong> que diga qué ofrecés en menos de 5 palabras.</li>
-      <li>Una <strong>propuesta de valor</strong>: por qué vos y no la competencia.</li>
-      <li><strong>Prueba social</strong>: testimonios, logos de clientes, fotos de trabajos.</li>
-      <li>Un <strong>llamado a la acción</strong> (CTA) visible: botón de WhatsApp, formulario, etc.</li>
-      <li><strong>Diseño responsive</strong>: que se vea perfecto en celular (el 70% del tráfico viene de móviles).</li>
+      <li><strong>Un "Hero" potente:</strong> En 3 segundos, la persona que entra tiene que saber quién sos, qué vendés y cómo le mejora su vida (título, subtítulo e imágen fuerte).</li>
+      <li><strong>Prueba social real:</strong> Tu palabra no vale; valen las reseñas, testimonios de clientes, capturas reales de resultados de tus clientes previos.</li>
+      <li><strong>Llamado a la Acción (CTA) gigante:</strong> Un botón que resalte del resto de la página y te diga exactamente qué va a pasar. ("Agendar Llamada", "Pedir Presupuesto", "Escribir al WhatsApp").</li>
     </ul>
 
-    <h3>¿Cuánto cuesta una landing page?</h3>
-    <p>En Logika, una landing page profesional con diseño personalizado, formulario de contacto, botón de WhatsApp y optimización SEO empieza en <strong>USD 149</strong>. Incluye un mockup previo gratis.</p>
-
-    <h3>Landing page vs. sitio web completo</h3>
-    <p>Si recién arrancás, una landing es suficiente. Cuando tu negocio crezca y necesites más secciones (galería, mapa, múltiples servicios), podés evolucionar a un <strong>sitio institucional</strong>. Lo importante es empezar.</p>
+    <h3>¿Empezar por una Landing o por un Mega Sitio?</h3>
+    <p>Si sos un profesional de servicios (abogado, arquitecto, psicólogo, plomero, agencia de marketing), <strong>empezá con una Landing Page.</strong> Es tu punto de entrada más económico para empezar a conseguir clientes en internet.</p>
+    <p>En Logika construimos landing pages con impacto altísimo a nivel visual y pensadas bajo principios psicológicos de venta a partir de <strong>USD 149</strong>.</p>
   `,
 };
 
 export function getArticleContent(slug: string): string | null {
-    return articles[slug] || null;
+  return articles[slug] || null;
 }
