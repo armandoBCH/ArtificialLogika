@@ -100,17 +100,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Redirects: force www to non-www (or vice versa) — important for canonical SEO
-  async redirects() {
-    return [
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "www.logikaweb.com.ar" }],
-        destination: "https://logikaweb.com.ar/:path*",
-        permanent: true,
-      },
-    ];
-  },
 };
 
 export default nextConfig;

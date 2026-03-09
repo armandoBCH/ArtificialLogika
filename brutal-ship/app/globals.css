@@ -325,6 +325,85 @@ body {
 }
 
 /* ===================================================================
+   BLOG ARTICLE — Prose Spacing & Typography
+   =================================================================== */
+
+/* Generous paragraph spacing */
+article .prose p {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  line-height: 1.85;
+}
+
+/* First paragraph after heading: less top margin */
+article .prose h2+p,
+article .prose h3+p {
+  margin-top: 0.75em;
+}
+
+/* Headings: big breathing room above */
+article .prose h2 {
+  margin-top: 3.5em;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+}
+
+article .prose h3 {
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+}
+
+/* First heading: no extra top margin */
+article .prose>h2:first-child {
+  margin-top: 0;
+}
+
+/* Lists: spaced out with breathing room */
+article .prose ul,
+article .prose ol {
+  margin-top: 1.5em;
+  margin-bottom: 2em;
+  padding-left: 0;
+}
+
+article .prose li {
+  margin-bottom: 1em;
+  line-height: 1.75;
+}
+
+article .prose li:last-child {
+  margin-bottom: 0;
+}
+
+/* Blockquotes: treat as visual "break" section */
+article .prose blockquote {
+  margin-top: 2.5em;
+  margin-bottom: 2.5em;
+  line-height: 1.6;
+}
+
+article .prose blockquote p {
+  margin: 0;
+}
+
+/* Horizontal visual separator between major h2 sections */
+article .prose h2:not(:first-child)::before {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--color-primary);
+  margin-bottom: 2em;
+  border-radius: 2px;
+}
+
+/* Strong text highlight padding */
+article .prose strong {
+  padding: 0.1em 0.25em;
+  border-radius: 2px;
+}
+
+/* ===================================================================
    SCROLLBAR (from HTML #7 - FAQ)
    =================================================================== */
 ::-webkit-scrollbar {
