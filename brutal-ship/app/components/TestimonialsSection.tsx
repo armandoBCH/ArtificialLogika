@@ -9,6 +9,11 @@ interface TestimonialsSectionProps {
 }
 
 export default function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
+    // Don't render the section at all if there are no testimonials
+    if (testimonials.length === 0) return null;
+
+    const isSingle = testimonials.length === 1;
+
     return (
         <section id="clientes" aria-labelledby="clientes-heading" className="relative z-10 w-full max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-8 bg-background-light dark:bg-background-dark">
             {/* Floating Background Shapes */}
@@ -47,10 +52,10 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
                 </div>
             </div>
             {/* Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <div className={`grid grid-cols-1 ${isSingle ? "lg:grid-cols-2" : "lg:grid-cols-12"} gap-12 items-start`}>
                 {/* Left Column: Testimonials */}
-                <div className="lg:col-span-8">
-                    <div className="flex flex-col gap-6 md:gap-8">
+                <div className={isSingle ? "" : "lg:col-span-8"}>
+                    <div className={`flex flex-col gap-6 md:gap-8 ${isSingle ? "max-w-2xl" : ""}`}>
                         {testimonials.map((t) => (
                             <div key={t.id} className="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-6 md:p-8 shadow-neobrutalism hover:-translate-y-1 hover:shadow-neobrutalism-sm transition-all relative overflow-hidden">
                                 <div className="absolute -top-4 -right-4 text-9xl text-primary opacity-10 md:opacity-20 font-serif leading-none select-none pointer-events-none">❝</div>
@@ -68,24 +73,28 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
                                                 <span className="text-sm text-gray-500">{t.role}</span>
                                             </div>
                                         </div>
-                                        <span className={`self-start sm:self-auto px-4 py-1 rounded-full ${t.badge_color} border-2 border-black text-xs font-bold shadow-[2px_2px_0px_#000]`}>
-                                            {t.badge_text}
-                                        </span>
+                                        {t.badge_text && (
+                                            <span className={`self-start sm:self-auto px-4 py-1 rounded-full ${t.badge_color || "bg-primary/20 text-primary"} border-2 border-black text-xs font-bold shadow-[2px_2px_0px_#000]`}>
+                                                {t.badge_text}
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         ))}
 
-                        {/* Ver más testimonios */}
-                        <div className="flex justify-center mt-8">
-                            <button className="bg-white hover:bg-neutral-100 text-neutral-900 font-bold py-3 px-6 rounded-lg border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-y-[2px] transition-all flex items-center gap-2">
-                                Ver más casos de éxito <span className="material-icons">expand_more</span>
-                            </button>
-                        </div>
+                        {/* Show "ver más" only with 3+ testimonials */}
+                        {testimonials.length >= 3 && (
+                            <div className="flex justify-center mt-8">
+                                <button className="bg-white hover:bg-neutral-100 text-neutral-900 font-bold py-3 px-6 rounded-lg border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-y-[2px] transition-all flex items-center gap-2">
+                                    Ver más casos de éxito <span className="material-icons">expand_more</span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
                 {/* Right Column: Stats */}
-                <div className="lg:col-span-4 flex flex-col gap-6 lg:pl-8 justify-center">
+                <div className={`${isSingle ? "" : "lg:col-span-4"} flex flex-col gap-6 ${isSingle ? "" : "lg:pl-8"} justify-center`}>
                     <div className="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-[4px_4px_0px_#00f090] flex flex-col items-center justify-center text-center group transition-colors duration-300 transform hover:-translate-y-1">
                         <span className="text-5xl md:text-6xl font-bold text-primary mb-3 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]"><CountUp end={10} enableScrollSpy scrollSpyOnce />x</span>
                         <span className="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 -rotate-1 transform mb-3 shadow-[2px_2px_0px_#000]">Más Visible</span>

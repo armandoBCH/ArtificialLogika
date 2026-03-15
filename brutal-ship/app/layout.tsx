@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk } from "next/font/google";
+import Script from "next/script";
 import { SITE_URL, BUSINESS, SEO_KEYWORDS, DEFAULT_OG_IMAGE } from "@/lib/seo/constants";
 import ScrollProgress from "./components/ScrollProgress";
 import PageTransition from "./components/PageTransition";
 import "./globals.css";
+
+const GA_MEASUREMENT_ID = "G-5MTH0Y3GG2";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
@@ -143,6 +146,19 @@ export default function RootLayout({
           {children}
         </PageTransition>
 
+        {/* Google Analytics */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
       </body>
     </html>
   );

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Logika — Primer Post</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #2a2a2a;
+        }
+
+        .post {
+            width: 1080px;
+            height: 1080px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="post">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+            <defs>
+                <!-- Dot pattern -->
+                <pattern id="dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                    <circle cx="14" cy="14" r="1.8" fill="#1A1A1A" opacity="0.06" />
+                </pattern>
+                <!-- Hard shadow -->
+                <filter id="hardShadow" x="-10%" y="-10%" width="130%" height="130%">
+                    <feOffset dx="5" dy="5" />
+                    <feFlood flood-color="#1A1A1A" flood-opacity="1" />
+                    <feComposite in2="SourceGraphic" operator="out" />
+                    <feMerge>
+                        <feMergeNode />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+                <filter id="hardShadowSmall" x="-10%" y="-10%" width="130%" height="130%">
+                    <feOffset dx="3" dy="3" />
+                    <feFlood flood-color="#1A1A1A" flood-opacity="1" />
+                    <feComposite in2="SourceGraphic" operator="out" />
+                    <feMerge>
+                        <feMergeNode />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <!-- ============ FONDO ============ -->
+            <!-- Color base: crema cálido -->
+            <rect width="1080" height="1080" fill="#FFF9F0" />
+            <!-- Dot pattern -->
+            <rect width="1080" height="1080" fill="url(#dots)" />
+
+            <!-- ============ CAPA 2: Formas grandes ============ -->
+            <!-- Semicírculo violeta arriba derecha (cortado) -->
+            <circle cx="1080" cy="0" r="320" fill="#8523E1" opacity="0.07" />
+            <!-- Semicírculo mint abajo izquierda (cortado) -->
+            <circle cx="0" cy="1080" r="280" fill="#00D68F" opacity="0.08" />
+            <!-- Anillo grande decorativo -->
+            <circle cx="900" cy="800" r="200" fill="none" stroke="#4A90FF" stroke-width="25" opacity="0.06" />
+            <!-- Rectángulo rotado coral -->
+            <rect x="-80" y="200" width="250" height="250" rx="12" fill="#FF6B6B" opacity="0.05"
+                transform="rotate(-18, 45, 325)" />
+
+            <!-- ============ CAPA 3: Formas medianas ============ -->
+            <!-- Estrella 4 puntas arriba izquierda -->
+            <path d="M80,120 L88,100 L96,120 L116,112 L96,120 L88,140 L80,120 L60,112 Z" fill="#FDE047" opacity="0.5" />
+            <!-- Cruz + derecha -->
+            <g transform="translate(950, 350) rotate(15)">
+                <line x1="-18" y1="0" x2="18" y2="0" stroke="#FF6B6B" stroke-width="4" opacity="0.35" />
+                <line x1="0" y1="-18" x2="0" y2="18" stroke="#FF6B6B" stroke-width="4" opacity="0.35" />
+            </g>
+            <!-- Cuadrado rotado -->
+            <rect x="120" y="780" width="28" height="28" rx="4" fill="none" stroke="#8523E1" stroke-width="3"
+                opacity="0.3" transform="rotate(35, 134, 794)" />
+            <!-- Círculo sólido verde -->
+            <circle cx="960" cy="180" r="14" fill="#00D68F" opacity="0.3" />
+            <!-- Sparkles arriba centro -->
+            <g transform="translate(540, 80)" opacity="0.25">
+                <line x1="-10" y1="0" x2="10" y2="0" stroke="#8523E1" stroke-width="3" />
+                <line x1="0" y1="-10" x2="0" y2="10" stroke="#8523E1" stroke-width="3" />
+                <line x1="-7" y1="-7" x2="7" y2="7" stroke="#8523E1" stroke-width="2.5" />
+                <line x1="7" y1="-7" x2="-7" y2="7" stroke="#8523E1" stroke-width="2.5" />
+            </g>
+            <!-- Triángulo esquina derecha media -->
+            <polygon points="1030,500 1080,540 1030,580" fill="#FDE047" opacity="0.15" />
+            <!-- Zigzag decorativo izquierdo -->
+            <path d="M40,450 L60,430 L80,450 L100,430 L120,450" fill="none" stroke="#4A90FF" stroke-width="3"
+                opacity="0.15" stroke-linecap="round" />
+            <!-- Anillo dash -->
+            <circle cx="180" cy="200" r="45" fill="none" stroke="#FF6B6B" stroke-width="3" stroke-dasharray="8 6"
+                opacity="0.15" />
+            <!-- Círculos pequeños dispersos -->
+            <circle cx="900" cy="600" r="8" fill="#FDE047" opacity="0.25" />
+            <circle cx="160" cy="650" r="6" fill="#4A90FF" opacity="0.2" />
+
+            <!-- ============ CAPA 4: Detalles de borde ============ -->
+            <!-- Esquina L arriba derecha -->
+            <g transform="translate(1000, 60)">
+                <line x1="0" y1="0" x2="50" y2="0" stroke="#1A1A1A" stroke-width="3" opacity="0.12" />
+                <line x1="50" y1="0" x2="50" y2="50" stroke="#1A1A1A" stroke-width="3" opacity="0.12" />
+            </g>
+            <!-- Puntos de esquina abajo derecha -->
+            <g transform="translate(1010, 880)">
+                <circle cx="0" cy="0" r="4" fill="#1A1A1A" opacity="0.1" />
+                <circle cx="15" cy="0" r="4" fill="#1A1A1A" opacity="0.1" />
+                <circle cx="0" cy="15" r="4" fill="#1A1A1A" opacity="0.1" />
+            </g>
+            <!-- Barra decorativa lateral izquierda -->
+            <rect x="0" y="380" width="6" height="180" fill="#8523E1" opacity="0.15" />
+            <!-- Dashes decorativos -->
+            <line x1="800" y1="130" x2="1000" y2="130" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="10 8"
+                opacity="0.08" />
+
+            <!-- ============ CONTENIDO PRINCIPAL ============ -->
+
+            <!-- Badge "HOLA MUNDO" arriba -->
+            <g transform="translate(370, 180) rotate(-2)">
+                <rect x="0" y="0" width="340" height="56" rx="28" fill="#FDE047" stroke="#1A1A1A" stroke-width="3.5"
+                    filter="url(#hardShadowSmall)" />
+                <text x="170" y="37" font-family="'Space Grotesk', sans-serif" fill="#1A1A1A" font-size="22"
+                    font-weight="700" text-anchor="middle" letter-spacing="2">✨ ESTO RECIÉN EMPIEZA</text>
+            </g>
+
+            <!-- LOGO LOGIKA GRANDE (centro) -->
+            <g transform="translate(340, 300) scale(4.2)">
+                <!-- Sombra -->
+                <rect x="22" y="22" width="62" height="62" rx="6" fill="#1A1A1A" />
+                <!-- Top (Violet) -->
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4" />
+                <!-- Left (Blue) -->
+                <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" stroke-width="4" />
+                <!-- Bottom (Coral) -->
+                <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="#1A1A1A" stroke-width="4" />
+                <!-- Right (Mint) -->
+                <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="#1A1A1A" stroke-width="4" />
+                <!-- Top (Violet) Patch — woven effect -->
+                <defs>
+                    <clipPath id="woven-clip-big">
+                        <rect x="45" y="0" width="60" height="100" />
+                    </clipPath>
+                </defs>
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" stroke-width="4"
+                    clip-path="url(#woven-clip-big)" />
+            </g>
+
+            <!-- Sparkles alrededor del logo -->
+            <g opacity="0.6">
+                <!-- Izquierda -->
+                <path d="M300,460 L290,450 M300,460 L290,470 M300,460 L278,460" stroke="#FDE047" stroke-width="3.5"
+                    stroke-linecap="round" />
+                <!-- Derecha -->
+                <path d="M780,380 L790,370 M780,380 L790,390 M780,380 L802,380" stroke="#00D68F" stroke-width="3.5"
+                    stroke-linecap="round" />
+                <!-- Arriba derecha -->
+                <path d="M750,310 L760,300 M750,310 L760,320" stroke="#FF6B6B" stroke-width="3"
+                    stroke-linecap="round" />
+                <!-- Abajo izquierda -->
+                <path d="M320,650 L310,640 M320,650 L310,660" stroke="#4A90FF" stroke-width="3"
+                    stroke-linecap="round" />
+            </g>
+
+            <!-- Texto "BIENVENIDOS A" -->
+            <text x="540" y="740" font-family="'Space Grotesk', sans-serif" fill="#6B6B6B" font-size="36"
+                font-weight="600" text-anchor="middle" letter-spacing="6">BIENVENIDOS A</text>
+
+            <!-- Texto "LOGIKA" grande -->
+            <text x="540" y="820" font-family="'Space Grotesk', sans-serif" fill="#1A1A1A" font-size="100"
+                font-weight="800" text-anchor="middle" letter-spacing="-2">LOGIKA</text>
+
+            <!-- Línea separadora decorativa -->
+            <line x1="420" y1="850" x2="660" y2="850" stroke="#8523E1" stroke-width="4" stroke-linecap="round" />
+
+            <!-- CTAs -->
+            <g transform="translate(540, 900)">
+                <!-- CTA Web -->
+                <g transform="translate(-160, 0)">
+                    <rect x="0" y="0" width="310" height="48" rx="24" fill="#8523E1" stroke="#1A1A1A" stroke-width="3"
+                        filter="url(#hardShadowSmall)" />
+                    <text x="155" y="32" font-family="'Space Grotesk', sans-serif" fill="#FFFFFF" font-size="20"
+                        font-weight="700" text-anchor="middle" letter-spacing="0.5">👉 logikaweb.com.ar</text>
+                </g>
+            </g>
+
+            <!-- ============ FOOTER ============ -->
+            <g transform="translate(0, 960)">
+                <!-- Barra de fondo -->
+                <rect x="0" y="0" width="1080" height="120" fill="#F5F5F5" />
+                <line x1="0" y1="0" x2="1080" y2="0" stroke="#1A1A1A" stroke-width="4" />
+
+                <!-- LOGO LOGIKA (Izquierda) -->
+                <g transform="translate(60, 30)">
+                    <g transform="scale(0.6)">
+                        <path fill="#1A1A1A"
+                            d="M 28 22 h 50 a 6 6 0 0 1 6 6 v 50 a 6 6 0 0 1 -6 6 h -50 a 6 6 0 0 1 -6 -6 v -50 a 6 6 0 0 1 6 -6 Z M 44 44 v 18 h 18 v -18 h -18 Z" />
+                        <path fill="#8523E1" d="M 14 20 a 6 6 0 0 1 6 -6 h 50 a 6 6 0 0 1 6 6 v 16 h -62 Z" />
+                        <path fill="#00D68F" d="M 76 36 v 34 a 6 6 0 0 1 -6 6 h -16 v -40 h 22 Z" />
+                        <path fill="#FF6B6B" d="M 54 76 h -34 a 6 6 0 0 1 -6 -6 v -16 h 40 Z" />
+                        <rect x="14" y="36" width="22" height="18" fill="#4A90FF" />
+                        <rect x="14" y="14" width="62" height="62" rx="6" fill="none" stroke="#1A1A1A" stroke-width="4">
+                        </rect>
+                        <rect x="36" y="36" width="18" height="18" fill="none" stroke="#1A1A1A" stroke-width="4"
+                            stroke-linejoin="round"></rect>
+                        <line x1="14" y1="36" x2="36" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+                        <line x1="54" y1="36" x2="76" y2="36" stroke="#1A1A1A" stroke-width="4"></line>
+                        <line x1="14" y1="54" x2="36" y2="54" stroke="#1A1A1A" stroke-width="4"></line>
+                        <line x1="54" y1="54" x2="54" y2="76" stroke="#1A1A1A" stroke-width="4"></line>
+                    </g>
+                    <text x="75" y="42" font-family="'Space Grotesk', sans-serif" fill="#1A1A1A" font-size="32"
+                        font-weight="800" letter-spacing="-0.5">LOGIKA</text>
+                </g>
+
+                <!-- WHATSAPP + NÚMERO + @LOGIKA (Centro) -->
+                <g transform="translate(300, 30)">
+                    <line x1="0" y1="10" x2="0" y2="40" stroke="#1A1A1A" stroke-width="2" opacity="0.3" />
+                    <!-- WhatsApp Icon -->
+                    <g transform="translate(20, 16) scale(0.6)">
+                        <path
+                            d="M20,0 C8.954,0 0,8.954 0,20 C0,3.504 0.902,6.812 2.502,9.845 L0,40 L10.51,37.243 C13.435,38.941 16.621,40 20,40 C31.046,40 40,31.046 40,20 C40,8.954 31.046,0 20,0 Z"
+                            fill="#25D366" />
+                        <path
+                            d="M11.9,13.6 C11.5,12.7 11.1,12.7 10.7,12.7 C10.4,12.7 10.0,12.7 9.6,12.7 C9.3,12.7 8.8,12.8 8.4,13.2 C7.9,13.7 6.5,15.1 6.5,17.8 C6.5,20.5 8.5,23.1 8.8,23.5 C9.1,23.9 12.7,29.5 18.2,31.8 C19.5,32.3 20.6,32.7 21.4,32.9 C22.7,33.3 23.9,33.3 24.8,33.1 C25.8,33.0 27.9,31.8 28.3,30.6 C28.8,29.3 28.8,28.2 28.6,28.0 C28.5,27.8 28.1,27.6 27.6,27.4 C27.0,27.1 24.3,25.8 23.8,25.6 C23.3,25.4 22.9,25.3 22.5,25.9 C22.2,26.5 21.1,27.8 20.8,28.1 C20.5,28.5 20.1,28.5 19.6,28.3 C19.0,28.0 17.2,27.4 15.1,25.5 C13.5,24.0 12.4,22.1 12.1,21.6 C11.8,21.1 12.0,20.8 12.3,20.6 C12.5,20.3 12.8,19.9 13.1,19.6 C13.3,19.4 13.4,19.1 13.6,18.8 C13.8,18.4 13.7,18.1 13.5,17.8 C13.3,17.5 12.3,14.6 11.9,13.6"
+                            fill="#FFFFFF" />
+                    </g>
+                    <text x="50" y="38" font-family="'Space Grotesk', sans-serif" fill="#1A1A1A" font-size="24"
+                        font-weight="700">2284638361</text>
+                    <circle cx="230" cy="30" r="4" fill="#6B6B6B" opacity="0.3" />
+                    <text x="255" y="38" font-family="'Space Grotesk', sans-serif" fill="#1A1A1A" font-size="22"
+                        font-weight="700">@logika</text>
+                </g>
+
+                <!-- BADGE CTA (Derecha) — post individual = "LOGIKA" -->
+                <g transform="translate(800, 25)">
+                    <rect x="0" y="0" width="220" height="60" rx="30" fill="#8523E1" stroke="#1A1A1A"
+                        stroke-width="3" />
+                    <text x="110" y="38" font-family="'Space Grotesk', sans-serif" fill="#FFFFFF" font-size="22"
+                        font-weight="700" text-anchor="middle" letter-spacing="0.5">📲 ESCRIBINOS</text>
+                </g>
+            </g>
+
+        </svg>
+    </div>
+</body>
+
+</html>

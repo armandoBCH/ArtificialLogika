@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import AnalyticsSection from "./components/AnalyticsSection";
 
 async function getStats() {
     const supabase = await createClient();
@@ -126,6 +127,9 @@ export default async function AdminDashboard() {
                     </div>
                 )}
             </div>
+
+            {/* Analytics Section */}
+            <AnalyticsSection />
         </div>
     );
 }
