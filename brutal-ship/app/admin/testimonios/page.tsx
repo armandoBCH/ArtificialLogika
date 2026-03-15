@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAdminData } from "../hooks/useAdminData";
 import type { Testimonial } from "@/lib/types/database";
 
@@ -17,6 +17,8 @@ export default function TestimoniosPage() {
     const { data, loading, saving, create, update, remove } = useAdminData<Testimonial>("testimonials");
     const [editing, setEditing] = useState<Testimonial | null>(null);
     const [creating, setCreating] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const empty: Partial<Testimonial> = {
         name: "", role: "", quote: "", avatar_url: "",
@@ -36,6 +38,44 @@ export default function TestimoniosPage() {
 
     async function toggleVisibility(t: Testimonial) {
         await update({ ...t, is_active: !t.is_active });
+    }
+
+    async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const base64 = reader.result as string;
+                const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+                const timestamp = Date.now();
+                const safeName = `avatar_${(form.name || "unknown").replace(/\s+/g, "_").toLowerCase()}_${timestamp}.${ext}`;
+
+                const res = await fetch("/api/admin/upload-supabase", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        image: base64,
+                        filename: safeName,
+                        folder: "avatars",
+                    }),
+                });
+
+                const data = await res.json();
+                if (data.url) {
+                    setForm((prev) => ({ ...prev, avatar_url: data.url }));
+                } else {
+                    alert("Error al subir: " + (data.error || "desconocido"));
+                }
+                setUploading(false);
+            };
+            reader.readAsDataURL(file);
+        } catch {
+            alert("Error al subir la imagen");
+            setUploading(false);
+        }
     }
 
     const showForm = creating || editing;
@@ -80,7 +120,7 @@ export default function TestimoniosPage() {
                     </div>
 
                     {/* ── Content ── */}
-                    <div className="space-y-2 border-t border-white/10 pt-4">
+                    <div className="space-y-4 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
                             <span className="material-icons text-base">format_quote</span>
                             Testimonio
@@ -89,10 +129,58 @@ export default function TestimoniosPage() {
                             <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Contenido del testimonio</span>
                             <textarea className="admin-input w-full" rows={3} value={form.quote || ""} onChange={(e) => setForm({ ...form, quote: e.target.value })} />
                         </label>
-                        <label className="space-y-1">
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">URL de Avatar (opcional)</span>
-                            <input className="admin-input w-full" placeholder="https://..." value={form.avatar_url || ""} onChange={(e) => setForm({ ...form, avatar_url: e.target.value })} />
-                        </label>
+
+                        {/* ── Avatar Upload ── */}
+                        <div className="space-y-2">
+                            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Avatar / Foto</span>
+                            <div className="flex items-start gap-4">
+                                {/* Preview */}
+                                <div className="w-16 h-16 rounded-full bg-white/5 border-2 border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                                    {form.avatar_url ? (
+                                        <img src={form.avatar_url} alt="Preview" className="w-full h-full object-cover rounded-full" />
+                                    ) : (
+                                        <span className="text-gray-500 text-2xl">{form.name?.[0] || "?"}</span>
+                                    )}
+                                </div>
+                                <div className="flex-1 space-y-2">
+                                    {/* URL Input */}
+                                    <input
+                                        className="admin-input w-full"
+                                        placeholder="https://... o subí una imagen"
+                                        value={form.avatar_url || ""}
+                                        onChange={(e) => setForm({ ...form, avatar_url: e.target.value })}
+                                    />
+                                    {/* Upload Button */}
+                                    <div className="flex items-center gap-3">
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            accept="image/png,image/jpeg,image/webp"
+                                            className="hidden"
+                                            onChange={handleFileUpload}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            disabled={uploading}
+                                            className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-sm border border-white/10 transition-all flex items-center gap-1.5 disabled:opacity-50"
+                                        >
+                                            <span className="material-icons text-sm">cloud_upload</span>
+                                            {uploading ? "Subiendo..." : "Subir imagen"}
+                                        </button>
+                                        {form.avatar_url && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setForm({ ...form, avatar_url: "" })}
+                                                className="text-gray-500 hover:text-hot-coral text-xs font-bold transition-colors"
+                                            >
+                                                Quitar
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* ── Badge ── */}
@@ -171,7 +259,6 @@ export default function TestimoniosPage() {
                                 <p className="text-gray-300 text-sm mt-2 line-clamp-2">&ldquo;{t.quote}&rdquo;</p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
-                                {/* Visibility Toggle */}
                                 <button
                                     onClick={() => toggleVisibility(t)}
                                     className={`p-1.5 rounded text-xs font-bold transition-all ${t.is_active ? "text-secondary hover:bg-secondary/10" : "text-gray-500 hover:bg-white/10"}`}

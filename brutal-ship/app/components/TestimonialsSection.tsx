@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import CountUp from "react-countup";
 import type { Testimonial } from "@/lib/types/database";
 
@@ -66,7 +65,8 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4 gap-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden flex-shrink-0">
-                                                <Image alt={`Retrato de ${t.name}`} className="w-full h-full object-cover" src={t.avatar_url} width={40} height={40} loading="lazy" />
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img alt={`Retrato de ${t.name}`} className="w-full h-full object-cover" src={t.avatar_url} loading="lazy" />
                                             </div>
                                             <div>
                                                 <h4 className="font-bold text-lg leading-tight">{t.name}</h4>

@@ -13,10 +13,12 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    const { image, filename } = await request.json();
+    const { image, filename, folder } = await request.json();
     if (!image || !filename) {
         return NextResponse.json({ error: "image y filename requeridos" }, { status: 400 });
     }
+
+    const uploadFolder = folder || "portfolio";
 
     // Validate filename formatting
     const safeFilename = filename.replace(/[^a-zA-Z0-9_\-\.]/g, "_");
@@ -36,7 +38,7 @@ export async function POST(request: NextRequest) {
         const { data, error } = await supabase
             .storage
             .from("Images")
-            .upload(`portfolio/${safeFilename}`, buffer, {
+            .upload(`${uploadFolder}/${safeFilename}`, buffer, {
                 contentType: detectedType,
                 upsert: true,
             });
@@ -50,7 +52,7 @@ export async function POST(request: NextRequest) {
         const { data: publicUrlData } = supabase
             .storage
             .from("Images")
-            .getPublicUrl(`portfolio/${safeFilename}`);
+            .getPublicUrl(`${uploadFolder}/${safeFilename}`);
 
         return NextResponse.json({
             url: publicUrlData.publicUrl,
