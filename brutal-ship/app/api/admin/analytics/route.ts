@@ -1,12 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { getAnalyticsData } from "@/lib/analytics";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
-        const data = await getAnalyticsData();
+        const searchParams = request.nextUrl.searchParams;
+        const days = parseInt(searchParams.get("days") || "30", 10);
+        
+        // Ensure days is one of the allowed values to prevent abuse
+        const allowedDays = [7, 30, 90];
+        const validDays = allowedDays.includes(days) ? days : 30;
+
+        const data = await getAnalyticsData(validDays);
         return NextResponse.json(data, {
             headers: {
                 "Cache-Control": "private, max-age=300", // 5 min cache
@@ -32,6 +38,8 @@ export async function GET() {
                 dailyVisitors: [],
                 topPages: [],
                 trafficSources: [],
+                deviceCategories: [],
+                days: 30,
             },
             { status: 200 } // Return 200 so the UI can handle it gracefully
         );

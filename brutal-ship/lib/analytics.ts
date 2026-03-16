@@ -45,12 +45,20 @@ export interface TrafficSource {
     percentage: number;
 }
 
+export interface DeviceCategory {
+    category: string;
+    users: number;
+    percentage: number;
+}
+
 export interface AnalyticsData {
     kpis: AnalyticsKPI;
     dailyVisitors: DailyVisitors[];
     topPages: TopPage[];
     trafficSources: TrafficSource[];
+    deviceCategories: DeviceCategory[];
     configured: boolean;
+    days: number;
 }
 
 function calcChange(current: number, previous: number): number {
@@ -58,7 +66,7 @@ function calcChange(current: number, previous: number): number {
     return Math.round(((current - previous) / previous) * 100);
 }
 
-export async function getAnalyticsData(): Promise<AnalyticsData> {
+export async function getAnalyticsData(days: number = 30): Promise<AnalyticsData> {
     const client = getClient();
 
     if (!client) {
@@ -78,14 +86,20 @@ export async function getAnalyticsData(): Promise<AnalyticsData> {
             dailyVisitors: [],
             topPages: [],
             trafficSources: [],
+            deviceCategories: [],
+            days,
         };
     }
+
+    const startDate = `${days}daysAgo`;
+    const prevStartDate = `${days * 2}daysAgo`;
+    const prevEndDate = `${days + 1}daysAgo`;
 
     const [kpiResponse] = await client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [
-            { startDate: "30daysAgo", endDate: "today" },
-            { startDate: "60daysAgo", endDate: "31daysAgo" },
+            { startDate, endDate: "today" },
+            { startDate: prevStartDate, endDate: prevEndDate },
         ],
         metrics: [
             { name: "activeUsers" },
@@ -117,25 +131,32 @@ export async function getAnalyticsData(): Promise<AnalyticsData> {
         ),
     };
 
-    // Daily visitors (last 30 days)
+    // Daily visitors
     const [dailyResponse] = await client.runReport({
         property: `properties/${propertyId}`,
-        dateRanges: [{ startDate: "30daysAgo", endDate: "today" }],
+        dateRanges: [{ startDate, endDate: "today" }],
         dimensions: [{ name: "date" }],
         metrics: [{ name: "activeUsers" }],
         orderBys: [{ dimension: { dimensionName: "date" } }],
     });
 
     const dailyVisitors: DailyVisitors[] =
-        dailyResponse.rows?.map((row) => ({
-            date: row.dimensionValues?.[0]?.value ?? "",
-            visitors: parseInt(row.metricValues?.[0]?.value ?? "0", 10),
-        })) ?? [];
+        dailyResponse.rows?.map((row) => {
+            const dateStr = row.dimensionValues?.[0]?.value ?? "";
+            // Format YYYYMMDD to DD/MM
+            const formattedDate = dateStr.length === 8 
+                ? `${dateStr.substring(6, 8)}/${dateStr.substring(4, 6)}`
+                : dateStr;
+            return {
+                date: formattedDate,
+                visitors: parseInt(row.metricValues?.[0]?.value ?? "0", 10),
+            };
+        }) ?? [];
 
     // Top pages
     const [pagesResponse] = await client.runReport({
         property: `properties/${propertyId}`,
-        dateRanges: [{ startDate: "30daysAgo", endDate: "today" }],
+        dateRanges: [{ startDate, endDate: "today" }],
         dimensions: [{ name: "pagePath" }],
         metrics: [{ name: "screenPageViews" }],
         orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
@@ -151,11 +172,11 @@ export async function getAnalyticsData(): Promise<AnalyticsData> {
     // Traffic sources
     const [sourcesResponse] = await client.runReport({
         property: `properties/${propertyId}`,
-        dateRanges: [{ startDate: "30daysAgo", endDate: "today" }],
+        dateRanges: [{ startDate, endDate: "today" }],
         dimensions: [{ name: "sessionSource" }],
         metrics: [{ name: "sessions" }],
         orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
-        limit: 6,
+        limit: 5,
     });
 
     const totalSessions = kpis.sessions || 1;
@@ -169,11 +190,33 @@ export async function getAnalyticsData(): Promise<AnalyticsData> {
             };
         }) ?? [];
 
+    // Device Category
+    const [devicesResponse] = await client.runReport({
+        property: `properties/${propertyId}`,
+        dateRanges: [{ startDate, endDate: "today" }],
+        dimensions: [{ name: "deviceCategory" }],
+        metrics: [{ name: "activeUsers" }],
+        orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }],
+    });
+
+    const totalDeviceUsers = devicesResponse.rows?.reduce((acc, row) => acc + parseInt(row.metricValues?.[0]?.value ?? "0", 10), 0) || 1;
+    const deviceCategories: DeviceCategory[] = 
+        devicesResponse.rows?.map((row) => {
+            const users = parseInt(row.metricValues?.[0]?.value ?? "0", 10);
+            return {
+                category: row.dimensionValues?.[0]?.value ?? "unknown",
+                users,
+                percentage: Math.round((users / totalDeviceUsers) * 100),
+            };
+        }) ?? [];
+
     return {
         configured: true,
         kpis,
         dailyVisitors,
         topPages,
         trafficSources,
+        deviceCategories,
+        days,
     };
 }
