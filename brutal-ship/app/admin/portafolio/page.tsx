@@ -90,12 +90,13 @@ export default function PortafolioPage() {
     const [customCategories, setCustomCategories] = useState<string[]>([]);
     const [newCategoryInput, setNewCategoryInput] = useState("");
     const [showScreenshotModal, setShowScreenshotModal] = useState(false);
-    const [uploading, setUploading] = useState(false);
+    const [uploadingSlot, setUploadingSlot] = useState<"" | "4x3" | "16x9">("");
     const [uploadError, setUploadError] = useState("");
-    const [isDragging, setIsDragging] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [draggingSlot, setDraggingSlot] = useState<"" | "4x3" | "16x9">("");
+    const fileInput43Ref = useRef<HTMLInputElement>(null);
+    const fileInput169Ref = useRef<HTMLInputElement>(null);
 
-    const handleFileUpload = useCallback(async (file: File) => {
+    const handleFileUpload = useCallback(async (file: File, target: "4x3" | "16x9") => {
         if (!file.type.startsWith("image/")) {
             setUploadError("Solo se permiten archivos de imagen.");
             return;
@@ -104,7 +105,7 @@ export default function PortafolioPage() {
             setUploadError("La imagen no puede superar los 10MB.");
             return;
         }
-        setUploading(true);
+        setUploadingSlot(target);
         setUploadError("");
         try {
             const base64 = await new Promise<string>((resolve, reject) => {
@@ -121,7 +122,7 @@ export default function PortafolioPage() {
                 .slice(0, 50);
             const ext = file.name.split(".").pop()?.toLowerCase() || "webp";
             const validExt = ["png", "jpg", "jpeg", "webp"].includes(ext) ? ext : "webp";
-            const filename = `${safeName}-upload-${Date.now()}.${validExt}`;
+            const filename = `${safeName}-${target}-upload-${Date.now()}.${validExt}`;
 
             const res = await fetch("/api/admin/upload-supabase", {
                 method: "POST",
@@ -133,32 +134,34 @@ export default function PortafolioPage() {
 
             setForm((prev) => ({
                 ...prev,
-                image_url: data.url,
+                ...(target === "4x3"
+                    ? { image_url: data.url }
+                    : { image_url_wide: data.url }),
                 image_alt: prev.image_alt || `Imagen de ${prev.title || "proyecto"}`,
             }));
         } catch (err) {
             setUploadError(err instanceof Error ? err.message : "Error desconocido al subir.");
         } finally {
-            setUploading(false);
+            setUploadingSlot("");
         }
     }, [form.title]);
 
-    const handleDrop = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(false);
-        const file = e.dataTransfer.files?.[0];
-        if (file) handleFileUpload(file);
-    }, [handleFileUpload]);
-
-    const handleDragOver = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(true);
-    }, []);
-
-    const handleDragLeave = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(false);
-    }, []);
+    const makeDropHandlers = useCallback((slot: "4x3" | "16x9") => ({
+        onDrop: (e: React.DragEvent) => {
+            e.preventDefault();
+            setDraggingSlot("");
+            const file = e.dataTransfer.files?.[0];
+            if (file) handleFileUpload(file, slot);
+        },
+        onDragOver: (e: React.DragEvent) => {
+            e.preventDefault();
+            setDraggingSlot(slot);
+        },
+        onDragLeave: (e: React.DragEvent) => {
+            e.preventDefault();
+            setDraggingSlot("");
+        },
+    }), [handleFileUpload]);
 
     // Merge base categories + categories from existing projects + custom added ones
     const allCategories = useMemo(() => {
@@ -360,51 +363,113 @@ export default function PortafolioPage() {
                                     <p className="text-[10px] text-gray-500">Pegá la URL y tocá &quot;Capturar&quot; para generar un screenshot automáticamente.</p>
                                 </label>
 
-                                {/* ── Direct Image Upload ── */}
-                                <div className="md:col-span-2">
-                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">O subí una imagen directamente</span>
-                                    <div
-                                        onDrop={handleDrop}
-                                        onDragOver={handleDragOver}
-                                        onDragLeave={handleDragLeave}
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className={`relative border-2 border-dashed rounded-sm p-6 text-center cursor-pointer transition-all ${
-                                            isDragging
-                                                ? "border-mint bg-mint/10 scale-[1.01]"
-                                                : uploading
-                                                    ? "border-primary/50 bg-primary/5"
-                                                    : "border-white/20 bg-white/5 hover:border-primary/50 hover:bg-white/10"
-                                        }`}
-                                    >
-                                        <input
-                                            ref={fileInputRef}
-                                            type="file"
-                                            accept="image/png,image/jpeg,image/webp"
-                                            className="hidden"
-                                            onChange={(e) => {
-                                                const file = e.target.files?.[0];
-                                                if (file) handleFileUpload(file);
-                                                e.target.value = "";
-                                            }}
-                                        />
-                                        {uploading ? (
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
-                                                <p className="text-white font-bold text-sm">Subiendo imagen...</p>
+                                {/* ── Direct Image Upload: Two zones ── */}
+                                <div className="md:col-span-2 space-y-3">
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">O subí imágenes directamente</span>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {/* 4:3 Upload Zone */}
+                                        <div className="space-y-2">
+                                            <p className="text-[11px] text-primary font-black uppercase tracking-wider flex items-center gap-1">
+                                                🖼️ Detalle + Inicio (4:3)
+                                            </p>
+                                            <div
+                                                {...makeDropHandlers("4x3")}
+                                                onClick={() => fileInput43Ref.current?.click()}
+                                                className={`relative border-2 border-dashed rounded-sm p-5 text-center cursor-pointer transition-all ${
+                                                    draggingSlot === "4x3"
+                                                        ? "border-primary bg-primary/10 scale-[1.01]"
+                                                        : uploadingSlot === "4x3"
+                                                            ? "border-primary/50 bg-primary/5"
+                                                            : "border-white/20 bg-white/5 hover:border-primary/40 hover:bg-white/10"
+                                                }`}
+                                            >
+                                                <input
+                                                    ref={fileInput43Ref}
+                                                    type="file"
+                                                    accept="image/png,image/jpeg,image/webp"
+                                                    className="hidden"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) handleFileUpload(file, "4x3");
+                                                        e.target.value = "";
+                                                    }}
+                                                />
+                                                {uploadingSlot === "4x3" ? (
+                                                    <div className="flex flex-col items-center gap-2 py-2">
+                                                        <div className="w-7 h-7 border-3 border-primary border-t-transparent rounded-full animate-spin" />
+                                                        <p className="text-white font-bold text-xs">Subiendo...</p>
+                                                    </div>
+                                                ) : form.image_url ? (
+                                                    <div className="flex flex-col items-center gap-2">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img src={form.image_url} alt="Preview 4:3" className="w-full max-h-24 object-cover rounded border border-white/10" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                        <p className="text-primary text-[10px] font-bold">✓ Imagen cargada · Clic para reemplazar</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center gap-1.5 py-2">
+                                                        <span className={`material-icons text-2xl ${draggingSlot === "4x3" ? "text-primary" : "text-gray-500"}`}>
+                                                            {draggingSlot === "4x3" ? "file_download" : "aspect_ratio"}
+                                                        </span>
+                                                        <p className="text-gray-300 text-xs font-bold">
+                                                            {draggingSlot === "4x3" ? "Soltá acá" : "Subir imagen 4:3"}
+                                                        </p>
+                                                        <p className="text-gray-500 text-[10px]">Página de detalle e inicio</p>
+                                                    </div>
+                                                )}
                                             </div>
-                                        ) : (
-                                            <div className="flex flex-col items-center gap-2">
-                                                <span className={`material-icons text-3xl transition-colors ${
-                                                    isDragging ? "text-mint" : "text-gray-500"
-                                                }`}>
-                                                    {isDragging ? "file_download" : "cloud_upload"}
-                                                </span>
-                                                <p className="text-gray-300 text-sm font-bold">
-                                                    {isDragging ? "Soltá la imagen acá" : "Arrastrá una imagen o hacé clic para seleccionar"}
-                                                </p>
-                                                <p className="text-gray-500 text-[10px]">PNG, JPG o WebP · Máximo 10MB</p>
+                                        </div>
+
+                                        {/* 16:9 Upload Zone */}
+                                        <div className="space-y-2">
+                                            <p className="text-[11px] text-mint font-black uppercase tracking-wider flex items-center gap-1">
+                                                🎥 Catálogo (16:9)
+                                            </p>
+                                            <div
+                                                {...makeDropHandlers("16x9")}
+                                                onClick={() => fileInput169Ref.current?.click()}
+                                                className={`relative border-2 border-dashed rounded-sm p-5 text-center cursor-pointer transition-all ${
+                                                    draggingSlot === "16x9"
+                                                        ? "border-mint bg-mint/10 scale-[1.01]"
+                                                        : uploadingSlot === "16x9"
+                                                            ? "border-mint/50 bg-mint/5"
+                                                            : "border-white/20 bg-white/5 hover:border-mint/40 hover:bg-white/10"
+                                                }`}
+                                            >
+                                                <input
+                                                    ref={fileInput169Ref}
+                                                    type="file"
+                                                    accept="image/png,image/jpeg,image/webp"
+                                                    className="hidden"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) handleFileUpload(file, "16x9");
+                                                        e.target.value = "";
+                                                    }}
+                                                />
+                                                {uploadingSlot === "16x9" ? (
+                                                    <div className="flex flex-col items-center gap-2 py-2">
+                                                        <div className="w-7 h-7 border-3 border-mint border-t-transparent rounded-full animate-spin" />
+                                                        <p className="text-white font-bold text-xs">Subiendo...</p>
+                                                    </div>
+                                                ) : form.image_url_wide ? (
+                                                    <div className="flex flex-col items-center gap-2">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img src={form.image_url_wide} alt="Preview 16:9" className="w-full max-h-24 object-cover rounded border border-white/10" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                        <p className="text-mint text-[10px] font-bold">✓ Imagen cargada · Clic para reemplazar</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center gap-1.5 py-2">
+                                                        <span className={`material-icons text-2xl ${draggingSlot === "16x9" ? "text-mint" : "text-gray-500"}`}>
+                                                            {draggingSlot === "16x9" ? "file_download" : "wide_screen"}
+                                                        </span>
+                                                        <p className="text-gray-300 text-xs font-bold">
+                                                            {draggingSlot === "16x9" ? "Soltá acá" : "Subir imagen 16:9"}
+                                                        </p>
+                                                        <p className="text-gray-500 text-[10px]">Tarjetas del catálogo</p>
+                                                    </div>
+                                                )}
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                     {uploadError && (
                                         <p className="text-hot-coral text-xs font-bold mt-2 flex items-center gap-1">
@@ -412,6 +477,7 @@ export default function PortafolioPage() {
                                             {uploadError}
                                         </p>
                                     )}
+                                    <p className="text-[10px] text-gray-500">💡 También podés usar "📸 Capturar" para generar ambos recortes automáticamente desde la URL.</p>
                                 </div>
 
                                 {/* Image Preview */}
