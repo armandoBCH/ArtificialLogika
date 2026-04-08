@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useAdminData } from "../hooks/useAdminData";
 import dynamic from "next/dynamic";
 
@@ -90,6 +90,75 @@ export default function PortafolioPage() {
     const [customCategories, setCustomCategories] = useState<string[]>([]);
     const [newCategoryInput, setNewCategoryInput] = useState("");
     const [showScreenshotModal, setShowScreenshotModal] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState("");
+    const [isDragging, setIsDragging] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileUpload = useCallback(async (file: File) => {
+        if (!file.type.startsWith("image/")) {
+            setUploadError("Solo se permiten archivos de imagen.");
+            return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            setUploadError("La imagen no puede superar los 10MB.");
+            return;
+        }
+        setUploading(true);
+        setUploadError("");
+        try {
+            const base64 = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = () => reject(new Error("Error al leer archivo"));
+                reader.readAsDataURL(file);
+            });
+
+            const safeName = (form.title || "proyecto")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "")
+                .slice(0, 50);
+            const ext = file.name.split(".").pop()?.toLowerCase() || "webp";
+            const validExt = ["png", "jpg", "jpeg", "webp"].includes(ext) ? ext : "webp";
+            const filename = `${safeName}-upload-${Date.now()}.${validExt}`;
+
+            const res = await fetch("/api/admin/upload-supabase", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image: base64, filename }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Error al subir");
+
+            setForm((prev) => ({
+                ...prev,
+                image_url: data.url,
+                image_alt: prev.image_alt || `Imagen de ${prev.title || "proyecto"}`,
+            }));
+        } catch (err) {
+            setUploadError(err instanceof Error ? err.message : "Error desconocido al subir.");
+        } finally {
+            setUploading(false);
+        }
+    }, [form.title]);
+
+    const handleDrop = useCallback((e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const file = e.dataTransfer.files?.[0];
+        if (file) handleFileUpload(file);
+    }, [handleFileUpload]);
+
+    const handleDragOver = useCallback((e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+    }, []);
+
+    const handleDragLeave = useCallback((e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+    }, []);
 
     // Merge base categories + categories from existing projects + custom added ones
     const allCategories = useMemo(() => {
@@ -290,6 +359,60 @@ export default function PortafolioPage() {
                                     </div>
                                     <p className="text-[10px] text-gray-500">Pegá la URL y tocá &quot;Capturar&quot; para generar un screenshot automáticamente.</p>
                                 </label>
+
+                                {/* ── Direct Image Upload ── */}
+                                <div className="md:col-span-2">
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">O subí una imagen directamente</span>
+                                    <div
+                                        onDrop={handleDrop}
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className={`relative border-2 border-dashed rounded-sm p-6 text-center cursor-pointer transition-all ${
+                                            isDragging
+                                                ? "border-mint bg-mint/10 scale-[1.01]"
+                                                : uploading
+                                                    ? "border-primary/50 bg-primary/5"
+                                                    : "border-white/20 bg-white/5 hover:border-primary/50 hover:bg-white/10"
+                                        }`}
+                                    >
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            accept="image/png,image/jpeg,image/webp"
+                                            className="hidden"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) handleFileUpload(file);
+                                                e.target.value = "";
+                                            }}
+                                        />
+                                        {uploading ? (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
+                                                <p className="text-white font-bold text-sm">Subiendo imagen...</p>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <span className={`material-icons text-3xl transition-colors ${
+                                                    isDragging ? "text-mint" : "text-gray-500"
+                                                }`}>
+                                                    {isDragging ? "file_download" : "cloud_upload"}
+                                                </span>
+                                                <p className="text-gray-300 text-sm font-bold">
+                                                    {isDragging ? "Soltá la imagen acá" : "Arrastrá una imagen o hacé clic para seleccionar"}
+                                                </p>
+                                                <p className="text-gray-500 text-[10px]">PNG, JPG o WebP · Máximo 10MB</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {uploadError && (
+                                        <p className="text-hot-coral text-xs font-bold mt-2 flex items-center gap-1">
+                                            <span className="material-icons text-sm">error</span>
+                                            {uploadError}
+                                        </p>
+                                    )}
+                                </div>
 
                                 {/* Image Preview */}
                                 {(form.image_url || form.image_url_wide) && (
