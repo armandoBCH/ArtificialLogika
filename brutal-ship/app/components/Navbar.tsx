@@ -59,14 +59,14 @@ export default function Navbar({ config }: NavbarProps) {
             }}
             animate={hidden ? "hidden" : "visible"}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-            className="fixed top-4 md:top-6 left-0 right-0 z-50 px-4 flex justify-center w-full pointer-events-none"
+            className="fixed top-3 sm:top-4 md:top-6 left-0 right-0 z-50 px-3 sm:px-4 flex justify-center w-full pointer-events-none"
         >
             <div className="w-full max-w-7xl pointer-events-auto relative">
-                <div className="bg-white dark:bg-background-dark border-2 border-black rounded-2xl shadow-neobrutalism flex justify-between h-16 md:h-20 items-center px-4 md:px-6 transition-all">
+                <div className="bg-white dark:bg-background-dark border-2 border-black rounded-2xl shadow-neobrutalism flex justify-between h-14 sm:h-16 md:h-20 items-center px-3 sm:px-4 md:px-6 transition-all overflow-hidden">
                     {/* Logo */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0 min-w-0">
                         <a href="/" className="flex items-center gap-2">
-                            <LogikaLogo className="h-10 md:h-14 w-auto" />
+                            <LogikaLogo className="h-8 sm:h-10 md:h-14 w-auto" />
                         </a>
                     </div>
 
@@ -81,7 +81,7 @@ export default function Navbar({ config }: NavbarProps) {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-3 md:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 md:gap-4 shrink-0">
                         <AnimatePresence>
                             {!isMobileMenuOpen && (
                                 <motion.div
@@ -91,7 +91,7 @@ export default function Navbar({ config }: NavbarProps) {
                                     transition={{ duration: 0.3 }}
                                 >
                                     <MagneticWrapper>
-                                        <a href={getHref("#contacto")} className="bg-primary hover:bg-primary/90 text-white border-2 border-black font-bold py-2.5 px-6 xl:px-8 text-sm xl:text-base uppercase tracking-wider rounded-xl transition-all block whitespace-nowrap shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-y-[2px] hover:translate-x-[2px] font-space">
+                                        <a href={getHref("#contacto")} className="bg-primary hover:bg-primary/90 text-white border-2 border-black font-bold py-2 px-4 sm:py-2.5 sm:px-6 xl:px-8 text-xs sm:text-sm xl:text-base uppercase tracking-wider rounded-xl transition-all block whitespace-nowrap shadow-[2px_2px_0px_#000] sm:shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-y-[2px] hover:translate-x-[2px] font-space">
                                             Contactanos
                                         </a>
                                     </MagneticWrapper>
@@ -101,11 +101,11 @@ export default function Navbar({ config }: NavbarProps) {
 
                         {/* Hamburger Button for Mobile */}
                         <button
-                            className="lg:hidden w-10 h-10 border-2 border-black bg-white dark:bg-zinc-800 dark:text-white rounded-xl flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all focus:outline-none"
+                            className="lg:hidden w-9 h-9 sm:w-10 sm:h-10 border-2 border-black bg-white dark:bg-zinc-800 dark:text-white rounded-lg sm:rounded-xl flex items-center justify-center shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] sm:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all focus:outline-none"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             aria-label="Toggle menu"
                         >
-                            <span className="material-icons">{isMobileMenuOpen ? 'close' : 'menu'}</span>
+                            <span className="material-icons text-[20px] sm:text-[24px]">{isMobileMenuOpen ? 'close' : 'menu'}</span>
                         </button>
                     </div>
                 </div>
