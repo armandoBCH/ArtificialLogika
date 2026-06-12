@@ -3,13 +3,13 @@
 // Domain: logikaweb.com.ar
 // ============================================================
 
-export const SITE_URL = "https://logikaweb.com.ar";
+export const SITE_URL = "https://www.logikaweb.com.ar";
 
 export const BUSINESS = {
     name: "Logika",
     legalName: "Logika",
     description:
-        "Agencia de diseño y desarrollo web en Argentina. Creamos páginas web profesionales, landing pages y tiendas online para todo tipo de negocio. Nos encargamos de todo: diseño, desarrollo, dominio, hosting y soporte.",
+        "Agencia de diseño y desarrollo web en Argentina. Páginas web profesionales, landing pages y tiendas online. Nos encargamos de todo.",
     shortDescription:
         "Diseño web, landing pages y tienda online para tu negocio. Nosotros nos encargamos de todo.",
     slogan: "Tu Web Profesional, Sin Complicaciones",
@@ -78,7 +78,7 @@ export const SEO_KEYWORDS = [
     "agencia digital Argentina",
 ];
 
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image`;
 
 // BreadcrumbList helper — used across pages
 export function buildBreadcrumbs(

@@ -89,7 +89,7 @@ const nextConfig: NextConfig = {
       },
       // OG image: cache but allow updates
       {
-        source: "/og-image.png",
+        source: "/opengraph-image",
         headers: [
           {
             key: "Cache-Control",
