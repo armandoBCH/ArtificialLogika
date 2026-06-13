@@ -33,7 +33,7 @@ export default async function Image() {
           border: "8px solid #1A1A1A", // Neobrutalist border
         }}
       >
-        {/* Subtly exposed Grid Dot Pattern */}
+        {/* Subtle background overlay */}
         <div
           style={{
             position: "absolute",
@@ -41,9 +41,8 @@ export default async function Image() {
             left: 0,
             right: 0,
             bottom: 0,
-            opacity: 0.12,
-            backgroundImage: "radial-gradient(#1A1A1A 2px, transparent 2px)",
-            backgroundSize: "24px 24px",
+            opacity: 0.04,
+            backgroundColor: "#8523E1",
             display: "flex",
           }}
         />
@@ -175,7 +174,7 @@ export default async function Image() {
                 boxShadow: "2px 2px 0px #1A1A1A",
               }}
             >
-              🚀 VELOCIDAD
+              ● VELOCIDAD
             </div>
             <div
               style={{
@@ -190,7 +189,7 @@ export default async function Image() {
                 boxShadow: "2px 2px 0px #1A1A1A",
               }}
             >
-              🎨 DISEÑO POP
+              ● DISEÑO WEB
             </div>
             <div
               style={{
@@ -205,7 +204,7 @@ export default async function Image() {
                 boxShadow: "2px 2px 0px #1A1A1A",
               }}
             >
-              📈 SEO OPTIMIZADO
+              ● SEO + HOSTING
             </div>
           </div>
         </div>
