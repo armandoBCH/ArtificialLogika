@@ -266,7 +266,7 @@ export default function PortafolioPage() {
                         {/* ── SECTION 1: Basic Info ── */}
                         <div className="space-y-2">
                             <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                <span className="material-icons text-base">info</span>
+                                <span aria-hidden="true" className="material-icons text-base">info</span>
                                 Información Básica
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -295,7 +295,7 @@ export default function PortafolioPage() {
                                                         : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30 hover:text-white"
                                                         }`}
                                                 >
-                                                    {isSelected && <span className="material-icons text-[14px] mr-1">check</span>}
+                                                    {isSelected && <span aria-hidden="true" className="material-icons text-[14px] mr-1">check</span>}
                                                     {cat}
                                                 </button>
                                             );
@@ -335,7 +335,7 @@ export default function PortafolioPage() {
                         {/* ── SECTION 2: Media ── */}
                         <div className="space-y-2 border-t border-white/10 pt-4">
                             <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                <span className="material-icons text-base">image</span>
+                                <span aria-hidden="true" className="material-icons text-base">image</span>
                                 Imagen & URL
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -407,7 +407,7 @@ export default function PortafolioPage() {
                                                     </div>
                                                 ) : (
                                                     <div className="flex flex-col items-center gap-1.5 py-2">
-                                                        <span className={`material-icons text-2xl ${draggingSlot === "4x3" ? "text-primary" : "text-gray-500"}`}>
+                                                        <span aria-hidden="true" className={`material-icons text-2xl ${draggingSlot === "4x3" ? "text-primary" : "text-gray-500"}`}>
                                                             {draggingSlot === "4x3" ? "file_download" : "aspect_ratio"}
                                                         </span>
                                                         <p className="text-gray-300 text-xs font-bold">
@@ -459,7 +459,7 @@ export default function PortafolioPage() {
                                                     </div>
                                                 ) : (
                                                     <div className="flex flex-col items-center gap-1.5 py-2">
-                                                        <span className={`material-icons text-2xl ${draggingSlot === "16x9" ? "text-mint" : "text-gray-500"}`}>
+                                                        <span aria-hidden="true" className={`material-icons text-2xl ${draggingSlot === "16x9" ? "text-mint" : "text-gray-500"}`}>
                                                             {draggingSlot === "16x9" ? "file_download" : "wide_screen"}
                                                         </span>
                                                         <p className="text-gray-300 text-xs font-bold">
@@ -473,7 +473,7 @@ export default function PortafolioPage() {
                                     </div>
                                     {uploadError && (
                                         <p className="text-hot-coral text-xs font-bold mt-2 flex items-center gap-1">
-                                            <span className="material-icons text-sm">error</span>
+                                            <span aria-hidden="true" className="material-icons text-sm">error</span>
                                             {uploadError}
                                         </p>
                                     )}
@@ -484,7 +484,7 @@ export default function PortafolioPage() {
                                 {(form.image_url || form.image_url_wide) && (
                                     <div className="md:col-span-2 space-y-3">
                                         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
-                                            <span className="material-icons text-[14px]">visibility</span>
+                                            <span aria-hidden="true" className="material-icons text-[14px]">visibility</span>
                                             Vista previa — así se ve cada imagen recortada:
                                         </p>
                                         <div className="grid grid-cols-2 gap-4">
@@ -528,7 +528,7 @@ export default function PortafolioPage() {
                         {/* ── SECTION 3: Services - Visual Cards ── */}
                         <div className="space-y-3 border-t border-white/10 pt-4">
                             <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                <span className="material-icons text-base">build_circle</span>
+                                <span aria-hidden="true" className="material-icons text-base">build_circle</span>
                                 Servicios Aplicados
                             </h3>
                             <p className="text-[10px] text-gray-500">Tocá los servicios que se usaron en este proyecto.</p>
@@ -548,7 +548,7 @@ export default function PortafolioPage() {
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-2">
-                                                    <span className={`material-icons text-xl ${isSelected ? "text-white" : "text-gray-500"}`}>
+                                                    <span aria-hidden="true" className={`material-icons text-xl ${isSelected ? "text-white" : "text-gray-500"}`}>
                                                         {svc.icon || "web"}
                                                     </span>
                                                     <span className="font-black text-sm uppercase tracking-wide">{svc.name}</span>
@@ -569,7 +569,7 @@ export default function PortafolioPage() {
                         {selectedServiceFeatures.length > 0 && (
                             <div className="space-y-3 border-t border-white/10 pt-4">
                                 <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                    <span className="material-icons text-base">auto_awesome</span>
+                                    <span aria-hidden="true" className="material-icons text-base">auto_awesome</span>
                                     Sub-servicios Incluidos
                                 </h3>
                                 <p className="text-[10px] text-gray-500">Seleccioná qué sub-servicios son relevantes para este proyecto. No es necesario seleccionarlos todos.</p>
@@ -587,7 +587,7 @@ export default function PortafolioPage() {
                                                     : "bg-white/5 text-gray-500 border-white/10 hover:border-white/30 hover:text-white"
                                                     }`}
                                             >
-                                                <span className="material-icons text-sm">
+                                                <span aria-hidden="true" className="material-icons text-sm">
                                                     {isActive ? "check_box" : "check_box_outline_blank"}
                                                 </span>
                                                 {feat}
@@ -601,7 +601,7 @@ export default function PortafolioPage() {
                         {/* ── SECTION 5: Tags ── */}
                         <div className="space-y-3 border-t border-white/10 pt-4">
                             <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                <span className="material-icons text-base">label</span>
+                                <span aria-hidden="true" className="material-icons text-base">label</span>
                                 Etiquetas / Tags
                             </h3>
 
@@ -616,7 +616,7 @@ export default function PortafolioPage() {
                                             className="inline-flex items-center gap-1 bg-primary/20 text-primary border border-primary/30 px-2.5 py-1 rounded-sm text-xs font-bold hover:bg-red-500/20 hover:text-red-400 hover:border-red-400/30 transition-colors group"
                                         >
                                             {tag}
-                                            <span className="material-icons text-[14px] opacity-50 group-hover:opacity-100">close</span>
+                                            <span aria-hidden="true" className="material-icons text-[14px] opacity-50 group-hover:opacity-100">close</span>
                                         </button>
                                     ))}
                                 </div>
@@ -666,7 +666,7 @@ export default function PortafolioPage() {
                                 return (
                                     <div>
                                         <p className="text-[10px] text-gray-500 mb-1.5 flex items-center gap-1">
-                                            <span className="material-icons text-[12px]">auto_awesome</span>
+                                            <span aria-hidden="true" className="material-icons text-[12px]">auto_awesome</span>
                                             Sugerencias {selectedCats.length > 0 ? `para ${selectedCats.map(c => `"${c}"`).join(", ")}` : "generales"} — clic para agregar:
                                         </p>
                                         <div className="flex flex-wrap gap-1.5">
@@ -693,11 +693,11 @@ export default function PortafolioPage() {
                         <div className="space-y-3 border-t border-white/10 pt-4">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                    <span className="material-icons text-base">bar_chart</span>
+                                    <span aria-hidden="true" className="material-icons text-base">bar_chart</span>
                                     Métricas de Impacto
                                 </h3>
                                 <button type="button" onClick={addStat} className="text-xs font-bold text-primary hover:text-white transition-colors flex items-center gap-1">
-                                    <span className="material-icons text-sm">add_circle</span> Agregar Métrica
+                                    <span aria-hidden="true" className="material-icons text-sm">add_circle</span> Agregar Métrica
                                 </button>
                             </div>
                             {(form.stats || []).length > 0 ? (
@@ -798,7 +798,7 @@ export default function PortafolioPage() {
                                     {/* External URL indicator */}
                                     {p.external_url && (
                                         <div className="flex items-center gap-1.5 text-[10px] text-mint-fresh font-bold mb-3">
-                                            <span className="material-icons text-xs">language</span>
+                                            <span aria-hidden="true" className="material-icons text-xs">language</span>
                                             Tiene sitio web vinculado
                                         </div>
                                     )}

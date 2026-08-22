@@ -31,7 +31,7 @@ export default function NotFound() {
                     href={SITE_URL}
                     className="inline-flex items-center gap-2 bg-primary text-white border-2 border-black font-bold text-lg py-3 px-8 shadow-[4px_4px_0_#000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all rounded-lg"
                 >
-                    <span className="material-icons">home</span>
+                    <span aria-hidden="true" className="material-icons">home</span>
                     Volver al Inicio
                 </a>
             </div>

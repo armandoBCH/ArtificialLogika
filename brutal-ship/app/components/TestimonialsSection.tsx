@@ -37,16 +37,16 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
             <div className="w-screen relative left-[calc(-50vw+50%)] bg-primary border-y-2 border-black mb-16 overflow-hidden group">
                 <div className="animate-marquee group-hover:[animation-play-state:paused] py-4 whitespace-nowrap flex items-center gap-8">
                     <span className="text-3xl md:text-4xl font-bold text-white flex items-center gap-8">
-                        RESULTADOS REALES <span className="material-icons text-3xl">star</span>
-                        DISEÑO INCREÍBLE <span className="material-icons text-3xl">star</span>
-                        CLIENTES SATISFECHOS <span className="material-icons text-3xl">star</span>
-                        PROCESO SIMPLE <span className="material-icons text-3xl">star</span>
-                        CERO COMPLICACIONES <span className="material-icons text-3xl">star</span>
-                        RESULTADOS REALES <span className="material-icons text-3xl">star</span>
-                        DISEÑO INCREÍBLE <span className="material-icons text-3xl">star</span>
-                        CLIENTES SATISFECHOS <span className="material-icons text-3xl">star</span>
-                        PROCESO SIMPLE <span className="material-icons text-3xl">star</span>
-                        CERO COMPLICACIONES <span className="material-icons text-3xl">star</span>
+                        RESULTADOS REALES <span aria-hidden="true" className="material-icons text-3xl">star</span>
+                        DISEÑO INCREÍBLE <span aria-hidden="true" className="material-icons text-3xl">star</span>
+                        CLIENTES SATISFECHOS <span aria-hidden="true" className="material-icons text-3xl">star</span>
+                        PROCESO SIMPLE <span aria-hidden="true" className="material-icons text-3xl">star</span>
+                        CERO COMPLICACIONES <span aria-hidden="true" className="material-icons text-3xl">star</span>
+                        RESULTADOS REALES <span aria-hidden="true" className="material-icons text-3xl">star</span>
+                        DISEÑO INCREÍBLE <span aria-hidden="true" className="material-icons text-3xl">star</span>
+                        CLIENTES SATISFECHOS <span aria-hidden="true" className="material-icons text-3xl">star</span>
+                        PROCESO SIMPLE <span aria-hidden="true" className="material-icons text-3xl">star</span>
+                        CERO COMPLICACIONES <span aria-hidden="true" className="material-icons text-3xl">star</span>
                     </span>
                 </div>
             </div>
@@ -87,7 +87,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
                         {testimonials.length >= 3 && (
                             <div className="flex justify-center mt-8">
                                 <button className="bg-white hover:bg-neutral-100 text-neutral-900 font-bold py-3 px-6 rounded-lg border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-y-[2px] transition-all flex items-center gap-2">
-                                    Ver más casos de éxito <span className="material-icons">expand_more</span>
+                                    Ver más casos de éxito <span aria-hidden="true" className="material-icons">expand_more</span>
                                 </button>
                             </div>
                         )}
@@ -116,7 +116,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
             <div className="mt-16 flex justify-center">
                 <a href="#contacto" className="bg-primary hover:bg-primary/90 text-white font-bold py-4 px-12 rounded-full border-2 border-black shadow-neobrutalist hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000] active:translate-y-[4px] active:shadow-none transition-all text-xl flex items-center gap-2">
                     Quiero Mi Web
-                    <span className="material-icons">arrow_forward</span>
+                    <span aria-hidden="true" className="material-icons">arrow_forward</span>
                 </a>
             </div>
         </section>

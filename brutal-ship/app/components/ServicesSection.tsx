@@ -50,12 +50,12 @@ function ServiceRow({ service, index }: { service: Service; index: number }) {
             {/* Left Box (Title & Icon only) */}
             <div className={`md:w-1/3 p-6 ${accentBg} border-b-4 md:border-b-0 md:border-r-4 border-black flex flex-col justify-center relative overflow-hidden shrink-0`}>
                 <div className="absolute -bottom-4 -left-4 opacity-10 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 pointer-events-none">
-                    <span className="material-icons text-black" style={{ fontSize: "12rem", lineHeight: "1" }}>{service.icon}</span>
+                    <span aria-hidden="true" className="material-icons text-black" style={{ fontSize: "12rem", lineHeight: "1" }}>{service.icon}</span>
                 </div>
 
                 <div className="relative z-10 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-3">
                     <div className="w-12 h-12 md:w-10 md:h-10 bg-white border-2 border-black shadow-[3px_3px_0_#000] rounded-lg flex items-center justify-center shrink-0">
-                        <span className="material-icons text-black text-2xl md:text-xl">{service.icon}</span>
+                        <span aria-hidden="true" className="material-icons text-black text-2xl md:text-xl">{service.icon}</span>
                     </div>
                     <h3 className="text-3xl lg:text-4xl font-black uppercase tracking-tight text-black leading-none mt-1">
                         {service.name}
@@ -87,7 +87,7 @@ function ServiceRow({ service, index }: { service: Service; index: number }) {
                                 key={i}
                                 className="inline-flex items-center gap-1.5 bg-white dark:bg-zinc-800 border-2 border-black text-xs font-bold px-2.5 py-1.5 rounded shadow-neo-sm"
                             >
-                                <span className="material-icons text-sm" style={{ color: badgeColor }}>check_circle</span>
+                                <span aria-hidden="true" className="material-icons text-sm" style={{ color: badgeColor }}>check_circle</span>
                                 {featureText}
                             </span>
                         );
@@ -102,7 +102,7 @@ function ServiceRow({ service, index }: { service: Service; index: number }) {
                     className="mt-auto flex items-center justify-center gap-2 bg-black text-white px-4 py-2.5 font-bold uppercase text-sm border-2 border-black shadow-[3px_3px_0_#FFF] dark:shadow-[3px_3px_0_#zinc-700] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all rounded w-full"
                 >
                     Me Interesa
-                    <span className="material-icons text-base">arrow_forward</span>
+                    <span aria-hidden="true" className="material-icons text-base">arrow_forward</span>
                 </a>
             </div>
         </motion.div>
@@ -156,7 +156,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
                     className="mt-8 bg-mint border-4 border-black p-6 md:p-8 shadow-[6px_6px_0_#000] flex flex-col md:flex-row items-center justify-between gap-6 rounded-lg relative overflow-hidden"
                 >
                     <div className="absolute -right-4 -top-8 opacity-10 pointer-events-none">
-                        <span className="material-icons text-black text-[10rem]">verified</span>
+                        <span aria-hidden="true" className="material-icons text-black text-[10rem]">verified</span>
                     </div>
 
                     <div className="text-center md:text-left relative z-10 flex-1">
@@ -174,13 +174,13 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
                             className="inline-flex items-center justify-center gap-2 bg-black text-white px-6 py-3 font-bold text-base uppercase rounded shadow-[4px_4px_0_#FFF] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all w-full sm:w-auto text-center"
                         >
                             Ver Precios
-                            <span className="material-icons text-xl">payments</span>
+                            <span aria-hidden="true" className="material-icons text-xl">payments</span>
                         </a>
                         <a
                             href="#contacto"
                             className="inline-flex items-center justify-center gap-2 bg-white text-black border-4 border-black px-6 py-3 font-black text-base uppercase rounded shadow-[4px_4px_0_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all w-full sm:w-auto text-center"
                         >
-                            <span className="material-icons text-xl">chat</span>
+                            <span aria-hidden="true" className="material-icons text-xl">chat</span>
                             Consultar
                         </a>
                     </div>

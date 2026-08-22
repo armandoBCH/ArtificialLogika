@@ -91,7 +91,7 @@ function ProjectCard({ project, index }: { project: PortfolioProject; index: num
                         <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                             <a className={`inline-flex items-center justify-center w-full sm:w-auto px-4 md:px-6 py-3 md:py-4 ${colors.textColor === 'text-white' ? 'bg-white text-black' : 'bg-black text-white'} font-bold text-sm md:text-lg uppercase border-2 ${colors.textColor === 'text-white' ? 'border-black' : 'border-transparent'} shadow-hard-sm hover:shadow-hard hover:translate-x-1 hover:-translate-y-1 transition-all duration-200 ${colors.ctaHover}`} href="#contacto">
                                 Quiero Algo Así
-                                <span className="material-icons ml-2 text-base md:text-xl">arrow_forward</span>
+                                <span aria-hidden="true" className="material-icons ml-2 text-base md:text-xl">arrow_forward</span>
                             </a>
                             <a className={`inline-flex items-center justify-center w-full sm:w-auto px-4 md:px-6 py-3 md:py-4 bg-transparent ${colors.textColor} font-bold text-sm md:text-lg uppercase border-2 ${colors.textColor === 'text-white' ? 'border-white hover:bg-white hover:text-black' : 'border-black hover:bg-black hover:text-white'} shadow-none hover:shadow-hard hover:translate-x-1 hover:-translate-y-1 transition-all duration-200`} href={`/portafolio/${project.id}`}>
                                 Ver Proyecto

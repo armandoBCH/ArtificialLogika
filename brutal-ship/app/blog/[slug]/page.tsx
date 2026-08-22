@@ -121,7 +121,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                             })}
                         </time>
                         <span className="text-base font-bold text-gray-600 dark:text-gray-400 flex items-center gap-1 bg-white dark:bg-zinc-900 border-2 border-gray-200 dark:border-zinc-700 px-4 py-2 rounded-lg">
-                            <span className="material-icons text-lg">schedule</span>
+                            <span aria-hidden="true" className="material-icons text-lg">schedule</span>
                             {post.readTime}
                         </span>
                     </div>
@@ -163,7 +163,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                             className="inline-flex max-w-full items-center justify-center gap-3 bg-black dark:bg-white text-white dark:text-black font-black text-lg md:text-xl uppercase py-5 px-10 rounded-xl border-4 border-transparent hover:border-primary hover:bg-transparent hover:text-primary dark:hover:bg-transparent dark:hover:text-primary dark:hover:border-primary transition-all duration-300 transform hover:-translate-y-1 shadow-[6px_6px_0_#e11d48] hover:shadow-[12px_12px_0_#e11d48]"
                         >
                             Pedir Presupuesto Gratis
-                            <span className="material-icons text-xl">rocket_launch</span>
+                            <span aria-hidden="true" className="material-icons text-xl">rocket_launch</span>
                         </a>
                     </div>
                 </div>
@@ -174,7 +174,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         href="/blog"
                         className="inline-flex items-center gap-3 text-gray-600 dark:text-gray-400 font-bold text-lg md:text-xl uppercase tracking-wider hover:text-primary dark:hover:text-primary hover:gap-5 transition-all"
                     >
-                        <span className="material-icons border-2 border-current rounded-full p-1">arrow_back</span>
+                        <span aria-hidden="true" className="material-icons border-2 border-current rounded-full p-1">arrow_back</span>
                         Volver al blog
                     </Link>
                 </div>

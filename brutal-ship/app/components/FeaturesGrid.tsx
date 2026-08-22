@@ -49,10 +49,10 @@ export default function FeaturesGrid() {
                     {/* Card 1 */}
                     <motion.div variants={itemVariants} className="group bg-white dark:bg-zinc-900 border-2 border-black p-8 shadow-neobrutalism hover:shadow-neobrutalism-primary transition-all rounded-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <span className="material-icons text-9xl text-primary">devices</span>
+                            <span aria-hidden="true" className="material-icons text-9xl text-primary">devices</span>
                         </div>
                         <div className="w-14 h-14 bg-mint border-2 border-black rounded flex items-center justify-center mb-6 shadow-neobrutalism-sm group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all group-hover:animate-wiggle">
-                            <span className="material-icons text-black text-2xl">devices</span>
+                            <span aria-hidden="true" className="material-icons text-black text-2xl">devices</span>
                         </div>
                         <h3 className="text-2xl font-bold mb-3 uppercase">Diseño Responsive</h3>
                         <p className="font-medium text-gray-600 dark:text-gray-300">
@@ -62,10 +62,10 @@ export default function FeaturesGrid() {
                     {/* Card 2 */}
                     <motion.div variants={itemVariants} className="group bg-primary text-white border-2 border-black p-8 shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all rounded-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <span className="material-icons text-9xl text-white">palette</span>
+                            <span aria-hidden="true" className="material-icons text-9xl text-white">palette</span>
                         </div>
                         <div className="w-14 h-14 bg-white border-2 border-black rounded flex items-center justify-center mb-6 shadow-neobrutalism-sm group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all group-hover:animate-wiggle">
-                            <span className="material-icons text-black text-2xl">palette</span>
+                            <span aria-hidden="true" className="material-icons text-black text-2xl">palette</span>
                         </div>
                         <h3 className="text-2xl font-bold mb-3 uppercase">Diseño Personalizado</h3>
                         <p className="font-medium text-white/90">
@@ -75,10 +75,10 @@ export default function FeaturesGrid() {
                     {/* Card 3 */}
                     <motion.div variants={itemVariants} className="group bg-white dark:bg-zinc-900 border-2 border-black p-8 shadow-neobrutalism hover:shadow-neobrutalism-primary transition-all rounded-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <span className="material-icons text-9xl text-primary">speed</span>
+                            <span aria-hidden="true" className="material-icons text-9xl text-primary">speed</span>
                         </div>
                         <div className="w-14 h-14 bg-accent-yellow border-2 border-black rounded flex items-center justify-center mb-6 shadow-neobrutalism-sm group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all group-hover:animate-wiggle">
-                            <span className="material-icons text-black text-2xl">speed</span>
+                            <span aria-hidden="true" className="material-icons text-black text-2xl">speed</span>
                         </div>
                         <h3 className="text-2xl font-bold mb-3 uppercase">Carga Ultra Rápida</h3>
                         <p className="font-medium text-gray-600 dark:text-gray-300">
@@ -88,10 +88,10 @@ export default function FeaturesGrid() {
                     {/* Card 4 */}
                     <motion.div variants={itemVariants} className="group bg-white dark:bg-zinc-900 border-2 border-black p-8 shadow-neobrutalism hover:shadow-neobrutalism-primary transition-all rounded-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <span className="material-icons text-9xl text-primary">search</span>
+                            <span aria-hidden="true" className="material-icons text-9xl text-primary">search</span>
                         </div>
                         <div className="w-14 h-14 bg-purple-200 border-2 border-black rounded flex items-center justify-center mb-6 shadow-neobrutalism-sm group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all group-hover:animate-wiggle">
-                            <span className="material-icons text-black text-2xl">search</span>
+                            <span aria-hidden="true" className="material-icons text-black text-2xl">search</span>
                         </div>
                         <h3 className="text-2xl font-bold mb-3 uppercase">SEO Incluido</h3>
                         <p className="font-medium text-gray-600 dark:text-gray-300">
@@ -101,10 +101,10 @@ export default function FeaturesGrid() {
                     {/* Card 5 */}
                     <motion.div variants={itemVariants} className="group bg-white dark:bg-zinc-900 border-2 border-black p-8 shadow-neobrutalism hover:shadow-neobrutalism-primary transition-all rounded-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <span className="material-icons text-9xl text-primary">support_agent</span>
+                            <span aria-hidden="true" className="material-icons text-9xl text-primary">support_agent</span>
                         </div>
                         <div className="w-14 h-14 bg-blue-200 border-2 border-black rounded flex items-center justify-center mb-6 shadow-neobrutalism-sm group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all group-hover:animate-wiggle">
-                            <span className="material-icons text-black text-2xl">support_agent</span>
+                            <span aria-hidden="true" className="material-icons text-black text-2xl">support_agent</span>
                         </div>
                         <h3 className="text-2xl font-bold mb-3 uppercase">Soporte Incluido</h3>
                         <p className="font-medium text-gray-600 dark:text-gray-300">
@@ -114,10 +114,10 @@ export default function FeaturesGrid() {
                     {/* Card 6 */}
                     <motion.div variants={itemVariants} className="group bg-mint border-2 border-black p-8 shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all rounded-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <span className="material-icons text-9xl text-black">build</span>
+                            <span aria-hidden="true" className="material-icons text-9xl text-black">build</span>
                         </div>
                         <div className="w-14 h-14 bg-white border-2 border-black rounded flex items-center justify-center mb-6 shadow-neobrutalism-sm group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all group-hover:animate-wiggle">
-                            <span className="material-icons text-black text-2xl">build</span>
+                            <span aria-hidden="true" className="material-icons text-black text-2xl">build</span>
                         </div>
                         <h3 className="text-2xl font-bold mb-3 uppercase">Nosotros Tramitamos Todo</h3>
                         <p className="font-medium text-black/80">

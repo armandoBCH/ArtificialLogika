@@ -129,7 +129,7 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                                         className="flex-1 w-full inline-flex items-center justify-center gap-2 py-3 md:py-2.5 px-4 bg-white text-black font-black uppercase text-xs sm:text-sm tracking-wider border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-black hover:text-white transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-center"
                                     >
                                         Quiero algo así
-                                        <span className="material-icons text-sm md:text-base">arrow_forward</span>
+                                        <span aria-hidden="true" className="material-icons text-sm md:text-base">arrow_forward</span>
                                     </a>
                                 </div>
                             </div>
@@ -184,11 +184,11 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
 
                     <ul className="space-y-2 mb-6 text-black font-bold text-sm md:text-base">
                         <li className="flex items-center gap-2">
-                            <span className="material-icons text-xl text-[#9b51e0]">check_circle</span>
+                            <span aria-hidden="true" className="material-icons text-xl text-[#9b51e0]">check_circle</span>
                             Te asesoramos sobre lo que realmente necesita tu negocio
                         </li>
                         <li className="flex items-center gap-2">
-                            <span className="material-icons text-xl text-[#9b51e0]">check_circle</span>
+                            <span aria-hidden="true" className="material-icons text-xl text-[#9b51e0]">check_circle</span>
                             Armamos una propuesta y mockup visual sin compromiso
                         </li>
                     </ul>

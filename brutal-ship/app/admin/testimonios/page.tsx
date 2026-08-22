@@ -104,7 +104,7 @@ export default function TestimoniosPage() {
                     {/* ── Person Info ── */}
                     <div className="space-y-2">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">person</span>
+                            <span aria-hidden="true" className="material-icons text-base">person</span>
                             Datos del Cliente
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -122,7 +122,7 @@ export default function TestimoniosPage() {
                     {/* ── Content ── */}
                     <div className="space-y-4 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">format_quote</span>
+                            <span aria-hidden="true" className="material-icons text-base">format_quote</span>
                             Testimonio
                         </h3>
                         <label className="space-y-1">
@@ -165,7 +165,7 @@ export default function TestimoniosPage() {
                                             disabled={uploading}
                                             className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-sm border border-white/10 transition-all flex items-center gap-1.5 disabled:opacity-50"
                                         >
-                                            <span className="material-icons text-sm">cloud_upload</span>
+                                            <span aria-hidden="true" className="material-icons text-sm">cloud_upload</span>
                                             {uploading ? "Subiendo..." : "Subir imagen"}
                                         </button>
                                         {form.avatar_url && (
@@ -186,7 +186,7 @@ export default function TestimoniosPage() {
                     {/* ── Badge ── */}
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">label</span>
+                            <span aria-hidden="true" className="material-icons text-base">label</span>
                             Badge
                         </h3>
                         <div className="flex flex-wrap gap-2">
@@ -264,7 +264,7 @@ export default function TestimoniosPage() {
                                     className={`p-1.5 rounded text-xs font-bold transition-all ${t.is_active ? "text-secondary hover:bg-secondary/10" : "text-gray-500 hover:bg-white/10"}`}
                                     title={t.is_active ? "Ocultar" : "Mostrar"}
                                 >
-                                    <span className="material-icons text-sm">
+                                    <span aria-hidden="true" className="material-icons text-sm">
                                         {t.is_active ? "visibility" : "visibility_off"}
                                     </span>
                                 </button>

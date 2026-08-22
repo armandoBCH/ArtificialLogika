@@ -41,7 +41,7 @@ export default function HeroSection() {
     };
 
     return (
-        <header ref={heroRef} className="relative overflow-hidden bg-background-light dark:bg-background-dark pt-36 pb-24 border-b-2 border-black">
+        <section ref={heroRef} aria-label="Presentación" className="relative overflow-hidden bg-background-light dark:bg-background-dark pt-36 pb-24 border-b-2 border-black">
             {/* Abstract Shapes */}
             <motion.div style={{ y: y1 }} className="absolute top-20 right-[-50px] w-64 h-64 bg-mint rounded-full border-2 border-black mix-blend-multiply opacity-80 hidden lg:block z-0 animate-pulse"></motion.div>
             <motion.div style={{ y: y2 }} className="absolute bottom-10 left-10 w-32 h-32 bg-accent-yellow border-2 border-black transform rotate-12 z-0 hidden lg:block"></motion.div>
@@ -88,21 +88,21 @@ export default function HeroSection() {
                             <MagneticWrapper>
                                 <a href="#contacto" className="w-full sm:w-auto bg-primary text-white border-2 border-black font-bold text-lg py-4 px-8 shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all rounded-lg flex items-center justify-center gap-2">
                                     Contactanos
-                                    <span className="material-icons">arrow_forward</span>
+                                    <span aria-hidden="true" className="material-icons">arrow_forward</span>
                                 </a>
                             </MagneticWrapper>
                             <a href="#portafolio" className="md:hidden flex items-center justify-center gap-2 text-black dark:text-white font-bold text-lg py-2 mt-2 underline decoration-2 underline-offset-4">
                                 Ver Nuestro Trabajo
-                                <span className="material-icons text-sm">open_in_new</span>
+                                <span aria-hidden="true" className="material-icons text-sm">open_in_new</span>
                             </a>
-                            <a href="#portafolio" className="hidden md:block bg-white dark:bg-zinc-800 text-black dark:text-white border-2 border-black font-bold text-lg py-4 px-8 shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all rounded-lg text-center">
+                            <a href="#portafolio" className="hidden md:inline-flex items-center justify-center gap-2 text-black dark:text-white font-bold text-lg py-4 px-2 underline decoration-2 underline-offset-4 hover:decoration-primary transition-colors">
                                 Ver Nuestro Trabajo
                             </a>
                         </div>
-                        <div className="flex items-center gap-2 mt-6 bg-[#00f090] text-black px-4 py-2 border-2 border-black shadow-[4px_4px_0px_0px_#000] w-fit transform -rotate-1 hover:rotate-0 transition-transform cursor-default">
-                            <span className="material-icons text-black text-lg">verified</span>
-                            <span className="font-extrabold text-sm uppercase tracking-wide">Mockup y Presupuesto Sin Cargo</span>
-                        </div>
+                        <p className="flex items-center gap-2 mt-5 text-sm font-bold text-ink-black dark:text-white">
+                            <span aria-hidden="true" className="material-icons text-secondary text-lg">verified</span>
+                            Mockup y presupuesto sin cargo — sin compromiso.
+                        </p>
                     </div>
                     <div className="relative w-full max-w-lg lg:max-w-xl mx-auto -mt-6 lg:-mt-12">
                         {/* SVG animations are handled by scoped CSS in globals.css via .hero-svg-wrapper */}
@@ -273,6 +273,6 @@ export default function HeroSection() {
                     </div>
                 </div>
             </div>
-        </header>
+        </section>
     );
 }

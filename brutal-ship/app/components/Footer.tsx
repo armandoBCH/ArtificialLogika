@@ -42,7 +42,7 @@ export default function Footer({ config }: FooterProps) {
                                 href={emailUrl}
                                 aria-label="Email"
                             >
-                                <span className="material-icons-outlined text-lg">alternate_email</span>
+                                <span aria-hidden="true" className="material-icons text-lg">alternate_email</span>
                             </a>
                             <a
                                 className="size-10 flex items-center justify-center rounded-full border border-white/20 hover:bg-[#25D366] hover:border-[#25D366] hover:text-white transition-all text-gray-400"

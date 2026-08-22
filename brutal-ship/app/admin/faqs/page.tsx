@@ -55,7 +55,7 @@ export default function FAQsPage() {
                     {/* ── Question ── */}
                     <div className="space-y-2">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">help_outline</span>
+                            <span aria-hidden="true" className="material-icons text-base">help_outline</span>
                             Pregunta
                         </h3>
                         <label className="space-y-1">
@@ -67,7 +67,7 @@ export default function FAQsPage() {
                     {/* ── Answer ── */}
                     <div className="space-y-2 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">chat_bubble_outline</span>
+                            <span aria-hidden="true" className="material-icons text-base">chat_bubble_outline</span>
                             Respuesta
                         </h3>
                         <label className="space-y-1">
@@ -79,7 +79,7 @@ export default function FAQsPage() {
                     {/* ── Category & Order ── */}
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">category</span>
+                            <span aria-hidden="true" className="material-icons text-base">category</span>
                             Categoría & Orden
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -44,18 +44,22 @@ export default async function Home() {
       <FAQJsonLd faqs={faqs} />
       <PricingJsonLd plans={plans} />
       <Navbar config={config} />
-      <HeroSection />
-      <MarqueeBanner />
-      <FeaturesGrid />
-      <ContentSplit />
-      <ProcessSection />
-      <PortfolioShowcase projects={projects} />
-      <OldWebsiteSection />
-      <ServicesSection services={services} />
-      <TestimonialsSection testimonials={testimonials} />
-      <PricingSection plans={plans} config={config} />
-      <FAQSection faqs={faqs} config={config} />
-      <ContactSection config={config} />
+      {/* Destino del skip link. La home no tenia landmark <main>: el unico
+          del documento estaba dentro de FAQSection, anidado en una <section>. */}
+      <main id="contenido">
+        <HeroSection />
+        <MarqueeBanner />
+        <FeaturesGrid />
+        <ContentSplit />
+        <ProcessSection />
+        <PortfolioShowcase projects={projects} />
+        <OldWebsiteSection />
+        <ServicesSection services={services} />
+        <TestimonialsSection testimonials={testimonials} />
+        <PricingSection plans={plans} config={config} />
+        <FAQSection faqs={faqs} config={config} />
+        <ContactSection config={config} />
+      </main>
       <Footer config={config} />
       <StickyMobileCTA config={config} />
       <WhatsAppChatWidget config={config} />

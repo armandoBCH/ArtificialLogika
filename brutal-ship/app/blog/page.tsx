@@ -112,7 +112,7 @@ export default async function BlogPage() {
                                         })}
                                     </span>
                                     <span className="text-sm font-medium text-gray-400 flex items-center gap-1">
-                                        <span className="material-icons text-sm">schedule</span>
+                                        <span aria-hidden="true" className="material-icons text-sm">schedule</span>
                                         {post.readTime}
                                     </span>
                                 </div>
@@ -130,7 +130,7 @@ export default async function BlogPage() {
                                 className="inline-flex w-max items-center gap-2 bg-black dark:bg-white text-white dark:text-black font-bold text-sm md:text-base uppercase py-3 px-6 rounded-md hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-colors"
                             >
                                 Leer artículo
-                                <span className="material-icons text-sm group-hover:translate-x-2 transition-transform">arrow_forward</span>
+                                <span aria-hidden="true" className="material-icons text-sm group-hover:translate-x-2 transition-transform">arrow_forward</span>
                             </Link>
                         </article>
                     ))}

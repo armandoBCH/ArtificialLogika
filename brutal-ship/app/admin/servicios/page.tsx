@@ -92,7 +92,7 @@ function FeatureItem({
                     : "bg-white/5 border-white/10 text-gray-600"
                     }`}
             >
-                <span className="material-icons text-sm">
+                <span aria-hidden="true" className="material-icons text-sm">
                     {feature.visible ? "visibility" : "visibility_off"}
                 </span>
             </button>
@@ -114,7 +114,7 @@ function FeatureItem({
                     className="w-6 h-5 flex items-center justify-center rounded-sm text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-gray-400 transition-all"
                     title="Mover arriba"
                 >
-                    <span className="material-icons text-xs">keyboard_arrow_up</span>
+                    <span aria-hidden="true" className="material-icons text-xs">keyboard_arrow_up</span>
                 </button>
                 <button
                     type="button"
@@ -123,7 +123,7 @@ function FeatureItem({
                     className="w-6 h-5 flex items-center justify-center rounded-sm text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-gray-400 transition-all"
                     title="Mover abajo"
                 >
-                    <span className="material-icons text-xs">keyboard_arrow_down</span>
+                    <span aria-hidden="true" className="material-icons text-xs">keyboard_arrow_down</span>
                 </button>
             </div>
 
@@ -134,7 +134,7 @@ function FeatureItem({
                 className="w-7 h-7 flex items-center justify-center rounded-sm text-hot-coral/60 hover:text-hot-coral hover:bg-hot-coral/10 transition-all shrink-0"
                 title="Eliminar feature"
             >
-                <span className="material-icons text-sm">close</span>
+                <span aria-hidden="true" className="material-icons text-sm">close</span>
             </button>
         </div>
     );
@@ -230,7 +230,7 @@ export default function ServiciosPage() {
                     {/* ── SECTION 1: Info ── */}
                     <div className="space-y-2">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">info</span>
+                            <span aria-hidden="true" className="material-icons text-base">info</span>
                             Información
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -252,7 +252,7 @@ export default function ServiciosPage() {
                     {/* ── SECTION 2: Icon Picker ── */}
                     <div className="space-y-2 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">emoji_emotions</span>
+                            <span aria-hidden="true" className="material-icons text-base">emoji_emotions</span>
                             Ícono
                         </h3>
                         <div className="flex flex-wrap gap-2">
@@ -266,7 +266,7 @@ export default function ServiciosPage() {
                                         : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
                                         }`}
                                 >
-                                    <span className="material-icons text-lg">{opt.value}</span>
+                                    <span aria-hidden="true" className="material-icons text-lg">{opt.value}</span>
                                     {opt.label}
                                 </button>
                             ))}
@@ -277,16 +277,16 @@ export default function ServiciosPage() {
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                <span className="material-icons text-base">checklist</span>
+                                <span aria-hidden="true" className="material-icons text-base">checklist</span>
                                 Ventajas / Features
                             </h3>
                             <div className="flex items-center gap-3 text-[10px] text-gray-500">
                                 <span className="flex items-center gap-1">
-                                    <span className="material-icons text-xs text-mint-fresh">visibility</span>
+                                    <span aria-hidden="true" className="material-icons text-xs text-mint-fresh">visibility</span>
                                     = visible en web
                                 </span>
                                 <span className="flex items-center gap-1">
-                                    <span className="material-icons text-xs">swap_vert</span>
+                                    <span aria-hidden="true" className="material-icons text-xs">swap_vert</span>
                                     = reordenar
                                 </span>
                             </div>
@@ -313,7 +313,7 @@ export default function ServiciosPage() {
                             onClick={addFeature}
                             className="w-full py-2 border-2 border-dashed border-white/10 text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:border-primary/40 hover:text-primary transition-all flex items-center justify-center gap-1.5"
                         >
-                            <span className="material-icons text-sm">add</span>
+                            <span aria-hidden="true" className="material-icons text-sm">add</span>
                             Agregar Feature
                         </button>
 
@@ -325,7 +325,7 @@ export default function ServiciosPage() {
                     {/* ── SECTION 4: CTA & Order ── */}
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">smart_button</span>
+                            <span aria-hidden="true" className="material-icons text-base">smart_button</span>
                             Botón & Orden
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -401,7 +401,7 @@ export default function ServiciosPage() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-primary/20 border border-primary/40 rounded-sm flex items-center justify-center">
-                                            <span className="material-icons text-primary text-xl">{s.icon}</span>
+                                            <span aria-hidden="true" className="material-icons text-primary text-xl">{s.icon}</span>
                                         </div>
                                         <div>
                                             <h3 className="text-white font-bold text-base leading-tight">{s.name}</h3>

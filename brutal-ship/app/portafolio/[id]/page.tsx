@@ -162,16 +162,16 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                     rel="noopener noreferrer"
                                     className="inline-flex w-full sm:w-auto items-center justify-center gap-2 bg-black text-white px-6 py-3 md:py-4 font-black uppercase tracking-widest text-xs md:text-sm border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] hover:bg-white hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                                 >
-                                    <span className="material-icons text-base">language</span>
+                                    <span aria-hidden="true" className="material-icons text-base">language</span>
                                     Visitar Sitio Web
-                                    <span className="material-icons text-sm">open_in_new</span>
+                                    <span aria-hidden="true" className="material-icons text-sm">open_in_new</span>
                                 </a>
                             )}
                             <a
                                 href="/#contacto"
                                 className="inline-flex w-full sm:w-auto items-center justify-center gap-2 bg-white text-black px-6 py-3 md:py-4 font-black uppercase tracking-widest text-xs md:text-sm border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-black hover:text-white transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                             >
-                                <span className="material-icons text-base">chat</span>
+                                <span aria-hidden="true" className="material-icons text-base">chat</span>
                                 Quiero Algo Así
                             </a>
                         </div>
@@ -188,7 +188,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                         {hasServices && (
                             <div className="w-full lg:w-1/2">
                                 <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
-                                    <span className="material-icons text-[#9b51e0] text-2xl md:text-3xl">verified</span>
+                                    <span aria-hidden="true" className="material-icons text-[#9b51e0] text-2xl md:text-3xl">verified</span>
                                     <h3 className="text-xl md:text-2xl font-black text-black dark:text-white uppercase tracking-tight m-0 leading-none">
                                         Servicios Aplicados
                                     </h3>
@@ -197,7 +197,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                     {project.applied_services.map((svc, idx) => (
                                         <div key={idx} className="bg-[#9b51e0] border-4 border-black p-3 md:p-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3 md:gap-4 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
                                             <div className="w-10 h-10 md:w-12 md:h-12 bg-white border-2 border-black flex items-center justify-center shrink-0">
-                                                <span className="material-icons text-[#9b51e0] text-xl md:text-2xl">
+                                                <span aria-hidden="true" className="material-icons text-[#9b51e0] text-xl md:text-2xl">
                                                     {svc.includes("One-Page") ? "web" : svc.includes("Landing") ? "track_changes" : "layers"}
                                                 </span>
                                             </div>
@@ -215,7 +215,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                             {hasFeatures && (
                                 <div>
                                     <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-                                        <span className="material-icons text-black dark:text-white text-xl md:text-2xl">auto_awesome</span>
+                                        <span aria-hidden="true" className="material-icons text-black dark:text-white text-xl md:text-2xl">auto_awesome</span>
                                         <h3 className="text-lg md:text-xl font-black text-black dark:text-white uppercase tracking-tight m-0 leading-none">
                                             Qué Incluye
                                         </h3>
@@ -223,7 +223,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                     <div className="flex flex-wrap gap-2">
                                         {project.applied_features.map((feat, idx) => (
                                             <span key={idx} className="inline-flex items-center gap-1 md:gap-2 bg-black text-white px-3 py-1.5 md:px-4 md:py-2 font-bold text-xs md:text-sm border-2 border-transparent hover:bg-white hover:text-black hover:border-black transition-all">
-                                                <span className="material-icons text-[#F2FA5A] text-xs md:text-sm">check_circle</span>
+                                                <span aria-hidden="true" className="material-icons text-[#F2FA5A] text-xs md:text-sm">check_circle</span>
                                                 {feat}
                                             </span>
                                         ))}

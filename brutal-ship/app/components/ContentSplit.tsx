@@ -15,19 +15,19 @@ export default function ContentSplit() {
                     <ul className="space-y-4 font-bold text-lg">
                         <li className="flex items-center gap-3">
                             <span className="bg-accent-yellow border-2 border-black p-1 rounded-sm">
-                                <span className="material-icons text-sm">check</span>
+                                <span aria-hidden="true" className="material-icons text-sm">check</span>
                             </span>
                             <span>Sin conocimientos técnicos necesarios</span>
                         </li>
                         <li className="flex items-center gap-3">
                             <span className="bg-accent-yellow border-2 border-black p-1 rounded-sm">
-                                <span className="material-icons text-sm">check</span>
+                                <span aria-hidden="true" className="material-icons text-sm">check</span>
                             </span>
                             <span>Proceso 100% guiado por nosotros</span>
                         </li>
                         <li className="flex items-center gap-3">
                             <span className="bg-accent-yellow border-2 border-black p-1 rounded-sm">
-                                <span className="material-icons text-sm">check</span>
+                                <span aria-hidden="true" className="material-icons text-sm">check</span>
                             </span>
                             <span>Soporte después de la entrega</span>
                         </li>

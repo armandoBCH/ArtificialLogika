@@ -20,7 +20,7 @@ export default function OldWebsiteSection() {
                         transition={{ duration: 0.6, ease: "easeOut" }}
                     >
                         <div className="inline-flex items-center gap-2 bg-hot-coral text-white font-bold px-4 py-2 border-2 border-black rounded-full shadow-[2px_2px_0px_#000] mb-6 uppercase tracking-wider text-sm">
-                            <span className="material-icons text-sm">handyman</span>
+                            <span aria-hidden="true" className="material-icons text-sm">handyman</span>
                             Rediseño Web
                         </div>
                         <h2 className="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter mb-6 leading-[1.05]">
@@ -33,7 +33,7 @@ export default function OldWebsiteSection() {
                         <div className="space-y-4 mb-10 w-full max-w-md">
                             <div className="flex items-start gap-4 p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#E11D48] transform transition-transform hover:-translate-y-1">
                                 <div className="w-10 h-10 bg-hot-coral rounded-lg border-2 border-black flex items-center justify-center flex-shrink-0">
-                                    <span className="material-icons text-white">hourglass_empty</span>
+                                    <span aria-hidden="true" className="material-icons text-white">hourglass_empty</span>
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-lg leading-none mb-1">Carga Lenta</h4>
@@ -43,7 +43,7 @@ export default function OldWebsiteSection() {
 
                             <div className="flex items-start gap-4 p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#fffb00] transform transition-transform hover:-translate-y-1">
                                 <div className="w-10 h-10 bg-accent-yellow rounded-lg border-2 border-black flex items-center justify-center flex-shrink-0">
-                                    <span className="material-icons text-black">smartphone</span>
+                                    <span aria-hidden="true" className="material-icons text-black">smartphone</span>
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-lg leading-none mb-1">No Adaptable</h4>
@@ -53,7 +53,7 @@ export default function OldWebsiteSection() {
 
                             <div className="flex items-start gap-4 p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#757575] transform transition-transform hover:-translate-y-1">
                                 <div className="w-10 h-10 bg-gray-300 rounded-lg border-2 border-black flex items-center justify-center flex-shrink-0">
-                                    <span className="material-icons text-black">design_services</span>
+                                    <span aria-hidden="true" className="material-icons text-black">design_services</span>
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-lg leading-none mb-1">Poco Profesional</h4>
@@ -63,7 +63,7 @@ export default function OldWebsiteSection() {
                         </div>
 
                         <a href="#contacto" className="inline-flex items-center gap-3 bg-primary text-white font-bold text-lg px-8 py-4 border-2 border-black rounded-lg shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-y-[2px] hover:translate-x-[2px] transition-all uppercase">
-                            Renová Tu Web Ahora <span className="material-icons">arrow_forward</span>
+                            Renová Tu Web Ahora <span aria-hidden="true" className="material-icons">arrow_forward</span>
                         </a>
                     </motion.div>
 
@@ -96,19 +96,19 @@ export default function OldWebsiteSection() {
                                 <div className="space-y-4">
                                     <div className="flex flex-col sm:flex-row items-center justify-center text-center gap-3 bg-white/5 p-4 rounded-lg border border-white/10">
                                         <div className="w-10 h-10 bg-mint text-black border-2 border-black rounded-lg flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_#000]">
-                                            <span className="material-icons font-black">bolt</span>
+                                            <span aria-hidden="true" className="material-icons font-black">bolt</span>
                                         </div>
                                         <span className="font-bold text-lg">Optimización Extrema</span>
                                     </div>
                                     <div className="flex flex-col sm:flex-row items-center justify-center text-center gap-3 bg-white/5 p-4 rounded-lg border border-white/10">
                                         <div className="w-10 h-10 bg-mint text-black border-2 border-black rounded-lg flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_#000]">
-                                            <span className="material-icons font-black">brush</span>
+                                            <span aria-hidden="true" className="material-icons font-black">brush</span>
                                         </div>
                                         <span className="font-bold text-lg">Diseño Moderno UX/UI</span>
                                     </div>
                                     <div className="flex flex-col sm:flex-row items-center justify-center text-center gap-3 bg-white/5 p-4 rounded-lg border border-white/10">
                                         <div className="w-10 h-10 bg-mint text-black border-2 border-black rounded-lg flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_#000]">
-                                            <span className="material-icons font-black">smartphone</span>
+                                            <span aria-hidden="true" className="material-icons font-black">smartphone</span>
                                         </div>
                                         <span className="font-bold text-lg">100% Celular-First</span>
                                     </div>
