@@ -16,6 +16,7 @@ interface Plan {
     subtitle: string;
     price: number;
     original_price: number | null;
+    monthly_price: number | null;
     currency: string;
     payment_type: string;
     price_note: string | null;
@@ -43,7 +44,7 @@ export default function PreciosPage() {
     const [creating, setCreating] = useState(false);
 
     const emptyPlan: Partial<Plan> = {
-        name: "", subtitle: "", price: 0, original_price: null, currency: "USD", payment_type: "Pago Único",
+        name: "", subtitle: "", price: 0, original_price: null, monthly_price: null, currency: "USD", payment_type: "Pago Único",
         price_note: "", features: [], is_featured: false, featured_label: "", cta_text: "Consultar",
         cta_style: "default", header_bg: "bg-ink-black", display_order: 0,
     };
@@ -138,6 +139,11 @@ export default function PreciosPage() {
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Precio Original</span>
                                 <input className="admin-input w-full line-through opacity-60" type="number" placeholder="Opcional" value={form.original_price || ""} onChange={(e) => setForm({ ...form, original_price: e.target.value ? Number(e.target.value) : null })} />
                                 <p className="text-[9px] text-gray-600">Se mostrará tachado</p>
+                            </label>
+                            <label className="space-y-1">
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Soporte / mes</span>
+                                <input className="admin-input w-full" type="number" placeholder="Opcional" value={form.monthly_price ?? ""} onChange={(e) => setForm({ ...form, monthly_price: e.target.value ? Number(e.target.value) : null })} />
+                                <p className="text-[9px] text-gray-600">Aparece en la tarjeta y en &quot;Valores Mensuales&quot;. Vacío = no se muestra.</p>
                             </label>
                             <div className="space-y-1">
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Moneda</span>

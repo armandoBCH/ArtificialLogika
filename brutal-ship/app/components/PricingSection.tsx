@@ -34,6 +34,20 @@ interface PricingSectionProps {
     config: SiteConfigMap;
 }
 
+/**
+ * Los planes vienen de Supabase, no del codigo: `lib/data/pricing.ts` es
+ * solo el fallback. Si la base todavia no corrio la migracion que agrega
+ * `monthly_price`, el campo llega `undefined` — y `undefined !== null` es
+ * true, asi que un chequeo ingenuo renderizaba "USD NaN /mes".
+ * Ademas Supabase puede devolver NUMERIC como string.
+ */
+function monthlyPriceOf(plan: PricingPlan): number | null {
+    const raw = plan.monthly_price;
+    if (raw === null || raw === undefined || raw === "") return null;
+    const n = typeof raw === "string" ? parseFloat(raw) : raw;
+    return Number.isFinite(n) && n > 0 ? n : null;
+}
+
 function FeatureItem({ feature }: { feature: PricingFeature }) {
     return (
         <div className="flex items-center gap-3">
@@ -50,6 +64,7 @@ function FeatureItem({ feature }: { feature: PricingFeature }) {
 function PlanCard({ plan, arsRate }: { plan: PricingPlan; arsRate?: string }) {
     const isFeatured = plan.is_featured;
     const arsReference = formatArsReference(plan.price, arsRate);
+    const monthly = monthlyPriceOf(plan);
 
     return (
         <motion.div
@@ -107,10 +122,10 @@ function PlanCard({ plan, arsRate }: { plan: PricingPlan; arsRate?: string }) {
                 {/* El soporte mensual ya no es un badge que dice "+ Soporte
                     Mensual" sin monto: el precio esta en la misma tarjeta,
                     junto al precio unico al que acompana. */}
-                {plan.monthly_price !== null && (
+                {monthly !== null && (
                     <div className="mb-4 border-2 border-black rounded-lg bg-soft-smoke dark:bg-white/10 px-3 py-2">
                         <p className="text-sm font-bold text-ink-black dark:text-white tabular-nums">
-                            + {formatPrice(plan.monthly_price, plan.currency)}
+                            + {formatPrice(monthly, plan.currency)}
                             <span className="font-medium text-gray-600 dark:text-gray-300">/mes</span>
                         </p>
                         <p className="text-xs font-medium text-gray-600 dark:text-gray-300">
@@ -144,6 +159,12 @@ function PlanCard({ plan, arsRate }: { plan: PricingPlan; arsRate?: string }) {
 }
 
 export default function PricingSection({ plans, config }: PricingSectionProps) {
+    // Si la base todavia no tiene la columna monthly_price, esta lista queda
+    // vacia y el panel muestra un texto en vez de un hueco.
+    const monthlyPlans = plans
+        .map((plan) => ({ plan, monthly: monthlyPriceOf(plan) }))
+        .filter((row): row is { plan: PricingPlan; monthly: number } => row.monthly !== null);
+
     const whatsappUrl = `https://wa.me/${config.whatsapp_number}?text=${encodeURIComponent("Hola, tengo dudas sobre los planes web")}`;
 
     return (
@@ -228,10 +249,9 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                                 de editarlos desde el panel. Ahora salen del mismo
                                 data layer que las tarjetas de arriba, asi que no
                                 pueden quedar desfasados entre si. */}
-                            <ul className="space-y-4 sm:space-y-5 relative z-10 list-none">
-                                {plans
-                                    .filter((plan) => plan.monthly_price !== null)
-                                    .map((plan) => (
+                            {monthlyPlans.length > 0 ? (
+                                <ul className="space-y-4 sm:space-y-5 relative z-10 list-none">
+                                    {monthlyPlans.map(({ plan, monthly }) => (
                                         <li
                                             key={plan.id}
                                             className="bg-white dark:bg-night-raised border-[3px] border-black dark:border-white/30 shadow-elev-2 p-4 sm:p-5 rounded-xl transition-transform hover:-translate-y-1"
@@ -243,7 +263,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                                                 <span className="flex items-baseline gap-1 text-black dark:text-white bg-soft-smoke dark:bg-white/10 px-2 sm:px-3 py-1 border-2 border-black dark:border-white/30 rounded-lg whitespace-nowrap">
                                                     <span className="font-bold text-xs sm:text-sm">{plan.currency}</span>
                                                     <span className="font-black text-xl sm:text-2xl md:text-3xl tabular-nums">
-                                                        {formatAmount(plan.monthly_price as number)}
+                                                        {formatAmount(monthly)}
                                                     </span>
                                                     <span className="font-bold text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
                                                         /mes
@@ -252,7 +272,14 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                                             </div>
                                         </li>
                                     ))}
-                            </ul>
+                                </ul>
+                            ) : (
+                                /* Estado vacio explicito: nunca un hueco en blanco. */
+                                <p className="relative z-10 bg-white dark:bg-night-raised border-[3px] border-black dark:border-white/30 shadow-elev-2 rounded-xl p-5 text-center font-bold text-ink-black dark:text-white">
+                                    Escribinos y te pasamos el valor mensual del plan que elijas.
+                                </p>
+                            )}
+
                             <div className="mt-6 sm:mt-10 flex w-full relative z-10">
                                 <div className="flex-1 items-center justify-center gap-2 sm:gap-3 bg-hot-coral border-[3px] border-black px-4 py-3 sm:py-4 rounded-xl shadow-[4px_4px_0px_#000] flex flex-row hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] transition-transform cursor-default">
                                     <span aria-hidden="true" className="material-icons text-white text-xl sm:text-2xl font-black">lock_open</span>

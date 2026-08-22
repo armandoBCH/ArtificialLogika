@@ -19,7 +19,7 @@ type AllowedTable = (typeof ALLOWED_TABLES)[number];
 const ALLOWED_FIELDS: Record<AllowedTable, string[]> = {
     site_config: ["key", "value", "type", "description", "is_active"],
     pricing_plans: [
-        "name", "subtitle", "price", "original_price", "currency",
+        "name", "subtitle", "price", "original_price", "monthly_price", "currency",
         "payment_type", "price_note", "features", "is_featured",
         "featured_label", "cta_text", "cta_style", "header_bg",
         "display_order", "is_active",

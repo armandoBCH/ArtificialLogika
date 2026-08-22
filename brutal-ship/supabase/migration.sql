@@ -240,3 +240,16 @@ INSERT INTO faqs (question, answer, display_order) VALUES
 ('¿Para qué tipo de negocio trabajan?', 'Para todos. Peluquerías, restaurantes, clínicas, estudios contables, tiendas de ropa, profesionales independientes, PyMEs y emprendedores. Si tenés un negocio o proyecto, te hacemos tu web.', 6),
 ('¿Cómo es la forma de pago?', 'Trabajamos con un 50% de seña para arrancar y el 50% restante al entregar. Si no te gusta el diseño inicial, te devolvemos la seña. Aceptamos transferencia bancaria y podemos armar un plan de pago si lo necesitás.', 7),
 ('¿Mi web va a aparecer en Google?', 'Sí. Todas nuestras webs están configuradas para que Google las encuentre y las muestre cuando alguien busque tu tipo de negocio. Esto se llama SEO y viene incluido en todos los planes.', 8);
+
+-- ============================================================
+-- Soporte y mantenimiento mensual por plan.
+-- Los valores vivian hardcodeados en PricingSection.tsx, asi que
+-- no se podian editar desde el panel. NULL = el plan no lo incluye.
+-- ============================================================
+ALTER TABLE pricing_plans
+    ADD COLUMN IF NOT EXISTS monthly_price NUMERIC;
+
+-- Valores actuales del sitio (ajustables desde /admin/precios)
+UPDATE pricing_plans SET monthly_price = 15 WHERE name ILIKE '%landing%' AND monthly_price IS NULL;
+UPDATE pricing_plans SET monthly_price = 25 WHERE name ILIKE '%institucional%' AND monthly_price IS NULL;
+UPDATE pricing_plans SET monthly_price = 35 WHERE name ILIKE '%commerce%' AND monthly_price IS NULL;

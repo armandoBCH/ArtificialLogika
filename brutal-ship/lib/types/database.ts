@@ -14,8 +14,12 @@ export interface PricingPlan {
     subtitle: string;
     price: number;
     original_price: number | null;
-    /** Soporte y mantenimiento mensual. null = el plan no lo incluye. */
-    monthly_price: number | null;
+    /**
+     * Soporte y mantenimiento mensual.
+     * null = el plan no lo incluye. undefined = la fila viene de una base
+     * que todavia no corrio la migracion que agrega la columna.
+     */
+    monthly_price?: number | null;
     currency: string;
     payment_type: string;
     price_note: string | null;
