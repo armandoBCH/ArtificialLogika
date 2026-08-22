@@ -16,10 +16,10 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#1A1A1A" },
-  ],
+  // Un solo tema. Antes se declaraba un color oscuro para navegadores en
+  // modo oscuro, asi que la barra del navegador se ponia oscura mientras
+  // la pagina seguia clara.
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -107,14 +107,6 @@ export default function RootLayout({
   return (
     <html lang="es-AR" className="scroll-smooth scroll-pt-20">
       <head>
-        {/* Tema: se aplica ANTES del primer paint para que no haya flash
-            blanco al entrar en modo oscuro. Bloqueante a propósito. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("logika-theme");if(t!=="light"&&(t==="dark"||window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})();`,
-          }}
-        />
-
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />

@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import MagneticWrapper from "./MagneticWrapper";
 import LogikaLogo from "./LogikaLogo";
-import ThemeToggle from "./ThemeToggle";
 import { trackWhatsAppClick } from "@/lib/analytics-events";
 import type { SiteConfigMap } from "@/lib/types/database";
 
@@ -140,8 +139,6 @@ export default function Navbar({ config }: NavbarProps) {
                     </div>
 
                     <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                        <ThemeToggle className="hidden sm:flex" />
-
                         <AnimatePresence>
                             {!isMobileMenuOpen && (
                                 <motion.div
@@ -211,13 +208,6 @@ export default function Navbar({ config }: NavbarProps) {
                                         </span>
                                     </a>
                                 ))}
-
-                                <div className="mt-2 flex items-center justify-between gap-3 border-t-2 border-black/10 dark:border-white/15 pt-4">
-                                    <span className="text-sm font-bold uppercase tracking-wider text-ink-black dark:text-white">
-                                        Tema
-                                    </span>
-                                    <ThemeToggle />
-                                </div>
 
                                 <div className="mt-2">
                                     <a

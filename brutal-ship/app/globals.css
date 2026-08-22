@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
-/* Force class-based dark mode (matches original HTMLs darkMode:"class") */
+/* El sitio es de UN SOLO TEMA: claro.
+   Esta linea NO se borra aunque no haya modo oscuro. Ata las variantes
+   `dark:` a la clase .dark, que nunca se aplica — asi quedan inertes.
+   Si se quitara, Tailwind volveria a su default (prefers-color-scheme) y
+   las 243 variantes `dark:` que quedan en los componentes se activarian
+   solas en cualquier dispositivo con el sistema en oscuro. */
 @variant dark (&:where(.dark, .dark *));
 
 /* ===================================================================
@@ -125,39 +130,12 @@
    =================================================================== */
 :root {
   --hard: #1A1A1A;
-  color-scheme: light;
+  color-scheme: light only;
 }
 
-.dark {
-  --hard: #f0eaf7;
-  color-scheme: dark;
 
-  /* El violeta de marca sobre #191121 da 2.91:1 — no llega ni al
-     umbral 3:1 de componentes. En oscuro sube al paso claro. */
-  --color-action: var(--color-primary-lift);
-  --color-surface: var(--color-night);
-  --color-surface-raised: var(--color-night-raised);
-  --color-line: #f0eaf7;
-  --color-text-muted: #a8a0b4;
-  --color-focus: #8ab4f8;
-}
 
-/* En modo oscuro los 249 `border-black` del codigo quedarian invisibles
-   sobre el fondo #191121. Una sola regla los remapea. */
-.dark .border-black { border-color: #f0eaf7; }
-.dark .decoration-black { text-decoration-color: #f0eaf7; }
 
-/* El violeta de marca como FONDO se queda en #8523e1: con texto blanco
-   da 6.32:1 y funciona en ambos temas. Pero como TEXTO o BORDE sobre
-   #191121 da 2.91:1 y no llega al umbral 3:1. Sube al paso claro. */
-.dark .text-primary { color: var(--color-primary-lift); }
-.dark .border-primary { border-color: var(--color-primary-lift); }
-.dark .fill-primary { fill: var(--color-primary-lift); }
-.dark .decoration-primary { text-decoration-color: var(--color-primary-lift); }
-
-/* Mismo problema con los verdes/corales decorativos usados como texto. */
-.dark .text-mint { color: #8fe0b4; }
-.dark .text-hot-coral { color: #ff8a8e; }
 
 /* ===================================================================
    GUARDA DE LA FUENTE DE ICONOS

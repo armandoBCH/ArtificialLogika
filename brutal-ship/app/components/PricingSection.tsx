@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
-import { formatPrice, formatAmount, formatArsReference } from "@/lib/format-price";
+import { formatPrice, formatAmount, formatArsReference, toNumber } from "@/lib/format-price";
 import { trackWhatsAppClick } from "@/lib/analytics-events";
 import type { PricingPlan, PricingFeature } from "@/lib/types/database";
 import type { SiteConfigMap } from "@/lib/types/database";
@@ -42,10 +42,8 @@ interface PricingSectionProps {
  * Ademas Supabase puede devolver NUMERIC como string.
  */
 function monthlyPriceOf(plan: PricingPlan): number | null {
-    const raw = plan.monthly_price;
-    if (raw === null || raw === undefined || raw === "") return null;
-    const n = typeof raw === "string" ? parseFloat(raw) : raw;
-    return Number.isFinite(n) && n > 0 ? n : null;
+    const n = toNumber(plan.monthly_price);
+    return n !== null && n > 0 ? n : null;
 }
 
 function FeatureItem({ feature }: { feature: PricingFeature }) {
