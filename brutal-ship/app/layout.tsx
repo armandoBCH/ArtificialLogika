@@ -107,41 +107,47 @@ export default function RootLayout({
   return (
     <html lang="es-AR" className="scroll-smooth scroll-pt-20">
       <head>
-        {/* Preconnect to external domains for faster resource loading */}
+        {/* Tema: se aplica ANTES del primer paint para que no haya flash
+            blanco al entrar en modo oscuro. Bloqueante a propósito. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("logika-theme");if(t!=="light"&&(t==="dark"||window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})();`,
+          }}
+        />
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
 
-        {/* Material Icons — 3 lightweight fonts loaded async (non-render-blocking) */}
-        {/* Removed Material Symbols Outlined (1076KB) — replaced with Material Icons Outlined */}
+        {/* UNA sola familia de íconos. Antes se inyectaban tres por JS
+            (Icons + Outlined + Round): tres descargas para un mismo
+            sistema, y como llegaban tarde se alcanzaba a ver el texto
+            literal de la ligadura ("arrow_forward"). Cargada como
+            stylesheet normal, Material Icons usa font-display:block y
+            oculta el texto durante la carga. */}
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        />
+        {/* Detecta si la fuente de iconos cargo DE VERDAD.
+            document.fonts.check() no sirve acá: devuelve true igual, porque
+            el fallback del sistema puede dibujar el texto. Lo que distingue
+            un icono de su texto crudo es el ancho: con la fuente cargada,
+            "arrow_forward" es UN glifo angosto; sin ella son 13 caracteres. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-              (function(){
-                var fonts=[
-                  "https://fonts.googleapis.com/icon?family=Material+Icons",
-                  "https://fonts.googleapis.com/icon?family=Material+Icons+Outlined",
-                  "https://fonts.googleapis.com/icon?family=Material+Icons+Round"
-                ];
-                fonts.forEach(function(href){
-                  var l=document.createElement("link");
-                  l.rel="stylesheet";l.href=href;l.crossOrigin="anonymous";
-                  document.head.appendChild(l);
-                });
-              })();
-            `,
+            __html: `(function(){var d=document;function fits(){var s=d.createElement("span");s.className="material-icons";s.textContent="arrow_forward";s.style.cssText="position:absolute;left:-9999px;top:0;font-size:24px;visibility:hidden;white-space:nowrap";(d.body||d.documentElement).appendChild(s);var w=s.offsetWidth;s.parentNode.removeChild(s);return w>0&&w<60}function go(){if(!fits())return false;d.documentElement.classList.add("icons-ready");return true}function start(){if(go())return;if(d.fonts&&d.fonts.ready){d.fonts.ready.then(go).catch(function(){})}var n=0,iv=setInterval(function(){if(go()||++n>20)clearInterval(iv)},250)}if(d.readyState==="loading"){d.addEventListener("DOMContentLoaded",start)}else{start()}})();`,
           }}
         />
-        {/* Fallback for no-JS */}
-        <noscript>
-          <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-          <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
-          <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
-        </noscript>
       </head>
       <body
         className={`${spaceGrotesk.variable} font-display bg-background-light dark:bg-background-dark text-black dark:text-white overflow-x-hidden`}
       >
+        {/* WCAG 2.4.1 Bypass Blocks: la home tiene 13 secciones y 6 links
+            de nav antes del contenido. */}
+        <a href="#contenido" className="skip-link">
+          Saltar al contenido
+        </a>
         <ScrollProgress />
         <PageTransition>
           {children}

@@ -7,77 +7,253 @@
    TAILWIND v4 THEME — Merged Design Tokens from all 8 HTML sections
    =================================================================== */
 @theme inline {
-  /* Font Family */
-  --font-display: "Space Grotesk", sans-serif;
+  /* ===================================================================
+     LOGIKA — DESIGN TOKENS v2
+     Un valor, un rol, un nombre. Los alias legacy se conservan
+     apuntando a los tokens nuevos: nada se rompe, todo converge.
+     =================================================================== */
 
-  /* ---- COLORS ---- */
-  /* Primary palette */
+  /* ---- FUENTE ---- */
+  --font-display: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
+
+  /* ---- 1. PALETA CRUDA (los unicos hex del sistema) ---- */
   --color-primary: #8523e1;
   --color-primary-dark: #6a1cb5;
-  --color-secondary: #00D68F;
+  --color-primary-lift: #b57bf0;   /* paso claro: 6.17:1 sobre #191121 */
 
-  /* Backgrounds */
-  --color-background-light: #f7f6f8;
-  --color-background-dark: #191121;
+  --color-mint-500: #00D68F;       /* verde de senal  */
+  --color-mint-200: #A0E8AF;       /* verde decorativo, NUNCA texto */
+  --color-coral-500: #FF5A5F;
+  --color-amber-400: #FDE047;
+  --color-blue-500: #4d96ff;
+  --color-whatsapp: #25D366;
 
-  /* Accent Colors */
-  --color-mint: #A0E8AF;
-  --color-accent-yellow: #FDE047;
-  --color-ink-black: #1A1A1A;
+  --color-ink: #1A1A1A;            /* UNICO negro del sistema */
+  --color-paper: #f7f6f8;
+  --color-paper-raised: #ffffff;
+  --color-night: #191121;
+  --color-night-raised: #241733;
+
+  /* ---- 2. ROLES SEMANTICOS ----
+     Regla: --color-action SOLO en elementos clicables. */
+  --color-action: var(--color-primary);
+  --color-action-hover: var(--color-primary-dark);
+  --color-surface: var(--color-paper);
+  --color-surface-raised: var(--color-paper-raised);
+  --color-line: var(--color-ink);
+  --color-text-muted: #5a5a5a;     /* 6.4:1 — sube desde #6B6B6B */
+  --color-success: var(--color-mint-500);
+  --color-danger: var(--color-coral-500);
+  --color-attention: var(--color-amber-400);
+  --color-focus: #0b57d0;          /* dedicado, distinto de action */
+
+  /* ---- 3. ALIAS LEGACY (mantienen el codigo actual funcionando) ---- */
+  --color-secondary: var(--color-mint-500);
+  --color-mint-fresh: var(--color-mint-500);
+  --color-mint: var(--color-mint-200);
+  --color-background-light: var(--color-paper);
+  --color-background-dark: var(--color-night);
+  --color-surface-light: var(--color-paper-raised);
+  --color-surface-dark: #2d1b3e;
+  --color-ink-black: var(--color-ink);
+  --color-neutral-dark: var(--color-ink);
+  --color-neutral-900: #111814;
   --color-soft-smoke: #F5F5F5;
-  --color-mint-fresh: #00D68F;
-  --color-hot-coral: #FF5A5F;
-  --color-muted-charcoal: #6B6B6B;
-
-  /* Portfolio colors */
-  --color-coral: #fb7185;
-
-  /* Process colors */
+  --color-muted-charcoal: var(--color-text-muted);
+  --color-hot-coral: var(--color-coral-500);
+  --color-accent-yellow: var(--color-amber-400);
   --color-accent-mint: #00dcb7;
   --color-accent-coral: #ff6b6b;
   --color-accent-blue: #4cc9f0;
-
-  /* Before/After colors */
+  --color-coral: #fb7185;
   --color-secondary-mint: #00f090;
   --color-secondary-coral: #ff4d4d;
-  --color-surface-light: #ffffff;
-  --color-surface-dark: #2d1b3e;
-
-  /* Testimonials colors */
-  --color-electric-blue: #4d96ff;
-
-  /* Contact colors */
+  --color-electric-blue: var(--color-blue-500);
   --color-violet-electric: #7c3aed;
-  --color-neutral-dark: #1a1a1a;
 
-  /* FAQ colors */
-  --color-neutral-900: #111814;
+  /* ---- 4. ELEVACION — 4 pasos que reemplazan 69 sombras ad hoc.
+     Usan --hard, que cambia de color en modo oscuro. ---- */
+  --shadow-elev-0: 0 0 0 0 var(--hard);
+  --shadow-elev-1: 2px 2px 0 0 var(--hard);
+  --shadow-elev-2: 4px 4px 0 0 var(--hard);
+  --shadow-elev-3: 8px 8px 0 0 var(--hard);
+  --shadow-elev-4: 16px 16px 0 0 var(--hard);
 
-  /* ---- BOX SHADOWS ---- */
-  --shadow-neobrutalism: 4px 4px 0px 0px #000000;
-  --shadow-neobrutalism-sm: 2px 2px 0px 0px #000000;
-  --shadow-neobrutalism-lg: 8px 8px 0px 0px #000000;
-  --shadow-neobrutalism-primary: 6px 6px 0px 0px #8523e1;
-  --shadow-neo: 4px 4px 0px 0px #1A1A1A;
-  --shadow-neo-sm: 2px 2px 0px 0px #1A1A1A;
-  --shadow-neo-hover: 6px 6px 0px 0px #1A1A1A;
-  --shadow-hard: 4px 4px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-hard-sm: 2px 2px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-hard-lg: 8px 8px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-hard-white: 4px 4px 0px 0px rgba(255, 255, 255, 1);
-  --shadow-neo-lg: 8px 8px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-neo-dark: 4px 4px 0px 0px #7f06f9;
-  --shadow-neobrutalist: 4px 4px 0px 0px #000000;
-  --shadow-neobrutalist-sm: 2px 2px 0px 0px #000000;
-  --shadow-neobrutalism-hover: 2px 2px 0px 0px #121212;
-  --shadow-neobrutalism-active: 0px 0px 0px 0px #121212;
+  /* Alias legacy -> los 4 pasos. Deduplica sin tocar 200 usos. */
+  --shadow-neobrutalism: var(--shadow-elev-2);
+  --shadow-neobrutalism-sm: var(--shadow-elev-1);
+  --shadow-neobrutalism-lg: var(--shadow-elev-3);
+  --shadow-neobrutalism-hover: var(--shadow-elev-1);
+  --shadow-neobrutalism-active: var(--shadow-elev-0);
+  --shadow-neobrutalist: var(--shadow-elev-2);
+  --shadow-neobrutalist-sm: var(--shadow-elev-1);
+  --shadow-neo: var(--shadow-elev-2);
+  --shadow-neo-sm: var(--shadow-elev-1);
+  --shadow-neo-lg: var(--shadow-elev-3);
+  --shadow-neo-hover: 6px 6px 0 0 var(--hard);
+  --shadow-hard: var(--shadow-elev-2);
+  --shadow-hard-sm: var(--shadow-elev-1);
+  --shadow-hard-lg: var(--shadow-elev-3);
+  --shadow-hard-white: 4px 4px 0 0 #ffffff;
+  --shadow-neobrutalism-primary: 6px 6px 0 0 var(--color-primary);
+  --shadow-neo-dark: 4px 4px 0 0 #7f06f9;
+  --shadow-focus: 0 0 0 3px var(--color-focus);
 
-  /* ---- BORDER RADIUS ---- */
-  --radius: 0.125rem;
-  --radius-lg: 0.25rem;
-  --radius-xl: 0.5rem;
+  /* ---- 5. RADIOS — monotonicos. Antes rounded-lg (4px) era MAS CHICO
+     que rounded-md (6px). Ahora la escala crece de verdad. ---- */
+  --radius: 4px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 12px;
+  --radius-3xl: 16px;
   --radius-full: 9999px;
+
+  /* ---- 6. MOVIMIENTO — 150-300ms para UI ---- */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snap: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
+/* ===================================================================
+   COLOR DE LA SOMBRA/BORDE DURO — la pieza que hace posible
+   el modo oscuro en un sistema neobrutalista.
+   =================================================================== */
+:root {
+  --hard: #1A1A1A;
+  color-scheme: light;
+}
+
+.dark {
+  --hard: #f0eaf7;
+  color-scheme: dark;
+
+  /* El violeta de marca sobre #191121 da 2.91:1 — no llega ni al
+     umbral 3:1 de componentes. En oscuro sube al paso claro. */
+  --color-action: var(--color-primary-lift);
+  --color-surface: var(--color-night);
+  --color-surface-raised: var(--color-night-raised);
+  --color-line: #f0eaf7;
+  --color-text-muted: #a8a0b4;
+  --color-focus: #8ab4f8;
+}
+
+/* En modo oscuro los 249 `border-black` del codigo quedarian invisibles
+   sobre el fondo #191121. Una sola regla los remapea. */
+.dark .border-black { border-color: #f0eaf7; }
+.dark .decoration-black { text-decoration-color: #f0eaf7; }
+
+/* El violeta de marca como FONDO se queda en #8523e1: con texto blanco
+   da 6.32:1 y funciona en ambos temas. Pero como TEXTO o BORDE sobre
+   #191121 da 2.91:1 y no llega al umbral 3:1. Sube al paso claro. */
+.dark .text-primary { color: var(--color-primary-lift); }
+.dark .border-primary { border-color: var(--color-primary-lift); }
+.dark .fill-primary { fill: var(--color-primary-lift); }
+.dark .decoration-primary { text-decoration-color: var(--color-primary-lift); }
+
+/* Mismo problema con los verdes/corales decorativos usados como texto. */
+.dark .text-mint { color: #8fe0b4; }
+.dark .text-hot-coral { color: #ff8a8e; }
+
+/* ===================================================================
+   GUARDA DE LA FUENTE DE ICONOS
+   Material Icons funciona por ligaduras: el markup dice <span>menu</span>
+   y la fuente lo dibuja. Si la fuente no llega —red lenta, bloqueo del
+   dominio, error de CDN— el navegador muestra la palabra literal:
+   "arrow_forward", "ROCKET_LAUNCH", "verified" en medio del contenido.
+   (Verificado: al renderizar sin acceso a fonts.googleapis.com aparecen
+   esos textos crudos en el hero y en el marquee.)
+
+   Como todos los iconos son decorativos y ya llevan aria-hidden, es
+   preferible que no se vean a que se lean como texto suelto. Se revelan
+   solo cuando la fuente confirmo estar disponible.
+   =================================================================== */
+.material-icons {
+  visibility: hidden;
+}
+
+html.icons-ready .material-icons {
+  visibility: visible;
+}
+
+/* ===================================================================
+   CONTRATO DE INTERACCION — UNA sola fisica para todo el sitio.
+   Antes convivian dos modelos opuestos: .neo-card SUBIA al hover
+   (translate negativo + sombra mayor) y .card-neo se HUNDIA
+   (translate positivo + sombra menor). Nombres casi identicos,
+   comportamiento inverso. Ahora todo se hunde hacia su sombra.
+   =================================================================== */
+.neo-card,
+.card-neo,
+.surface-interactive {
+  border: 2px solid var(--color-line);
+  box-shadow: var(--shadow-elev-2);
+  transition: transform var(--duration-fast) var(--ease-out-soft),
+              box-shadow var(--duration-fast) var(--ease-out-soft);
+}
+
+.neo-card:hover,
+.card-neo:hover,
+.surface-interactive:hover {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-elev-1);
+}
+
+.neo-card:active,
+.card-neo:active,
+.surface-interactive:active {
+  transform: translate(4px, 4px);
+  box-shadow: var(--shadow-elev-0);
+}
+
+.pill-neo {
+  border: 2px solid var(--color-line);
+  box-shadow: var(--shadow-elev-1);
+}
+
+.dashed-connector {
+  background-image: linear-gradient(to right, var(--hard) 50%, rgba(255, 255, 255, 0) 0%);
+  background-position: bottom;
+  background-size: 20px 2px;
+  background-repeat: repeat-x;
+  height: 2px;
+}
+
+/* ===================================================================
+   FOCO VISIBLE GLOBAL
+   Antes habia 8 `outline-none` sin reemplazo y cero `focus-visible`
+   en todo el repo: navegar con teclado no dejaba rastro.
+   =================================================================== */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* El foco nunca queda tapado por la navbar fija (WCAG 2.4.11). */
+:target { scroll-margin-top: 7rem; }
+
+/* Utilidad de salto de navegacion (WCAG 2.4.1 Bypass Blocks). */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -100px;
+  z-index: 100;
+  background: var(--color-action);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elev-2);
+  transition: top var(--duration-fast) var(--ease-out-soft);
+}
+.skip-link:focus { top: 0.75rem; }
+
 
 /* ===================================================================
    GLOBAL STYLES — Aggregated from all 8 HTML <style> blocks
@@ -136,15 +312,6 @@ body {
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
 }
 
-/* Neo Card (from HTML #2 - Services) */
-.neo-card {
-  transition: all 0.2s ease-in-out;
-}
-
-.neo-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px #1A1A1A;
-}
 
 /* Decorative Shape (from HTML #2 - Services) */
 .decorative-shape {
@@ -154,32 +321,8 @@ body {
   pointer-events: none;
 }
 
-/* Card Neo (from HTML #4 - Process) */
-.card-neo {
-  border: 2px solid #121212;
-  box-shadow: 4px 4px 0px 0px #121212;
-  transition: all 0.2s ease;
-}
 
-.card-neo:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px 0px #121212;
-}
 
-/* Pill Neo (from HTML #4 - Process) */
-.pill-neo {
-  border: 2px solid #121212;
-  box-shadow: 2px 2px 0px 0px #121212;
-}
-
-/* Dashed Connector (from HTML #4 - Process) */
-.dashed-connector {
-  background-image: linear-gradient(to right, #121212 50%, rgba(255, 255, 255, 0) 0%);
-  background-position: bottom;
-  background-size: 20px 2px;
-  background-repeat: repeat-x;
-  height: 2px;
-}
 
 /* Floating Shapes (from HTML #4 - Process) */
 .shape-float {
