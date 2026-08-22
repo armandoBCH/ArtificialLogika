@@ -14,6 +14,8 @@ export interface PricingPlan {
     subtitle: string;
     price: number;
     original_price: number | null;
+    /** Soporte y mantenimiento mensual. null = el plan no lo incluye. */
+    monthly_price: number | null;
     currency: string;
     payment_type: string;
     price_note: string | null;

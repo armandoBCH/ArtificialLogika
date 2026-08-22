@@ -8,6 +8,9 @@ const DEFAULT_CONFIG: SiteConfigMap = {
     location: "Buenos Aires, Argentina",
     instagram_url: "",
     response_time: "48hs",
+    // Cotizacion USD->ARS. Vacio = no se muestra equivalencia en pesos.
+    // Se carga desde el panel; nunca se hardcodea una cotizacion.
+    usd_ars_rate: "",
 };
 
 export async function getSiteConfig(): Promise<SiteConfigMap> {
