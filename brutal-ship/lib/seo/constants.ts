@@ -17,8 +17,8 @@ export const BUSINESS = {
     locale: "es_AR",
     language: "es",
     country: "AR",
-    currency: "ARS",
-    email: "contactologika@gmail.com.ar",
+    currency: "USD",  // Coincide con los planes y con el JSON-LD. Antes decia ARS mientras el schema publicaba USD.
+    email: "contactologika@gmail.com",
     phone: "+542284638361",
     areaServed: "Argentina",
     geo: {

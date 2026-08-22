@@ -4,6 +4,14 @@ const propertyId = process.env.GA_PROPERTY_ID;
 const clientEmail = process.env.GA_CLIENT_EMAIL;
 const privateKey = process.env.GA_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
+function missingEnvVars(): string[] {
+    const missing: string[] = [];
+    if (!propertyId) missing.push("GA_PROPERTY_ID");
+    if (!clientEmail) missing.push("GA_CLIENT_EMAIL");
+    if (!privateKey) missing.push("GA_PRIVATE_KEY");
+    return missing;
+}
+
 function getClient() {
     if (!propertyId || !clientEmail || !privateKey) {
         return null;
@@ -58,6 +66,15 @@ export interface AnalyticsData {
     trafficSources: TrafficSource[];
     deviceCategories: DeviceCategory[];
     configured: boolean;
+    /**
+     * Que falta para que el panel tenga datos. Antes, sin las variables de
+     * entorno, la funcion devolvia todo en cero y el panel mostraba ceros:
+     * un cero honesto ("nadie visito") y un cero roto ("no hay credenciales")
+     * se veian exactamente igual. Por eso los numeros no eran confiables.
+     */
+    missingConfig: string[];
+    /** El % de fuentes se calcula sobre el top 5, no sobre el total. */
+    trafficSourcesArePartial: boolean;
     days: number;
 }
 
@@ -72,6 +89,8 @@ export async function getAnalyticsData(days: number = 30): Promise<AnalyticsData
     if (!client) {
         return {
             configured: false,
+            missingConfig: missingEnvVars(),
+            trafficSourcesArePartial: false,
             kpis: {
                 activeUsers: 0,
                 sessions: 0,
@@ -212,6 +231,8 @@ export async function getAnalyticsData(days: number = 30): Promise<AnalyticsData
 
     return {
         configured: true,
+        missingConfig: [],
+        trafficSourcesArePartial: (sourcesResponse.rows?.length ?? 0) >= 5,
         kpis,
         dailyVisitors,
         topPages,

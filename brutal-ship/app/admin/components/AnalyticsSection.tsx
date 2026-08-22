@@ -206,20 +206,37 @@ function DeviceRing({ devices }: { devices: {category: string, percentage: numbe
 }
 
 // ─── Not configured state ────────────────────────────
-function NotConfigured() {
+const GA_ENV_VARS = [
+    { name: "GA_PROPERTY_ID", example: "tu_property_id" },
+    { name: "GA_CLIENT_EMAIL", example: "tu_service_account@..." },
+    { name: "GA_PRIVATE_KEY", example: '"-----BEGIN PRIVATE KEY-----..."' },
+];
+
+function NotConfigured({ missing = [] }: { missing?: string[] }) {
     return (
         <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-8 text-center shadow-[4px_4px_0px_#8523e1]">
-            <div className="text-5xl mb-4 animate-bounce">📊</div>
+            <div className="text-5xl mb-4">📊</div>
             <h3 className="text-2xl font-black text-white font-display mb-2">
                 Google Analytics no configurado
             </h3>
             <p className="text-gray-400 max-w-md mx-auto mb-6">
-                Conectá el dashboard a GA4 añadiendo las siguientes variables a tu archivo <code className="text-primary font-bold">.env.local</code> o en Vercel.
+                {missing.length > 0
+                    ? `Falta${missing.length > 1 ? "n" : ""} ${missing.length} variable${missing.length > 1 ? "s" : ""} de entorno. Los números de abajo estarían en cero por falta de credenciales, no por falta de tráfico.`
+                    : "Conectá el dashboard a GA4 añadiendo estas variables en .env.local o en Vercel."}
             </p>
-            <div className="bg-black/50 border border-white/10 rounded-sm p-4 text-left max-w-xl mx-auto font-mono text-xs text-gray-300 space-y-2 overflow-x-auto">
-                <p><span className="text-secondary font-bold">GA_PROPERTY_ID</span>=tu_property_id</p>
-                <p><span className="text-secondary font-bold">GA_CLIENT_EMAIL</span>=tu_service_account@...</p>
-                <p><span className="text-secondary font-bold">GA_PRIVATE_KEY</span>="-----BEGIN PRIVATE KEY-----..."</p>
+            <div className="bg-black/50 border border-white/10 rounded-sm p-4 text-left max-w-xl mx-auto font-mono text-xs space-y-2 overflow-x-auto">
+                {GA_ENV_VARS.map((v) => {
+                    const isMissing = missing.includes(v.name);
+                    return (
+                        <p key={v.name} className={isMissing ? "text-white" : "text-gray-500"}>
+                            <span className={isMissing ? "text-hot-coral font-bold" : "text-secondary font-bold"}>
+                                {v.name}
+                            </span>
+                            ={v.example}
+                            {isMissing && <span className="ml-2 text-hot-coral font-bold">← falta</span>}
+                        </p>
+                    );
+                })}
             </div>
         </div>
     );
@@ -281,7 +298,7 @@ export default function AnalyticsSection() {
         return (
             <div className="space-y-6">
                 <h2 className="text-2xl font-black text-white font-display">📈 Estadísticas de Tráfico</h2>
-                <NotConfigured />
+                <NotConfigured missing={data?.missingConfig} />
             </div>
         );
     }
