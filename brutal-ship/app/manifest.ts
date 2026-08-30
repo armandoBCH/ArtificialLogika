@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL, BUSINESS } from "@/lib/seo/constants";
+import { BUSINESS } from "@/lib/seo/constants";
 
 export default function manifest(): MetadataRoute.Manifest {
     return {

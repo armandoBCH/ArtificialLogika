@@ -138,7 +138,13 @@ export default function TestimoniosPage() {
                             <div className="flex items-start gap-4">
                                 {/* Preview */}
                                 <div className="w-16 h-16 rounded-full bg-white/5 border-2 border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                                    {/* Decision, no descuido: avatar_url es un campo de texto libre y
+                                        next/image lanza en runtime si el host no esta en remotePatterns,
+                                        tirando abajo la pagina del admin. <img> muestra la imagen rota y
+                                        sigue. Ademas es una vista detras de login: no hay LCP que
+                                        optimizar, y si costo de optimizacion por imagen. */}
                                     {form.avatar_url ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
                                         <img src={form.avatar_url} alt="Preview" className="w-full h-full object-cover rounded-full" />
                                     ) : (
                                         <span className="text-gray-500 text-2xl">{form.name?.[0] || "?"}</span>
@@ -249,6 +255,12 @@ export default function TestimoniosPage() {
                     {data.map((t) => (
                         <div key={t.id} className={`bg-[#1e1530] border-2 rounded-sm p-5 flex items-start gap-4 transition-all ${t.is_active ? "border-white/10 hover:border-primary/30" : "border-white/5 opacity-50"}`}>
                             <div className="w-12 h-12 rounded-full bg-primary/20 border-2 border-primary/40 flex items-center justify-center shrink-0 text-lg overflow-hidden">
+                                {/* eslint-disable-next-line @next/next/no-img-element --
+                                    Decision, no descuido: avatar_url es un campo de texto libre y
+                                    next/image lanza en runtime si el host no esta en remotePatterns,
+                                    tirando abajo la pagina del admin. <img> muestra la imagen rota y
+                                    sigue. Ademas es una vista detras de login: no hay LCP que
+                                    optimizar, y si costo de optimizacion por imagen. */}
                                 {t.avatar_url ? <img src={t.avatar_url} alt={t.name} className="w-full h-full rounded-full object-cover" /> : t.name?.[0]}
                             </div>
                             <div className="flex-1 min-w-0">

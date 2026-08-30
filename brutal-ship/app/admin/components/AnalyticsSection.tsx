@@ -227,7 +227,7 @@ function NotConfigured() {
             <div className="bg-black/50 border border-white/10 rounded-sm p-4 text-left max-w-xl mx-auto font-mono text-xs text-gray-300 space-y-2 overflow-x-auto">
                 <p><span className="text-secondary font-bold">GA_PROPERTY_ID</span>=tu_property_id</p>
                 <p><span className="text-secondary font-bold">GA_CLIENT_EMAIL</span>=tu_service_account@...</p>
-                <p><span className="text-secondary font-bold">GA_PRIVATE_KEY</span>="-----BEGIN PRIVATE KEY-----..."</p>
+                <p><span className="text-secondary font-bold">GA_PRIVATE_KEY</span>=&quot;-----BEGIN PRIVATE KEY-----...&quot;</p>
             </div>
         </div>
     );

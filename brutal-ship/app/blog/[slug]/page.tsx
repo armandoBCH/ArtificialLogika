@@ -158,13 +158,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         <p className="text-xl md:text-2xl font-medium text-ink-black mb-8 max-w-2xl mx-auto">
                             Contactanos y en menos de 48hs te enviamos un presupuesto + mockup gratis. Sin letra chica.
                         </p>
-                        <a
+                        <Link
                             href="/#contacto"
                             className="cta inline-flex max-w-full items-center justify-center gap-3 bg-black text-white font-black text-lg md:text-xl uppercase py-5 px-10 rounded-xl border-4 border-transparent hover:border-primary hover:bg-transparent hover:text-primary transition-all duration-300 transform hover:-translate-y-1 shadow-neobrutalism-lg hover:shadow-neobrutalism-xl"
                         >
                             Pedir Presupuesto Gratis
                             <span aria-hidden="true" className="material-icons text-xl">rocket_launch</span>
-                        </a>
+                        </Link>
                     </div>
                 </div>
 

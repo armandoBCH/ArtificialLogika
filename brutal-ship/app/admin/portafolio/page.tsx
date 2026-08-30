@@ -7,6 +7,12 @@ import dynamic from "next/dynamic";
 
 const ScreenshotCropModal = dynamic(() => import("../components/ScreenshotCropModal"), { ssr: false });
 
+// Las features de un servicio se guardan como {order, text, visible} en la base.
+// El union contempla ademas el string suelto, que es la forma vieja que todavia
+// puede aparecer en filas antiguas. Antes esto era `any`, que apagaba el chequeo
+// justo en el punto donde conviven dos formatos.
+type FeatureDeServicio = string | { text: string; order?: number; visible?: boolean };
+
 interface PortfolioStat {
     value: string;
     label: string;
@@ -198,7 +204,7 @@ export default function PortafolioPage() {
         if (current.includes(svcName)) {
             // Remove service and its features
             const svc = availableServices.find(s => s.name === svcName);
-            const featsToRemove = (svc?.features || []).map((f: any) => typeof f === 'string' ? f : f.text);
+            const featsToRemove = (svc?.features || []).map((f: FeatureDeServicio) => typeof f === 'string' ? f : f.text);
             setForm({
                 ...form,
                 applied_services: current.filter(s => s !== svcName),
@@ -223,7 +229,7 @@ export default function PortafolioPage() {
     const selectedServiceFeatures = availableServices
         .filter(s => (form.applied_services || []).includes(s.name))
         .flatMap(s => s.features)
-        .map((f: any) => typeof f === 'string' ? f : f.text)
+        .map((f: FeatureDeServicio) => typeof f === 'string' ? f : f.text)
         .filter((v: string, i: number, a: string[]) => a.indexOf(v) === i); // deduplicate
 
     // Helpers for stats array
@@ -461,7 +467,7 @@ export default function PortafolioPage() {
                                                 ) : (
                                                     <div className="flex flex-col items-center gap-1.5 py-2">
                                                         <span aria-hidden="true" className={`material-icons text-2xl ${draggingSlot === "16x9" ? "text-secondary" : "text-gray-500"}`}>
-                                                            {draggingSlot === "16x9" ? "file_download" : "wide_screen"}
+                                                            {draggingSlot === "16x9" ? "file_download" : "crop_16_9"}
                                                         </span>
                                                         <p className="text-gray-300 text-xs font-bold">
                                                             {draggingSlot === "16x9" ? "Soltá acá" : "Subir imagen 16:9"}
@@ -478,7 +484,7 @@ export default function PortafolioPage() {
                                             {uploadError}
                                         </p>
                                     )}
-                                    <p className="text-[10px] text-gray-500">💡 También podés usar "📸 Capturar" para generar ambos recortes automáticamente desde la URL.</p>
+                                    <p className="text-[10px] text-gray-500">💡 También podés usar &quot;📸 Capturar&quot; para generar ambos recortes automáticamente desde la URL.</p>
                                 </div>
 
                                 {/* Image Preview */}
@@ -753,6 +759,12 @@ export default function PortafolioPage() {
                             <div key={p.id} className="bg-[#1e1530] border-2 border-white/10 rounded-sm overflow-hidden group hover:border-primary/40 transition-all flex flex-col">
                                 {p.image_url ? (
                                     <div className="h-48 bg-black/40 flex items-center justify-center overflow-hidden border-b border-white/5 relative">
+                                        {/* eslint-disable-next-line @next/next/no-img-element --
+                                            Decision, no descuido: image_url es un campo de texto libre y
+                                            next/image lanza en runtime si el host no esta en remotePatterns,
+                                            tirando abajo la pagina del admin. <img> muestra la imagen rota y
+                                            sigue. Ademas es una vista detras de login: no hay LCP que
+                                            optimizar, y si costo de optimizacion por imagen. */}
                                         <img src={p.image_url} alt={p.image_alt || p.title} className="w-full h-full object-cover" />
                                         {!p.is_active && (
                                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm z-10">

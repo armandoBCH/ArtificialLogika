@@ -1,9 +1,4 @@
-import {
-    SITE_URL,
-    BUSINESS,
-    DEFAULT_OG_IMAGE,
-    buildBreadcrumbs,
-} from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS } from "@/lib/seo/constants";
 import type { PricingPlan } from "@/lib/types/database";
 
 // `priceValidUntil` solo necesita ser estable, no exacto al milisegundo. A nivel de

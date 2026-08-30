@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         const buffer = Buffer.from(base64Data, "base64");
 
         // Use the existing supabase client to upload to "Images" bucket
-        const { data, error } = await supabase
+        const { error } = await supabase
             .storage
             .from("Images")
             .upload(`${uploadFolder}/${safeFilename}`, buffer, {
