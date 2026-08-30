@@ -86,7 +86,12 @@ export async function getPortfolioProjects(): Promise<PortfolioProject[]> {
             .from("portfolio_projects")
             .select("*")
             .eq("is_active", true)
-            .order("display_order", { ascending: true });
+            // Segundo criterio a proposito: hoy los 6 proyectos activos tienen
+            // display_order 0, asi que ordenar solo por eso deja el resultado a
+            // criterio de Postgres y la home podia mostrar tres distintos entre
+            // build y build. Con created_at el orden queda fijo.
+            .order("display_order", { ascending: true })
+            .order("created_at", { ascending: true });
 
         if (error || !data || data.length === 0) {
             return DEFAULT_PROJECTS;

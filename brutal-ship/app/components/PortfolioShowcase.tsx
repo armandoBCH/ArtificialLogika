@@ -49,9 +49,19 @@ function isRealStat(stat: { value?: string | null; label?: string | null }) {
 function ProjectCard({ project, index }: { project: PortfolioProject; index: number }) {
     const colors = accentColors[project.accent_color] || accentColors.primary;
     const isEven = index % 2 === 0;
-    const realStats = (project.stats ?? []).filter(isRealStat);
-    // A project whose only "results" were placeholders is a demo, whatever the flag says.
-    const showSampleBadge = project.is_sample || realStats.length === 0;
+    const stats = project.stats ?? [];
+    const realStats = stats.filter(isRealStat);
+
+    // El sello decia "Proyecto de Muestra" tambien cuando el proyecto no tenia
+    // ninguna metrica cargada. Eso etiquetaba como demo a dos clientes reales
+    // (Expresion Honesta y Boda Carlos y Jenlys), que existen y estan publicados:
+    // simplemente todavia no tienen numeros medidos.
+    //
+    // No cargar metricas no dice nada sobre si el trabajo es real. Lo que si dice
+    // algo es tener metricas y que sean todas de relleno: eso es una demo aunque
+    // el flag diga lo contrario, y esa proteccion se mantiene.
+    const soloTienePlaceholders = stats.length > 0 && realStats.length === 0;
+    const showSampleBadge = project.is_sample || soloTienePlaceholders;
 
     return (
         <article className="group relative bg-white border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-lg transition-all duration-300 transform hover:-translate-y-1 hover:-rotate-1 hover:scale-[1.01]">
@@ -149,8 +159,29 @@ function ProjectCard({ project, index }: { project: PortfolioProject; index: num
     );
 }
 
+/**
+ * Elige los tres que van en la home.
+ *
+ * Antes era `projects.slice(0, 3)`: los tres primeros que llegaran. Como todos
+ * los proyectos activos comparten display_order 0, eso dejaba la seleccion al
+ * azar, y el resultado era que RAGO AUTOMOTORES  el unico caso con metricas
+ * reales  no aparecia, mientras si entraba una Barberia que esta marcada como
+ * muestra.
+ *
+ * La regla ahora: el trabajo real va primero. Las muestras solo rellenan lo que
+ * sobra. Dentro de cada grupo se respeta el orden que definis en el panel.
+ *
+ * Se autolimita: a medida que cargues clientes reales, las muestras se caen
+ * solas de la home sin que haya que tocar nada.
+ */
+function elegirDestacados(proyectos: PortfolioProject[], cuantos = 3): PortfolioProject[] {
+    const reales = proyectos.filter((p) => !p.is_sample);
+    const muestras = proyectos.filter((p) => p.is_sample);
+    return [...reales, ...muestras].slice(0, cuantos);
+}
+
 export default function PortfolioShowcase({ projects }: PortfolioShowcaseProps) {
-    const featuredProjects = projects.slice(0, 3);
+    const featuredProjects = elegirDestacados(projects);
 
     return (
         <section id="portafolio" aria-labelledby="portafolio-heading" className="relative w-full bg-ink-black pb-20">
