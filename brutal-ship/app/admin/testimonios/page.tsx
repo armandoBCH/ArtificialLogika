@@ -5,7 +5,7 @@ import { useAdminData } from "../hooks/useAdminData";
 import type { Testimonial } from "@/lib/types/database";
 
 const BADGE_OPTIONS = [
-    { text: "Caso de Éxito", color: "bg-electric-blue/20 text-electric-blue" },
+    { text: "Caso de Éxito", color: "bg-primary/20 text-primary" },
     { text: "Cliente Frecuente", color: "bg-mint/20 text-teal-700" },
     { text: "Recomendado", color: "bg-accent-yellow/20 text-yellow-700" },
     { text: "Servicios", color: "bg-primary/20 text-primary" },
@@ -85,7 +85,7 @@ export default function TestimoniosPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-white font-display">💬 Testimonios</h1>
+                    <h1 className="text-3xl font-black text-white font-body">💬 Testimonios</h1>
                     <p className="text-gray-400 mt-1">
                         Gestionar testimonios de clientes · <span className="text-secondary font-bold">{activeCount} visibles</span> de {data.length}
                     </p>
@@ -97,14 +97,14 @@ export default function TestimoniosPage() {
 
             {showForm && (
                 <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-6 space-y-6">
-                    <h2 className="text-xl font-black text-white font-display border-b border-white/10 pb-4">
+                    <h2 className="text-xl font-black text-white font-body border-b border-white/10 pb-4">
                         {editing ? "✏️ Editar Testimonio" : "🆕 Nuevo Testimonio"}
                     </h2>
 
                     {/* ── Person Info ── */}
                     <div className="space-y-2">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">person</span>
+                            <span aria-hidden="true" className="material-icons text-base">person</span>
                             Datos del Cliente
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -122,7 +122,7 @@ export default function TestimoniosPage() {
                     {/* ── Content ── */}
                     <div className="space-y-4 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">format_quote</span>
+                            <span aria-hidden="true" className="material-icons text-base">format_quote</span>
                             Testimonio
                         </h3>
                         <label className="space-y-1">
@@ -165,7 +165,7 @@ export default function TestimoniosPage() {
                                             disabled={uploading}
                                             className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-sm border border-white/10 transition-all flex items-center gap-1.5 disabled:opacity-50"
                                         >
-                                            <span className="material-icons text-sm">cloud_upload</span>
+                                            <span aria-hidden="true" className="material-icons text-sm">cloud_upload</span>
                                             {uploading ? "Subiendo..." : "Subir imagen"}
                                         </button>
                                         {form.avatar_url && (
@@ -186,7 +186,7 @@ export default function TestimoniosPage() {
                     {/* ── Badge ── */}
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">label</span>
+                            <span aria-hidden="true" className="material-icons text-base">label</span>
                             Badge
                         </h3>
                         <div className="flex flex-wrap gap-2">
@@ -264,7 +264,7 @@ export default function TestimoniosPage() {
                                     className={`p-1.5 rounded text-xs font-bold transition-all ${t.is_active ? "text-secondary hover:bg-secondary/10" : "text-gray-500 hover:bg-white/10"}`}
                                     title={t.is_active ? "Ocultar" : "Mostrar"}
                                 >
-                                    <span className="material-icons text-sm">
+                                    <span aria-hidden="true" className="material-icons text-sm">
                                         {t.is_active ? "visibility" : "visibility_off"}
                                     </span>
                                 </button>

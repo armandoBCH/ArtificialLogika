@@ -31,9 +31,9 @@ export default function AdminLoginPage() {
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 bg-primary rounded-sm border-2 border-black shadow-neobrutalism flex items-center justify-center">
-                            <span className="text-white font-black text-xl font-display">L</span>
+                            <span className="text-white font-black text-xl font-body">L</span>
                         </div>
-                        <h1 className="text-3xl font-black text-white font-display tracking-tight">
+                        <h1 className="text-3xl font-black text-white font-body tracking-tight">
                             LOGIKA
                         </h1>
                     </div>
@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
 
                 {/* Login Card */}
                 <div className="bg-white border-3 border-black shadow-neobrutalism-lg p-8 rounded-sm">
-                    <h2 className="text-2xl font-black text-ink-black mb-6 font-display">
+                    <h2 className="text-2xl font-black text-ink-black mb-6 font-body">
                         Iniciar Sesión
                     </h2>
 
@@ -59,7 +59,7 @@ export default function AdminLoginPage() {
                                 name="email"
                                 type="email"
                                 required
-                                className="w-full px-4 py-3 border-2 border-black rounded-sm bg-soft-smoke font-medium text-ink-black placeholder-muted-charcoal focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                className="w-full px-4 py-3 border-2 border-black rounded-sm bg-background-light font-medium text-ink-black placeholder-muted-charcoal focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                 placeholder="admin@logika.com"
                             />
                         </div>
@@ -76,7 +76,7 @@ export default function AdminLoginPage() {
                                 name="password"
                                 type="password"
                                 required
-                                className="w-full px-4 py-3 border-2 border-black rounded-sm bg-soft-smoke font-medium text-ink-black placeholder-muted-charcoal focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                className="w-full px-4 py-3 border-2 border-black rounded-sm bg-background-light font-medium text-ink-black placeholder-muted-charcoal focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -90,7 +90,7 @@ export default function AdminLoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary text-white font-black py-3 px-6 border-2 border-black shadow-neobrutalism rounded-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-neobrutalism-hover active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                            className="w-full bg-primary text-white font-black py-3 px-6 border-2 border-black shadow-neobrutalism rounded-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-neobrutalism-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed text-lg"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">

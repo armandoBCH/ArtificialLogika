@@ -88,11 +88,11 @@ function FeatureItem({
                 onClick={onToggle}
                 title={feature.visible ? "Ocultar feature" : "Mostrar feature"}
                 className={`w-7 h-7 flex items-center justify-center rounded-sm border-2 shrink-0 transition-all ${feature.visible
-                    ? "bg-mint-fresh/20 border-mint-fresh/40 text-mint-fresh"
+                    ? "bg-secondary/20 border-secondary/40 text-secondary"
                     : "bg-white/5 border-white/10 text-gray-600"
                     }`}
             >
-                <span className="material-icons text-sm">
+                <span aria-hidden="true" className="material-icons text-sm">
                     {feature.visible ? "visibility" : "visibility_off"}
                 </span>
             </button>
@@ -114,7 +114,7 @@ function FeatureItem({
                     className="w-6 h-5 flex items-center justify-center rounded-sm text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-gray-400 transition-all"
                     title="Mover arriba"
                 >
-                    <span className="material-icons text-xs">keyboard_arrow_up</span>
+                    <span aria-hidden="true" className="material-icons text-xs">keyboard_arrow_up</span>
                 </button>
                 <button
                     type="button"
@@ -123,7 +123,7 @@ function FeatureItem({
                     className="w-6 h-5 flex items-center justify-center rounded-sm text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-gray-400 transition-all"
                     title="Mover abajo"
                 >
-                    <span className="material-icons text-xs">keyboard_arrow_down</span>
+                    <span aria-hidden="true" className="material-icons text-xs">keyboard_arrow_down</span>
                 </button>
             </div>
 
@@ -134,7 +134,7 @@ function FeatureItem({
                 className="w-7 h-7 flex items-center justify-center rounded-sm text-hot-coral/60 hover:text-hot-coral hover:bg-hot-coral/10 transition-all shrink-0"
                 title="Eliminar feature"
             >
-                <span className="material-icons text-sm">close</span>
+                <span aria-hidden="true" className="material-icons text-sm">close</span>
             </button>
         </div>
     );
@@ -213,7 +213,7 @@ export default function ServiciosPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-white font-display">⚡ Servicios</h1>
+                    <h1 className="text-3xl font-black text-white font-body">⚡ Servicios</h1>
                     <p className="text-gray-400 mt-1">Gestionar servicios ofrecidos</p>
                 </div>
                 <button onClick={openCreate} className="bg-primary text-white font-bold px-5 py-2.5 border-2 border-black shadow-neobrutalism-sm rounded-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
@@ -223,14 +223,14 @@ export default function ServiciosPage() {
 
             {showForm && (
                 <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-6 space-y-6">
-                    <h2 className="text-xl font-black text-white font-display border-b border-white/10 pb-4">
+                    <h2 className="text-xl font-black text-white font-body border-b border-white/10 pb-4">
                         {editing ? "✏️ Editar Servicio" : "🆕 Nuevo Servicio"}
                     </h2>
 
                     {/* ── SECTION 1: Info ── */}
                     <div className="space-y-2">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">info</span>
+                            <span aria-hidden="true" className="material-icons text-base">info</span>
                             Información
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -252,7 +252,7 @@ export default function ServiciosPage() {
                     {/* ── SECTION 2: Icon Picker ── */}
                     <div className="space-y-2 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">emoji_emotions</span>
+                            <span aria-hidden="true" className="material-icons text-base">emoji_emotions</span>
                             Ícono
                         </h3>
                         <div className="flex flex-wrap gap-2">
@@ -262,11 +262,11 @@ export default function ServiciosPage() {
                                     type="button"
                                     onClick={() => setForm({ ...form, icon: opt.value })}
                                     className={`flex items-center gap-2 px-3 py-2 border-2 rounded-sm text-sm font-bold transition-all ${form.icon === opt.value
-                                        ? "bg-primary text-white border-primary shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]"
+                                        ? "bg-primary text-white border-primary shadow-neobrutalism-white"
                                         : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
                                         }`}
                                 >
-                                    <span className="material-icons text-lg">{opt.value}</span>
+                                    <span aria-hidden="true" className="material-icons text-lg">{opt.value}</span>
                                     {opt.label}
                                 </button>
                             ))}
@@ -277,16 +277,16 @@ export default function ServiciosPage() {
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                <span className="material-icons text-base">checklist</span>
+                                <span aria-hidden="true" className="material-icons text-base">checklist</span>
                                 Ventajas / Features
                             </h3>
                             <div className="flex items-center gap-3 text-[10px] text-gray-500">
                                 <span className="flex items-center gap-1">
-                                    <span className="material-icons text-xs text-mint-fresh">visibility</span>
+                                    <span aria-hidden="true" className="material-icons text-xs text-secondary">visibility</span>
                                     = visible en web
                                 </span>
                                 <span className="flex items-center gap-1">
-                                    <span className="material-icons text-xs">swap_vert</span>
+                                    <span aria-hidden="true" className="material-icons text-xs">swap_vert</span>
                                     = reordenar
                                 </span>
                             </div>
@@ -313,7 +313,7 @@ export default function ServiciosPage() {
                             onClick={addFeature}
                             className="w-full py-2 border-2 border-dashed border-white/10 text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:border-primary/40 hover:text-primary transition-all flex items-center justify-center gap-1.5"
                         >
-                            <span className="material-icons text-sm">add</span>
+                            <span aria-hidden="true" className="material-icons text-sm">add</span>
                             Agregar Feature
                         </button>
 
@@ -325,7 +325,7 @@ export default function ServiciosPage() {
                     {/* ── SECTION 4: CTA & Order ── */}
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">smart_button</span>
+                            <span aria-hidden="true" className="material-icons text-base">smart_button</span>
                             Botón & Orden
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -361,8 +361,8 @@ export default function ServiciosPage() {
                     {/* ── SECTION 5: Flags ── */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-white/10 pt-4">
                         <div className="space-y-3">
-                            <label className="flex items-center gap-2 text-mint-fresh text-sm font-bold cursor-pointer">
-                                <input type="checkbox" checked={form.is_active ?? true} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} className="w-5 h-5 bg-black border-2 border-white/20 rounded accent-mint-fresh" />
+                            <label className="flex items-center gap-2 text-secondary text-sm font-bold cursor-pointer">
+                                <input type="checkbox" checked={form.is_active ?? true} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} className="w-5 h-5 bg-black border-2 border-white/20 rounded accent-secondary" />
                                 Activo (Visible en la página)
                             </label>
                             <label className="flex items-center gap-2 text-[#F2FA5A] text-sm font-bold cursor-pointer">
@@ -401,7 +401,7 @@ export default function ServiciosPage() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-primary/20 border border-primary/40 rounded-sm flex items-center justify-center">
-                                            <span className="material-icons text-primary text-xl">{s.icon}</span>
+                                            <span aria-hidden="true" className="material-icons text-primary text-xl">{s.icon}</span>
                                         </div>
                                         <div>
                                             <h3 className="text-white font-bold text-base leading-tight">{s.name}</h3>
@@ -437,7 +437,7 @@ export default function ServiciosPage() {
 
                                 <div className="pt-3 border-t border-white/10 flex items-center justify-between mt-auto">
                                     <div className="flex items-center gap-2 text-[10px]">
-                                        <span className={`${s.is_active ? "text-mint-fresh" : "text-gray-600"}`}>{s.is_active ? "✔ Activo" : "❌ Oculto"}</span>
+                                        <span className={`${s.is_active ? "text-secondary" : "text-gray-600"}`}>{s.is_active ? "✔ Activo" : "❌ Oculto"}</span>
                                         <span className="text-gray-600">·</span>
                                         <span className="text-gray-500 font-mono">#{s.display_order}</span>
                                     </div>

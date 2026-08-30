@@ -1,12 +1,13 @@
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
+import OfferBand from "./components/OfferBand";
 import MarqueeBanner from "./components/MarqueeBanner";
-import FeaturesGrid from "./components/FeaturesGrid";
-import ContentSplit from "./components/ContentSplit";
+import WhoDoesWhatSection from "./components/WhoDoesWhatSection";
 import ProcessSection from "./components/ProcessSection";
+import AboutSection from "./components/AboutSection";
 import PortfolioShowcase from "./components/PortfolioShowcase";
 import OldWebsiteSection from "./components/OldWebsiteSection";
-import ServicesSection from "./components/ServicesSection";
+import GuaranteeSection from "./components/GuaranteeSection";
 import TestimonialsSection from "./components/TestimonialsSection";
 import PricingSection from "./components/PricingSection";
 import FAQSection from "./components/FAQSection";
@@ -44,18 +45,27 @@ export default async function Home() {
       <FAQJsonLd faqs={faqs} />
       <PricingJsonLd plans={plans} />
       <Navbar config={config} />
+      <main id="contenido">
       <HeroSection />
+      <OfferBand />
       <MarqueeBanner />
-      <FeaturesGrid />
-      <ContentSplit />
-      <ProcessSection />
-      <PortfolioShowcase projects={projects} />
+      {/* Orden pensado para conversión: tesis -> problema -> prueba visual -> cómo ->
+          prueba real -> qué recibís -> cuánto cuesta -> objeciones -> acción.
+          Servicios y Precios quedan pegados a propósito: separarlos obligaba al
+          comprador a cruzar 1.364px de testimonios para comparar qué recibe con
+          cuánto sale. Dos secciones de features se removieron por redundancia
+          con WhoDoesWhatSection. */}
+      <WhoDoesWhatSection />
       <OldWebsiteSection />
-      <ServicesSection services={services} />
+      <ProcessSection />
+      <AboutSection />
+      <PortfolioShowcase projects={projects} />
       <TestimonialsSection testimonials={testimonials} />
+      <GuaranteeSection />
       <PricingSection plans={plans} config={config} />
       <FAQSection faqs={faqs} config={config} />
       <ContactSection config={config} />
+      </main>
       <Footer config={config} />
       <StickyMobileCTA config={config} />
       <WhatsAppChatWidget config={config} />

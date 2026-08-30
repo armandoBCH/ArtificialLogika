@@ -91,7 +91,7 @@ export default function PreciosPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-white font-display">💰 Precios</h1>
+                    <h1 className="text-3xl font-black text-white font-body">💰 Precios</h1>
                     <p className="text-gray-400 mt-1">Gestionar planes de precios</p>
                 </div>
                 <button onClick={openCreate} className="bg-primary text-white font-bold px-5 py-2.5 border-2 border-black shadow-neobrutalism-sm rounded-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
@@ -101,14 +101,14 @@ export default function PreciosPage() {
 
             {showForm && (
                 <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-6 space-y-6">
-                    <h2 className="text-xl font-black text-white font-display border-b border-white/10 pb-4">
+                    <h2 className="text-xl font-black text-white font-body border-b border-white/10 pb-4">
                         {editing ? "✏️ Editar Plan" : "🆕 Nuevo Plan"}
                     </h2>
 
                     {/* ── SECTION 1: Basic Info ── */}
                     <div className="space-y-2">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">info</span>
+                            <span aria-hidden="true" className="material-icons text-base">info</span>
                             Información del Plan
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -126,7 +126,7 @@ export default function PreciosPage() {
                     {/* ── SECTION 2: Pricing ── */}
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">payments</span>
+                            <span aria-hidden="true" className="material-icons text-base">payments</span>
                             Precios
                         </h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -186,11 +186,11 @@ export default function PreciosPage() {
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                <span className="material-icons text-base">checklist</span>
+                                <span aria-hidden="true" className="material-icons text-base">checklist</span>
                                 Características
                             </h3>
                             <button type="button" onClick={addFeature} className="text-xs font-bold text-primary hover:text-white transition-colors flex items-center gap-1">
-                                <span className="material-icons text-sm">add_circle</span> Agregar
+                                <span aria-hidden="true" className="material-icons text-sm">add_circle</span> Agregar
                             </button>
                         </div>
                         <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
@@ -234,7 +234,7 @@ export default function PreciosPage() {
                     {/* ── SECTION 4: CTA & Settings ── */}
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">settings</span>
+                            <span aria-hidden="true" className="material-icons text-base">settings</span>
                             Configuración
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -301,7 +301,7 @@ export default function PreciosPage() {
                             {/* Features count */}
                             <div className="px-4 pb-4 flex-1">
                                 <div className="flex items-center gap-2 text-xs text-gray-400">
-                                    <span className="material-icons text-sm">checklist</span>
+                                    <span aria-hidden="true" className="material-icons text-sm">checklist</span>
                                     {plan.features?.length || 0} características
                                 </div>
                             </div>

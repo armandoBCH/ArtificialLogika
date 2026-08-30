@@ -18,7 +18,7 @@ export default function LeadsPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-white font-display">📬 Leads</h1>
+                    <h1 className="text-3xl font-black text-white font-body">📬 Leads</h1>
                     <p className="text-gray-400 mt-1">Consultas recibidas desde el formulario de contacto</p>
                 </div>
                 <div className="bg-[#1e1530] border-2 border-white/10 rounded-sm px-4 py-2">

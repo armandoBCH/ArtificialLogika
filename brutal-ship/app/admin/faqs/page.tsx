@@ -38,7 +38,7 @@ export default function FAQsPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-white font-display">❓ FAQs</h1>
+                    <h1 className="text-3xl font-black text-white font-body">❓ FAQs</h1>
                     <p className="text-gray-400 mt-1">Gestionar preguntas frecuentes</p>
                 </div>
                 <button onClick={openCreate} className="bg-primary text-white font-bold px-5 py-2.5 border-2 border-black shadow-neobrutalism-sm rounded-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
@@ -48,14 +48,14 @@ export default function FAQsPage() {
 
             {showForm && (
                 <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-6 space-y-6">
-                    <h2 className="text-xl font-black text-white font-display border-b border-white/10 pb-4">
+                    <h2 className="text-xl font-black text-white font-body border-b border-white/10 pb-4">
                         {editing ? "✏️ Editar FAQ" : "🆕 Nueva FAQ"}
                     </h2>
 
                     {/* ── Question ── */}
                     <div className="space-y-2">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">help_outline</span>
+                            <span aria-hidden="true" className="material-icons text-base">help_outline</span>
                             Pregunta
                         </h3>
                         <label className="space-y-1">
@@ -67,7 +67,7 @@ export default function FAQsPage() {
                     {/* ── Answer ── */}
                     <div className="space-y-2 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">chat_bubble_outline</span>
+                            <span aria-hidden="true" className="material-icons text-base">chat_bubble_outline</span>
                             Respuesta
                         </h3>
                         <label className="space-y-1">
@@ -79,7 +79,7 @@ export default function FAQsPage() {
                     {/* ── Category & Order ── */}
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span className="material-icons text-base">category</span>
+                            <span aria-hidden="true" className="material-icons text-base">category</span>
                             Categoría & Orden
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -92,7 +92,7 @@ export default function FAQsPage() {
                                             type="button"
                                             onClick={() => setForm({ ...form, category: cat.toLowerCase() })}
                                             className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border-2 rounded-sm transition-all ${(form.category || "").toLowerCase() === cat.toLowerCase()
-                                                ? "bg-primary text-white border-primary shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]"
+                                                ? "bg-primary text-white border-primary shadow-neobrutalism-white"
                                                 : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30 hover:text-white"
                                                 }`}
                                         >

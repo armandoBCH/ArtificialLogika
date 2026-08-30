@@ -52,7 +52,7 @@ export default function LogikaLogo({ className = "" }: LogikaLogoProps) {
                     opacity: 0;
                 }
                 .logika-logo-wrapper.active #logo-pop {
-                    animation: lk-pop-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+                    animation: lk-pop-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
                 }
 
                 /* 3. Rotación "Mecánica" de ida y vuelta */
@@ -80,7 +80,7 @@ export default function LogikaLogo({ className = "" }: LogikaLogoProps) {
                     transform-origin: center;
                 }
                 .logika-logo-wrapper.active #logika-dot {
-                    animation: lk-dot-pop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 2.3s forwards;
+                    animation: lk-dot-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) 2.3s forwards;
                 }
 
                 /* --- Keyframes --- */
@@ -97,14 +97,14 @@ export default function LogikaLogo({ className = "" }: LogikaLogoProps) {
                 @keyframes lk-spin-and-return {
                     0% {
                         transform: rotate(0deg);
-                        animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+                        animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
                     }
                     40% {
                         transform: rotate(90deg);
                     }
                     60% {
                         transform: rotate(90deg);
-                        animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+                        animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
                     }
                     100% {
                         transform: rotate(0deg);
@@ -122,11 +122,12 @@ export default function LogikaLogo({ className = "" }: LogikaLogoProps) {
                 }
                 `
             }} />
-            {isVisible && (
                 <svg
                     viewBox="0 0 360 100"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    role="img"
+                    aria-label="Logika"
                     style={{ width: 'auto', height: '100%' }}
                 >
                     <defs>
@@ -141,30 +142,29 @@ export default function LogikaLogo({ className = "" }: LogikaLogoProps) {
                     {/* Grupo 1: Texto y Punto (Fondo) */}
                     <g clipPath="url(#text-mask)">
                         <g id="logika-text">
-                            <text x="94" y="72" fontFamily="'Space Grotesk', sans-serif" fontWeight="700" fontSize="62" fill="currentColor" className="text-ink-black dark:text-white" letterSpacing="-0.02em">Logika</text>
+                            <text x="94" y="72" fontFamily="var(--font-display), 'Space Grotesk', system-ui, sans-serif" fontWeight="700" fontSize="62" fill="currentColor" letterSpacing="-0.02em">Logika</text>
                         </g>
                         {/* Punto Coral súper pegado al texto */}
-                        <circle id="logika-dot" cx="304" cy="68" r="8" fill="#FF6B6B" stroke="currentColor" className="text-ink-black dark:text-white" strokeWidth="3" />
+                        <circle id="logika-dot" cx="304" cy="68" r="8" fill="#FF6B6B" stroke="currentColor" strokeWidth="3" />
                     </g>
 
                     {/* Grupo 2: Logo Mark (Woven Frame) */}
                     <g id="logo-master">
                         <g id="logo-pop">
                             {/* Sombra */}
-                            <rect x="22" y="22" width="62" height="62" rx="6" fill="#1A1A1A" />
+                            <rect x="22" y="22" width="62" height="62" rx="6" fill="currentColor" />
 
                             {/* Rotación */}
                             <g id="logo-spin">
-                                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" strokeWidth="4" />
-                                <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" strokeWidth="4" />
-                                <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="#1A1A1A" strokeWidth="4" />
-                                <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="#1A1A1A" strokeWidth="4" />
-                                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" strokeWidth="4" clipPath="url(#woven-clip)" />
+                                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="currentColor" strokeWidth="4" />
+                                <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="currentColor" strokeWidth="4" />
+                                <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="currentColor" strokeWidth="4" />
+                                <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="currentColor" strokeWidth="4" />
+                                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="currentColor" strokeWidth="4" clipPath="url(#woven-clip)" />
                             </g>
                         </g>
                     </g>
                 </svg>
-            )}
         </div>
     );
 }

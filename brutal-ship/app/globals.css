@@ -1,76 +1,67 @@
 @import "tailwindcss";
 
-/* Force class-based dark mode (matches original HTMLs darkMode:"class") */
-@variant dark (&:where(.dark, .dark *));
-
 /* ===================================================================
    TAILWIND v4 THEME — Merged Design Tokens from all 8 HTML sections
    =================================================================== */
 @theme inline {
-  /* Font Family */
-  --font-display: "Space Grotesk", sans-serif;
+  /* ---- TIPOGRAFÍA ----
+     Space Grotesk (display) + Bitter (cuerpo).
 
-  /* ---- COLORS ---- */
-  /* Primary palette */
+     Space Grotesk es la voz de la marca: titulares, botones, etiquetas, sellos.
+     Su grotesca geométrica con detalles raros sostiene el neobrutalismo suave.
+
+     Bitter es de Huerta Tipográfica, fundición argentina. Es una SLAB, no una serif
+     de libro: sus serifas rectangulares riman con los bordes gruesos del sistema en
+     vez de competir con ellos, y se diseñó para leer en pantalla. Un trazo fino se
+     veía endeble contra bordes negros de 4px; este los aguanta.
+
+     Regla de uso: Space Grotesk en h1–h4, botones, etiquetas y números.
+     Bitter en todo lo que se lee de corrido. */
+  --font-display: var(--font-display), "Space Grotesk", system-ui, sans-serif;
+  --font-body: var(--font-body), "Bitter", Georgia, serif;
+
+  /* ---- COLORS ----
+     Paleta con roles. Cada color tiene un trabajo; nada entra sin uno.
+       primary        — acción y marca (el violeta que sostiene la página)
+       secondary      — confirmación: incluido, listo, funcionando
+       hot-coral      — problema y urgencia
+       accent-yellow  — destacar: badges, chips, lo que hay que ver primero
+       mint           — SOLO relleno de superficie (1.43:1 como texto, nunca texto)
+       ink-black / background-light / muted-charcoal — neutros
+  */
   --color-primary: #8523e1;
   --color-primary-dark: #6a1cb5;
   --color-secondary: #00D68F;
-
-  /* Backgrounds */
-  --color-background-light: #f7f6f8;
-  --color-background-dark: #191121;
-
-  /* Accent Colors */
-  --color-mint: #A0E8AF;
-  --color-accent-yellow: #FDE047;
-  --color-ink-black: #1A1A1A;
-  --color-soft-smoke: #F5F5F5;
-  --color-mint-fresh: #00D68F;
   --color-hot-coral: #FF5A5F;
+  --color-accent-yellow: #FDE047;
+  --color-mint: #A0E8AF;
+
+  --color-ink-black: #1A1A1A;
+  --color-background-light: #f7f6f8;
   --color-muted-charcoal: #6B6B6B;
 
-  /* Portfolio colors */
-  --color-coral: #fb7185;
-
-  /* Process colors */
-  --color-accent-mint: #00dcb7;
-  --color-accent-coral: #ff6b6b;
-  --color-accent-blue: #4cc9f0;
-
-  /* Before/After colors */
-  --color-secondary-mint: #00f090;
-  --color-secondary-coral: #ff4d4d;
-  --color-surface-light: #ffffff;
-  --color-surface-dark: #2d1b3e;
-
-  /* Testimonials colors */
-  --color-electric-blue: #4d96ff;
-
-  /* Contact colors */
-  --color-violet-electric: #7c3aed;
-  --color-neutral-dark: #1a1a1a;
-
-  /* FAQ colors */
-  --color-neutral-900: #111814;
-
-  /* ---- BOX SHADOWS ---- */
-  --shadow-neobrutalism: 4px 4px 0px 0px #000000;
-  --shadow-neobrutalism-sm: 2px 2px 0px 0px #000000;
-  --shadow-neobrutalism-lg: 8px 8px 0px 0px #000000;
+  /* ---- BOX SHADOWS ----
+     Escala de sombra dura del neobrutalismo suave. Cuatro pasos negros para la
+     jerarquía, dos acentos de color para los momentos que lo justifican, y una
+     blanca para superficies oscuras. Nada fuera de esta lista.
+       sm  — pills, badges, chips
+       md  — tarjetas y botones (el default)
+       lg  — destacados y estados hover
+       xl  — el momento único de la página
+  */
+  --shadow-neobrutalism-sm: 2px 2px 0px 0px #1A1A1A;
+  --shadow-neobrutalism: 4px 4px 0px 0px #1A1A1A;
+  --shadow-neobrutalism-lg: 8px 8px 0px 0px #1A1A1A;
+  --shadow-neobrutalism-xl: 12px 12px 0px 0px #1A1A1A;
   --shadow-neobrutalism-primary: 6px 6px 0px 0px #8523e1;
-  --shadow-neo: 4px 4px 0px 0px #1A1A1A;
-  --shadow-neo-sm: 2px 2px 0px 0px #1A1A1A;
-  --shadow-neo-hover: 6px 6px 0px 0px #1A1A1A;
-  --shadow-hard: 4px 4px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-hard-sm: 2px 2px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-hard-lg: 8px 8px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-hard-white: 4px 4px 0px 0px rgba(255, 255, 255, 1);
-  --shadow-neo-lg: 8px 8px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-neo-dark: 4px 4px 0px 0px #7f06f9;
-  --shadow-neobrutalist: 4px 4px 0px 0px #000000;
-  --shadow-neobrutalist-sm: 2px 2px 0px 0px #000000;
-  --shadow-neobrutalism-hover: 2px 2px 0px 0px #121212;
-  --shadow-neobrutalism-active: 0px 0px 0px 0px #121212;
+  --shadow-neobrutalism-mint: 6px 6px 0px 0px #00D68F;
+  --shadow-neobrutalism-white: 4px 4px 0px 0px #FFFFFF;
+
+  /* Misma escala para drop-shadow (texto y SVG). Tailwind resuelve `drop-shadow-*`
+     contra estos tokens, no contra --shadow-*, así que necesita su propio juego. */
+  --drop-shadow-neobrutalism-sm: 2px 2px 0 #1A1A1A;
+  --drop-shadow-neobrutalism: 4px 4px 0 #1A1A1A;
+  --drop-shadow-neobrutalism-lg: 8px 8px 0 #1A1A1A;
 
   /* ---- BORDER RADIUS ---- */
   --radius: 0.125rem;
@@ -84,8 +75,29 @@
    =================================================================== */
 
 body {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-body);
+  /* 500 y no 400: rodeado de bordes negros y sombras duras, el peso normal se lava. */
+  font-weight: 500;
 }
+
+/* La voz de marca cubre todos los titulares y los controles, no solo los grandes.
+   Bitter queda para lo que se lee de corrido. */
+h1,
+h2,
+h3,
+h4,
+button,
+.cta,
+.sello,
+.ficha-etiqueta {
+  font-family: var(--font-display);
+}
+
+/* Nota de criterio: un CTA es un CONTROL, no prosa. Va en la voz de marca, igual
+   que un <button>, un sello o una etiqueta de ficha. Lo que NO va en display es el
+   enlace dentro de un párrafo: ahí cambiar de tipografía rompe el ritmo de lectura.
+   La regla es qué hace el elemento, no qué etiqueta HTML usa: un <a> que se ve como
+   botón lleva `.cta`; un <a> dentro de un texto se queda en Bitter. */
 
 /* Geometric Shape (from new Contact/Footer HTML) */
 .geometric-shape {
@@ -112,73 +124,28 @@ body {
   background-size: 24px 24px;
 }
 
-.dark .bg-dot-pattern {
-  background-image: radial-gradient(#374151 1px, transparent 1px);
-}
-
 /* Pattern Dots (from HTML #7 - FAQ) */
 .bg-pattern-dots {
   background-image: radial-gradient(#111814 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
-/* Grid Pattern (from HTML #5 - Before/After) */
-.bg-grid-pattern {
-  background-size: 40px 40px;
-  background-image:
-    linear-gradient(to right, rgba(127, 6, 249, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(127, 6, 249, 0.05) 1px, transparent 1px);
-}
-
-.dark .bg-grid-pattern {
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-}
-
-/* Neo Card (from HTML #2 - Services) */
-.neo-card {
-  transition: all 0.2s ease-in-out;
-}
-
-.neo-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px #1A1A1A;
-}
-
-/* Decorative Shape (from HTML #2 - Services) */
-.decorative-shape {
-  position: absolute;
-  z-index: 0;
-  opacity: 0.15;
-  pointer-events: none;
-}
-
 /* Card Neo (from HTML #4 - Process) */
 .card-neo {
-  border: 2px solid #121212;
-  box-shadow: 4px 4px 0px 0px #121212;
+  border: 2px solid #1A1A1A;
+  box-shadow: 4px 4px 0px 0px #1A1A1A;
   transition: all 0.2s ease;
 }
 
 .card-neo:hover {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px 0px #121212;
+  box-shadow: 2px 2px 0px 0px #1A1A1A;
 }
 
 /* Pill Neo (from HTML #4 - Process) */
 .pill-neo {
-  border: 2px solid #121212;
-  box-shadow: 2px 2px 0px 0px #121212;
-}
-
-/* Dashed Connector (from HTML #4 - Process) */
-.dashed-connector {
-  background-image: linear-gradient(to right, #121212 50%, rgba(255, 255, 255, 0) 0%);
-  background-position: bottom;
-  background-size: 20px 2px;
-  background-repeat: repeat-x;
-  height: 2px;
+  border: 2px solid #1A1A1A;
+  box-shadow: 2px 2px 0px 0px #1A1A1A;
 }
 
 /* Floating Shapes (from HTML #4 - Process) */
@@ -192,18 +159,6 @@ body {
 /* Triangle Shape (from HTML #7 - FAQ) */
 .triangle-shape {
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-}
-
-/* Grid Footer (from HTML #8 - Contact) */
-.grid-footer {
-  display: grid;
-  gap: 2px;
-  background-color: #000;
-  border: 2px solid #000;
-}
-
-.grid-footer>div {
-  background-color: #fff;
 }
 
 /* ===================================================================
@@ -246,31 +201,6 @@ body {
   animation: float 6s ease-in-out infinite;
 }
 
-.animate-float-delayed {
-  animation: float 8s ease-in-out infinite;
-  animation-delay: 2s;
-}
-
-/* Wiggle Animation */
-@keyframes wiggle {
-
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  25% {
-    transform: rotate(-5deg);
-  }
-
-  75% {
-    transform: rotate(5deg);
-  }
-}
-
-.animate-wiggle {
-  animation: wiggle 0.3s ease-in-out;
-}
 
 /* Ring Pulse */
 @keyframes ring-pulse {
@@ -318,10 +248,31 @@ body {
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
+    /* Staggered entrances set animation-delay inline; without this the element would
+       sit in its `backwards` start state (invisible) for the full delay. */
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ===================================================================
+   FOCUS
+   One authored keyboard indicator for the whole site. Without this the only
+   indicator is the browser default, which any `outline-none` silently removes.
+   =================================================================== */
+
+:focus-visible {
+  outline: 3px solid #8523e1;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* On the brand purple itself, purple-on-purple is invisible — invert there. */
+.bg-primary:focus-visible,
+.bg-primary-dark:focus-visible {
+  outline-color: #ffffff;
 }
 
 /* ===================================================================
@@ -420,143 +371,15 @@ article .prose strong {
   border-radius: 4px;
 }
 
-/* No Scrollbar (from HTML #6) */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
 /* ===================================================================
    HERO SVG ANIMATION — Animated Website Assembly
    =================================================================== */
 
 /* Transform-box for SVG children */
-.hero-anim svg * {
-  transform-box: fill-box;
-}
-
-.scene-fade {
-  animation: hero-global-fade-out 6s infinite;
-  transform-origin: center;
-}
-
 /* Assembly Reveals */
-.reveal-1 {
-  animation: hero-slide-down 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
-  transform-origin: center;
-}
-
-.reveal-2 {
-  animation: hero-slide-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
-  transform-origin: left;
-}
-
-.reveal-3 {
-  animation: hero-slide-left 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
-  transform-origin: right;
-}
-
-.reveal-4 {
-  animation: hero-scale-up 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
-  transform-origin: center;
-}
-
-.reveal-5 {
-  animation: hero-slide-up-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
-  transform-origin: center;
-}
-
-.reveal-6 {
-  animation: hero-pop-up 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
-  transform-origin: bottom;
-}
-
-.reveal-7 {
-  animation: hero-float-in 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
-  transform-origin: center;
-}
-
-.reveal-8 {
-  animation: hero-slide-up-tilt-left 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
-  transform-origin: center;
-}
-
-.reveal-9 {
-  animation: hero-slide-up-tilt-right 6s cubic-bezier(0.2, 1.2, 0.3, 1.1) infinite;
-  transform-origin: center;
-}
-
 /* Micro-animations */
-.shape-intro {
-  animation: hero-pop-in 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
-  transform-origin: center;
-}
-
-.mint-highlight {
-  animation: hero-draw-highlight 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  transform-origin: left center;
-}
-
-.marquee-track {
-  animation: hero-marquee-scroll 6s linear infinite;
-}
-
-.hero-float {
-  animation: hero-float-y 4s ease-in-out infinite;
-}
-
-.hero-spin {
-  animation: hero-spin-slow 8s linear infinite;
-  transform-origin: center;
-}
-
-.hero-blink {
-  animation: hero-text-blink 1s step-end infinite;
-}
-
 /* Cursor and Button */
-.cursor-anim {
-  animation: hero-fly-click 6s ease-in-out infinite;
-}
-
-.btn-press {
-  animation: hero-btn-hover-down 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-.starburst-anim {
-  animation: hero-explode-star 6s ease-out infinite;
-  transform-origin: center;
-}
-
-.ring-burst {
-  animation: hero-expand-ring 6s ease-out infinite;
-  transform-origin: center;
-}
-
 /* Card Details */
-.bar-grow {
-  animation: hero-bar-grow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  transform-origin: bottom;
-}
-
-.toggle-slide {
-  animation: hero-toggle-right 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
-}
-
-.progress-fill {
-  animation: hero-fill-width 6s ease-out infinite;
-}
-
-.draw-path {
-  stroke-dasharray: 120;
-  stroke-dashoffset: 120;
-  animation: hero-draw-line 6s ease-in-out infinite;
-}
-
 /* --- KEYFRAMES --- */
 @keyframes hero-global-fade-out {
 
@@ -1085,8 +908,29 @@ article .prose strong {
   }
 }
 
-.animate-hero-title-float {
-  animation: slow-float 6s ease-in-out infinite;
+/* Hero headline entrance.
+   Driven by CSS rather than framer-motion so the server-rendered markup ships the
+   text already painted — a visitor who never receives JS still reads the headline.
+   `backwards` fill holds the pre-animation state during each letter's stagger delay. */
+@keyframes hero-letter-in {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-letter {
+  animation: hero-letter-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* Begins once the last letter has landed: 0.1s lead + 17 x 0.05s stagger + 0.55s. */
+.hero-title-float {
+  animation: slow-float 6s ease-in-out 1.6s infinite;
   will-change: transform;
 }
 
@@ -1130,4 +974,355 @@ article .prose strong {
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.7);
+}
+/* ===================================================================
+   PÁGINAS LEGALES — modo lectura
+   Hereda el mundo neobrutalista pero baja el volumen: acá el trabajo
+   es comprender, no decidir. Medida de línea en el rango cómodo.
+   =================================================================== */
+
+.legal-prose {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: rgba(26, 26, 26, 0.85);
+}
+
+.legal-prose h2 {
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1A1A1A;
+  border-bottom: 2px solid #1A1A1A;
+  padding-bottom: 0.5rem;
+}
+
+.legal-prose h2:first-child {
+  margin-top: 0;
+}
+
+.legal-prose p {
+  margin-bottom: 1.25rem;
+  max-width: 68ch;
+}
+
+.legal-prose ul {
+  margin: 0 0 1.5rem;
+  padding-left: 0;
+  list-style: none;
+  max-width: 68ch;
+}
+
+.legal-prose li {
+  position: relative;
+  margin-bottom: 0.625rem;
+  padding-left: 1.75rem;
+}
+
+.legal-prose li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 8px;
+  height: 8px;
+  background-color: #8523e1;
+  border: 2px solid #1A1A1A;
+}
+
+.legal-prose strong {
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.legal-prose a {
+  font-weight: 700;
+  color: #6a1cb5;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.legal-prose a:hover {
+  background-color: #FDE047;
+  color: #1A1A1A;
+}
+
+
+/* ===================================================================
+   MEDIDA DE LÍNEA
+   El cuerpo llegaba a 139 caracteres por línea en el portafolio y bajaba a 27
+   en las columnas del proceso. Los dos extremos cansan. Este tope pone el
+   cuerpo largo dentro de la banda cómoda sin tocar titulares ni listas.
+   =================================================================== */
+
+.medida-comoda {
+  max-width: 68ch;
+}
+
+
+/* ===================================================================
+   ÍCONOS — modo de falla
+   La fuente Material Icons se inyecta por script en runtime. Mientras carga
+   (o si Google Fonts está lento o bloqueado) el navegador dibuja la LIGADURA
+   como texto: "arrow_forward" impreso adentro del botón de compra.
+   Los íconos se mantienen ocultos hasta que la fuente está lista. Son
+   decorativos y ya llevan aria-hidden, así que si nunca carga no se pierde
+   información — solo el adorno.
+   =================================================================== */
+
+/* ===================================================================
+   TAMAÑO DE LOS ÍCONOS
+   La hoja de Material Icons entra por <link> inyectado en runtime y trae
+   `font-size: 24px` SIN CAPA. En la cascada, cualquier CSS sin capa le gana a
+   todo lo que esté en una capa — y las utilidades de Tailwind v4 viven en
+   @layer utilities. Resultado: los 116 íconos del sitio medían 24px y las 87
+   clases text-* puestas sobre ellos no hacían absolutamente nada. Los `check`
+   de precios pedían 12px, salían a 24 y se derramaban fuera de su caja de 16px.
+
+   El arreglo son dos reglas:
+   1. Un piso de 24px dentro de utilities, con :where() para que tenga
+      especificidad 0 y cualquier text-* le gane por la vía normal.
+   2. `revert-layer` sin capa y con especificidad duplicada (0,2,0) para ganarle
+      a Material Icons (0,1,0), que devuelve la decisión a la capa utilities.
+
+   Así el tamaño vuelve a decidirse donde se escribe, y un ícono nuevo sin clase
+   sigue midiendo 24px.
+   =================================================================== */
+
+@layer utilities {
+  :where(.material-icons) {
+    font-size: 24px;
+  }
+}
+
+.material-icons.material-icons {
+  font-size: revert-layer;
+}
+
+.material-icons {
+  visibility: hidden;
+}
+
+.iconos-listos .material-icons {
+  visibility: visible;
+}
+
+/* Con JS deshabilitado nadie va a agregar `iconos-listos`, y la fuente igual carga
+   por el <noscript>. `scripting: none` es la forma correcta de detectarlo en CSS. */
+@media (scripting: none) {
+  .material-icons {
+    visibility: visible;
+  }
+}
+
+/* ===================================================================
+   EL SELLO — dispositivo propio de Logika
+   ===================================================================
+   El diferencial de Logika es "el trámite lo hacemos nosotros". En Argentina el
+   trámite tiene una iconografía que este público conoce de memoria: el formulario,
+   la copia carbónica, y el sello que dice que algo YA ESTÁ.
+
+   Por eso los veredictos de la página —lo que está garantizado, lo que es una
+   muestra, lo que recomendamos, dónde termina tu lista— dejan de ser badges
+   genéricos y pasan a ser sellos. Doble filete, rotación leve, mayúsculas
+   apretadas. Hereda el color del contexto, así que no agrega nada a la paleta.
+
+   Regla de uso: un sello es un veredicto, no una etiqueta. Si aparece en todos
+   lados deja de ser un sello. Cuatro momentos en la home, no más.
+   =================================================================== */
+
+.sello {
+  position: relative;
+  display: inline-block;
+  border: 3px solid currentColor;
+  border-radius: 5px;
+  padding: 0.4em 0.85em;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  transform: rotate(-3deg);
+}
+
+/* El segundo filete es lo que lo vuelve un sello y no una caja. */
+.sello::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.sello-derecha {
+  transform: rotate(2.5deg);
+}
+
+/* ===================================================================
+   LA FICHA — la otra mitad del dispositivo
+   ===================================================================
+   Si el sello es el veredicto ("esto ya está"), la ficha es el formulario que
+   Logika completó por vos. La etiqueta no flota arriba de la caja: rompe el
+   borde, como la leyenda de un campo de formulario real.
+
+   Es la traducción visual del posicionamiento: el cliente no llena la ficha,
+   la recibe llena.
+
+   `--ficha-fondo` tiene que coincidir con la superficie de la tarjeta para que
+   la etiqueta corte el filete. Por defecto, blanco.
+   =================================================================== */
+
+.ficha {
+  --ficha-fondo: #ffffff;
+  position: relative;
+  border: 2px solid #1A1A1A;
+}
+
+.ficha-etiqueta {
+  position: absolute;
+  top: 0;
+  left: 1.75rem;
+  transform: translateY(-50%);
+  background-color: var(--ficha-fondo);
+  padding-inline: 0.6rem;
+  font-weight: 900;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  white-space: nowrap;
+}
+
+/* Sobre superficies de color, la etiqueta toma ese color de fondo. */
+.ficha-primary {
+  --ficha-fondo: #8523e1;
+}
+
+.ficha-amarilla {
+  --ficha-fondo: #FDE047;
+}
+
+/* ===================================================================
+   VISOR DE PORTAFOLIO
+   El <dialog> nativo ya trae trampa de foco, Escape e inertización.
+   Sólo hay que darle la entrada: sin animación aparece de golpe y se
+   siente un salto, no una apertura.
+   =================================================================== */
+
+.visor[open] {
+  animation: visor-entra 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.visor[open]::backdrop {
+  animation: visor-fondo 0.28s ease-out;
+}
+
+@keyframes visor-entra {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes visor-fondo {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Con el visor abierto el fondo no scrollea. */
+body:has(.visor[open]) {
+  overflow: hidden;
+}
+
+/* ===================================================================
+   EL SELLO QUE CAE
+   El único elemento de la página que se comporta como un objeto físico:
+   entra rotado y grande, y aterriza. Es el gesto de "trámite terminado"
+   sobre la lista del cliente, justo donde el sitio hace su chiste.
+   Se dispara al entrar en pantalla y ocurre UNA vez — un sello que se
+   estampa en loop no es un sello, es un banner.
+   =================================================================== */
+
+.sello-cae {
+  animation: sello-estampa 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-timeline: view();
+  animation-range: entry 10% entry 60%;
+}
+
+@keyframes sello-estampa {
+  0% {
+    opacity: 0;
+    transform: rotate(-14deg) scale(2.4);
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotate(-3deg) scale(1);
+  }
+}
+
+/* Sin soporte de animation-timeline, se estampa al cargar en vez de al entrar. */
+@supports not (animation-timeline: view()) {
+  .sello-cae {
+    animation: sello-estampa 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  }
+}
+
+/* ===================================================================
+   CONTINUIDAD ENTRE SECCIONES
+   La página era once bloques apilados, cada uno empezando y terminando
+   en seco. La barra de progreso del scroll es el único elemento que
+   cruza todas las secciones: se la lleva al borde superior con el
+   grosor del sistema, así el recorrido se siente como un solo objeto
+   que avanza y no como una pila de tarjetas.
+   =================================================================== */
+
+.hilo-progreso {
+  transform-origin: 0 50%;
+  animation: hilo-avanza linear both;
+  animation-timeline: scroll(root block);
+}
+
+@keyframes hilo-avanza {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ===================================================================
+   EL DETALLE QUE NADIE PIDIÓ
+   Los enlaces del footer y de la nav subrayan con el filete del sistema,
+   no con el subrayado del navegador: 2px sólidos que crecen desde la
+   izquierda, igual que los bordes de todo lo demás. Nadie lo va a
+   nombrar; se nota igual.
+   =================================================================== */
+
+::selection {
+  background-color: #FDE047;
+  color: #1A1A1A;
+}
+
+/* El cursor sobre el portafolio dice qué va a pasar antes de que pase. */
+.cursor-zoom-in {
+  cursor: zoom-in;
 }

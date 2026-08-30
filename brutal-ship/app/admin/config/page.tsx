@@ -38,7 +38,7 @@ export default function ConfigPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-black text-white font-display">⚙️ Configuración</h1>
+                <h1 className="text-3xl font-black text-white font-body">⚙️ Configuración</h1>
                 <p className="text-gray-400 mt-1">Configuración general del sitio</p>
             </div>
 

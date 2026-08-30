@@ -102,7 +102,7 @@ function InteractiveAreaChart({ data }: { data: { date: string; visitors: number
             {/* Tooltip (DOM based for sharp text rendering) */}
             {hoverIdx !== null && (
                 <div 
-                    className="absolute z-10 bg-white text-black font-bold px-3 py-2 border-2 border-black rounded-sm shadow-[2px_2px_0px_#000] pointer-events-none transform -translate-x-1/2 -translate-y-[120%]"
+                    className="absolute z-10 bg-white text-black font-bold px-3 py-2 border-2 border-black rounded-sm shadow-neobrutalism-sm pointer-events-none transform -translate-x-1/2 -translate-y-[120%]"
                     style={{ 
                         left: `${(points[hoverIdx].x / W) * 100}%`,
                         top: `${(points[hoverIdx].y / H) * 100}%`
@@ -122,7 +122,7 @@ function ChangeBadge({ value }: { value: number }) {
     return (
         <span
             className={`inline-flex items-center gap-0.5 text-[10px] font-black uppercase px-2 py-0.5 rounded-sm border ${
-                isPositive ? "bg-mint/20 text-mint border-mint/30" : "bg-hot-coral/20 text-hot-coral border-hot-coral/30"
+                isPositive ? "bg-mint/20 text-secondary border-mint/30" : "bg-hot-coral/20 text-hot-coral border-hot-coral/30"
             }`}
         >
             {isPositive ? "▲" : "▼"} {Math.abs(value)}%
@@ -153,7 +153,7 @@ const BRAND_COLORS = [
     "bg-secondary", // Yellow
     "bg-mint", // Green
     "bg-hot-coral", // Red
-    "bg-electric-blue", // Blue
+    "bg-primary", // Blue
 ];
 
 function DeviceRing({ devices }: { devices: {category: string, percentage: number}[] }) {
@@ -208,9 +208,9 @@ function DeviceRing({ devices }: { devices: {category: string, percentage: numbe
 // ─── Not configured state ────────────────────────────
 function NotConfigured() {
     return (
-        <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-8 text-center shadow-[4px_4px_0px_#8523e1]">
+        <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-8 text-center shadow-neobrutalism-primary">
             <div className="text-5xl mb-4 animate-bounce">📊</div>
-            <h3 className="text-2xl font-black text-white font-display mb-2">
+            <h3 className="text-2xl font-black text-white font-body mb-2">
                 Google Analytics no configurado
             </h3>
             <p className="text-gray-400 max-w-md mx-auto mb-6">
@@ -270,7 +270,7 @@ export default function AnalyticsSection() {
         return (
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-black text-white font-display">📈 Estadísticas de Tráfico</h2>
+                    <h2 className="text-2xl font-black text-white font-body">📈 Estadísticas de Tráfico</h2>
                 </div>
                 <AnalyticsSkeleton />
             </div>
@@ -280,7 +280,7 @@ export default function AnalyticsSection() {
     if (!data || !data.configured) {
         return (
             <div className="space-y-6">
-                <h2 className="text-2xl font-black text-white font-display">📈 Estadísticas de Tráfico</h2>
+                <h2 className="text-2xl font-black text-white font-body">📈 Estadísticas de Tráfico</h2>
                 <NotConfigured />
             </div>
         );
@@ -339,7 +339,7 @@ export default function AnalyticsSection() {
             {/* ── Section Header & Filters ── */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-black text-white font-display">
+                    <h2 className="text-2xl font-black text-white font-body">
                         📈 Estadísticas de Tráfico
                     </h2>
                     <p className="text-gray-400 text-sm mt-1">
@@ -357,7 +357,7 @@ export default function AnalyticsSection() {
                             onClick={() => setDays(d)}
                             disabled={loading}
                             className={`px-4 py-1.5 text-xs font-bold transition-all rounded-sm ${days === d 
-                                ? "bg-white text-black shadow-[2px_2px_0px_#8523e1]" 
+                                ? "bg-white text-black shadow-neobrutalism-primary" 
                                 : "text-gray-400 hover:text-white hover:bg-white/5"}`}
                         >
                             {d} DÍAS
@@ -378,7 +378,7 @@ export default function AnalyticsSection() {
                             <span className="text-xl opacity-80">{card.icon}</span>
                             <ChangeBadge value={card.invertChange ? -card.change : card.change} />
                         </div>
-                        <p className="text-3xl font-black text-white font-display leading-none mb-1 pl-2">
+                        <p className="text-3xl font-black text-white font-body leading-none mb-1 pl-2">
                             {card.value}
                         </p>
                         <p className="text-gray-400 text-xs font-bold uppercase tracking-wider pl-2">{card.label}</p>
@@ -426,7 +426,7 @@ export default function AnalyticsSection() {
                 {/* Top Pages */}
                 <div className="bg-[#1e1530] border-2 border-white/10 rounded-sm p-6">
                     <h3 className="text-sm font-black text-white uppercase tracking-wider mb-6 flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-electric-blue" />
+                        <span className="w-2 h-2 rounded-full bg-primary" />
                         Páginas más Vistas
                     </h3>
                     {topPages.length > 0 ? (

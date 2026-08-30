@@ -23,7 +23,7 @@ const DEFAULT_FAQS: FAQ[] = [
     {
         id: "3",
         question: "¿El precio incluye dominio y hosting?",
-        answer: "Te ayudamos a configurar todo: dominio (.com o .com.ar), hosting, emails profesionales y certificado de seguridad (el candadito verde). El costo del dominio y hosting es aparte (generalmente menos de $20 USD/año), pero nosotros lo tramitamos por vos.",
+        answer: "Nosotros tramitamos todo: dominio (.com o .com.ar), hosting, emails profesionales y certificado de seguridad (el candadito verde). Si tomás el plan mensual de mantenimiento, el dominio y el hosting van incluidos ahí. Si preferís no tomarlo, te los dejamos configurados a tu nombre y los renovás vos directamente (suele costar menos de US$20 al año).",
         display_order: 3,
         is_active: true,
         created_at: "",

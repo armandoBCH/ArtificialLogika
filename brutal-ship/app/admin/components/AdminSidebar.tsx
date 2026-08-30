@@ -23,10 +23,10 @@ export default function AdminSidebar() {
             <div className="p-6 border-b-2 border-white/10">
                 <Link href="/admin" className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-primary rounded-sm border-2 border-black shadow-neobrutalism-sm flex items-center justify-center">
-                        <span className="text-white font-black text-lg font-display">L</span>
+                        <span className="text-white font-black text-lg font-body">L</span>
                     </div>
                     <div>
-                        <h1 className="text-white font-black text-lg font-display tracking-tight">
+                        <h1 className="text-white font-black text-lg font-body tracking-tight">
                             LOGIKA
                         </h1>
                         <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">

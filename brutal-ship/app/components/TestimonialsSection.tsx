@@ -1,123 +1,223 @@
 "use client";
 
-import CountUp from "react-countup";
+import Link from "next/link";
+import Image from "next/image";
 import type { Testimonial } from "@/lib/types/database";
 
 interface TestimonialsSectionProps {
     testimonials: Testimonial[];
 }
 
-export default function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
-    // Don't render the section at all if there are no testimonials
-    if (testimonials.length === 0) return null;
+/**
+ * La sección se adapta a cuánta prueba real hay, en tres modos:
+ *
+ *   1 testimonio  → columna: la cita al frente, las garantías al costado.
+ *                   Con una sola cita no se puede fingir pluralidad, así que el
+ *                   titular lo dice y las garantías sostienen el resto del peso.
+ *   2–3           → grilla pareja. Ya hay coro: las citas se reparten y las
+ *                   garantías bajan a una fila horizontal debajo.
+ *   4 o más       → muro. Columnas tipo masonry, las garantías salen de la vista
+ *                   principal (ya no hacen falta: la prueba habla sola) y aparece
+ *                   el enlace al catálogo completo.
+ *
+ * La regla es una sola: cuanta más evidencia real hay, menos tiene que compensar
+ * el diseño. Nunca al revés — la sección no crece de volumen para tapar que hay poco.
+ */
 
-    const isSingle = testimonials.length === 1;
+const GARANTIAS = [
+    {
+        valor: "48hs",
+        titulo: "Te respondemos",
+        texto: "Con presupuesto y un mockup de tu web. Sin compromiso.",
+        sombra: "shadow-neobrutalism-primary",
+    },
+    {
+        valor: "24/7",
+        titulo: "Tu web atiende",
+        texto: "De noche, domingos y feriados. Vos no tenés que estar.",
+        sombra: "shadow-neobrutalism-mint",
+    },
+    {
+        valor: "0",
+        titulo: "Riesgo al empezar",
+        texto: "Si no te gusta el primer diseño, te devolvemos la seña completa.",
+        sombra: "shadow-neobrutalism",
+    },
+];
 
+function Cita({ t, destacada }: { t: Testimonial; destacada: boolean }) {
     return (
-        <section id="clientes" aria-labelledby="clientes-heading" className="relative z-10 w-full max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-8 bg-background-light dark:bg-background-dark">
-            {/* Floating Background Shapes */}
-            <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-10">
-                <div className="absolute top-20 left-10 w-32 h-32 rounded-full border-4 border-primary animate-float"></div>
-                <div className="absolute top-1/2 right-10 w-24 h-24 bg-mint rounded-lg animate-float-delayed rotate-12"></div>
-                <div className="absolute bottom-20 left-1/3 w-40 h-40 border-4 border-hot-coral rounded-full animate-float opacity-50"></div>
-            </div>
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row items-start md:items-end gap-4 mb-12">
-                <h2 id="clientes-heading" className="text-6xl md:text-8xl font-bold tracking-tighter leading-none relative z-10 text-black dark:text-white">
-                    CLIENTES<br />
-                    FELICES
-                </h2>
-                <div className="relative w-16 h-16 md:w-24 md:h-24 md:mb-4 animate-bounce">
-                    <svg className="w-full h-full text-hot-coral drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.62L12 2L9.19 8.62L2 9.24L7.45 13.97L5.82 21L12 17.27Z" stroke="black" strokeLinejoin="round" strokeWidth="1.5"></path>
-                    </svg>
-                </div>
-            </div>
-            {/* Marquee Ticker */}
-            <div className="w-screen relative left-[calc(-50vw+50%)] bg-primary border-y-2 border-black mb-16 overflow-hidden group">
-                <div className="animate-marquee group-hover:[animation-play-state:paused] py-4 whitespace-nowrap flex items-center gap-8">
-                    <span className="text-3xl md:text-4xl font-bold text-white flex items-center gap-8">
-                        RESULTADOS REALES <span className="material-icons text-3xl">star</span>
-                        DISEÑO INCREÍBLE <span className="material-icons text-3xl">star</span>
-                        CLIENTES SATISFECHOS <span className="material-icons text-3xl">star</span>
-                        PROCESO SIMPLE <span className="material-icons text-3xl">star</span>
-                        CERO COMPLICACIONES <span className="material-icons text-3xl">star</span>
-                        RESULTADOS REALES <span className="material-icons text-3xl">star</span>
-                        DISEÑO INCREÍBLE <span className="material-icons text-3xl">star</span>
-                        CLIENTES SATISFECHOS <span className="material-icons text-3xl">star</span>
-                        PROCESO SIMPLE <span className="material-icons text-3xl">star</span>
-                        CERO COMPLICACIONES <span className="material-icons text-3xl">star</span>
+        <figure
+            className={`relative bg-white rounded-xl overflow-hidden break-inside-avoid ${destacada
+                ? "border-4 border-black p-7 md:p-10 shadow-neobrutalism-lg"
+                : "border-2 border-black p-6 shadow-neobrutalism"
+                }`}
+        >
+            <span
+                aria-hidden="true"
+                className={`absolute -top-6 -right-2 font-serif leading-none select-none pointer-events-none text-primary/15 ${destacada ? "text-9xl" : "text-8xl"
+                    }`}
+            >
+                ❝
+            </span>
+            <blockquote
+                className={`relative z-10 font-medium leading-relaxed text-ink-black ${destacada ? "text-xl md:text-2xl" : "text-lg"
+                    }`}
+            >
+                &ldquo;{t.quote}&rdquo;
+            </blockquote>
+            <figcaption className="relative z-10 mt-6 pt-5 border-t-2 border-black/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                    <span className="w-11 h-11 rounded-full bg-background-light border-2 border-black overflow-hidden shrink-0">
+                        <Image
+                            alt={`Foto de ${t.name}`}
+                            className="w-full h-full object-cover"
+                            src={t.avatar_url}
+                            width={44}
+                            height={44}
+                            loading="lazy"
+                        />
+                    </span>
+                    <span>
+                        <span className="block font-bold leading-tight">{t.name}</span>
+                        <span className="block text-sm text-ink-black/70">{t.role}</span>
                     </span>
                 </div>
-            </div>
-            {/* Content Grid */}
-            <div className={`grid grid-cols-1 ${isSingle ? "lg:grid-cols-2" : "lg:grid-cols-12"} gap-12 items-start`}>
-                {/* Left Column: Testimonials */}
-                <div className={isSingle ? "" : "lg:col-span-8"}>
-                    <div className={`flex flex-col gap-6 md:gap-8 ${isSingle ? "max-w-2xl" : ""}`}>
-                        {testimonials.map((t) => (
-                            <div key={t.id} className="group bg-white dark:bg-gray-800 border-2 border-black rounded-xl p-6 md:p-8 shadow-neobrutalism hover:-translate-y-1 hover:shadow-neobrutalism-sm transition-all relative overflow-hidden">
-                                <div className="absolute -top-4 -right-4 text-9xl text-primary opacity-10 md:opacity-20 font-serif leading-none select-none pointer-events-none">❝</div>
-                                <div className="relative z-10 flex flex-col h-full justify-between">
-                                    <p className="text-lg md:text-xl md:text-2xl font-medium mb-6 leading-relaxed text-gray-800 dark:text-gray-200">
-                                        &quot;{t.quote}&quot;
-                                    </p>
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-t-2 border-gray-100 dark:border-gray-700 pt-4 gap-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gray-200 border border-black overflow-hidden flex-shrink-0">
-                                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img alt={`Retrato de ${t.name}`} className="w-full h-full object-cover" src={t.avatar_url} loading="lazy" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-lg leading-tight">{t.name}</h4>
-                                                <span className="text-sm text-gray-500">{t.role}</span>
-                                            </div>
-                                        </div>
-                                        {t.badge_text && (
-                                            <span className={`self-start sm:self-auto px-4 py-1 rounded-full ${t.badge_color || "bg-primary/20 text-primary"} border-2 border-black text-xs font-bold shadow-[2px_2px_0px_#000]`}>
-                                                {t.badge_text}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                {t.badge_text && (
+                    <span className={`self-start sm:self-auto px-3 py-1 rounded-full ${t.badge_color || "bg-primary/20 text-primary"} border-2 border-black text-xs font-bold uppercase tracking-wider shadow-neobrutalism-sm whitespace-nowrap`}>
+                        {t.badge_text}
+                    </span>
+                )}
+            </figcaption>
+        </figure>
+    );
+}
 
-                        {/* Show "ver más" only with 3+ testimonials */}
-                        {testimonials.length >= 3 && (
-                            <div className="flex justify-center mt-8">
-                                <button className="bg-white hover:bg-neutral-100 text-neutral-900 font-bold py-3 px-6 rounded-lg border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-y-[2px] transition-all flex items-center gap-2">
-                                    Ver más casos de éxito <span className="material-icons">expand_more</span>
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-                {/* Right Column: Stats */}
-                <div className={`${isSingle ? "" : "lg:col-span-4"} flex flex-col gap-6 ${isSingle ? "" : "lg:pl-8"} justify-center`}>
-                    <div className="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-[4px_4px_0px_#00f090] flex flex-col items-center justify-center text-center group transition-colors duration-300 transform hover:-translate-y-1">
-                        <span className="text-5xl md:text-6xl font-bold text-primary mb-3 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]"><CountUp end={10} enableScrollSpy scrollSpyOnce />x</span>
-                        <span className="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 -rotate-1 transform mb-3 shadow-[2px_2px_0px_#000]">Más Visible</span>
-                        <p className="text-base font-medium text-gray-700 dark:text-gray-300 leading-snug">Un negocio con web profesional recibe hasta 10 veces más consultas que uno sin presencia online.</p>
-                    </div>
-                    <div className="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-[4px_4px_0px_#fffb00] flex flex-col items-center justify-center text-center group transition-colors duration-300 transform hover:-translate-y-1">
-                        <span className="text-5xl md:text-6xl font-bold text-mint mb-3 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]"><CountUp end={24} enableScrollSpy scrollSpyOnce />hs</span>
-                        <span className="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 rotate-1 transform mb-3 shadow-[2px_2px_0px_#000]">Respuesta</span>
-                        <p className="text-base font-medium text-gray-700 dark:text-gray-300 leading-snug">Te respondemos con un presupuesto personalizado y mockup gratis en menos de 24 horas.</p>
-                    </div>
-                    <div className="bg-white dark:bg-gray-800 border-2 border-black p-6 rounded-xl shadow-[4px_4px_0px_#E11D48] flex flex-col items-center justify-center text-center group transition-colors duration-300 transform hover:-translate-y-1">
-                        <span className="text-5xl md:text-6xl font-bold text-hot-coral mb-3 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]"><CountUp end={100} enableScrollSpy scrollSpyOnce />%</span>
-                        <span className="text-lg font-bold uppercase tracking-wider bg-black text-white px-3 py-1 -rotate-2 transform mb-3 shadow-[2px_2px_0px_#000]">A Tiempo</span>
-                        <p className="text-base font-medium text-gray-700 dark:text-gray-300 leading-snug">Cumplimos siempre con los plazos acordados. Si no, te incluimos funciones extra sin cargo.</p>
-                    </div>
-                </div>
+function Garantias({ horizontal }: { horizontal: boolean }) {
+    return (
+        <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-ink-black/70">Lo que te garantizamos</p>
+            <ul className={`mt-6 gap-4 ${horizontal ? "grid grid-cols-1 sm:grid-cols-3" : "flex flex-col"}`}>
+                {GARANTIAS.map((g) => (
+                    <li
+                        key={g.titulo}
+                        className={`bg-white border-2 border-black rounded-xl p-5 ${g.sombra} flex items-start gap-4`}
+                    >
+                        <span className="shrink-0 text-3xl md:text-4xl font-black text-ink-black tabular-nums leading-none pt-0.5">
+                            {g.valor}
+                        </span>
+                        <span>
+                            <span className="block font-bold text-lg leading-tight">{g.titulo}</span>
+                            <span className="block mt-1 text-base font-medium text-ink-black/70 leading-snug">
+                                {g.texto}
+                            </span>
+                        </span>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+export default function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
+    if (testimonials.length === 0) return null;
+
+    const cantidad = testimonials.length;
+    const modo = cantidad === 1 ? "unico" : cantidad <= 3 ? "grilla" : "muro";
+    const visibles = modo === "muro" ? testimonials.slice(0, 6) : testimonials;
+
+    const titulo =
+        modo === "unico" ? (
+            <>
+                Un cliente,<br />
+                <span className="text-primary">un resultado medido.</span>
+            </>
+        ) : (
+            <>
+                Lo que dicen<br />
+                <span className="text-primary">los que ya tienen su web.</span>
+            </>
+        );
+
+    const bajada =
+        modo === "unico"
+            ? "Somos nuevos y lo decimos: por ahora tenemos un caso con números propios. Preferimos mostrarte ese antes que inventar diez."
+            : modo === "grilla"
+                ? "Negocios reales que hoy tienen su web publicada y andando."
+                : `${cantidad} negocios que ya pasaron por acá. Estas son sus palabras, no las nuestras.`;
+
+    return (
+        <section
+            id="clientes"
+            aria-labelledby="clientes-heading"
+            className="relative z-10 w-full bg-background-light border-b-2 border-black py-16 md:py-24"
+        >
+            <div
+                aria-hidden="true"
+                className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-10"
+            >
+                <div className="absolute top-20 left-10 w-32 h-32 rounded-full border-4 border-primary animate-float"></div>
+                <div className="absolute bottom-20 left-1/3 w-40 h-40 border-4 border-hot-coral rounded-full animate-float opacity-50"></div>
             </div>
-            {/* CTA Button */}
-            <div className="mt-16 flex justify-center">
-                <a href="#contacto" className="bg-primary hover:bg-primary/90 text-white font-bold py-4 px-12 rounded-full border-2 border-black shadow-neobrutalist hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000] active:translate-y-[4px] active:shadow-none transition-all text-xl flex items-center gap-2">
-                    Quiero Mi Web
-                    <span className="material-icons">arrow_forward</span>
-                </a>
+
+            <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
+                <h2
+                    id="clientes-heading"
+                    className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] text-ink-black max-w-3xl"
+                >
+                    {titulo}
+                </h2>
+                <p className="mt-6 text-lg md:text-xl font-medium max-w-xl text-ink-black/70">{bajada}</p>
+
+                {modo === "unico" && (
+                    <div className="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        <div className="lg:col-span-7">
+                            <Cita t={testimonials[0]} destacada />
+                        </div>
+                        <div className="lg:col-span-5">
+                            <Garantias horizontal={false} />
+                        </div>
+                    </div>
+                )}
+
+                {modo === "grilla" && (
+                    <>
+                        <div className={`mt-12 grid grid-cols-1 gap-6 ${cantidad === 2 ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
+                            {visibles.map((t) => (
+                                <Cita key={t.id} t={t} destacada={false} />
+                            ))}
+                        </div>
+                        <div className="mt-14">
+                            <Garantias horizontal />
+                        </div>
+                    </>
+                )}
+
+                {modo === "muro" && (
+                    <>
+                        {/* Muro tipo masonry: con cuatro o más citas, dejarlas correr a su
+                            alto natural se lee mejor que forzarlas a una grilla pareja. */}
+                        <div className="mt-12 columns-1 md:columns-2 lg:columns-3 gap-6 [&>*]:mb-6">
+                            {visibles.map((t) => (
+                                <Cita key={t.id} t={t} destacada={false} />
+                            ))}
+                        </div>
+                        {cantidad > 6 && (
+                            <p className="mt-8 text-center font-bold text-ink-black/70">
+                                Y {cantidad - 6} más.
+                            </p>
+                        )}
+                        <div className="mt-10 flex justify-center">
+                            <Link
+                                href="/portafolio"
+                                className="inline-flex items-center gap-2 min-h-11 bg-white hover:bg-accent-yellow text-ink-black font-bold py-3 px-7 rounded-lg border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-y-[2px] transition-all"
+                            >
+                                Ver todos los trabajos
+                                <span aria-hidden="true" className="material-icons">arrow_forward</span>
+                            </Link>
+                        </div>
+                    </>
+                )}
             </div>
         </section>
     );

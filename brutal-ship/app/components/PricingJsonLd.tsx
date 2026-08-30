@@ -6,6 +6,13 @@ import {
 } from "@/lib/seo/constants";
 import type { PricingPlan } from "@/lib/types/database";
 
+// `priceValidUntil` solo necesita ser estable, no exacto al milisegundo. A nivel de
+// módulo se evalúa una vez al importar, en vez de en cada render (que React marca
+// como impuro porque puede dar valores distintos entre servidor y cliente).
+const VALIDO_HASTA = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0];
+
 interface PricingJsonLdProps {
     plans: PricingPlan[];
 }
@@ -36,9 +43,7 @@ export default function PricingJsonLd({ plans }: PricingJsonLdProps) {
             url: `${SITE_URL}/#precios`,
             price: plan.price.toString(),
             priceCurrency: plan.currency || "USD",
-            priceValidUntil: new Date(
-                Date.now() + 90 * 24 * 60 * 60 * 1000
-            ).toISOString().split("T")[0], // 90 days from now
+            priceValidUntil: VALIDO_HASTA,
             availability: "https://schema.org/InStock",
             itemOffered: {
                 "@type": "Service",

@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "advwhuowosnbrbihhenf.supabase.co",
       },
+      {
+        // Los avatares de testimonios cargados desde el panel viven acá.
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
     ],
     // Serve optimized images in modern formats
     formats: ["image/avif", "image/webp"],

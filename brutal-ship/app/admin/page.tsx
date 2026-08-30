@@ -36,10 +36,10 @@ async function getStats() {
 const statCards = [
     { key: "plans", label: "Planes", icon: "💰", href: "/admin/precios", color: "bg-primary" },
     { key: "services", label: "Servicios", icon: "⚡", href: "/admin/servicios", color: "bg-secondary" },
-    { key: "projects", label: "Proyectos", icon: "🎨", href: "/admin/portafolio", color: "bg-electric-blue" },
+    { key: "projects", label: "Proyectos", icon: "🎨", href: "/admin/portafolio", color: "bg-primary" },
     { key: "testimonials", label: "Testimonios", icon: "💬", href: "/admin/testimonios", color: "bg-accent-yellow" },
-    { key: "faqs", label: "FAQs", icon: "❓", href: "/admin/faqs", color: "bg-accent-coral" },
-    { key: "config", label: "Config", icon: "⚙️", href: "/admin/config", color: "bg-violet-electric" },
+    { key: "faqs", label: "FAQs", icon: "❓", href: "/admin/faqs", color: "bg-hot-coral" },
+    { key: "config", label: "Config", icon: "⚙️", href: "/admin/config", color: "bg-primary" },
 ] as const;
 
 export default async function AdminDashboard() {
@@ -49,7 +49,7 @@ export default async function AdminDashboard() {
         <div className="space-y-8">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-black text-white font-display">
+                <h1 className="text-3xl font-black text-white font-body">
                     Dashboard
                 </h1>
                 <p className="text-gray-400 mt-1">
@@ -71,7 +71,7 @@ export default async function AdminDashboard() {
                                 className={`w-3 h-3 rounded-full ${card.color} group-hover:animate-pulse`}
                             />
                         </div>
-                        <p className="text-3xl font-black text-white font-display">
+                        <p className="text-3xl font-black text-white font-body">
                             {counts[card.key]}
                         </p>
                         <p className="text-gray-400 text-sm font-medium mt-1">
@@ -84,7 +84,7 @@ export default async function AdminDashboard() {
             {/* Recent Leads */}
             <div className="bg-[#1e1530] border-2 border-white/10 rounded-sm p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-black text-white font-display">
+                    <h2 className="text-xl font-black text-white font-body">
                         📬 Leads Recientes
                     </h2>
                     <Link

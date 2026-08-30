@@ -329,11 +329,11 @@ export default function ScreenshotCropModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-[#1e1530] border-2 border-primary/40 rounded-sm w-full max-w-4xl max-h-[90vh] overflow-auto shadow-[8px_8px_0px_rgba(0,0,0,0.3)]">
+            <div className="bg-[#1e1530] border-2 border-primary/40 rounded-sm w-full max-w-4xl max-h-[90vh] overflow-auto shadow-neobrutalism-lg">
                 {/* Header */}
                 <div className="flex items-center justify-between p-5 border-b border-white/10">
                     <div>
-                        <h2 className="text-xl font-black text-white font-display flex items-center gap-2">
+                        <h2 className="text-xl font-black text-white font-body flex items-center gap-2">
                             📸 Captura de Screenshot
                             {step === "cropping-43" && <span className="text-xs bg-primary px-2 py-0.5 rounded">Paso 1/2 — Recorte 4:3</span>}
                             {step === "cropping-169" && <span className="text-xs bg-mint text-black px-2 py-0.5 rounded">Paso 2/2 — Recorte 16:9</span>}
@@ -389,7 +389,7 @@ export default function ScreenshotCropModal({
                                             type="button"
                                             onClick={() => applyCropPreset(preset.ratio)}
                                             className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border-2 rounded-sm transition-all ${lockedRatio === preset.ratio
-                                                ? "bg-mint text-black border-black shadow-[2px_2px_0px_#000]"
+                                                ? "bg-mint text-black border-black shadow-neobrutalism-sm"
                                                 : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30 hover:text-white"
                                                 }`}
                                         >
@@ -405,8 +405,8 @@ export default function ScreenshotCropModal({
                             </div>
 
                             <p className="text-xs text-gray-400">
-                                <span className="text-mint font-bold">Arrastrá las esquinas</span> para redimensionar ·
-                                <span className="text-mint font-bold"> Arrastrá dentro</span> para mover
+                                <span className="text-secondary font-bold">Arrastrá las esquinas</span> para redimensionar ·
+                                <span className="text-secondary font-bold"> Arrastrá dentro</span> para mover
                             </p>
 
                             {/* Image + crop overlay */}
@@ -473,7 +473,7 @@ export default function ScreenshotCropModal({
 
                                         {/* Size label */}
                                         <div
-                                            className="absolute text-[10px] text-mint font-mono whitespace-nowrap pointer-events-none z-10"
+                                            className="absolute text-[10px] text-secondary font-mono whitespace-nowrap pointer-events-none z-10"
                                             style={{
                                                 left: `${(crop.x + crop.width / 2) * scale}px`,
                                                 top: `${(crop.y + crop.height) * scale + 8}px`,
@@ -529,7 +529,7 @@ export default function ScreenshotCropModal({
                     {step === "done" && (
                         <div className="text-center py-12 space-y-4">
                             <span className="text-4xl">✅</span>
-                            <p className="text-mint font-bold text-lg">¡Screenshot subido exitosamente!</p>
+                            <p className="text-secondary font-bold text-lg">¡Screenshot subido exitosamente!</p>
                             <button onClick={onClose} className="bg-primary text-white font-bold px-6 py-2.5 border-2 border-black shadow-neobrutalism-sm rounded-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
                                 Cerrar
                             </button>

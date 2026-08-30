@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { SiteConfigMap } from "@/lib/types/database";
 import LogikaLogo from "./LogikaLogo";
 
@@ -10,7 +11,7 @@ export default function Footer({ config }: FooterProps) {
     const emailUrl = config.email ? `mailto:${config.email}` : '#';
     const instagramUrl = config.instagram_url || '#';
     return (
-        <footer className="bg-ink-black border-t-2 border-white/10 text-white pt-16 pb-8 px-6 md:px-10 relative overflow-hidden">
+        <footer className="bg-ink-black border-t-4 border-black text-white pt-16 pb-8 px-6 md:px-10 relative overflow-hidden">
             {/* Geometric Footer Decoration */}
             <div className="geometric-shape bottom-0 left-0 w-64 h-64 bg-primary rounded-full blur-[100px] opacity-20"></div>
 
@@ -21,12 +22,12 @@ export default function Footer({ config }: FooterProps) {
                         <div className="flex items-center gap-3 text-white mb-6">
                             <LogikaLogo className="h-10 md:h-12 w-auto" />
                         </div>
-                        <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                        <p className="text-white/70 text-sm leading-relaxed mb-6">
                             Hacemos páginas web profesionales para todo tipo de negocio. Vos te enfocás en lo tuyo, nosotros nos encargamos de tu presencia digital.
                         </p>
                         <div className="flex gap-4">
                             <a
-                                className="size-10 flex items-center justify-center rounded-full border border-white/20 hover:bg-pink-500 hover:border-pink-500 hover:text-white transition-all text-gray-400"
+                                className="size-11 flex items-center justify-center rounded-full border border-white/20 hover:bg-pink-500 hover:border-pink-500 hover:text-white transition-all text-white/70"
                                 href={instagramUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -38,14 +39,14 @@ export default function Footer({ config }: FooterProps) {
                                 </svg>
                             </a>
                             <a
-                                className="size-10 flex items-center justify-center rounded-full border border-white/20 hover:bg-primary hover:border-primary hover:text-white transition-all text-gray-400"
+                                className="size-11 flex items-center justify-center rounded-full border border-white/20 hover:bg-primary hover:border-primary hover:text-white transition-all text-white/70"
                                 href={emailUrl}
                                 aria-label="Email"
                             >
-                                <span className="material-icons-outlined text-lg">alternate_email</span>
+                                <span aria-hidden="true" className="material-icons text-lg">alternate_email</span>
                             </a>
                             <a
-                                className="size-10 flex items-center justify-center rounded-full border border-white/20 hover:bg-[#25D366] hover:border-[#25D366] hover:text-white transition-all text-gray-400"
+                                className="size-11 flex items-center justify-center rounded-full border border-white/20 hover:bg-[#25D366] hover:border-[#25D366] hover:text-ink-black transition-all text-white/70"
                                 href={whatsappUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -61,30 +62,30 @@ export default function Footer({ config }: FooterProps) {
 
                     {/* Links Column 1 */}
                     <div>
-                        <h4 className="font-bold text-lg mb-6 text-white border-l-4 border-secondary pl-3">Navegación</h4>
+                        <h4 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Navegación</h4>
                         <ul className="space-y-3">
                             <li>
-                                <a className="text-gray-400 hover:text-secondary underline-grow transition-all block w-max" href="#servicios">
+                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
                                     Servicios
                                 </a>
                             </li>
                             <li>
-                                <a className="text-gray-400 hover:text-secondary underline-grow transition-all block w-max" href="#portafolio">
+                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#portafolio">
                                     Nuestro Trabajo
                                 </a>
                             </li>
                             <li>
-                                <a className="text-gray-400 hover:text-secondary underline-grow transition-all block w-max" href="#proceso">
+                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#proceso">
                                     Proceso
                                 </a>
                             </li>
                             <li>
-                                <a className="text-gray-400 hover:text-secondary underline-grow transition-all block w-max" href="#faq">
+                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#faq">
                                     FAQ
                                 </a>
                             </li>
                             <li>
-                                <a className="text-gray-400 hover:text-secondary underline-grow transition-all block w-max" href="#contacto">
+                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#contacto">
                                     Contacto
                                 </a>
                             </li>
@@ -93,20 +94,20 @@ export default function Footer({ config }: FooterProps) {
 
                     {/* Links Column 2 */}
                     <div>
-                        <h4 className="font-bold text-lg mb-6 text-white border-l-4 border-primary pl-3">Servicios</h4>
+                        <h4 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Servicios</h4>
                         <ul className="space-y-3">
                             <li>
-                                <a className="text-gray-400 hover:text-primary underline-grow transition-all block w-max" href="#servicios">
+                                <a className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
                                     Landing Page
                                 </a>
                             </li>
                             <li>
-                                <a className="text-gray-400 hover:text-primary underline-grow transition-all block w-max" href="#servicios">
+                                <a className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
                                     Sitio Institucional
                                 </a>
                             </li>
                             <li>
-                                <a className="text-gray-400 hover:text-primary underline-grow transition-all block w-max" href="#servicios">
+                                <a className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
                                     E-commerce / Plataforma
                                 </a>
                             </li>
@@ -115,32 +116,32 @@ export default function Footer({ config }: FooterProps) {
 
                     {/* CTA Column */}
                     <div>
-                        <h4 className="font-bold text-lg mb-6 text-white border-l-4 border-white pl-3">¿Listo para Arrancar?</h4>
-                        <p className="text-gray-400 text-sm mb-4">
-                            Escribinos hoy y en menos de 24hs te respondemos con una propuesta para tu proyecto.
+                        <h4 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">¿Listo para Arrancar?</h4>
+                        <p className="text-white/70 text-sm mb-4">
+                            Escribinos hoy y en menos de {config.response_time || '48hs'} te respondemos con una propuesta para tu proyecto.
                         </p>
                         <a
                             href="#contacto"
-                            className="block w-full bg-white text-black font-bold text-sm uppercase py-3 px-6 rounded hover:bg-gray-200 transition-colors border-2 border-transparent hover:border-primary text-center"
+                            className="cta block w-full bg-white text-black font-bold text-sm uppercase py-3 px-6 rounded hover:bg-white/10 transition-colors border-2 border-transparent hover:border-primary text-center"
                         >
-                            Quiero Mi Web
+                            Quiero mi web
                         </a>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+                <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/60">
                     <p>© {new Date().getFullYear()} Logika. Todos los derechos reservados.</p>
                     <div className="flex gap-6">
-                        <a className="hover:text-white transition-colors" href="/blog">
+                        <Link className="hover:text-white transition-colors inline-flex items-center justify-center min-h-11 min-w-11 px-2" href="/blog">
                             Blog
-                        </a>
-                        <a className="hover:text-white transition-colors" href="#">
+                        </Link>
+                        <Link className="hover:text-white transition-colors inline-flex items-center justify-center min-h-11 min-w-11 px-2" href="/privacidad">
                             Política de Privacidad
-                        </a>
-                        <a className="hover:text-white transition-colors" href="#">
+                        </Link>
+                        <Link className="hover:text-white transition-colors inline-flex items-center justify-center min-h-11 min-w-11 px-2" href="/terminos">
                             Términos de Servicio
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

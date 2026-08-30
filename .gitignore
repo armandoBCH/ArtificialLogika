@@ -25,3 +25,10 @@ Thumbs.db
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Herramientas de agente y artefactos de trabajo (no son parte del producto)
+.claude/
+.mcp.json
+.playwright-mcp/
+.impeccable/
+skills-lock.json
