@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAdminData } from "../hooks/useAdminData";
+import AdminError from "../components/AdminError";
 
 interface ServiceFeature {
     text: string;
@@ -142,7 +143,7 @@ function FeatureItem({
 
 // ─── Main Page ──────────────────────────────────────
 export default function ServiciosPage() {
-    const { data: rawData, loading, saving, create, update, remove } = useAdminData<Service>("services");
+    const { data: rawData, loading, saving, create, update, remove, error } = useAdminData<Service>("services");
     const [editing, setEditing] = useState<Service | null>(null);
     const [creating, setCreating] = useState(false);
 
@@ -211,6 +212,7 @@ export default function ServiciosPage() {
 
     return (
         <div className="space-y-6">
+            <AdminError mensaje={error} />
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-black text-white font-body">⚡ Servicios</h1>

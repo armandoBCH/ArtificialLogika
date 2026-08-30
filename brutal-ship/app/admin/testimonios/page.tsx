@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useAdminData } from "../hooks/useAdminData";
+import AdminError from "../components/AdminError";
 import type { Testimonial } from "@/lib/types/database";
 
 const BADGE_OPTIONS = [
@@ -14,7 +15,7 @@ const BADGE_OPTIONS = [
 ];
 
 export default function TestimoniosPage() {
-    const { data, loading, saving, create, update, remove } = useAdminData<Testimonial>("testimonials");
+    const { data, loading, saving, create, update, remove, error } = useAdminData<Testimonial>("testimonials");
     const [editing, setEditing] = useState<Testimonial | null>(null);
     const [creating, setCreating] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -83,6 +84,7 @@ export default function TestimoniosPage() {
 
     return (
         <div className="space-y-6">
+            <AdminError mensaje={error} />
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-black text-white font-body">💬 Testimonios</h1>

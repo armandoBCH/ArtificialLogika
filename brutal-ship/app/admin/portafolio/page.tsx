@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useAdminData } from "../hooks/useAdminData";
+import AdminError from "../components/AdminError";
 import dynamic from "next/dynamic";
 
 const ScreenshotCropModal = dynamic(() => import("../components/ScreenshotCropModal"), { ssr: false });
@@ -62,7 +63,7 @@ const BASE_CATEGORIES = [
 ];
 
 export default function PortafolioPage() {
-    const { data, loading, saving, create, update, remove } = useAdminData<PortfolioProject>("portfolio_projects");
+    const { data, loading, saving, create, update, remove, error } = useAdminData<PortfolioProject>("portfolio_projects");
     const [editing, setEditing] = useState<PortfolioProject | null>(null);
     const [creating, setCreating] = useState(false);
     const [availableServices, setAvailableServices] = useState<ServiceData[]>([]);
@@ -246,6 +247,7 @@ export default function PortafolioPage() {
     return (
         <>
             <div className="space-y-6">
+                <AdminError mensaje={error} />
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-black text-white font-body">🎨 Portafolio</h1>

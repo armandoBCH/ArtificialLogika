@@ -79,7 +79,11 @@ export default function PortfolioViewer({ src, alt, titulo, filtro = "" }: Portf
                     aria-hidden="true"
                     className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 bg-ink-black text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 border-2 border-black shadow-neobrutalism-sm rounded opacity-0 translate-y-1 transition-all duration-200 group-hover/ver:opacity-100 group-hover/ver:translate-y-0 group-focus-visible/ver:opacity-100 group-focus-visible/ver:translate-y-0"
                 >
-                    <span className="material-icons text-sm">expand_content</span>
+                    {/* `expand_content` pertenece a Material Symbols, no al set clasico que carga
+                        el sitio. La ligadura nunca se formaba y en su lugar se imprimia la
+                        palabra "expand_content" al lado de "Ver completo", 126px de texto
+                        donde iba un icono de 14. `open_in_full` es el equivalente y si existe. */}
+                    <span className="material-icons text-sm">open_in_full</span>
                     Ver completo
                 </span>
             </button>

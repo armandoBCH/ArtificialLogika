@@ -1,9 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getAnalyticsData } from "@/lib/analytics";
+import { guardarRutaAdmin } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
+    // Esta ruta no validaba nada: devolvia las metricas de Google Analytics
+    // (usuarios, sesiones, paginas vistas, visitantes por dia) a cualquiera
+    // que pidiera la URL, sin sesion.
+    const { rechazo } = await guardarRutaAdmin(request);
+    if (rechazo) return rechazo;
+
     try {
         const searchParams = request.nextUrl.searchParams;
         const days = parseInt(searchParams.get("days") || "30", 10);

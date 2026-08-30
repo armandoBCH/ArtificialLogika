@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAdminData } from "../hooks/useAdminData";
+import AdminError from "../components/AdminError";
 
 interface Feature {
     text: string;
@@ -38,7 +39,7 @@ const FEATURE_ICON_OPTIONS = [
 ];
 
 export default function PreciosPage() {
-    const { data, loading, saving, create, update, remove } = useAdminData<Plan>("pricing_plans");
+    const { data, loading, saving, create, update, remove, error } = useAdminData<Plan>("pricing_plans");
     const [editing, setEditing] = useState<Plan | null>(null);
     const [creating, setCreating] = useState(false);
 
@@ -89,6 +90,7 @@ export default function PreciosPage() {
 
     return (
         <div className="space-y-6">
+            <AdminError mensaje={error} />
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-black text-white font-body">💰 Precios</h1>

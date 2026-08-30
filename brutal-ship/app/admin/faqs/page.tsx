@@ -2,24 +2,28 @@
 
 import { useState } from "react";
 import { useAdminData } from "../hooks/useAdminData";
+import AdminError from "../components/AdminError";
 
+// El tipo declaraba `category` y `sort_order`. Ninguna de las dos existe en la tabla
+// `faqs`, que solo tiene question, answer, display_order e is_active. Como la API
+// filtra por whitelist, esos dos campos se descartaban sin avisar: se elegia una
+// categoria, se guardaba, decia OK, y no pasaba nada. El orden tampoco se aplicaba
+// nunca, porque la columna real se llama display_order.
 interface FAQ {
     id: string;
     question: string;
     answer: string;
-    category: string;
-    sort_order: number;
+    display_order: number;
+    is_active: boolean;
 }
 
-const FAQ_CATEGORIES = ["General", "Precios", "Servicios", "Plazos", "Soporte", "Diseño"];
-
 export default function FAQsPage() {
-    const { data, loading, saving, create, update, remove } = useAdminData<FAQ>("faqs");
+    const { data, loading, saving, create, update, remove, error } = useAdminData<FAQ>("faqs");
     const [editing, setEditing] = useState<FAQ | null>(null);
     const [creating, setCreating] = useState(false);
     const [expanded, setExpanded] = useState<string | null>(null);
 
-    const empty: Partial<FAQ> = { question: "", answer: "", category: "General", sort_order: 0 };
+    const empty: Partial<FAQ> = { question: "", answer: "", display_order: 0, is_active: true };
     const [form, setForm] = useState<Partial<FAQ>>(empty);
 
     function openCreate() { setForm(empty); setCreating(true); setEditing(null); }
@@ -36,6 +40,7 @@ export default function FAQsPage() {
 
     return (
         <div className="space-y-6">
+            <AdminError mensaje={error} />
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-black text-white font-body">❓ FAQs</h1>
@@ -76,34 +81,33 @@ export default function FAQsPage() {
                         </label>
                     </div>
 
-                    {/* ── Category & Order ── */}
+                    {/* Antes esto era "Categoria & Orden". La categoria se fue: no hay
+                        columna para guardarla, asi que el selector prometia algo que la
+                        base no podia cumplir. */}
                     <div className="space-y-3 border-t border-white/10 pt-4">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <span aria-hidden="true" className="material-icons text-base">category</span>
-                            Categoría & Orden
+                            <span aria-hidden="true" className="material-icons text-base">swap_vert</span>
+                            Orden y visibilidad
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-1">
-                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Categoría</span>
-                                <div className="flex flex-wrap gap-2 mt-1">
-                                    {FAQ_CATEGORIES.map((cat) => (
-                                        <button
-                                            key={cat}
-                                            type="button"
-                                            onClick={() => setForm({ ...form, category: cat.toLowerCase() })}
-                                            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border-2 rounded-sm transition-all ${(form.category || "").toLowerCase() === cat.toLowerCase()
-                                                ? "bg-primary text-white border-primary shadow-neobrutalism-white"
-                                                : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30 hover:text-white"
-                                                }`}
-                                        >
-                                            {cat}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
                             <label className="space-y-1">
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Orden (1, 2, 3...)</span>
-                                <input className="admin-input w-24" type="number" value={form.sort_order || 0} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
+                                <input
+                                    className="admin-input w-24"
+                                    type="number"
+                                    value={form.display_order ?? 0}
+                                    onChange={(e) => setForm({ ...form, display_order: Number(e.target.value) })}
+                                />
+                            </label>
+                            <label className="flex items-center gap-2 pt-5">
+                                <input
+                                    type="checkbox"
+                                    checked={form.is_active ?? true}
+                                    onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
+                                />
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                    Visible en el sitio
+                                </span>
                             </label>
                         </div>
                     </div>
@@ -130,11 +134,13 @@ export default function FAQsPage() {
                                 className="w-full flex items-center justify-between p-4 text-left"
                             >
                                 <div className="flex items-center gap-3">
-                                    <span className="text-gray-500 text-xs font-bold min-w-[24px]">#{f.sort_order}</span>
+                                    <span className="text-gray-500 text-xs font-bold min-w-[24px]">#{f.display_order}</span>
                                     <h3 className="text-white font-bold text-sm">{f.question}</h3>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0 ml-4">
-                                    <span className="bg-white/5 text-gray-400 text-[10px] px-2 py-0.5 rounded-sm uppercase font-bold">{f.category}</span>
+                                    <span className={`text-[10px] px-2 py-0.5 rounded-sm uppercase font-bold ${f.is_active ? "bg-white/5 text-gray-400" : "bg-hot-coral/20 text-hot-coral"}`}>
+                                        {f.is_active ? "Visible" : "Oculta"}
+                                    </span>
                                     <span className={`text-gray-400 transition-transform text-sm ${expanded === f.id ? "rotate-180" : ""}`}>▼</span>
                                 </div>
                             </button>

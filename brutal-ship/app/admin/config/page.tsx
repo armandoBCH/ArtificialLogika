@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAdminData } from "../hooks/useAdminData";
+import AdminError from "../components/AdminError";
 
 interface Config {
     id: string;
@@ -12,7 +13,7 @@ interface Config {
 }
 
 export default function ConfigPage() {
-    const { data, loading, saving, update } = useAdminData<Config>("site_config");
+    const { data, loading, saving, update, error } = useAdminData<Config>("site_config");
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editValue, setEditValue] = useState("");
 
@@ -37,6 +38,7 @@ export default function ConfigPage() {
 
     return (
         <div className="space-y-6">
+            <AdminError mensaje={error} />
             <div>
                 <h1 className="text-3xl font-black text-white font-body">⚙️ Configuración</h1>
                 <p className="text-gray-400 mt-1">Configuración general del sitio</p>

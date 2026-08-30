@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Bitter } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import { SITE_URL, BUSINESS, SEO_KEYWORDS } from "@/lib/seo/constants";
 import ScrollProgress from "./components/ScrollProgress";
@@ -8,6 +9,29 @@ import PageTransition from "./components/PageTransition";
 import "./globals.css";
 
 const GA_MEASUREMENT_ID = "G-5MTH0Y3GG2";
+
+// Material Icons se cargaba con un <link> a fonts.googleapis.com inyectado por
+// script, mas un <noscript> de respaldo. Eso metia en el camino critico del primer
+// render un origen de terceros: resolucion DNS, handshake TLS, un CSS, y recien
+// despues el woff2 desde fonts.gstatic.com. Cuatro viajes antes de ver un icono.
+//
+// Ahora el woff2 vive en el repo y lo sirve el mismo origen que el HTML. No se puede
+// hacer subset con los iconos que usamos porque 17 vienen de la base (`feature.icon`,
+// `s.icon`): el admin puede elegir cualquiera, asi que va la fuente completa.
+//
+// `display: "block"` y no "swap" a proposito. Estas ligaduras son texto ("check_circle")
+// hasta que la fuente llega; con swap se leeria esa palabra por un instante. Con block
+// el espacio queda invisible y despues aparece el glifo, que es lo que hoy resuelve
+// IconFontGate a mano.
+//
+// Material Icons es Apache 2.0, que permite redistribuirla.
+const materialIcons = localFont({
+  src: "./fonts/material-icons.woff2",
+  variable: "--font-material-icons",
+  display: "block",
+  weight: "400",
+  style: "normal",
+});
 
 // Space Grotesk es la voz de la marca: display, titulares, botones y etiquetas.
 // Su grotesca geométrica con detalles raros (la g, la a de doble piso) es lo que
@@ -132,37 +156,12 @@ export default function RootLayout({
   return (
     <html lang="es-AR" className="scroll-smooth scroll-pt-28">
       <head>
-        {/* Preconnect to external domains for faster resource loading */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Ya no hay preconnect a fonts.googleapis / fonts.gstatic: las tres fuentes
+            (Space Grotesk, Bitter, Material Icons) las sirve este mismo origen. */}
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
-
-        {/* Material Icons — 3 lightweight fonts loaded async (non-render-blocking) */}
-        {/* Removed Material Symbols Outlined (1076KB) — replaced with Material Icons Outlined */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(){
-                var fonts=[
-                  "https://fonts.googleapis.com/icon?family=Material+Icons"
-                ];
-                fonts.forEach(function(href){
-                  var l=document.createElement("link");
-                  l.rel="stylesheet";l.href=href;l.crossOrigin="anonymous";
-                  document.head.appendChild(l);
-                });
-
-              })();
-            `,
-          }}
-        />
-        {/* Fallback for no-JS */}
-        <noscript>
-          <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-        </noscript>
       </head>
       <body
-        className={`${spaceGrotesk.variable} ${bitter.variable} font-body bg-background-light text-black overflow-x-hidden`}
+        className={`${spaceGrotesk.variable} ${bitter.variable} ${materialIcons.variable} font-body bg-background-light text-black overflow-x-hidden`}
       >
         {/* Las animaciones de entrada de framer-motion emiten `opacity:0` inline en el
             SSR. Con JS, se revelan al hidratar. Sin JS, el visitante veía rectángulos

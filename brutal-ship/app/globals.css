@@ -1101,7 +1101,27 @@ article .prose strong {
   font-size: revert-layer;
 }
 
+/* Estas propiedades las servia el CSS de fonts.googleapis.com. Al self-hostear la
+   fuente hay que declararlas aca, o las ligaduras no se forman y los iconos se
+   ven como el texto crudo ("check_circle").
+
+   `font-feature-settings: "liga"` es la que convierte ese texto en el glifo.
+   OJO: no poner `font-size` aca. El tamaño lo resuelve el bloque @layer utilities
+   de arriba, que existe para que las clases de Tailwind sigan ganando. */
 .material-icons {
+  font-family: var(--font-material-icons), "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
   visibility: hidden;
 }
 

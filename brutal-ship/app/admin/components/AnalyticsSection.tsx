@@ -159,8 +159,17 @@ const BRAND_COLORS = [
 function DeviceRing({ devices }: { devices: {category: string, percentage: number}[] }) {
     if (devices.length === 0) return null;
     
-    let currentOffset = 0;
     const circumference = 2 * Math.PI * 40;
+
+    // Antes esto era un `let` mutado dentro del .map() del render. No rompia nada
+    // porque se reinicia en cada render, pero el lint lo marca con razon: mutar
+    // durante el render es fragil con las features concurrentes de React. El
+    // desplazamiento acumulado se calcula antes, sin mutar nada mientras se pinta.
+    const desplazamientos: number[] = [];
+    devices.reduce((acumulado, d) => {
+        desplazamientos.push(acumulado);
+        return acumulado + (d.percentage / 100) * circumference;
+    }, 0);
 
     return (
         <div className="flex items-center gap-6">
@@ -169,8 +178,7 @@ function DeviceRing({ devices }: { devices: {category: string, percentage: numbe
                     <circle cx="50" cy="50" r="40" fill="transparent" stroke="rgba(255,255,255,0.05)" strokeWidth="12" />
                     {devices.map((d, i) => {
                         const strokeDasharray = `${(d.percentage / 100) * circumference} ${circumference}`;
-                        const strokeDashoffset = -currentOffset;
-                        currentOffset += (d.percentage / 100) * circumference;
+                        const strokeDashoffset = -desplazamientos[i];
                         
                         // Map colors based on index
                         const colorHex = i === 0 ? "#8523e1" : i === 1 ? "#fffb00" : i === 2 ? "#00f090" : "#E11D48";

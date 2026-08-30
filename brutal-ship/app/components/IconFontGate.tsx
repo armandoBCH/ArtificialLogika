@@ -21,10 +21,23 @@ export default function IconFontGate() {
         const revelar = () => document.documentElement.classList.add("iconos-listos");
 
         if (typeof document.fonts?.load === "function") {
+            // La familia ya no se llama "Material Icons": next/font/local genera un
+            // nombre con hash y lo publica en --font-material-icons. Pedirle a
+            // document.fonts una familia que no existe resuelve al instante, y los
+            // iconos se revelarian antes de que la fuente este lista.
+            //
+            // Se lee del <body> y no del <html>: la clase que trae la variable la pone
+            // el layout en el body. Desde documentElement esto devuelve "" y el
+            // fallback vuelve a pedir una familia inexistente, que es justo el
+            // problema que este bloque evita.
+            const familia = getComputedStyle(document.body)
+                .getPropertyValue("--font-material-icons")
+                .trim();
+
             // El timeout evita que un fallo de red los deje ocultos para siempre.
             const timer = setTimeout(revelar, 3000);
             document.fonts
-                .load('24px "Material Icons"')
+                .load(`24px ${familia || '"Material Icons"'}`)
                 .then(revelar)
                 .catch(revelar)
                 .finally(() => clearTimeout(timer));
