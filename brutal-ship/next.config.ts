@@ -56,9 +56,12 @@ const nextConfig: NextConfig = {
           },
           // SEO: Content Security Policy (basic, allows inline for animations + GA)
           {
+            // Google Fonts salio de style-src y font-src: las tres fuentes del sitio
+            // (Space Grotesk, Bitter, Material Icons) se sirven desde este origen.
+            // Verificado en las 7 rutas publicas y en /admin/login: 0 referencias.
             key: "Content-Security-Policy",
             value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob: https://www.google-analytics.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com https://region1.google-analytics.com; frame-ancestors 'none';",
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https: blob: https://www.google-analytics.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com https://region1.google-analytics.com; frame-ancestors 'none';",
           },
         ],
       },
