@@ -20,7 +20,10 @@ export default function JsonLd({ services, testimonials }: JsonLdProps) {
         "@type": "Organization",
         "@id": `${SITE_URL}/#organization`,
         name: BUSINESS.legalName,
-        alternateName: BUSINESS.name,
+        // Era `BUSINESS.name`, identico a `name`: no aportaba nada. Aca van las
+        // formas en que la gente escribe la marca cuando la busca, sobre todo
+        // "logica", que es lo que sale si te dijeron el nombre de boca.
+        alternateName: [...BUSINESS.nameVariants],
         url: SITE_URL,
         logo: {
             "@type": "ImageObject",
@@ -53,7 +56,7 @@ export default function JsonLd({ services, testimonials }: JsonLdProps) {
         "@type": "ProfessionalService",
         "@id": `${SITE_URL}/#business`,
         name: BUSINESS.name,
-        alternateName: BUSINESS.legalName,
+        alternateName: [...BUSINESS.nameVariants],
         url: SITE_URL,
         description: BUSINESS.description,
         priceRange: "$$",
@@ -135,7 +138,7 @@ export default function JsonLd({ services, testimonials }: JsonLdProps) {
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
         name: BUSINESS.name,
-        alternateName: BUSINESS.legalName,
+        alternateName: [...BUSINESS.nameVariants],
         url: SITE_URL,
         description: BUSINESS.description,
         inLanguage: BUSINESS.language,

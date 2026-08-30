@@ -18,9 +18,35 @@ export const BUSINESS = {
     language: "es",
     country: "AR",
     currency: "ARS",
-    email: "contactologika@gmail.com.ar",
+    // Tenia ".com.ar" pegado a una direccion de gmail. El sitio mostraba la
+    // correcta a las personas, pero el structured data le declaraba a Google una
+    // que no existe.
+    email: "contactologika@gmail.com",
     phone: "+542284638361",
     areaServed: "Argentina",
+
+    /**
+     * Como escribe la gente el nombre cuando busca la marca.
+     *
+     * "Logika" con K es dificil de adivinar si te lo dijeron de boca: la mayoria
+     * escribe "logica". Estas variantes van al campo alternateName de schema.org,
+     * que existe para exactamente esto, y ayudan a que Google entienda que todas
+     * apuntan a la misma entidad.
+     *
+     * Son variantes REALES: formas en que un cliente escribiria el nombre. No es
+     * lista de palabras clave, y meter aca terminos que no son el nombre de la
+     * marca vuelve el campo ruido y deja de servir.
+     */
+    nameVariants: [
+        "Logika Web",
+        "Logica",
+        "Logica Web",
+        "Artificial Logika",
+        "Artificial Logica",
+        "Logika Argentina",
+        "Logica Argentina",
+        "logikaweb",
+    ],
     geo: {
         latitude: -34.5987,
         longitude: -58.3789,

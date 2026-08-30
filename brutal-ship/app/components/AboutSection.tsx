@@ -69,6 +69,14 @@ export default function AboutSection() {
                                 Por eso el trato es directo por WhatsApp: es más rápido para vos y
                                 para nosotros.
                             </p>
+                            {/* Aclarar la K sirve a las dos puntas. A quien te escucho el nombre y
+                                va a buscarte, porque si escribe "logica" no llega. Y a Google, que
+                                asocia las dos formas con la misma marca sin que haya que esconder
+                                texto ni repetir palabras clave. */}
+                            <p className="mt-4 text-lg md:text-xl font-medium text-ink-black/80 medida-comoda">
+                                Y sí: es <strong className="font-bold">Logika con K</strong>. Si lo
+                                buscaste como <em>logica</em> y llegaste igual, bienvenido.
+                            </p>
                         </BlockReveal>
 
                         <a
