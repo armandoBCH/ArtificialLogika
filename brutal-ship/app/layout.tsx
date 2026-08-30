@@ -142,10 +142,23 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
 
-  // Verification placeholders (uncomment when you have them)
-  // verification: {
-  //   google: "your-google-verification-code",
-  // },
+  // Verificacion de Google Search Console.
+  //
+  // Se lee de una variable de entorno en vez de estar escrita aca, para que el
+  // codigo se pegue una sola vez desde el panel de Vercel sin tocar el repo ni
+  // esperar un deploy manual. Si la variable no esta, no se emite la etiqueta:
+  // una meta vacia es peor que ninguna, porque Google la lee como intento
+  // fallido de verificacion.
+  //
+  // Vercel > Settings > Environment Variables:
+  //   NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION = <el codigo que da Search Console>
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? {
+        verification: {
+          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+        },
+      }
+    : {}),
 };
 
 export default function RootLayout({
