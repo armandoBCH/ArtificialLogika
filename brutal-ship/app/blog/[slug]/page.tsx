@@ -6,7 +6,7 @@ import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { getSiteConfig } from "@/lib/data/config";
 import { BLOG_POSTS } from "../page";
-import { getArticleContent } from "./articles";
+import { getArticulo } from "./articles";
 
 interface BlogPostPageProps {
     params: Promise<{ slug: string }>;
@@ -46,14 +46,28 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     if (!post) notFound();
 
     const config = await getSiteConfig();
-    const content = getArticleContent(slug);
-    if (!content) notFound();
+    const articulo = getArticulo(slug);
+    if (!articulo) notFound();
 
     const breadcrumbSchema = buildBreadcrumbs([
         { name: "Inicio", url: SITE_URL },
         { name: "Blog", url: `${SITE_URL}/blog` },
         { name: post.title },
     ]);
+
+    // El FAQPage sale del mismo array que se pinta abajo. Google exige que el
+    // marcado coincida con lo visible, y tener dos fuentes separadas es la forma
+    // mas comun de romper esa regla sin enterarse.
+    const faqSchema = articulo.preguntas.length > 0 ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": `${SITE_URL}/blog/${slug}#faq`,
+        mainEntity: articulo.preguntas.map((p) => ({
+            "@type": "Question",
+            name: p.pregunta,
+            acceptedAnswer: { "@type": "Answer", text: p.respuesta },
+        })),
+    } : null;
 
     const articleSchema = {
         "@context": "https://schema.org",
@@ -93,6 +107,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
             />
+            {faqSchema && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+                />
+            )}
             <Navbar config={config} />
 
             <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 lg:py-20 relative z-10">
@@ -133,6 +153,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     </p>
                 </header>
 
+                {/* La respuesta directa, antes del desarrollo.
+                    Sirve a las dos puntas: quien entra desde una busqueda tiene el
+                    dato sin leer 600 palabras, y un motor de respuestas encuentra
+                    un fragmento citable sin tener que resumir la nota entera. */}
+                <aside
+                    aria-label="Respuesta corta"
+                    className="mt-12 mb-4 max-w-3xl mx-auto border-4 border-black bg-accent-yellow rounded-xl p-6 md:p-8 shadow-neobrutalism"
+                >
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-ink-black/70">
+                        En corto
+                    </p>
+                    <p className="mt-3 text-lg md:text-xl font-bold leading-snug text-ink-black">
+                        {articulo.respuestaCorta}
+                    </p>
+                </aside>
+
                 {/* Article Body Neobrutalista */}
                 <div
                     className="prose prose-xl md:prose-2xl max-w-none mx-auto
@@ -145,8 +181,39 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     prose-ul:list-none prose-ul:pl-0 prose-li:relative prose-li:pl-10 prose-li:mb-4
                     before:prose-li:content-['→'] before:prose-li:absolute before:prose-li:left-0 before:prose-li:text-primary before:prose-li:font-black before:prose-li:text-2xl
                     prose-blockquote:border-l-8 prose-blockquote:border-black prose-blockquote:bg-background-light prose-blockquote:p-8 md:prose-blockquote:p-12 prose-blockquote:not-italic prose-blockquote:font-medium prose-blockquote:text-2xl md:prose-blockquote:text-3xl prose-blockquote:shadow-neobrutalism-xl prose-blockquote:rounded-lg prose-blockquote:my-16"
-                    dangerouslySetInnerHTML={{ __html: content }}
+                    dangerouslySetInnerHTML={{ __html: articulo.contenido }}
                 />
+
+                {/* Estas preguntas son las mismas que alimentan el schema FAQPage.
+                    Una sola fuente, asi el marcado nunca se despega de lo visible. */}
+                {articulo.preguntas.length > 0 && (
+                    <section
+                        aria-labelledby="preguntas-nota"
+                        className="mt-24 max-w-3xl mx-auto"
+                    >
+                        <h2
+                            id="preguntas-nota"
+                            className="text-3xl md:text-4xl font-black uppercase tracking-tight border-b-4 border-primary pb-2 inline-flex mb-8"
+                        >
+                            Preguntas frecuentes
+                        </h2>
+                        <dl className="space-y-6">
+                            {articulo.preguntas.map((p) => (
+                                <div
+                                    key={p.pregunta}
+                                    className="border-2 border-black bg-white rounded-xl p-6 shadow-neobrutalism-sm"
+                                >
+                                    <dt className="text-xl md:text-2xl font-bold leading-snug text-ink-black">
+                                        {p.pregunta}
+                                    </dt>
+                                    <dd className="mt-3 text-lg md:text-xl font-medium leading-relaxed text-ink-black/80">
+                                        {p.respuesta}
+                                    </dd>
+                                </div>
+                            ))}
+                        </dl>
+                    </section>
+                )}
 
                 {/* CTA Neobrutalista */}
                 <div className="mt-24 md:mt-32 bg-primary/10 border-4 border-black rounded-2xl p-8 md:p-12 text-center shadow-neobrutalism-xl relative overflow-hidden group">

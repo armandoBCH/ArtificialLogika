@@ -111,9 +111,9 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                                         </span>
                                     ))}
                                 </div>
-                                <h3 className="text-2xl md:text-3xl font-black text-black mb-2 leading-tight uppercase tracking-tight">
+                                <h2 className="text-2xl md:text-3xl font-black text-black mb-2 leading-tight uppercase tracking-tight">
                                     {project.title}
-                                </h3>
+                                </h2>
                                 <p className="text-base text-ink-black/70 mb-5 line-clamp-3 md:line-clamp-4 font-medium">
                                     {project.description}
                                 </p>
@@ -151,9 +151,9 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                         <div className="w-16 h-16 bg-[#9b51e0] border-2 border-black font-black flex items-center justify-center text-3xl text-white shadow-neobrutalism-sm rounded-2xl mb-4 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-neobrutalism-sm transition-all">
                             +
                         </div>
-                        <h3 className="text-lg md:text-xl font-black text-black uppercase tracking-tight mb-1">
+                        <h2 className="text-lg md:text-xl font-black text-black uppercase tracking-tight mb-1">
                             Tu Proyecto Aquí
-                        </h3>
+                        </h2>
                         <p className="text-xs font-bold text-ink-black/70 uppercase tracking-widest">
                             Empecemos
                         </p>

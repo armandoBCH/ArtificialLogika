@@ -62,7 +62,7 @@ export default function Footer({ config }: FooterProps) {
 
                     {/* Links Column 1 */}
                     <div>
-                        <h4 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Navegación</h4>
+                        <h3 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Navegación</h3>
                         <ul className="space-y-3">
                             <li>
                                 <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
@@ -94,7 +94,7 @@ export default function Footer({ config }: FooterProps) {
 
                     {/* Links Column 2 */}
                     <div>
-                        <h4 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Servicios</h4>
+                        <h3 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Servicios</h3>
                         <ul className="space-y-3">
                             <li>
                                 <a className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
@@ -116,7 +116,7 @@ export default function Footer({ config }: FooterProps) {
 
                     {/* CTA Column */}
                     <div>
-                        <h4 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">¿Listo para Arrancar?</h4>
+                        <h3 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">¿Listo para Arrancar?</h3>
                         <p className="text-white/70 text-sm mb-4">
                             Escribinos hoy y en menos de {config.response_time || '48hs'} te respondemos con una propuesta para tu proyecto.
                         </p>
