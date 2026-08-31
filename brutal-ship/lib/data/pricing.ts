@@ -39,7 +39,11 @@ const DEFAULT_PLANS: PricingPlan[] = [
         original_price: null,
         currency: "USD",
         payment_type: "Precio Base",
-        price_note: "Precio de lanzamiento — cupos limitados.",
+        // Aca decia "Precio de lanzamiento - cupos limitados". Se saco porque no
+        // habia cupos que contar: era escasez declarada sin nada que la sostenga,
+        // y desde que existe llms.txt tambien se la estaba dictando a los modelos
+        // que responden sobre el negocio.
+        price_note: null,
         features: [
             { text: "Mockup previo gratis", icon: "draw", is_highlighted: true, icon_bg: "bg-hot-coral" },
             { text: "Presupuesto sin cargo", icon: "request_quote", is_highlighted: true, icon_bg: "bg-accent-yellow" },
