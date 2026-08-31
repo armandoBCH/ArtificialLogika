@@ -90,12 +90,12 @@ function ProjectCard({ project, index }: { project: PortfolioProject; index: num
                                 ? project.categories
                                 : project.category ? [project.category] : []
                             ).map((cat, i) => (
-                                <span key={`cat-${i}`} className="px-2 py-0.5 md:px-3 md:py-1 bg-black text-white text-[10px] md:text-xs font-bold uppercase tracking-wider border border-white/20">
+                                <span key={`cat-${i}`} className="px-2 py-0.5 md:px-3 md:py-1 bg-black text-white text-[10px] md:text-xs font-bold uppercase tracking-wider border-2 border-white/25">
                                     {cat}
                                 </span>
                             ))}
                             {project.tags.map((tag, i) => (
-                                <span key={`tag-${i}`} className={`px-2 py-0.5 md:px-3 md:py-1 ${colors.tagBg} ${colors.tagText} text-[10px] md:text-xs font-bold uppercase tracking-wider border border-white/20`}>
+                                <span key={`tag-${i}`} className={`px-2 py-0.5 md:px-3 md:py-1 ${colors.tagBg} ${colors.tagText} text-[10px] md:text-xs font-bold uppercase tracking-wider border-2 border-white/25`}>
                                     {tag}
                                 </span>
                             ))}

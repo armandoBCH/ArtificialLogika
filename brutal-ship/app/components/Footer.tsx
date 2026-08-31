@@ -27,7 +27,7 @@ export default function Footer({ config }: FooterProps) {
                         </p>
                         <div className="flex gap-4">
                             <a
-                                className="size-11 flex items-center justify-center rounded-full border border-white/20 hover:bg-pink-500 hover:border-pink-500 hover:text-white transition-all text-white/70"
+                                className="size-11 flex items-center justify-center rounded-full border-2 border-white/25 hover:bg-pink-500 hover:border-pink-500 hover:text-white transition-all text-white/70"
                                 href={instagramUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -39,14 +39,14 @@ export default function Footer({ config }: FooterProps) {
                                 </svg>
                             </a>
                             <a
-                                className="size-11 flex items-center justify-center rounded-full border border-white/20 hover:bg-primary hover:border-primary hover:text-white transition-all text-white/70"
+                                className="size-11 flex items-center justify-center rounded-full border-2 border-white/25 hover:bg-primary hover:border-primary hover:text-white transition-all text-white/70"
                                 href={emailUrl}
                                 aria-label="Email"
                             >
                                 <span aria-hidden="true" className="material-icons text-lg">alternate_email</span>
                             </a>
                             <a
-                                className="size-11 flex items-center justify-center rounded-full border border-white/20 hover:bg-[#25D366] hover:border-[#25D366] hover:text-ink-black transition-all text-white/70"
+                                className="size-11 flex items-center justify-center rounded-full border-2 border-white/25 hover:bg-[#25D366] hover:border-[#25D366] hover:text-ink-black transition-all text-white/70"
                                 href={whatsappUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"

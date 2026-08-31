@@ -276,6 +276,41 @@ button,
 }
 
 /* ===================================================================
+   PRESIONADO
+   En este sistema la sombra dura es el volumen: el botón flota sobre su
+   propia sombra. En hover ya se hunde un poco hacia ella. Faltaba el paso
+   final: al presionar, la sombra colapsa y el botón queda apoyado.
+
+   De 36 botones, 32 tenían hover y solo 3 tenían estado presionado. En
+   escritorio eso se nota poco. En un teléfono, donde no existe el hover,
+   significaba que tocar un botón no devolvía ninguna señal.
+
+   Se usa la propiedad `translate` y no `transform` a propósito: varios de
+   estos elementos están rotados (los sellos, el chip de la oferta), y
+   `transform` les borraría la rotación durante el toque. `translate` es
+   independiente y se compone con la rotación en lugar de pisarla.
+   =================================================================== */
+
+a[class*="shadow-neobrutalism"]:active,
+button[class*="shadow-neobrutalism"]:active,
+.cta:active {
+  box-shadow: none;
+  translate: 2px 2px;
+}
+
+/* Los que ya declaran su propio estado presionado en el marcado mandan.
+   Ambas propiedades van con `revert-layer` y no con valores concretos: estas
+   reglas estan fuera de capa y por lo tanto le ganan a @layer utilities, asi
+   que poner `translate: none` aca no los dejaba "sin translate", los dejaba
+   SIN el translate que ellos mismos declaran. `revert-layer` cede el turno a
+   la utilidad de Tailwind en lugar de pisarla. */
+a[class*="active:shadow"]:active,
+button[class*="active:shadow"]:active {
+  box-shadow: revert-layer;
+  translate: revert-layer;
+}
+
+/* ===================================================================
    BLOG ARTICLE — Prose Spacing & Typography
    =================================================================== */
 
