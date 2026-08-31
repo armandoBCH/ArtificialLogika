@@ -28,7 +28,7 @@ const BLOG_POSTS = [
         title: "¿Cuánto cuesta una página web en Argentina en 2026?",
         excerpt:
             "Precios reales, qué incluye cada plan, y cómo elegir la mejor opción para tu negocio sin pagar de más.",
-        date: "2026-02-15",
+        date: "2026-08-04",
         readTime: "5 min",
         category: "Precios",
     },
@@ -37,7 +37,7 @@ const BLOG_POSTS = [
         title: "5 razones por las que tu negocio necesita una web profesional",
         excerpt:
             "Si todavía dependés solo de redes sociales, estás perdiendo clientes. Te explicamos por qué una web propia cambia todo.",
-        date: "2026-02-20",
+        date: "2026-08-06",
         readTime: "4 min",
         category: "Negocios",
     },
@@ -46,7 +46,7 @@ const BLOG_POSTS = [
         title: "Cómo crear tu tienda online en Argentina: guía completa",
         excerpt:
             "Todo lo que necesitás saber para vender online: plataformas, medios de pago, envíos, costos y errores comunes.",
-        date: "2026-03-01",
+        date: "2026-08-08",
         readTime: "7 min",
         category: "E-commerce",
     },
@@ -55,9 +55,99 @@ const BLOG_POSTS = [
         title: "¿Qué es una landing page y para qué sirve?",
         excerpt:
             "Si sos emprendedor y querés empezar a recibir consultas por internet, una landing page es tu mejor aliado.",
-        date: "2026-03-05",
+        date: "2026-08-11",
         readTime: "4 min",
         category: "Diseño Web",
+    },
+    {
+        slug: "cuanto-cuesta-pagina-web-peluqueria",
+        title: "¿Cuánto cuesta una página web para una peluquería?",
+        excerpt:
+            "Desde US$149 y lista en 1 a 2 semanas. Qué tiene que tener, si hace falta turnero online, y por qué conviene publicar los precios.",
+        date: "2026-08-13",
+        readTime: "4 min",
+        category: "Precios",
+    },
+    {
+        slug: "que-es-un-dominio-web-cuanto-cuesta",
+        title: "¿Qué es un dominio web y cuánto cuesta en Argentina?",
+        excerpt:
+            "El dominio se alquila por año, no se compra para siempre. Diferencia entre .com y .com.ar, y por qué tiene que estar a tu nombre.",
+        date: "2026-08-15",
+        readTime: "4 min",
+        category: "Técnico",
+    },
+    {
+        slug: "que-es-el-hosting-web",
+        title: "¿Qué es el hosting y por qué lo necesito?",
+        excerpt:
+            "Si el dominio es la dirección, el hosting es la casa. Cuánto cuesta, qué pasa si dejás de pagarlo, y cómo influye en Google.",
+        date: "2026-08-18",
+        readTime: "4 min",
+        category: "Técnico",
+    },
+    {
+        slug: "cuanto-tarda-hacer-una-pagina-web",
+        title: "¿Cuánto tarda en hacerse una página web?",
+        excerpt:
+            "Entre 1 y 4 semanas según el tipo de sitio. Qué parte del plazo depende de vos y qué es lo que más demora un proyecto.",
+        date: "2026-08-20",
+        readTime: "4 min",
+        category: "Proceso",
+    },
+    {
+        slug: "como-aparecer-en-google-con-mi-negocio",
+        title: "¿Cómo hago para que mi negocio aparezca en Google?",
+        excerpt:
+            "Son dos cosas distintas y complementarias: la ficha de empresa, que es gratis, y el sitio web. Por dónde empezar y en qué orden.",
+        date: "2026-08-22",
+        readTime: "5 min",
+        category: "SEO",
+    },
+    {
+        slug: "necesito-web-si-tengo-whatsapp-business",
+        title: "¿Necesito una página web si ya uso WhatsApp Business?",
+        excerpt:
+            "Resuelven cosas distintas. WhatsApp es donde cerrás la venta; la web es lo que hace que te escriban a WhatsApp.",
+        date: "2026-08-25",
+        readTime: "4 min",
+        category: "Negocios",
+    },
+    {
+        slug: "que-es-un-mockup-web",
+        title: "¿Qué es un mockup y por qué pedirlo antes de pagar?",
+        excerpt:
+            "Es la vista previa de tu web antes de programar nada. Sirve para decidir con algo a la vista en lugar de imaginarlo.",
+        date: "2026-08-26",
+        readTime: "3 min",
+        category: "Proceso",
+    },
+    {
+        slug: "como-elegir-quien-me-hace-la-web",
+        title: "¿Cómo elijo quién me hace la página web?",
+        excerpt:
+            "Cinco cosas para mirar antes que el precio, y las señales de alarma que conviene detectar antes de firmar.",
+        date: "2026-08-27",
+        readTime: "5 min",
+        category: "Negocios",
+    },
+    {
+        slug: "que-necesito-antes-de-encargar-mi-web",
+        title: "¿Qué necesito tener listo antes de encargar mi web?",
+        excerpt:
+            "Cuatro cosas que aceleran el proyecto si las llevás resueltas, y una que casi siempre falta y frena todo.",
+        date: "2026-08-28",
+        readTime: "4 min",
+        category: "Proceso",
+    },
+    {
+        slug: "por-que-mi-web-no-aparece-en-google",
+        title: "¿Por qué mi página web no aparece en Google?",
+        excerpt:
+            "Las cuatro causas más frecuentes, cómo comprobar cuál es la tuya en dos minutos, y qué hacer con cada una.",
+        date: "2026-08-29",
+        readTime: "5 min",
+        category: "SEO",
     },
 ];
 
