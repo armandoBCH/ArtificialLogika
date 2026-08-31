@@ -116,7 +116,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             <Navbar config={config} />
 
             {/* Hero Section */}
-            <section className="border-b-4 border-black bg-[#F2FA5A] relative overflow-hidden">
+            <section className="border-b-4 border-black bg-accent-yellow relative overflow-hidden">
                 <div className="absolute inset-0 bg-dot-pattern opacity-30"></div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 relative z-10 flex flex-col md:flex-row items-center gap-8">
                     {/* Image Block (Order 1 in mobile, Order 2 in Desktop) */}
@@ -137,12 +137,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                 ? project.categories
                                 : project.category ? [project.category] : []
                             ).map((cat, idx) => (
-                                <span key={idx} className="px-3 py-1 bg-black text-white font-black uppercase tracking-widest text-[10px] md:text-xs border-2 border-transparent">
+                                <span key={idx} className="px-3 py-1 bg-black text-white font-black uppercase tracking-widest text-[10px] md:text-xs">
                                     {cat}
                                 </span>
                             ))}
+                            {/* Estaba en bg-red-500, un rojo que no existe en la paleta, con
+                                rotacion propia. Es el mismo mensaje que la home marca con el
+                                sello, asi que usa el sello. */}
                             {project.is_sample && (
-                                <span className="px-3 py-1 bg-red-500 text-white font-black uppercase tracking-widest text-[10px] md:text-xs border-2 border-black shadow-neobrutalism-sm rotate-2">
+                                <span className="sello bg-hot-coral text-white text-[10px] md:text-xs shadow-neobrutalism-sm">
                                     Proyecto de Muestra
                                 </span>
                             )}
@@ -164,7 +167,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                     className="cta inline-flex w-full sm:w-auto items-center justify-center gap-2 bg-black text-white px-6 py-3 md:py-4 font-black uppercase tracking-widest text-xs md:text-sm border-4 border-black shadow-neobrutalism hover:bg-white hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                                 >
                                     <span aria-hidden="true" className="material-icons text-base">language</span>
-                                    Visitar Sitio Web
+                                    Visitar el sitio
                                     <span aria-hidden="true" className="material-icons text-sm">open_in_new</span>
                                 </a>
                             )}
@@ -173,7 +176,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                 className="cta inline-flex w-full sm:w-auto items-center justify-center gap-2 bg-white text-black px-6 py-3 md:py-4 font-black uppercase tracking-widest text-xs md:text-sm border-4 border-black shadow-neobrutalism hover:bg-black hover:text-white transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                             >
                                 <span aria-hidden="true" className="material-icons text-base">chat</span>
-                                Quiero Algo Así
+                                Quiero mi web
                             </Link>
                         </div>
                     </div>
@@ -189,16 +192,16 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                         {hasServices && (
                             <div className="w-full lg:w-1/2">
                                 <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
-                                    <span aria-hidden="true" className="material-icons text-[#9b51e0] text-2xl md:text-3xl">verified</span>
+                                    <span aria-hidden="true" className="material-icons text-primary text-2xl md:text-3xl">verified</span>
                                     <h3 className="text-xl md:text-2xl font-black text-black uppercase tracking-tight m-0 leading-none">
                                         Servicios Aplicados
                                     </h3>
                                 </div>
                                 <div className="flex flex-col gap-3 md:gap-4">
                                     {project.applied_services.map((svc, idx) => (
-                                        <div key={idx} className="bg-[#9b51e0] border-4 border-black p-3 md:p-5 shadow-neobrutalism flex items-center gap-3 md:gap-4 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+                                        <div key={idx} className="bg-primary border-4 border-black p-3 md:p-5 shadow-neobrutalism flex items-center gap-3 md:gap-4 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
                                             <div className="w-10 h-10 md:w-12 md:h-12 bg-white border-2 border-black flex items-center justify-center shrink-0">
-                                                <span aria-hidden="true" className="material-icons text-[#9b51e0] text-xl md:text-2xl">
+                                                <span aria-hidden="true" className="material-icons text-primary text-xl md:text-2xl">
                                                     {svc.includes("One-Page") ? "web" : svc.includes("Landing") ? "track_changes" : "layers"}
                                                 </span>
                                             </div>
@@ -224,7 +227,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                     <div className="flex flex-wrap gap-2">
                                         {project.applied_features.map((feat, idx) => (
                                             <span key={idx} className="inline-flex items-center gap-1 md:gap-2 bg-black text-white px-3 py-1.5 md:px-4 md:py-2 font-bold text-xs md:text-sm border-2 border-transparent hover:bg-white hover:text-black hover:border-black transition-all">
-                                                <span aria-hidden="true" className="material-icons text-[#F2FA5A] text-xs md:text-sm">check_circle</span>
+                                                <span aria-hidden="true" className="material-icons text-accent-yellow text-xs md:text-sm">check_circle</span>
                                                 {feat}
                                             </span>
                                         ))}
@@ -241,7 +244,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                                 <p className="text-2xl sm:text-3xl md:text-4xl font-black uppercase mb-1 group-hover:scale-105 transition-transform">
                                                     {stat.value}
                                                 </p>
-                                                <p className="text-[9px] sm:text-[10px] md:text-xs font-bold text-ink-black/60 group-hover:text-ink-black/70 uppercase tracking-widest">
+                                                <p className="text-[9px] sm:text-[10px] md:text-xs font-bold text-white/70 group-hover:text-ink-black/70 uppercase tracking-widest">
                                                     {stat.label}
                                                 </p>
                                             </div>
@@ -257,19 +260,22 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
             {/* Bottom Commercial CTA */}
             <section className="bg-black py-16 border-t-8 border-black relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary rounded-full blur-[100px] opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
+                {/* Habia un circulo de 600px con blur de 100px. En un sistema construido
+                    sobre bordes duros y sombras sin difuminar, un degradado gaussiano es de
+                    otro idioma. Lo reemplaza un aro de trazo, que si pertenece. */}
+                <div aria-hidden="true" className="absolute -top-24 -right-24 w-96 h-96 rounded-full border-4 border-white/10 pointer-events-none"></div>
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
                     <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter mb-4 leading-none">
-                        ¿Dudás si tu negocio necesita <span className="text-[#F2FA5A]">una web</span>?
+                        ¿Dudás si tu negocio necesita <span className="text-accent-yellow">una web</span>?
                     </h2>
-                    <p className="text-lg md:text-xl text-ink-black/60 font-medium mb-8 max-w-2xl mx-auto">
+                    <p className="text-lg md:text-xl text-white/75 font-medium mb-8 max-w-2xl mx-auto">
                         Tus clientes ya te están buscando en internet. Sacate todas las dudas hoy mismo hablando con nosotros y llevate un demo visual.
                     </p>
                     <Link
                         href="/#contacto"
-                        className="cta inline-block bg-[#F2FA5A] text-black px-8 py-4 text-xl font-black uppercase tracking-widest border-4 border-black shadow-neobrutalism-white hover:bg-white hover:shadow-neobrutalism-white hover:-translate-y-1 transition-all duration-300"
+                        className="cta inline-block bg-accent-yellow text-black px-8 py-4 text-xl font-black uppercase tracking-widest border-4 border-black shadow-neobrutalism-white hover:bg-white hover:shadow-neobrutalism-white hover:-translate-y-1 transition-all duration-300"
                     >
-                        Solicitá tu Presupuesto
+                        Quiero mi web
                     </Link>
                 </div>
             </section>

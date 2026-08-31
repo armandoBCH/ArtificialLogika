@@ -73,14 +73,17 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-lg transition-shadow group flex flex-col h-full rounded-sm overflow-hidden relative"
+                            className="bg-white border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-lg transition-shadow group flex flex-col h-full rounded-xl overflow-hidden relative"
                         >
                             {/* Sample Badge */}
+                            {/* El sello es el dispositivo propio de Logika y ya marca las
+                                muestras en la home. Aca habia un badge distinto, con otra
+                                tipografia y otro borde, para decir exactamente lo mismo. */}
                             {project.is_sample && (
-                                <div className="absolute top-2 right-2 z-20 transform rotate-[10deg]">
-                                    <div className="bg-[#F2FA5A] text-black font-black text-xs px-2 py-1 uppercase tracking-widest border-2 border-black shadow-neobrutalism-sm whitespace-nowrap">
+                                <div className="absolute top-3 right-3 z-20">
+                                    <span className="sello bg-accent-yellow text-ink-black text-[10px] shadow-neobrutalism-sm whitespace-nowrap">
                                         Muestra
-                                    </div>
+                                    </span>
                                 </div>
                             )}
 
@@ -101,12 +104,12 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                                         ? project.categories
                                         : project.category ? [project.category] : []
                                     ).map((cat, ci) => (
-                                        <span key={ci} className="px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider border border-transparent">
+                                        <span key={ci} className="px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider">
                                             {cat}
                                         </span>
                                     ))}
                                     {project.tags.slice(0, 2).map((tag, i) => (
-                                        <span key={i} className="px-2 py-0.5 bg-background-light text-black text-[10px] font-bold uppercase tracking-wider border border-black">
+                                        <span key={i} className="px-2 py-0.5 bg-background-light text-black text-[10px] font-bold uppercase tracking-wider border-2 border-black">
                                             {tag}
                                         </span>
                                     ))}
@@ -118,20 +121,20 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                                     {project.description}
                                 </p>
 
-                                <div className="mt-auto pt-2 flex flex-col sm:flex-row gap-3">
+                                {/* Habia dos botones compitiendo: "Ver Detalles" y "Quiero algo
+                                    asi". En una tarjeta de catalogo la segunda llega antes de
+                                    tiempo, la persona todavia esta mirando. Y "Quiero algo asi" es
+                                    la misma intencion que el "Quiero mi web" del resto del sitio,
+                                    con otra etiqueta. Queda la accion que corresponde a este
+                                    momento; la de contacto espera en la pagina del proyecto. */}
+                                <div className="mt-auto pt-2">
                                     <a
                                         href={`/portafolio/${project.id}`}
-                                        className="cta flex-1 w-full inline-flex items-center justify-center py-3 md:py-2.5 px-4 bg-transparent text-ink-black font-bold uppercase text-xs sm:text-sm tracking-wider border-2 border-black shadow-neobrutalism-sm hover:bg-black hover:text-white hover:shadow-neobrutalism transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-center"
+                                        className="cta w-full inline-flex min-h-11 items-center justify-center gap-2 py-3 px-4 bg-white text-ink-black font-bold uppercase text-xs sm:text-sm tracking-wider border-2 border-black shadow-neobrutalism hover:bg-black hover:text-white transition-all text-center"
                                     >
-                                        Ver Detalles
+                                        Ver proyecto
+                                        <span aria-hidden="true" className="material-icons text-base">arrow_forward</span>
                                     </a>
-                                    <Link
-                                        href="/#contacto"
-                                        className="cta flex-1 w-full inline-flex items-center justify-center gap-2 py-3 md:py-2.5 px-4 bg-white text-black font-black uppercase text-xs sm:text-sm tracking-wider border-2 border-black shadow-neobrutalism hover:bg-black hover:text-white transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-center"
-                                    >
-                                        Quiero algo así
-                                        <span aria-hidden="true" className="material-icons text-sm md:text-base">arrow_forward</span>
-                                    </Link>
                                 </div>
                             </div>
                         </motion.div>
@@ -146,9 +149,9 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ duration: 0.2 }}
                         href="/#contacto"
-                        className="bg-background-light border-4 border-dashed border-black/20 hover:border-black hover:bg-white transition-all group flex flex-col items-center justify-center p-6 text-center min-h-[300px] rounded-sm"
+                        className="bg-background-light border-4 border-dashed border-black/20 hover:border-black hover:bg-white transition-all group flex flex-col items-center justify-center p-6 text-center min-h-[300px] rounded-xl"
                     >
-                        <div className="w-16 h-16 bg-[#9b51e0] border-2 border-black font-black flex items-center justify-center text-3xl text-white shadow-neobrutalism-sm rounded-2xl mb-4 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-neobrutalism-sm transition-all">
+                        <div className="w-16 h-16 bg-primary border-2 border-black font-black flex items-center justify-center text-3xl text-white shadow-neobrutalism-sm rounded-xl mb-4 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-neobrutalism-sm transition-all">
                             +
                         </div>
                         <h2 className="text-lg md:text-xl font-black text-black uppercase tracking-tight mb-1">
@@ -168,12 +171,12 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
             )}
 
             {/* Commercial Bottom CTA */}
-            <div className="mt-16 md:mt-24 border-4 border-black bg-[#F2FA5A] shadow-neobrutalism-lg p-6 md:p-8 lg:p-10 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 transform hover:-translate-y-1 transition-transform duration-300 relative">
+            <div className="mt-16 md:mt-24 border-4 border-black bg-accent-yellow shadow-neobrutalism-lg p-6 md:p-8 lg:p-10 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 transform hover:-translate-y-1 transition-transform duration-300 relative">
 
-                {/* Free Badge */}
-                <div className="absolute -top-4 -right-2 md:-top-5 md:-right-5 bg-[#9b51e0] text-white font-black text-sm md:text-lg px-4 py-2 border-2 border-black shadow-neobrutalism-sm rotate-[10deg] z-10">
-                    ¡100% GRATIS!
-                </div>
+                {/* Aca habia un sticker rotado que gritaba "¡100% GRATIS!". La oferta es
+                    buena de verdad, y por eso no necesita gritarse: dicha en voz baja, dentro
+                    del texto, se lee como una condicion del trabajo en lugar de como un
+                    cartel de liquidacion. */}
 
                 <div className="flex-1 w-full max-w-2xl">
                     <h2 className="text-3xl md:text-4xl font-black text-black uppercase leading-none tracking-tight mb-4">
@@ -185,12 +188,16 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
 
                     <ul className="space-y-2 mb-6 text-black font-bold text-sm md:text-base">
                         <li className="flex items-center gap-2">
-                            <span aria-hidden="true" className="material-icons text-xl text-[#9b51e0]">check_circle</span>
+                            <span aria-hidden="true" className="material-icons text-xl text-primary">check_circle</span>
                             Te asesoramos sobre lo que realmente necesita tu negocio
                         </li>
                         <li className="flex items-center gap-2">
-                            <span aria-hidden="true" className="material-icons text-xl text-[#9b51e0]">check_circle</span>
-                            Armamos una propuesta y mockup visual sin compromiso
+                            <span aria-hidden="true" className="material-icons text-xl text-primary">check_circle</span>
+                            Armamos una propuesta y un mockup visual, sin cargo
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <span aria-hidden="true" className="material-icons text-xl text-primary">check_circle</span>
+                            Si el diseño no te convence, no seguís y no pagás nada
                         </li>
                     </ul>
                 </div>
@@ -200,9 +207,9 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                         href="/#contacto"
                         className="cta w-full lg:w-auto bg-black text-white px-6 py-4 text-lg font-black uppercase tracking-widest border-2 border-black shadow-neobrutalism-white hover:bg-white hover:text-black hover:border-black hover:shadow-neobrutalism hover:translate-y-[2px] hover:translate-x-[2px] transition-all text-center group"
                     >
-                        Pedir Presupuesto
-                        <span className="block text-xs text-ink-black/60 group-hover:text-ink-black/70 mt-0.5 uppercase tracking-wider">
-                            Sin Cargo Adicional
+                        Quiero mi web
+                        <span className="block text-xs text-white/70 group-hover:text-ink-black/70 mt-0.5 uppercase tracking-wider">
+                            Presupuesto sin cargo
                         </span>
                     </Link>
                 </div>
