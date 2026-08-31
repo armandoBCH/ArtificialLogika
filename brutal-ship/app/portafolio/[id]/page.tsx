@@ -193,9 +193,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                             <div className="w-full lg:w-1/2">
                                 <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
                                     <span aria-hidden="true" className="material-icons text-primary text-2xl md:text-3xl">verified</span>
-                                    <h3 className="text-xl md:text-2xl font-black text-black uppercase tracking-tight m-0 leading-none">
+                                    <h2 className="text-xl md:text-2xl font-black text-black uppercase tracking-tight m-0 leading-none">
                                         Servicios Aplicados
-                                    </h3>
+                                    </h2>
                                 </div>
                                 <div className="flex flex-col gap-3 md:gap-4">
                                     {project.applied_services.map((svc, idx) => (
@@ -218,26 +218,49 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                         <div className={`w-full ${hasServices ? 'lg:w-1/2' : ''} flex flex-col gap-6`}>
                             {hasFeatures && (
                                 <div>
+                                    {/* Antes cada item era un chip negro con borde y hover invertido.
+                                        Con 7 a 10 features de unos 27 caracteres, ninguno entraba de a
+                                        dos por fila en un telefono: el flex-wrap degeneraba en una pila
+                                        de barras negras de 424px, media pantalla de lista vertical.
+
+                                        El chip estaba haciendo trabajo decorativo, no informativo:
+                                        ninguna feature suelta merece su propia caja. Como lista de
+                                        verificacion en dos columnas ocupa la mitad y se lee de un
+                                        vistazo, que es lo que alguien quiere de un "que incluye".
+
+                                        El bloque entero va sobre una superficie para leerse como una
+                                        unidad, en lugar de como 10 objetos sueltos. */}
                                     <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
                                         <span aria-hidden="true" className="material-icons text-black text-xl md:text-2xl">auto_awesome</span>
-                                        <h3 className="text-lg md:text-xl font-black text-black uppercase tracking-tight m-0 leading-none">
+                                        <h2 className="text-lg md:text-xl font-black text-black uppercase tracking-tight m-0 leading-none">
                                             Qué Incluye
-                                        </h3>
+                                        </h2>
+                                        <span className="ml-auto text-xs font-black tabular-nums text-ink-black/70">
+                                            {project.applied_features.length}
+                                        </span>
                                     </div>
-                                    <div className="flex flex-wrap gap-2">
+                                    {/* Una columna en telefono, dos desde sm. A 375px las dos columnas dejan
+                                        146px por celda y 8 de 10 etiquetas envolvian a dos lineas: mas
+                                        corto en total, pero ilegible de un vistazo. En una columna cada
+                                        item entra en un renglon. */}
+                                    <ul className="grid grid-cols-1 gap-x-5 gap-y-2 rounded-xl border-2 border-black bg-white p-4 shadow-neobrutalism-sm sm:grid-cols-2 md:gap-y-2.5 md:p-5">
                                         {project.applied_features.map((feat, idx) => (
-                                            <span key={idx} className="inline-flex items-center gap-1 md:gap-2 bg-black text-white px-3 py-1.5 md:px-4 md:py-2 font-bold text-xs md:text-sm border-2 border-transparent hover:bg-white hover:text-black hover:border-black transition-all">
-                                                <span aria-hidden="true" className="material-icons text-accent-yellow text-xs md:text-sm">check_circle</span>
-                                                {feat}
-                                            </span>
+                                            <li key={idx} className="flex items-start gap-2">
+                                                <span aria-hidden="true" className="material-icons shrink-0 text-primary text-base leading-tight mt-px">
+                                                    check
+                                                </span>
+                                                <span className="text-xs md:text-sm font-bold leading-snug text-ink-black">
+                                                    {feat}
+                                                </span>
+                                            </li>
                                         ))}
-                                    </div>
+                                    </ul>
                                 </div>
                             )}
 
                             {project.stats && project.stats.length > 0 && (
                                 <div>
-                                    <h3 className="text-lg md:text-xl font-black text-black uppercase tracking-tight mb-3 md:mb-4">Resultados del Proyecto</h3>
+                                    <h2 className="text-lg md:text-xl font-black text-black uppercase tracking-tight mb-3 md:mb-4">Resultados del Proyecto</h2>
                                     <div className="grid grid-cols-2 gap-2 md:gap-4">
                                         {project.stats.map((stat, idx) => (
                                             <div key={idx} className="bg-black text-white p-3 md:p-4 border-2 border-transparent hover:bg-white hover:text-black hover:border-black transition-all group flex flex-col justify-center items-center text-center shadow-neobrutalism">
