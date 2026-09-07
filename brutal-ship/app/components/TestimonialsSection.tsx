@@ -84,13 +84,37 @@ function Cita({ t, destacada }: { t: Testimonial; destacada: boolean }) {
                     </span>
                 </div>
                 {t.badge_text && (
-                    <span className={`self-start sm:self-auto px-3 py-1 rounded-full ${t.badge_color || "bg-primary/20 text-primary"} border-2 border-black text-xs font-bold uppercase tracking-wider shadow-neobrutalism-sm whitespace-nowrap`}>
+                    <span className={`self-start sm:self-auto px-3 py-1 rounded-full ${colorDeBadge(t.badge_color)} border-2 border-black text-xs font-bold uppercase tracking-wider shadow-neobrutalism-sm whitespace-nowrap`}>
                         {t.badge_text}
                     </span>
                 )}
             </figcaption>
         </figure>
     );
+}
+
+/**
+ * El badge tomaba `badge_color` de la base y lo metia crudo en className. Eso
+ * dejaba que un valor mal escrito rompiera el estilo sin avisar, y es lo que
+ * estaba pasando: Rago tenia "bg-electric-blue/20 text-blue-700", pero
+ * electric-blue no existe como token. La clase llegaba al HTML y no aparecia en
+ * el CSS, asi que el badge se veia sin fondo.
+ *
+ * Ahora la base elige un nombre corto y el componente decide las clases. Un
+ * valor viejo o desconocido cae en el violeta de la marca, que siempre es
+ * valido: el peor caso pasa a ser "no es el color que queria" en lugar de "no
+ * se ve nada".
+ */
+const COLORES_DE_BADGE: Record<string, string> = {
+    violeta: "bg-primary/20 text-primary",
+    verde: "bg-secondary/25 text-ink-black",
+    amarillo: "bg-accent-yellow/40 text-ink-black",
+    coral: "bg-hot-coral/25 text-ink-black",
+    negro: "bg-ink-black text-white",
+};
+
+function colorDeBadge(valor?: string | null): string {
+    return COLORES_DE_BADGE[(valor ?? "").trim().toLowerCase()] ?? COLORES_DE_BADGE.violeta;
 }
 
 function Garantias({ horizontal }: { horizontal: boolean }) {
