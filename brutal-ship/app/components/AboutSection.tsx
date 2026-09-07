@@ -6,11 +6,12 @@ import BlockReveal from "./BlockReveal";
  * negocio. Para este público —no técnico, que evalúa desde el celular si esta gente
  * es seria— eso es una ausencia estructural, no un detalle.
  *
- * PENDIENTE DEL USUARIO: reemplazar `EQUIPO` con las personas reales.
- *   - `foto`: poner el archivo en /public/equipo/ y apuntar acá. Cuadrada, mínimo 400px.
+ * Para sumar personas: agregar entradas a `EQUIPO`.
+ *   - `foto`: el archivo va en /public/equipo/ y se apunta acá. Cuadrada, mínimo 400px.
+ *     La de Armando se recortó desde una vertical de 1024x1340 y se sirve como WebP
+ *     de 512px (14 KB), porque el original pesaba 2,1 MB para un círculo de 128.
  *   - Si `foto` queda vacío, se muestran las iniciales sobre el violeta. No es un
- *     placeholder roto: es un estado válido y se ve bien. Pero una foto real convierte
- *     mucho más que dos letras.
+ *     placeholder roto: es un estado válido y se ve bien.
  *
  * Nada de lo que dice esta sección es inventado: no hay años de trayectoria, ni
  * cantidad de clientes, ni premios. Solo quién hace el trabajo y por qué.
@@ -29,7 +30,7 @@ const EQUIPO: Persona[] = [
         nombre: "Armando",
         rol: "Diseño y desarrollo",
         linea: "Hago las webs de punta a punta. Si te contesta alguien, soy yo.",
-        foto: "",
+        foto: "/equipo/armando.webp",
         iniciales: "A",
     },
 ];
