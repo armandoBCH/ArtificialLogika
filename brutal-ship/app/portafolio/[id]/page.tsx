@@ -197,15 +197,22 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                         Servicios Aplicados
                                     </h2>
                                 </div>
-                                <div className="flex flex-col gap-3 md:gap-4">
+                                {/* Con 1 o 2 servicios estas tarjetas funcionan. Con 4 se
+                                    estirarian igual que se estiraba "Que Incluye": cada una
+                                    ocupa unos 98px. El grid de dos columnas desde sm frena eso
+                                    antes de que pase, sin cambiar como se ven cuando hay pocas.
+
+                                    El padding tambien baja en telefono: p-3 con un icono de 40px
+                                    dejaba la etiqueta contra el borde. */}
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
                                     {project.applied_services.map((svc, idx) => (
-                                        <div key={idx} className="bg-primary border-4 border-black p-3 md:p-5 shadow-neobrutalism flex items-center gap-3 md:gap-4 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+                                        <div key={idx} className="bg-primary border-4 border-black p-4 md:p-5 shadow-neobrutalism flex items-center gap-3 md:gap-4 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
                                             <div className="w-10 h-10 md:w-12 md:h-12 bg-white border-2 border-black flex items-center justify-center shrink-0">
                                                 <span aria-hidden="true" className="material-icons text-primary text-xl md:text-2xl">
                                                     {svc.includes("One-Page") ? "web" : svc.includes("Landing") ? "track_changes" : "layers"}
                                                 </span>
                                             </div>
-                                            <span className="text-white font-black uppercase text-sm md:text-lg tracking-wide">
+                                            <span className="text-white font-black uppercase text-sm md:text-base tracking-wide leading-snug">
                                                 {svc}
                                             </span>
                                         </div>

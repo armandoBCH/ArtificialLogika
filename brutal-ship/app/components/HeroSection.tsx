@@ -79,7 +79,11 @@ export default function HeroSection() {
                             </a>
                         </div>
                     </div>
-                    <div className="relative w-full max-w-lg lg:max-w-xl mx-auto -mt-6 lg:-mt-12">
+                    {/* El margen negativo subia la maqueta 48px. Con items-center en la
+                        grilla eso la metia detras del navbar fijo: arrancaba en 96px
+                        cuando la barra termina en 104. Sin el margen queda con 40px de
+                        aire, que es la separacion que ya tiene el titular. */}
+                    <div className="relative w-full max-w-lg lg:max-w-xl mx-auto">
                         {/* SVG animations are handled by scoped CSS in globals.css via .hero-svg-wrapper */}
                         <div aria-hidden="true" className="bg-white border-4 border-black rounded-xl shadow-neobrutalism-xl overflow-hidden transform transition-all duration-300 hero-svg-wrapper flex flex-col">
                             {/* Browser Header */}
