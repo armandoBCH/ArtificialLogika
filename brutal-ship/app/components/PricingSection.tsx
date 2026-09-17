@@ -3,6 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import type { PricingPlan, PricingFeature } from "@/lib/types/database";
 import type { SiteConfigMap } from "@/lib/types/database";
+import { CUOTA_MENSUAL, formatearPesos, formatearPrecio } from "@/lib/precios";
 
 const containerVariants: Variants = {
     hidden: {},
@@ -47,12 +48,7 @@ function FeatureItem({ feature }: { feature: PricingFeature }) {
 
 // El mantenimiento mensual es opcional pero su monto tiene que estar en la tarjeta:
 // un "+" sin número obliga a buscar la cifra 800px más abajo, dentro de un acordeón.
-const CUOTA_MENSUAL: Record<string, number> = {
-    "Landing Page": 15,
-    "Sitio Institucional": 25,
-    "E-commerce": 35,
-    "E-commerce / Plataforma": 35,
-};
+// Las cuotas viven en lib/precios.ts: el presupuestador del admin usa las mismas.
 
 function PlanCard({ plan }: { plan: PricingPlan }) {
     const isFeatured = plan.is_featured;
@@ -95,18 +91,19 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
             <div className="p-6 flex flex-col flex-1">
                 {plan.original_price && (
                     <div className="flex items-end justify-center gap-1 mb-1">
-                        <span className="text-xl font-bold text-ink-black/60 line-through">${plan.original_price}</span>
+                        <span className="text-xl font-bold text-ink-black/60 line-through">{formatearPrecio(plan.original_price, plan.currency)}</span>
                     </div>
                 )}
                 <div className="flex flex-col items-center gap-1 mb-3 mt-2">
-                    <div className="flex items-end gap-1">
-                        <span className="text-4xl lg:text-5xl font-bold">${plan.price}</span>
-                        <span className="text-base lg:text-lg font-bold text-ink-black/80 mb-1">{plan.currency}</span>
+                    {/* En pesos la cifra tiene el doble de dígitos que en dólares: "una vez"
+                        baja de renglón antes que desbordar la tarjeta. */}
+                    <div className="flex flex-wrap items-end justify-center gap-x-1.5">
+                        <span className="text-4xl lg:text-5xl font-bold tabular-nums">{formatearPrecio(plan.price, plan.currency)}</span>
                         <span className="text-base lg:text-lg font-bold text-ink-black/80 mb-1">una vez</span>
                     </div>
                     {CUOTA_MENSUAL[plan.name] && (
                         <p className="text-sm font-bold text-ink-black/80">
-                            + US${CUOTA_MENSUAL[plan.name]}/mes de mantenimiento{" "}
+                            + {formatearPesos(CUOTA_MENSUAL[plan.name])}/mes de mantenimiento{" "}
                             <span className="font-medium text-ink-black/70">(opcional)</span>
                         </p>
                     )}
@@ -303,7 +300,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                                         <div className="flex flex-wrap justify-between items-center gap-2 w-full">
                                             <span className="font-bold text-sm sm:text-base md:text-lg uppercase min-w-0">Landing Page</span>
                                             <div className="flex items-end text-black relative bg-background-light px-2 sm:px-3 py-1 border-2 border-black rounded-lg shadow-neobrutalism-sm">
-                                                <span className="font-black text-xl sm:text-2xl md:text-3xl">US$15</span>
+                                                <span className="font-black text-xl sm:text-2xl md:text-3xl">{formatearPesos(CUOTA_MENSUAL["Landing Page"])}</span>
                                                 <span className="font-bold text-ink-black/70 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
                                             </div>
                                         </div>
@@ -312,7 +309,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                                         <div className="flex flex-wrap justify-between items-center gap-2 w-full">
                                             <span className="font-bold text-sm sm:text-base md:text-lg uppercase min-w-0">Sitio Institucional</span>
                                             <div className="flex items-end text-black relative bg-background-light px-2 sm:px-3 py-1 border-2 border-black rounded-lg shadow-neobrutalism-sm">
-                                                <span className="font-black text-xl sm:text-2xl md:text-3xl">US$25</span>
+                                                <span className="font-black text-xl sm:text-2xl md:text-3xl">{formatearPesos(CUOTA_MENSUAL["Sitio Institucional"])}</span>
                                                 <span className="font-bold text-ink-black/70 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
                                             </div>
                                         </div>
@@ -324,7 +321,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                                         <div className="flex flex-wrap justify-between items-center gap-2 w-full mt-2">
                                             <span className="font-bold text-sm sm:text-base md:text-lg uppercase min-w-0">E-commerce</span>
                                             <div className="flex items-end text-black relative bg-background-light px-2 sm:px-3 py-1 border-2 border-black rounded-lg shadow-neobrutalism-sm">
-                                                <span className="font-black text-xl sm:text-2xl md:text-3xl">US$35</span>
+                                                <span className="font-black text-xl sm:text-2xl md:text-3xl">{formatearPesos(CUOTA_MENSUAL["E-commerce"])}</span>
                                                 <span className="font-bold text-ink-black/70 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
                                             </div>
                                         </div>

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
     { href: "/admin", label: "Dashboard", icon: "📊" },
+    { href: "/admin/presupuestos", label: "Presupuestos", icon: "🧾" },
     { href: "/admin/precios", label: "Precios", icon: "💰" },
     { href: "/admin/servicios", label: "Servicios", icon: "⚡" },
     { href: "/admin/portafolio", label: "Portafolio", icon: "🎨" },
@@ -18,7 +19,7 @@ export default function AdminSidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="w-64 bg-[#1e1530] border-r-2 border-white/10 min-h-screen flex flex-col sticky top-0">
+        <aside className="w-64 bg-[#1e1530] border-r-2 border-white/10 min-h-screen flex flex-col sticky top-0 print:hidden">
             {/* Logo */}
             <div className="p-6 border-b-2 border-white/10">
                 <Link href="/admin" className="flex items-center gap-3">

@@ -1381,3 +1381,42 @@ body:has(.visor[open]) {
 .cursor-zoom-in {
   cursor: zoom-in;
 }
+
+/* ===================================================================
+   PRESUPUESTO IMPRESO
+   El PDF sale de "Imprimir -> Guardar como PDF" del navegador: no hace falta
+   una librería ni un servidor que renderice. Todo lo que no es la hoja lleva
+   `print:hidden` en el marcado; acá queda lo que es propio del papel.
+   =================================================================== */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  .hoja-presupuesto {
+    /* Sin esto Chrome y Safari tiran los fondos: el total amarillo y la franja
+       de colores salen en blanco. */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* En papel el margen lo pone @page. Con el padding de pantalla encima, la hoja
+     quedaba angosta y el padding inferior sobraba justo para abrir una página
+     en blanco al final. */
+  .hoja-presupuesto .hoja-cuerpo {
+    padding: 8mm 0 0 !important;
+  }
+
+  .hoja-presupuesto .no-cortar {
+    break-inside: avoid;
+  }
+}

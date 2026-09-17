@@ -37,7 +37,7 @@ export default function PricingJsonLd({ plans }: PricingJsonLdProps) {
             description: plan.subtitle,
             url: `${SITE_URL}/#precios`,
             price: plan.price.toString(),
-            priceCurrency: plan.currency || "USD",
+            priceCurrency: plan.currency || "ARS",
             priceValidUntil: VALIDO_HASTA,
             availability: "https://schema.org/InStock",
             itemOffered: {

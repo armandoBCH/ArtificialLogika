@@ -13,7 +13,7 @@
  *    del párrafo. El modelo cita ese fragmento, no la nota entera.
  *
  * 3. Sin números no hay cita. "Depende del proyecto" no se puede citar;
- *    "desde US$149, entre 1 y 2 semanas" sí.
+ *    "desde $229.000, entre 1 y 2 semanas" sí.
  *
  * Por eso cada nota tiene ahora `respuestaCorta` (el dato duro arriba de todo,
  * antes del desarrollo) y `preguntas`, que se renderizan como HTML visible Y
@@ -44,21 +44,21 @@ export interface Articulo {
 const articulos: Record<string, Articulo> = {
     "cuanto-cuesta-una-pagina-web-en-argentina": {
         respuestaCorta:
-            "En Argentina, en 2026, una página web profesional cuesta entre US$149 y US$399 según el tipo: una landing page de una sola sección desde US$149, un sitio institucional de hasta 5 páginas desde US$249, y una tienda online desde US$399. El plazo de entrega va de 1 a 2 semanas para una landing y de 2 a 4 semanas para un sitio institucional o un e-commerce. A eso hay que sumarle entre US$10 y US$20 por mes de hosting y dominio, que es lo único que se paga siempre.",
+            "En Argentina, en 2026, una página web profesional cuesta entre $229.000 y $619.000 según el tipo: una landing page de una sola sección desde $229.000, un sitio institucional de hasta 5 páginas desde $389.000, y una tienda online desde $619.000. El plazo de entrega va de 1 a 2 semanas para una landing y de 2 a 4 semanas para un sitio institucional o un e-commerce. A eso hay que sumarle entre $15.000 y $30.000 por mes de hosting y dominio, que es lo único que se paga siempre.",
         contenido: `
     <h2>¿Cuánto cuesta una página web en Argentina?</h2>
     <p>Depende de qué tenga que hacer la web, y las diferencias son grandes. Abajo están los tres casos que cubren a la mayoría de los negocios, con el precio y el plazo de cada uno.</p>
 
     <h3>¿Cuánto sale una landing page?</h3>
-    <p><strong>Desde US$149</strong>, y se entrega entre 1 y 2 semanas. Es una sola página con todo lo necesario para que te encuentren y te escriban: qué hacés, fotos de tu trabajo, y un botón de WhatsApp.</p>
+    <p><strong>Desde $229.000</strong>, y se entrega entre 1 y 2 semanas. Es una sola página con todo lo necesario para que te encuentren y te escriban: qué hacés, fotos de tu trabajo, y un botón de WhatsApp.</p>
     <p>Sirve para peluquerías, entrenadores, fotógrafos, oficios y profesionales independientes. Si tu objetivo es que te contacten, no necesitás más que esto.</p>
 
     <h3>¿Cuánto sale un sitio institucional?</h3>
-    <p><strong>Desde US$249</strong>, con entrega de 2 a 4 semanas. Son varias páginas: servicios, equipo, contacto, y las secciones que tu rubro necesite.</p>
+    <p><strong>Desde $389.000</strong>, con entrega de 2 a 4 semanas. Son varias páginas: servicios, equipo, contacto, y las secciones que tu rubro necesite.</p>
     <p>Se justifica cuando la web tiene que dar confianza antes que vos: clínicas, estudios jurídicos, constructoras, PyMEs. Ahí una sola página se queda corta.</p>
 
     <h3>¿Cuánto sale una tienda online?</h3>
-    <p><strong>Desde US$399</strong>, de 2 a 4 semanas. Incluye catálogo, carrito, medios de pago y un panel para que cargues productos vos mismo.</p>
+    <p><strong>Desde $619.000</strong>, de 2 a 4 semanas. Incluye catálogo, carrito, medios de pago y un panel para que cargues productos vos mismo.</p>
     <p>Ese precio es la base. Si sumás turnos, reservas o integración con algún sistema que ya usás, se cotiza aparte.</p>
 
     <h3>¿Qué tiene que incluir el precio sí o sí?</h3>
@@ -67,11 +67,11 @@ const articulos: Record<string, Articulo> = {
 
     <h3>¿Conviene pago único o mensualidad?</h3>
     <p>Pago único, salvo que necesites cambios seguidos. Con las plataformas por suscripción pagás todos los meses para siempre y la web no es tuya: si dejás de pagar, desaparece.</p>
-    <p>Lo único que sí se paga siempre es el hosting y el dominio, y ronda entre <strong>US$10 y US$20 por mes</strong>. Eso no es una suscripción a un servicio: es el alquiler del lugar donde vive tu web.</p>
+    <p>Lo único que sí se paga siempre es el hosting y el dominio, y ronda entre <strong>$15.000 y $30.000 por mes</strong>. Eso no es una suscripción a un servicio: es el alquiler del lugar donde vive tu web.</p>
 
-    <h3>¿Por qué hay presupuestos de US$50 y otros de US$2.000?</h3>
-    <p>Porque no están vendiendo lo mismo. Abajo de US$100 normalmente es una plantilla cargada con tu logo, sin diseño propio ni configuración de SEO. Arriba de US$1.500 suele haber una agencia con estructura, cuentas y varias personas involucradas.</p>
-    <p>Para un negocio chico o mediano en Argentina, el rango razonable en 2026 está entre <strong>US$150 y US$500</strong>.</p>
+    <h3>¿Por qué hay presupuestos de $75.000 y otros de $3.000.000?</h3>
+    <p>Porque no están vendiendo lo mismo. Abajo de $150.000 normalmente es una plantilla cargada con tu logo, sin diseño propio ni configuración de SEO. Arriba de $2.300.000 suele haber una agencia con estructura, cuentas y varias personas involucradas.</p>
+    <p>Para un negocio chico o mediano en Argentina, el rango razonable en 2026 está entre <strong>$230.000 y $770.000</strong>.</p>
   `,
         preguntas: [
             {
@@ -87,7 +87,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿El precio incluye el dominio y el hosting?",
                 respuesta:
-                    "Sí, se tramita todo: dominio .com o .com.ar, hosting, correos profesionales y certificado de seguridad. El costo mensual de mantener eso activo ronda los US$10 a US$20.",
+                    "Sí, se tramita todo: dominio .com o .com.ar, hosting, correos profesionales y certificado de seguridad. El costo mensual de mantener eso activo ronda los $15.000 a $30.000.",
             },
             {
                 pregunta: "¿Hace falta saber de tecnología?",
@@ -114,7 +114,7 @@ const articulos: Record<string, Articulo> = {
 
     <h3>3. ¿De verdad importa para la credibilidad?</h3>
     <p>Importa cuando te comparan. Frente a dos proveedores parecidos, el que tiene web propia parece establecido y el que solo tiene un perfil de Instagram parece que recién arranca, aunque tenga diez años de trayectoria.</p>
-    <p>Pesa más cuanto más grande es la compra: para un servicio de US$50 casi no cambia nada, para uno de US$5.000 cambia todo.</p>
+    <p>Pesa más cuanto más grande es la compra: para un servicio de $75.000 casi no cambia nada, para uno de $7.500.000 cambia todo.</p>
 
     <h3>4. ¿Puede vender mientras no estoy?</h3>
     <p>Sí, y es la diferencia más medible. Una web con catálogo, precios y un formulario responde consultas a las tres de la mañana y un domingo. Vos leés los pedidos cuando abrís.</p>
@@ -135,7 +135,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿Cuánto cuesta la web más barata para un negocio chico?",
                 respuesta:
-                    "Una landing page arranca en US$149 y se entrega entre 1 y 2 semanas. Es la opción más económica para empezar a recibir consultas desde Google.",
+                    "Una landing page arranca en $229.000 y se entrega entre 1 y 2 semanas. Es la opción más económica para empezar a recibir consultas desde Google.",
             },
             {
                 pregunta: "¿Mi web va a aparecer en Google?",
@@ -147,14 +147,14 @@ const articulos: Record<string, Articulo> = {
 
     "tienda-online-argentina-guia-completa": {
         respuestaCorta:
-            "Para vender online en Argentina hacen falta cuatro cosas: una plataforma donde vivan los productos, un medio de pago conectado, una forma de enviar, y fotos con descripciones. Una tienda a medida arranca en US$399 y se entrega de 2 a 4 semanas. Las plataformas por suscripción cobran entre US$15 y US$50 por mes más una comisión sobre cada venta, así que conviene comparar el costo a doce meses y no el del primer mes.",
+            "Para vender online en Argentina hacen falta cuatro cosas: una plataforma donde vivan los productos, un medio de pago conectado, una forma de enviar, y fotos con descripciones. Una tienda a medida arranca en $619.000 y se entrega de 2 a 4 semanas. Las plataformas por suscripción cobran entre $23.000 y $77.000 por mes más una comisión sobre cada venta, así que conviene comparar el costo a doce meses y no el del primer mes.",
         contenido: `
     <h2>¿Cómo hago para vender por internet en Argentina?</h2>
     <p>Necesitás resolver cuatro cosas, y ninguna es opcional: dónde viven los productos, cómo cobrás, cómo enviás, y cómo se ven. Van en ese orden.</p>
 
     <h3>1. ¿Qué plataforma conviene para una tienda online?</h3>
     <p>Depende de cuántos productos tengas y de cuánto quieras pagar por mes. Si son pocos y recién empezás, un marketplace te saca del paso sin costo fijo. Si querés tienda propia, hay dos caminos.</p>
-    <p>Las plataformas por suscripción cobran <strong>entre US$15 y US$50 por mes</strong> más una comisión por venta, y la tienda deja de existir el día que dejás de pagar. Una tienda propia se paga una vez, <strong>desde US$399</strong>, y después solo el hosting.</p>
+    <p>Las plataformas por suscripción cobran <strong>entre $23.000 y $77.000 por mes</strong> más una comisión por venta, y la tienda deja de existir el día que dejás de pagar. Una tienda propia se paga una vez, <strong>desde $619.000</strong>, y después solo el hosting.</p>
     <p>La cuenta que conviene hacer es a doce meses, no del primer mes. Ahí las dos opciones se parecen menos de lo que aparentan.</p>
 
     <h3>2. ¿Cómo cobro los pagos online?</h3>
@@ -177,7 +177,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿Cuánto cuesta una tienda online en Argentina?",
                 respuesta:
-                    "Una tienda propia arranca en US$399 como pago único, con entrega de 2 a 4 semanas. Las plataformas por suscripción cobran entre US$15 y US$50 por mes más comisión por venta.",
+                    "Una tienda propia arranca en $619.000 como pago único, con entrega de 2 a 4 semanas. Las plataformas por suscripción cobran entre $23.000 y $77.000 por mes más comisión por venta.",
             },
             {
                 pregunta: "¿Necesito saber programar para manejar mi tienda?",
@@ -194,7 +194,7 @@ const articulos: Record<string, Articulo> = {
 
     "landing-page-que-es-y-para-que-sirve": {
         respuestaCorta:
-            "Una landing page es una sola página con un único objetivo: que quien entra haga una acción concreta, casi siempre escribirte o comprar. Se diferencia de una web común en que no tiene menú ni secciones que distraigan. Sirve para campañas de publicidad, para un producto puntual o como primera web de un negocio de servicios. Arranca en US$149 y se entrega entre 1 y 2 semanas.",
+            "Una landing page es una sola página con un único objetivo: que quien entra haga una acción concreta, casi siempre escribirte o comprar. Se diferencia de una web común en que no tiene menú ni secciones que distraigan. Sirve para campañas de publicidad, para un producto puntual o como primera web de un negocio de servicios. Arranca en $229.000 y se entrega entre 1 y 2 semanas.",
         contenido: `
     <h2>¿Qué es una landing page?</h2>
     <p>Es una sola página diseñada para que quien entra haga una cosa específica: escribirte, pedir un presupuesto o comprar. Todo lo que no empuja hacia esa acción se saca, incluido el menú de navegación.</p>
@@ -211,7 +211,7 @@ const articulos: Record<string, Articulo> = {
     <p>La promesa se lee en tres segundos o no se lee. La prueba son trabajos anteriores, testimonios o números reales, no adjetivos. Y el botón se repite porque nadie vuelve a subir a buscarlo.</p>
 
     <h3>¿Cuánto cuesta y cuánto tarda?</h3>
-    <p><strong>Desde US$149</strong>, lista entre <strong>1 y 2 semanas</strong>. Incluye que se vea bien en celular, el certificado de seguridad, la configuración para Google y el dominio con el hosting resueltos.</p>
+    <p><strong>Desde $229.000</strong>, lista entre <strong>1 y 2 semanas</strong>. Incluye que se vea bien en celular, el certificado de seguridad, la configuración para Google y el dominio con el hosting resueltos.</p>
 
     <h3>¿Conviene empezar por una landing o por un sitio completo?</h3>
     <p>Si vendés servicios, empezá por la landing. Es el punto de entrada más barato para que te encuentren y te escriban, y si más adelante necesitás más páginas se amplía.</p>
@@ -221,7 +221,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿Cuánto cuesta una landing page?",
                 respuesta:
-                    "Desde US$149, con entrega de 1 a 2 semanas. Incluye diseño para celular, certificado de seguridad, configuración de Google, dominio y hosting.",
+                    "Desde $229.000, con entrega de 1 a 2 semanas. Incluye diseño para celular, certificado de seguridad, configuración de Google, dominio y hosting.",
             },
             {
                 pregunta: "¿Una landing page sirve para hacer publicidad?",
@@ -238,10 +238,10 @@ const articulos: Record<string, Articulo> = {
 
     "cuanto-cuesta-pagina-web-peluqueria": {
         respuestaCorta:
-            "Una página web para una peluquería cuesta desde US$149 y se entrega entre 1 y 2 semanas. Con una sola página alcanza: galería de cortes, lista de precios, horarios, ubicación en el mapa y un botón de WhatsApp para pedir turno. No hace falta un sistema de turnos online salvo que atiendas varios profesionales en simultáneo.",
+            "Una página web para una peluquería cuesta desde $229.000 y se entrega entre 1 y 2 semanas. Con una sola página alcanza: galería de cortes, lista de precios, horarios, ubicación en el mapa y un botón de WhatsApp para pedir turno. No hace falta un sistema de turnos online salvo que atiendas varios profesionales en simultáneo.",
         contenido: `
     <h2>¿Cuánto sale una página web para una peluquería?</h2>
-    <p>Desde US$149, lista entre 1 y 2 semanas. Es una landing page: una sola página con todo lo que alguien necesita para decidir sacar turno con vos.</p>
+    <p>Desde $229.000, lista entre 1 y 2 semanas. Es una landing page: una sola página con todo lo que alguien necesita para decidir sacar turno con vos.</p>
     <p>Ese precio incluye que se vea bien en celular, el certificado de seguridad, la configuración para que Google te encuentre, y el dominio con el hosting tramitados.</p>
 
     <h3>¿Qué tiene que tener la web de una peluquería?</h3>
@@ -281,7 +281,7 @@ const articulos: Record<string, Articulo> = {
 
     "que-es-un-dominio-web-cuanto-cuesta": {
         respuestaCorta:
-            "Un dominio es la dirección de tu web, lo que la gente escribe en el navegador: tunegocio.com. Se alquila por año, no se compra para siempre. Un .com cuesta habitualmente entre US$10 y US$15 por año en los registradores internacionales. Un .com.ar se tramita en NIC Argentina, el organismo oficial, y su costo anual se consulta en nic.ar porque se cobra en pesos y se actualiza.",
+            "Un dominio es la dirección de tu web, lo que la gente escribe en el navegador: tunegocio.com. Se alquila por año, no se compra para siempre. Un .com cuesta habitualmente entre $15.000 y $23.000 por año en los registradores internacionales. Un .com.ar se tramita en NIC Argentina, el organismo oficial, y su costo anual se consulta en nic.ar porque se cobra en pesos y se actualiza.",
         contenido: `
     <h2>¿Qué es un dominio web?</h2>
     <p>Es la dirección de tu sitio: lo que alguien escribe en el navegador para llegar. En "tunegocio.com.ar", eso entero es el dominio.</p>
@@ -292,7 +292,7 @@ const articulos: Record<string, Articulo> = {
     <p>Por eso conviene que esté a tu nombre y no al de quien te hizo la web. Es el activo más importante de tu presencia online: si lo perdés, perdés la dirección que tus clientes conocen y el posicionamiento que construiste.</p>
 
     <h3>¿Cuánto cuesta un dominio en Argentina?</h3>
-    <p>Un .com ronda los US$10 a US$15 por año en los registradores internacionales. Un .com.ar se tramita en NIC Argentina, que es el organismo oficial, y se paga en pesos con una tarifa que se actualiza, así que conviene consultarla en nic.ar antes de decidir.</p>
+    <p>Un .com ronda los $15.000 a $23.000 por año en los registradores internacionales. Un .com.ar se tramita en NIC Argentina, que es el organismo oficial, y se paga en pesos con una tarifa que se actualiza, así que conviene consultarla en nic.ar antes de decidir.</p>
     <p>La diferencia de precio entre extensiones es menor comparada con el resto de los costos de tener una web. No es el lugar donde ahorrar.</p>
 
     <h3>¿Conviene .com o .com.ar?</h3>
@@ -307,7 +307,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿El dominio está incluido en el precio de la web?",
                 respuesta:
-                    "Logika tramita el dominio, el hosting, los correos y el certificado de seguridad. El costo de mantener eso activo ronda los US$10 a US$20 por mes.",
+                    "Logika tramita el dominio, el hosting, los correos y el certificado de seguridad. El costo de mantener eso activo ronda los $15.000 a $30.000 por mes.",
             },
             {
                 pregunta: "¿El dominio queda a mi nombre?",
@@ -324,14 +324,14 @@ const articulos: Record<string, Articulo> = {
 
     "que-es-el-hosting-web": {
         respuestaCorta:
-            "El hosting es el servicio que mantiene tu web encendida y accesible las 24 horas: es el lugar donde viven los archivos, las fotos y los textos. Sin hosting, el dominio no lleva a ningún lado. Para una web de negocio chico o mediano el costo ronda entre US$10 y US$20 por mes incluyendo el dominio, y es el único gasto que se paga siempre.",
+            "El hosting es el servicio que mantiene tu web encendida y accesible las 24 horas: es el lugar donde viven los archivos, las fotos y los textos. Sin hosting, el dominio no lleva a ningún lado. Para una web de negocio chico o mediano el costo ronda entre $15.000 y $30.000 por mes incluyendo el dominio, y es el único gasto que se paga siempre.",
         contenido: `
     <h2>¿Qué es el hosting de una página web?</h2>
     <p>Es el servicio que mantiene tu web prendida y disponible. Los archivos, las fotos y los textos viven en una computadora que está encendida todo el día, y eso es lo que se alquila.</p>
     <p>Si el dominio es la dirección, el hosting es la casa. Podés tener la dirección, pero sin casa no hay adónde llegar.</p>
 
     <h3>¿Cuánto cuesta el hosting en Argentina?</h3>
-    <p>Entre US$10 y US$20 por mes para una web de negocio chico o mediano, con el dominio incluido. Es el único costo que se paga siempre, hagas lo que hagas.</p>
+    <p>Entre $15.000 y $30.000 por mes para una web de negocio chico o mediano, con el dominio incluido. Es el único costo que se paga siempre, hagas lo que hagas.</p>
     <p>Hay opciones más baratas, pero suelen compartir el servidor con cientos de sitios y eso se nota: la web tarda en cargar. Una web lenta pierde visitantes antes de que lean nada.</p>
 
     <h3>¿Puedo tener una web sin pagar hosting?</h3>
@@ -350,7 +350,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿El hosting y el dominio se pagan por separado?",
                 respuesta:
-                    "Se pueden contratar por separado, pero lo habitual es tenerlos juntos para simplificar. En Logika se tramitan ambos y el costo mensual conjunto ronda los US$10 a US$20.",
+                    "Se pueden contratar por separado, pero lo habitual es tenerlos juntos para simplificar. En Logika se tramitan ambos y el costo mensual conjunto ronda los $15.000 a $30.000.",
             },
             {
                 pregunta: "¿Necesito saber de servidores para tener una web?",
@@ -490,7 +490,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿Cuánto cuesta la web más simple con botón de WhatsApp?",
                 respuesta:
-                    "Una landing page arranca en US$149 y se entrega entre 1 y 2 semanas, con botón de WhatsApp, diseño para celular y configuración para Google incluidos.",
+                    "Una landing page arranca en $229.000 y se entrega entre 1 y 2 semanas, con botón de WhatsApp, diseño para celular y configuración para Google incluidos.",
             },
         ],
     },
@@ -566,13 +566,13 @@ const articulos: Record<string, Articulo> = {
 
     <h3>¿Y el precio?</h3>
     <p>Recién ahí. Con los cinco puntos definidos, comparar precios tiene sentido; sin ellos, estás comparando cosas distintas.</p>
-    <p>Para un negocio chico o mediano en Argentina, el rango razonable en 2026 va de US$150 a US$500 según el tipo de sitio.</p>
+    <p>Para un negocio chico o mediano en Argentina, el rango razonable en 2026 va de $230.000 a $770.000 según el tipo de sitio.</p>
   `,
         preguntas: [
             {
                 pregunta: "¿Conviene el más barato?",
                 respuesta:
-                    "No necesariamente. Abajo de US$100 suele ser una plantilla con tu logo, sin diseño propio ni configuración de SEO, y con servicios que después se facturan aparte. Compará qué incluye cada uno.",
+                    "No necesariamente. Abajo de $150.000 suele ser una plantilla con tu logo, sin diseño propio ni configuración de SEO, y con servicios que después se facturan aparte. Compará qué incluye cada uno.",
             },
             {
                 pregunta: "¿Es mejor una agencia grande o alguien independiente?",

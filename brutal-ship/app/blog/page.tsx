@@ -63,7 +63,7 @@ const BLOG_POSTS = [
         slug: "cuanto-cuesta-pagina-web-peluqueria",
         title: "¿Cuánto cuesta una página web para una peluquería?",
         excerpt:
-            "Desde US$149 y lista en 1 a 2 semanas. Qué tiene que tener, si hace falta turnero online, y por qué conviene publicar los precios.",
+            "Desde $229.000 y lista en 1 a 2 semanas. Qué tiene que tener, si hace falta turnero online, y por qué conviene publicar los precios.",
         date: "2026-08-13",
         readTime: "4 min",
         category: "Precios",

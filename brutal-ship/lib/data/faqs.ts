@@ -23,7 +23,7 @@ const DEFAULT_FAQS: FAQ[] = [
     {
         id: "3",
         question: "¿El precio incluye dominio y hosting?",
-        answer: "Nosotros tramitamos todo: dominio (.com o .com.ar), hosting, emails profesionales y certificado de seguridad (el candadito verde). Si tomás el plan mensual de mantenimiento, el dominio y el hosting van incluidos ahí. Si preferís no tomarlo, te los dejamos configurados a tu nombre y los renovás vos directamente (suele costar menos de US$20 al año).",
+        answer: "Nosotros tramitamos todo: dominio (.com o .com.ar), hosting, emails profesionales y certificado de seguridad (el candadito verde). Si tomás el plan mensual de mantenimiento, el dominio y el hosting van incluidos ahí. Si preferís no tomarlo, te los dejamos configurados a tu nombre y los renovás vos directamente (suele costar menos de $30.000 al año).",
         display_order: 3,
         is_active: true,
         created_at: "",

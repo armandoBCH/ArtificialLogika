@@ -11,6 +11,8 @@ const ALLOWED_TABLES = [
     "testimonials",
     "faqs",
     "contact_leads",
+    "quotes",
+    "quote_catalog",
 ] as const;
 
 type AllowedTable = (typeof ALLOWED_TABLES)[number];
@@ -41,6 +43,12 @@ const ALLOWED_FIELDS: Record<AllowedTable, string[]> = {
     ],
     faqs: ["question", "answer", "display_order", "is_active"],
     contact_leads: [], // Read-only + delete only, no inserts/updates from admin
+    // `number` no esta: lo asigna la base y es el correlativo que ve el cliente.
+    quotes: ["client_name", "title", "status", "total", "data"],
+    quote_catalog: [
+        "name", "description", "price", "unit", "category",
+        "is_recurring", "display_order", "is_active",
+    ],
 };
 
 function isAllowedTable(table: string): table is AllowedTable {

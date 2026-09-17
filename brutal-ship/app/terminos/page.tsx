@@ -22,7 +22,7 @@ export default async function TerminosPage() {
         <LegalPage
             config={config}
             titulo="Términos de Servicio"
-            actualizado="23 de agosto de 2026"
+            actualizado="16 de septiembre de 2026"
             intro="Cómo trabajamos, qué incluye cada plan, cuándo se paga y qué pasa si algo no sale como esperabas."
         >
             <h2>1. Quiénes somos y qué alcanzan estos términos</h2>
@@ -75,8 +75,8 @@ export default async function TerminosPage() {
 
             <h2>5. Precios y forma de pago</h2>
             <p>
-                Los precios se expresan en <strong>dólares estadounidenses (US$)</strong>. El pago se realiza en
-                pesos argentinos, salvo acuerdo distinto.
+                Los precios se expresan y se pagan en <strong>pesos argentinos ($)</strong>, salvo acuerdo
+                distinto.
             </p>
             <ul>
                 <li>

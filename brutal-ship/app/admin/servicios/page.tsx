@@ -242,7 +242,7 @@ export default function ServiciosPage() {
                             </label>
                             <label className="space-y-1">
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Precio &quot;desde&quot;</span>
-                                <input className="admin-input w-full" placeholder="Ej: Desde $149" value={form.price_from || ""} onChange={(e) => setForm({ ...form, price_from: e.target.value })} />
+                                <input className="admin-input w-full" placeholder="Ej: Desde $229.000" value={form.price_from || ""} onChange={(e) => setForm({ ...form, price_from: e.target.value })} />
                             </label>
                             <label className="space-y-1 md:col-span-2">
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Descripción breve</span>

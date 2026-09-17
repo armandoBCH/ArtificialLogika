@@ -5,7 +5,7 @@ import { useAdminData } from "../hooks/useAdminData";
 interface Lead {
     id: string;
     name: string;
-    contact_info: string;
+    contact: string;
     business_type: string;
     message: string;
     created_at: string;
@@ -42,7 +42,7 @@ export default function LeadsPage() {
                             <div className="flex items-start justify-between mb-3">
                                 <div>
                                     <h3 className="text-white font-bold">{lead.name || "Sin nombre"}</h3>
-                                    <p className="text-primary text-sm font-medium">{lead.contact_info}</p>
+                                    <p className="text-primary text-sm font-medium">{lead.contact}</p>
                                 </div>
                                 <div className="text-right shrink-0 ml-4">
                                     {lead.business_type && (

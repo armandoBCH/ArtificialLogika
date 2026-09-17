@@ -48,13 +48,22 @@ export default async function AdminDashboard() {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-black text-white font-body">
-                    Dashboard
-                </h1>
-                <p className="text-gray-400 mt-1">
-                    Resumen general del contenido del sitio
-                </p>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-black text-white font-body">
+                        Dashboard
+                    </h1>
+                    <p className="text-gray-400 mt-1">
+                        Resumen general del contenido del sitio
+                    </p>
+                </div>
+                <Link
+                    href="/admin/presupuestos"
+                    className="inline-flex items-center gap-2 bg-primary text-white font-bold px-5 py-2.5 border-2 border-black shadow-neobrutalism-sm rounded-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                >
+                    <span aria-hidden="true">🧾</span>
+                    Armar presupuesto
+                </Link>
             </div>
 
             {/* Stats Grid */}
@@ -111,7 +120,7 @@ export default async function AdminDashboard() {
                                         {lead.name || "Sin nombre"}
                                     </p>
                                     <p className="text-gray-400 text-xs">
-                                        {lead.contact_info || lead.email || "—"}
+                                        {lead.contact || "—"}
                                     </p>
                                 </div>
                                 <div className="text-right">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAdminData } from "../hooks/useAdminData";
 import AdminError from "../components/AdminError";
+import { formatearPrecio } from "@/lib/precios";
 
 interface Feature {
     text: string;
@@ -29,7 +30,7 @@ interface Plan {
     display_order: number;
 }
 
-const CURRENCY_OPTIONS = ["USD", "ARS", "EUR"];
+const CURRENCY_OPTIONS = ["ARS", "USD", "EUR"];
 const PAYMENT_TYPE_OPTIONS = ["Pago Único", "Mensual", "Anual", "Por Proyecto"];
 const FEATURE_ICON_OPTIONS = [
     { value: "check", label: "✓" },
@@ -44,7 +45,7 @@ export default function PreciosPage() {
     const [creating, setCreating] = useState(false);
 
     const emptyPlan: Partial<Plan> = {
-        name: "", subtitle: "", price: 0, original_price: null, currency: "USD", payment_type: "Pago Único",
+        name: "", subtitle: "", price: 0, original_price: null, currency: "ARS", payment_type: "Pago Único",
         price_note: "", features: [], is_featured: false, featured_label: "", cta_text: "Consultar",
         cta_style: "default", header_bg: "bg-ink-black", display_order: 0,
     };
@@ -294,9 +295,9 @@ export default function PreciosPage() {
                             {/* Price */}
                             <div className="p-4 flex items-baseline gap-2">
                                 {plan.original_price && (
-                                    <span className="text-gray-500 text-sm line-through font-mono">${plan.original_price}</span>
+                                    <span className="text-gray-500 text-sm line-through font-mono">{formatearPrecio(plan.original_price, plan.currency)}</span>
                                 )}
-                                <span className="text-white text-2xl font-black">${plan.price?.toLocaleString()}</span>
+                                <span className="text-white text-2xl font-black">{formatearPrecio(plan.price ?? 0, plan.currency)}</span>
                                 <span className="text-gray-400 text-xs font-bold">{plan.currency} · {plan.payment_type}</span>
                             </div>
 
