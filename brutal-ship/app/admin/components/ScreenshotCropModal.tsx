@@ -50,6 +50,7 @@ export default function ScreenshotCropModal({
     const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
     const [lockedRatio, setLockedRatio] = useState<number>(4 / 3); // Default: 4:3
     const [croppedUrl43, setCroppedUrl43] = useState<string>(""); // Stores first crop result
+    const [colorScheme, setColorScheme] = useState<"dark" | "light">("dark"); // Tema con el que se captura
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);
 
@@ -62,6 +63,7 @@ export default function ScreenshotCropModal({
             setCrop({ x: 0, y: 0, width: 0, height: 0 });
             setLockedRatio(4 / 3);
             setCroppedUrl43("");
+            setColorScheme("dark");
         }
     }, [isOpen]);
 
@@ -73,17 +75,19 @@ export default function ScreenshotCropModal({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, externalUrl]);
 
-    const captureScreenshot = async (opts?: { width?: number; height?: number; nextStep?: ModalStep }) => {
+    const captureScreenshot = async (opts?: { width?: number; height?: number; nextStep?: ModalStep; scheme?: "dark" | "light" }) => {
         const vw = opts?.width || 1024;
         const vh = opts?.height || 768;
         const targetStep = opts?.nextStep || "cropping-43";
+        const scheme = opts?.scheme || colorScheme;
+        setColorScheme(scheme);
         setStep("capturing");
         setErrorMsg("");
         try {
             const res = await fetch("/api/admin/screenshot", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url: externalUrl, viewportWidth: vw, viewportHeight: vh }),
+                body: JSON.stringify({ url: externalUrl, viewportWidth: vw, viewportHeight: vh, colorScheme: scheme }),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Error al capturar");
@@ -511,6 +515,21 @@ export default function ScreenshotCropModal({
                                     className="bg-white/10 text-white font-bold px-5 py-2 border-2 border-white/20 rounded-sm hover:bg-white/20 transition-all"
                                 >
                                     🔄 Recapturar
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        const isWide = step === "cropping-169";
+                                        const next = colorScheme === "dark" ? "light" : "dark";
+                                        captureScreenshot(
+                                            isWide
+                                                ? { width: 1280, height: 720, nextStep: "cropping-169", scheme: next }
+                                                : { width: 1024, height: 768, nextStep: "cropping-43", scheme: next }
+                                        );
+                                    }}
+                                    title="Vuelve a capturar el sitio con el otro tema"
+                                    className="bg-white/10 text-white font-bold px-5 py-2 border-2 border-white/20 rounded-sm hover:bg-white/20 transition-all"
+                                >
+                                    {colorScheme === "dark" ? "☀️ Capturar en claro" : "🌙 Capturar en oscuro"}
                                 </button>
                                 <button onClick={onClose} className="text-gray-400 font-bold px-4 py-2 hover:text-white transition-colors ml-auto">Cancelar</button>
                             </div>
