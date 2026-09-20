@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { useId, type CSSProperties, type Ref } from "react";
 import { formatearPesos } from "@/lib/precios";
 import {
     formatearFecha,
@@ -20,6 +20,9 @@ import {
  *
  * Usa container queries y no breakpoints de pantalla: la misma hoja se ve en la
  * columna angosta del editor, a ancho completo en la vista previa y en un A4.
+ *
+ * `papel` es la versión que se descarga: sin el borde y la sombra de la tarjeta,
+ * que en pantalla la separan del fondo oscuro pero en un PDF serían un marco.
  */
 
 interface Props {
@@ -27,9 +30,11 @@ interface Props {
     totales: Totales;
     numero: number | null;
     empresa: Empresa;
+    papel?: boolean;
+    ref?: Ref<HTMLElement>;
 }
 
-export default function HojaPresupuesto({ presupuesto: p, totales: t, numero, empresa }: Props) {
+export default function HojaPresupuesto({ presupuesto: p, totales: t, numero, empresa, papel = false, ref }: Props) {
     const lineas = p.lineas.filter((l) => l.nombre.trim() || l.precio > 0);
     const mensuales = p.mensuales.filter((m) => m.nombre.trim() || m.precio > 0);
     const aporta = p.aportaCliente.filter((a) => a.trim());
@@ -38,7 +43,10 @@ export default function HojaPresupuesto({ presupuesto: p, totales: t, numero, em
     const whatsapp = formatearTelefono(empresa.whatsapp);
 
     return (
-        <article className="hoja-presupuesto @container bg-white text-ink-black border-2 border-black shadow-neobrutalism-lg">
+        <article
+            ref={ref}
+            className={`hoja-presupuesto @container bg-white text-ink-black ${papel ? "" : "border-2 border-black shadow-neobrutalism-lg"}`}
+        >
             {/* Los cuatro colores de la marca, en el orden del isotipo. */}
             <div aria-hidden="true" className="grid h-2 grid-cols-4">
                 <span className="bg-primary" />
@@ -47,7 +55,7 @@ export default function HojaPresupuesto({ presupuesto: p, totales: t, numero, em
                 <span className="bg-secondary" />
             </div>
 
-            <div className="hoja-cuerpo p-6 @2xl:p-10">
+            <div className={`hoja-cuerpo ${papel ? "pt-8" : "p-6 @2xl:p-10"}`}>
                 {/* ── Encabezado ── */}
                 <header className="flex flex-wrap items-start justify-between gap-6">
                     <div>
@@ -335,11 +343,14 @@ function Tilde() {
 
 /** El isotipo de app/icon.svg, estático: el LogikaLogo animado arranca invisible y no sirve para imprimir. */
 function MarcaLogika() {
+    // Con la hoja de exportación montada hay dos logos en la página: un id fijo
+    // haría que los dos apunten al mismo recorte.
+    const trama = useId();
     return (
         <div className="flex items-center gap-2.5">
             <svg aria-hidden="true" viewBox="12 12 72 72" className="h-10 w-10">
                 <defs>
-                    <clipPath id="hoja-trama">
+                    <clipPath id={trama}>
                         <rect x="45" y="0" width="60" height="100" />
                     </clipPath>
                 </defs>
@@ -348,7 +359,7 @@ function MarcaLogika() {
                 <rect x="14" y="14" width="22" height="62" rx="6" fill="#4A90FF" stroke="#1A1A1A" strokeWidth="4" />
                 <rect x="14" y="54" width="62" height="22" rx="6" fill="#FF6B6B" stroke="#1A1A1A" strokeWidth="4" />
                 <rect x="54" y="14" width="22" height="62" rx="6" fill="#00D68F" stroke="#1A1A1A" strokeWidth="4" />
-                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" strokeWidth="4" clipPath="url(#hoja-trama)" />
+                <rect x="14" y="14" width="62" height="22" rx="6" fill="#8523E1" stroke="#1A1A1A" strokeWidth="4" clipPath={`url(#${trama})`} />
             </svg>
             <p className="font-display text-[1.75rem] font-bold leading-none tracking-tight">
                 Logika<span className="text-hot-coral">.</span>

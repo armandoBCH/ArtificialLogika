@@ -5,6 +5,7 @@ import { CUOTA_MENSUAL, formatearPesos } from "@/lib/precios";
 import type { PricingPlan, Service } from "@/lib/types/database";
 import { escribir } from "./api";
 import Catalogo from "./Catalogo";
+import { ANCHO_HOJA_PX, descargarImagen, descargarPdf, nombreDeArchivo } from "./exportar";
 import { Atajos, Campo, Cantidad, ListaEditable, NumeroInput, PesosInput, Seccion } from "./controles";
 import HojaPresupuesto from "./HojaPresupuesto";
 import {
@@ -113,7 +114,11 @@ export default function Presupuestador({ planes, servicios, leads, catalogo: cat
     const [guardando, setGuardando] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [aviso, setAviso] = useState<string | null>(null);
+    const [menuDescarga, setMenuDescarga] = useState(false);
+    const [descargando, setDescargando] = useState<"pdf" | "imagen" | null>(null);
     const temporizador = useRef<number | undefined>(undefined);
+    const menu = useRef<HTMLDivElement>(null);
+    const hojaParaDescargar = useRef<HTMLElement>(null);
 
     const { doc, estado, id, numero } = enCurso;
     const totales = calcularTotales(doc);
@@ -143,6 +148,22 @@ export default function Presupuestador({ planes, servicios, leads, catalogo: cat
             window.clearTimeout(temporizador.current);
         };
     }, []);
+
+    useEffect(() => {
+        if (!menuDescarga) return;
+        const alTocarAfuera = (e: PointerEvent) => {
+            if (!menu.current?.contains(e.target as Node)) setMenuDescarga(false);
+        };
+        const alEscape = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setMenuDescarga(false);
+        };
+        document.addEventListener("pointerdown", alTocarAfuera);
+        document.addEventListener("keydown", alEscape);
+        return () => {
+            document.removeEventListener("pointerdown", alTocarAfuera);
+            document.removeEventListener("keydown", alEscape);
+        };
+    }, [menuDescarga]);
 
     /* ── Edición ─────────────────────────────────────────── */
 
@@ -336,14 +357,54 @@ export default function Presupuestador({ planes, servicios, leads, catalogo: cat
 
     /* ── Salidas ─────────────────────────────────────────── */
 
-    async function imprimir() {
-        let numeroFinal = numero;
-        // Un PDF sin número no se puede referenciar después: se guarda antes de imprimir.
-        if (baseLista && (sucio || !id)) {
-            const guardado = await guardar({ silencioso: true });
-            if (!guardado) return;
-            numeroFinal = guardado.number;
+    /** Un archivo sin número no se puede referenciar después: se guarda antes de sacarlo. */
+    async function numerar(): Promise<number | null | false> {
+        if (!baseLista || (!sucio && id)) return numero;
+        const guardado = await guardar({ silencioso: true });
+        return guardado ? guardado.number : false;
+    }
+
+    async function descargar(formato: "pdf" | "imagen") {
+        setMenuDescarga(false);
+        const numeroFinal = await numerar();
+        if (numeroFinal === false) return;
+
+        // No se fotografía la vista previa, que cambia de ancho según la pantalla:
+        // se monta una copia fuera de la vista con el ancho útil de un A4.
+        setDescargando(formato);
+        setError(null);
+        try {
+            let hoja = hojaParaDescargar.current;
+            for (let i = 0; i < 60 && !hoja; i++) {
+                await new Promise((listo) => requestAnimationFrame(listo));
+                hoja = hojaParaDescargar.current;
+            }
+            if (!hoja) throw new Error("la hoja no llegó a prepararse");
+
+            const nombre = nombreDeArchivo([
+                "Presupuesto",
+                formatearNumero(numeroFinal),
+                doc.cliente.negocio.trim() || doc.cliente.nombre.trim(),
+                "Logika",
+            ]);
+            if (formato === "pdf") {
+                await descargarPdf(hoja, nombre, [`Presupuesto ${formatearNumero(numeroFinal)}`.trim(), tituloDe(doc)].join(" · "));
+                avisar("PDF descargado");
+            } else {
+                await descargarImagen(hoja, nombre);
+                avisar("Imagen descargada");
+            }
+        } catch (e) {
+            setError(`No se pudo descargar${e instanceof Error ? `: ${e.message}` : ""}. Probá de nuevo.`);
+        } finally {
+            setDescargando(null);
         }
+    }
+
+    async function imprimir() {
+        setMenuDescarga(false);
+        const numeroFinal = await numerar();
+        if (numeroFinal === false) return;
         const tituloAnterior = document.title;
         // El título de la pestaña es el nombre que el navegador le propone al PDF.
         document.title = ["Presupuesto", formatearNumero(numeroFinal), doc.cliente.negocio.trim() || doc.cliente.nombre.trim(), "Logika"]
@@ -427,7 +488,7 @@ export default function Presupuestador({ planes, servicios, leads, catalogo: cat
                         <p className="font-bold text-accent-yellow">Falta un paso en la base de datos</p>
                         <p className="mt-1 text-white/80">
                             Corré <code className="rounded-sm bg-black/40 px-1.5 py-0.5 text-white">{SQL_PENDIENTE}</code> en Supabase → SQL Editor.
-                            {!baseLista && " Hasta entonces podés armar, imprimir y mandar presupuestos, pero no guardarlos ni editar el catálogo."}
+                            {!baseLista && " Hasta entonces podés armar, descargar y mandar presupuestos, pero no guardarlos ni editar el catálogo."}
                             {planesEnDolares && " Los planes siguen en dólares en la base: acá se muestran convertidos a pesos."}
                         </p>
                     </div>
@@ -568,10 +629,34 @@ export default function Presupuestador({ planes, servicios, leads, catalogo: cat
                             <span aria-hidden="true" className="material-icons text-lg">save</span>
                             Guardar
                         </button>
-                        <button type="button" onClick={imprimir} disabled={guardando} className={BOTON_SECUNDARIO} title="Imprimir o guardar como PDF">
-                            <span aria-hidden="true" className="material-icons text-lg">picture_as_pdf</span>
-                            PDF
-                        </button>
+                        <div ref={menu} className="relative">
+                            <button
+                                type="button"
+                                aria-haspopup="menu"
+                                aria-expanded={menuDescarga}
+                                onClick={() => setMenuDescarga((v) => !v)}
+                                disabled={guardando || descargando !== null}
+                                className={BOTON_SECUNDARIO}
+                            >
+                                <span aria-hidden="true" className={`material-icons text-lg ${descargando ? "animate-spin" : ""}`}>
+                                    {descargando ? "progress_activity" : "download"}
+                                </span>
+                                {descargando === "pdf" ? "Armando PDF…" : descargando === "imagen" ? "Armando imagen…" : "Descargar"}
+                                {!descargando && <span aria-hidden="true" className="material-icons -mr-1 text-lg">expand_more</span>}
+                            </button>
+                            {menuDescarga && (
+                                <div
+                                    role="menu"
+                                    aria-label="Descargar presupuesto"
+                                    className="absolute right-0 top-full z-40 mt-2 w-72 rounded-sm border-2 border-black bg-[#1e1530] p-1.5 shadow-neobrutalism-primary"
+                                >
+                                    <OpcionDescarga autoFocus icono="picture_as_pdf" titulo="PDF" detalle="Hoja A4, para mandar o imprimir" onClick={() => descargar("pdf")} />
+                                    <OpcionDescarga icono="image" titulo="Imagen" detalle="PNG, cómodo para mandar por WhatsApp" onClick={() => descargar("imagen")} />
+                                    <div className="mx-2 my-1 border-t border-white/10" />
+                                    <OpcionDescarga icono="print" titulo="Imprimir" detalle="Abre el diálogo de impresión" onClick={imprimir} />
+                                </div>
+                            )}
+                        </div>
                         <button
                             type="button"
                             onClick={enviarWhatsApp}
@@ -975,6 +1060,12 @@ export default function Presupuestador({ planes, servicios, leads, catalogo: cat
                 </div>
             </div>
 
+            {descargando && (
+                <div aria-hidden="true" inert className="pointer-events-none fixed -left-[10000px] top-0 print:hidden" style={{ width: ANCHO_HOJA_PX }}>
+                    <HojaPresupuesto ref={hojaParaDescargar} papel presupuesto={doc} totales={totales} numero={numero} empresa={empresa} />
+                </div>
+            )}
+
             <Catalogo abierto={catalogoAbierto} onCerrar={() => setCatalogoAbierto(false)} items={catalogo} onCambio={setCatalogo} baseLista={baseLista} />
 
             <div role="status" aria-live="polite" className="pointer-events-none fixed bottom-6 right-6 z-50 print:hidden">
@@ -1107,6 +1198,36 @@ function BotonIcono({ icono, etiqueta, onClick, disabled, peligro }: { icono: st
             className={`grid h-9 w-9 place-items-center rounded-sm text-gray-400 transition-colors disabled:pointer-events-none disabled:opacity-25 ${peligro ? "hover:bg-hot-coral/15 hover:text-hot-coral" : "hover:bg-white/10 hover:text-white"}`}
         >
             <span aria-hidden="true" className="material-icons text-xl">{icono}</span>
+        </button>
+    );
+}
+
+function OpcionDescarga({
+    icono,
+    titulo,
+    detalle,
+    onClick,
+    autoFocus,
+}: {
+    icono: string;
+    titulo: string;
+    detalle: string;
+    onClick: () => void;
+    autoFocus?: boolean;
+}) {
+    return (
+        <button
+            type="button"
+            role="menuitem"
+            onClick={onClick}
+            autoFocus={autoFocus}
+            className="flex w-full items-center gap-3 rounded-sm px-3 py-2.5 text-left transition-colors hover:bg-white/10 focus-visible:bg-white/10"
+        >
+            <span aria-hidden="true" className="material-icons text-xl text-[#c9a3f5]">{icono}</span>
+            <span>
+                <span className="block text-sm font-bold text-white">{titulo}</span>
+                <span className="block text-xs text-gray-400">{detalle}</span>
+            </span>
         </button>
     );
 }
