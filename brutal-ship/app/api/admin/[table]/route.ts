@@ -87,6 +87,9 @@ async function checkAdminAuth() {
 const ADMIN_RATE_LIMIT = 30;
 const ADMIN_WINDOW_MS = 60_000;
 
+// Tope defensivo del reordenamiento masivo: ningun listado del admin se acerca.
+const MAX_REORDER_ITEMS = 200;
+
 // GET — List all records
 export async function GET(
     request: NextRequest,
@@ -111,11 +114,17 @@ export async function GET(
         return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
+    // El desempate va ascendente igual que en el sitio publico (lib/data/*).
+    // Hoy los proyectos comparten display_order 0, asi que el desempate es el
+    // orden real: con `descending` el admin mostraba la lista al reves de lo que
+    // ve el visitante. Esta rama solo corre para las tablas que tienen
+    // display_order; el resto cae al fallback de abajo, que sigue siendo
+    // "lo mas nuevo primero".
     const { data, error } = await supabase
         .from(table)
         .select("*")
         .order("display_order", { ascending: true })
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: true });
 
     if (error) {
         // fallback ordering if display_order doesn't exist
@@ -237,6 +246,88 @@ export async function PUT(
     }
 
     return NextResponse.json(data);
+}
+
+// PATCH — Bulk reorder (display_order only)
+//
+// Un drag & drop toca N filas de una. Mandarlas como N PUT choca con el rate
+// limit de 30/min y deja el orden a medio guardar si una falla. Por eso el
+// reordenamiento entra por un solo request, y solo puede escribir display_order.
+export async function PATCH(
+    request: NextRequest,
+    { params }: { params: Promise<{ table: string }> }
+) {
+    const { table } = await params;
+    if (!isAllowedTable(table)) {
+        return NextResponse.json({ error: "Tabla inválida" }, { status: 400 });
+    }
+
+    if (!ALLOWED_FIELDS[table].includes("display_order")) {
+        return NextResponse.json({ error: "Esta tabla no se puede reordenar" }, { status: 400 });
+    }
+
+    const ip = getClientIp(request);
+    const limiter = rateLimit(`admin:${ip}`, ADMIN_RATE_LIMIT, ADMIN_WINDOW_MS);
+    if (!limiter.success) {
+        return NextResponse.json(
+            { error: "Demasiadas solicitudes" },
+            { status: 429, headers: { "Retry-After": String(Math.ceil(limiter.resetIn / 1000)) } }
+        );
+    }
+
+    const { supabase, isAdmin } = await checkAdminAuth();
+    if (!isAdmin) {
+        return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const rawItems: unknown = body?.items;
+
+    if (!Array.isArray(rawItems) || rawItems.length === 0) {
+        return NextResponse.json({ error: "Se esperaba una lista de items" }, { status: 400 });
+    }
+    if (rawItems.length > MAX_REORDER_ITEMS) {
+        return NextResponse.json(
+            { error: `No se pueden reordenar más de ${MAX_REORDER_ITEMS} items a la vez` },
+            { status: 400 }
+        );
+    }
+
+    const items: { id: string; display_order: number }[] = [];
+    const seen = new Set<string>();
+    for (const raw of rawItems) {
+        const id = (raw as { id?: unknown })?.id;
+        const order = (raw as { display_order?: unknown })?.display_order;
+        if (typeof id !== "string" || !id) {
+            return NextResponse.json({ error: "ID válido requerido en cada item" }, { status: 400 });
+        }
+        if (seen.has(id)) {
+            return NextResponse.json({ error: "IDs repetidos en la lista" }, { status: 400 });
+        }
+        if (typeof order !== "number" || !Number.isInteger(order) || order < 0 || order > 100000) {
+            return NextResponse.json({ error: "display_order debe ser un entero válido" }, { status: 400 });
+        }
+        seen.add(id);
+        items.push({ id, display_order: order });
+    }
+
+    // De a tandas para no abrir cien conexiones de golpe contra Supabase.
+    const CHUNK = 25;
+    for (let i = 0; i < items.length; i += CHUNK) {
+        const chunk = items.slice(i, i + CHUNK);
+        const results = await Promise.all(
+            chunk.map(({ id, display_order }) =>
+                supabase.from(table).update({ display_order }).eq("id", id)
+            )
+        );
+        const failed = results.find((r) => r.error);
+        if (failed?.error) {
+            console.error(`Admin PATCH ${table} reorder error:`, failed.error);
+            return NextResponse.json({ error: "Error al guardar el orden" }, { status: 500 });
+        }
+    }
+
+    return NextResponse.json({ success: true, updated: items.length });
 }
 
 // DELETE — Delete a record

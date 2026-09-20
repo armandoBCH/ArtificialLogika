@@ -5,6 +5,8 @@ import { useAdminData } from "../hooks/useAdminData";
 import AdminError from "../components/AdminError";
 import dynamic from "next/dynamic";
 
+import ProjectsBoard from "./ProjectsBoard";
+
 const ScreenshotCropModal = dynamic(() => import("../components/ScreenshotCropModal"), { ssr: false });
 
 // Las features de un servicio se guardan como {order, text, visible} en la base.
@@ -43,6 +45,7 @@ interface PortfolioProject {
     display_order: number;
     is_active: boolean;
     is_sample: boolean;
+    created_at?: string;
 }
 
 // Tag suggestions by category
@@ -69,7 +72,7 @@ const BASE_CATEGORIES = [
 ];
 
 export default function PortafolioPage() {
-    const { data, loading, saving, create, update, remove, error } = useAdminData<PortfolioProject>("portfolio_projects");
+    const { data, loading, saving, create, update, remove, reorder, error } = useAdminData<PortfolioProject>("portfolio_projects");
     const [editing, setEditing] = useState<PortfolioProject | null>(null);
     const [creating, setCreating] = useState(false);
     const [availableServices, setAvailableServices] = useState<ServiceData[]>([]);
@@ -185,7 +188,14 @@ export default function PortafolioPage() {
         setNewCategoryInput("");
     };
 
-    function openCreate() { setForm(empty); setCreating(true); setEditing(null); }
+    function openCreate() {
+        // Nace al final de la lista. Con display_order 0 aparecia arriba de todo
+        // y habia que bajarlo a mano cada vez.
+        const last = data.reduce((max, p) => Math.max(max, p.display_order || 0), 0);
+        setForm({ ...empty, display_order: last + 1 });
+        setCreating(true);
+        setEditing(null);
+    }
     function openEdit(p: PortfolioProject) { setForm(p); setEditing(p); setCreating(false); }
 
     async function handleSave() {
@@ -724,10 +734,15 @@ export default function PortafolioPage() {
 
                         {/* ── SECTION 7: Settings ── */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-white/10 pt-4">
-                            <label className="space-y-1">
-                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Orden (1, 2, 3...)</span>
-                                <input className="admin-input w-full" type="number" value={form.display_order || 0} onChange={(e) => setForm({ ...form, display_order: Number(e.target.value) })} />
-                            </label>
+                            <div className="space-y-1">
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Posición</span>
+                                <p className="flex items-center gap-2 text-sm text-gray-300 bg-white/5 border border-white/10 rounded-sm px-3 py-2">
+                                    <span aria-hidden="true" className="material-icons text-[18px] text-primary">drag_indicator</span>
+                                    {editing
+                                        ? <>Está en el lugar <strong className="text-white font-black">#{form.display_order || 0}</strong>. Se cambia arrastrando la tarjeta en la lista.</>
+                                        : <>Se va a agregar al final. Después lo movés arrastrando la tarjeta.</>}
+                                </p>
+                            </div>
                             <div className="flex items-center pt-5 gap-6">
                                 <label className="flex items-center gap-2 text-secondary text-sm font-bold cursor-pointer">
                                     <input type="checkbox" checked={form.is_active ?? true} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} className="w-5 h-5 bg-black border-2 border-white/20 rounded accent-secondary" />
@@ -751,88 +766,13 @@ export default function PortafolioPage() {
                     </div>
                 )}
 
-                {loading ? (
-                    <div className="text-center py-12 text-gray-400">Cargando...</div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {data.map((p) => (
-                            <div key={p.id} className="bg-[#1e1530] border-2 border-white/10 rounded-sm overflow-hidden group hover:border-primary/40 transition-all flex flex-col">
-                                {p.image_url ? (
-                                    <div className="h-48 bg-black/40 flex items-center justify-center overflow-hidden border-b border-white/5 relative">
-                                        {/* eslint-disable-next-line @next/next/no-img-element --
-                                            Decision, no descuido: image_url es un campo de texto libre y
-                                            next/image lanza en runtime si el host no esta en remotePatterns,
-                                            tirando abajo la pagina del admin. <img> muestra la imagen rota y
-                                            sigue. Ademas es una vista detras de login: no hay LCP que
-                                            optimizar, y si costo de optimizacion por imagen. */}
-                                        <img src={p.image_url} alt={p.image_alt || p.title} className="w-full h-full object-cover" />
-                                        {!p.is_active && (
-                                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm z-10">
-                                                <span className="bg-hot-coral text-white font-bold px-3 py-1 rounded text-sm shadow-neobrutalism-sm">OCULTO</span>
-                                            </div>
-                                        )}
-                                        {p.is_sample && (
-                                            <div className="absolute top-2 right-2 z-20">
-                                                <span className="bg-[#F2FA5A] text-black font-black px-2 py-0.5 rounded-sm text-xs shadow-neobrutalism-sm border border-black transform rotate-3 inline-block">MUESTRA</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="h-48 bg-white/5 flex items-center justify-center border-b border-white/5 relative">
-                                        <span className="text-gray-500 font-mono text-sm">Sin Imagen</span>
-                                        {!p.is_active && (
-                                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm z-10">
-                                                <span className="bg-hot-coral text-white font-bold px-3 py-1 rounded text-sm shadow-neobrutalism-sm">OCULTO</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                                <div className="p-5 flex-1 flex flex-col">
-                                    <div className="flex items-start justify-between mb-2">
-                                        <h3 className="text-white font-bold text-lg leading-tight">{p.title}</h3>
-                                    </div>
-                                    <p className="text-primary text-xs font-bold uppercase tracking-wider mb-2">{p.category}</p>
-
-                                    {/* Show applied services in card */}
-                                    {p.applied_services && p.applied_services.length > 0 && (
-                                        <div className="flex gap-1.5 flex-wrap mb-3">
-                                            {p.applied_services.map((svc) => (
-                                                <span key={svc} className="bg-[#9b51e0]/20 text-[#9b51e0] text-[9px] px-2 py-0.5 rounded-sm uppercase font-black tracking-wider border border-[#9b51e0]/30">{svc}</span>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    <div className="flex gap-2 flex-wrap mb-4 flex-1 content-start">
-                                        {p.tags?.map((tag) => (
-                                            <span key={tag} className="bg-white/5 border border-white/10 text-gray-300 text-[10px] px-2 py-1 rounded uppercase font-bold tracking-wider">{tag}</span>
-                                        ))}
-                                    </div>
-
-                                    {/* External URL indicator */}
-                                    {p.external_url && (
-                                        <div className="flex items-center gap-1.5 text-[10px] text-secondary font-bold mb-3">
-                                            <span aria-hidden="true" className="material-icons text-xs">language</span>
-                                            Tiene sitio web vinculado
-                                        </div>
-                                    )}
-
-                                    <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                                        <span className="text-xs text-gray-500 font-mono">Orden: {p.display_order}</span>
-                                        <div className="flex gap-3">
-                                            <button onClick={() => openEdit(p)} className="text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded text-sm font-bold transition-colors">Editar</button>
-                                            <button onClick={() => { if (confirm("¿Eliminar este proyecto definitivamente?")) remove(p.id); }} className="text-hot-coral px-2 text-sm font-bold hover:text-white transition-colors" title="Eliminar">🗑️</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                        {data.length === 0 && (
-                            <div className="col-span-full text-center py-12 border-2 border-dashed border-white/10 rounded-sm">
-                                <p className="text-gray-500">No hay proyectos en el portafolio aún.</p>
-                            </div>
-                        )}
-                    </div>
-                )}
+                <ProjectsBoard
+                    projects={data}
+                    loading={loading}
+                    onEdit={openEdit}
+                    onDelete={(id) => { if (confirm("¿Eliminar este proyecto definitivamente?")) remove(id); }}
+                    onReorder={reorder}
+                />
             </div>
 
             <ScreenshotCropModal
