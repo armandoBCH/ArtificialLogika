@@ -5,6 +5,7 @@ import { useAdminData } from "../hooks/useAdminData";
 import AdminError from "../components/AdminError";
 import PlansBoard from "./PlansBoard";
 import FeatureEditor, { conClaves, sinClaves, type EditableFeature, type PlanFeature } from "./FeatureEditor";
+import { cuotaMensual, formatearPesos } from "@/lib/precios";
 
 interface Plan {
     id: string;
@@ -18,6 +19,7 @@ interface Plan {
     features: PlanFeature[];
     is_featured: boolean;
     featured_label: string | null;
+    monthly_price: number | null;
     cta_text: string;
     cta_style: string;
     header_bg: string;
@@ -38,7 +40,7 @@ export default function PreciosPage() {
 
     const emptyPlan: Partial<Plan> = {
         name: "", subtitle: "", price: 0, original_price: null, currency: "ARS", payment_type: "Pago Único",
-        price_note: "", is_featured: false, featured_label: "", cta_text: "Consultar",
+        price_note: "", is_featured: false, featured_label: "", monthly_price: null, cta_text: "Consultar",
         cta_style: "default", header_bg: "bg-ink-black", display_order: 0, is_active: true,
     };
 
@@ -199,10 +201,28 @@ export default function PreciosPage() {
                                 </div>
                             </div>
                         </div>
-                        <label className="space-y-1 block">
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Nota de Precio (opcional)</span>
-                            <input className="admin-input w-full" placeholder="Ej: IVA incluido, Precio Promo" value={form.price_note || ""} onChange={(e) => setForm({ ...form, price_note: e.target.value })} />
-                        </label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label className="space-y-1 block">
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Mantenimiento mensual (opcional)</span>
+                                <input
+                                    className="admin-input w-full font-black"
+                                    type="number"
+                                    min={0}
+                                    placeholder="Vacío = sin cuota mensual"
+                                    value={form.monthly_price ?? ""}
+                                    onChange={(e) => setForm({ ...form, monthly_price: e.target.value ? Number(e.target.value) : null })}
+                                />
+                                <p className="text-[10px] text-gray-500">
+                                    {cuotaMensual(form)
+                                        ? <>En el sitio: <span className="text-white font-bold">+ {formatearPesos(cuotaMensual(form)!)}/mes de mantenimiento (opcional)</span>. También aparece en &quot;Valores mensuales&quot; y en el presupuestador.</>
+                                        : <>Sin cuota: el plan no muestra la línea de mantenimiento ni aparece en &quot;Valores mensuales&quot;.</>}
+                                </p>
+                            </label>
+                            <label className="space-y-1 block">
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Nota de Precio (opcional)</span>
+                                <input className="admin-input w-full" placeholder="Ej: IVA incluido, Precio Promo" value={form.price_note || ""} onChange={(e) => setForm({ ...form, price_note: e.target.value })} />
+                            </label>
+                        </div>
                     </div>
 
                     {/* ── SECTION 3: Features ── */}

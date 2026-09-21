@@ -12,7 +12,7 @@ import {
 } from "../components/SortControls";
 import { useReorderQueue } from "../hooks/useReorderQueue";
 import { COLS_CLASS, useViewPrefs } from "../hooks/useViewPrefs";
-import { CARACTERISTICAS_A_LA_VISTA, formatearPrecio } from "@/lib/precios";
+import { CARACTERISTICAS_A_LA_VISTA, cuotaMensual, formatearPesos, formatearPrecio } from "@/lib/precios";
 import { FONDO_POR_DEFECTO, ICONO_POR_DEFECTO, textoSobreFondo } from "@/lib/iconos-plan";
 import type { PlanFeature } from "./FeatureEditor";
 
@@ -27,6 +27,7 @@ export interface BoardPlan {
     features: PlanFeature[];
     is_featured: boolean;
     featured_label: string | null;
+    monthly_price?: number | null;
     display_order: number;
     is_active: boolean;
 }
@@ -233,7 +234,9 @@ function PlanCard<T extends BoardPlan>({ plan, ctx, position, total, onMove, onE
                         </span>
                     ) : null}
                     <span className="text-white text-xl font-black">{formatearPrecio(plan.price ?? 0, plan.currency)}</span>
-                    <span className="text-gray-400 text-[10px] font-bold truncate">{plan.payment_type}</span>
+                    <span className="text-gray-400 text-[10px] font-bold truncate">
+                        {cuotaMensual(plan) ? `+ ${formatearPesos(cuotaMensual(plan)!)}/mes` : plan.payment_type}
+                    </span>
                     {plan.is_featured && (
                         <span className="ml-auto bg-[#F2FA5A]/20 text-[#F2FA5A] text-[9px] font-black px-2 py-0.5 rounded-sm uppercase tracking-wider border border-[#F2FA5A]/30 truncate max-w-[45%]">
                             {plan.featured_label || "Destacado"}
@@ -297,8 +300,13 @@ function PlanRow<T extends BoardPlan>({ plan, ctx, position, total, onMove, onEd
                 <p className="text-[11px] text-gray-400 truncate">{plan.subtitle}</p>
             </div>
 
-            <span className="text-white font-black text-sm tabular-nums shrink-0">
+            <span className="text-white font-black text-sm tabular-nums shrink-0 text-right leading-tight">
                 {formatearPrecio(plan.price ?? 0, plan.currency)}
+                {cuotaMensual(plan) && (
+                    <span className="block text-[10px] font-bold text-gray-400">
+                        + {formatearPesos(cuotaMensual(plan)!)}/mes
+                    </span>
+                )}
             </span>
 
             <div className="hidden md:flex items-center gap-1.5 shrink-0">

@@ -8,9 +8,9 @@
  *   E-commerce           US$399 -> $619.000
  *   Mantenimiento        US$15 / 25 / 35 -> $23.000 / $39.000 / $54.000
  *
- * Los planes viven en la base (`pricing_plans`) y se editan desde /admin/precios.
- * Las cuotas de mantenimiento no tienen tabla propia: viven acá, y las leen la
- * sección de precios del sitio y el presupuestador, para que no puedan diferir.
+ * Los planes viven en la base (`pricing_plans`) y se editan desde /admin/precios,
+ * cuota mensual incluida (`monthly_price`). Antes las cuotas estaban escritas acá
+ * atadas al nombre del plan; renombrar un plan le borraba la cuota sin aviso.
  */
 
 const miles = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 });
@@ -32,13 +32,14 @@ export function formatearPrecio(monto: number, moneda: string | null | undefined
     return formatearPesos(monto);
 }
 
-/** Mantenimiento mensual opcional, por nombre de plan. */
-export const CUOTA_MENSUAL: Record<string, number> = {
-    "Landing Page": 23000,
-    "Sitio Institucional": 39000,
-    "E-commerce": 54000,
-    "E-commerce / Plataforma": 54000,
-};
+/**
+ * Cuota mensual de un plan, o null si no tiene. Normaliza lo que llega de la
+ * base: la columna puede faltar (antes de correr el SQL) o venir como texto.
+ */
+export function cuotaMensual(plan: { monthly_price?: number | string | null }): number | null {
+    const valor = Number(plan.monthly_price);
+    return Number.isFinite(valor) && valor > 0 ? valor : null;
+}
 
 /**
  * Cuantas caracteristicas de cada plan se ven sin abrir "Ver las N restantes".

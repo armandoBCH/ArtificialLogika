@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useEffectEvent, useRef, useState } from "react";
-import { CUOTA_MENSUAL, formatearPesos } from "@/lib/precios";
+import { cuotaMensual, formatearPesos } from "@/lib/precios";
 import type { PricingPlan } from "@/lib/types/database";
 import { escribir } from "./api";
 import Catalogo from "./Catalogo";
@@ -12,7 +12,7 @@ import {
     APORTA_CLIENTE_POR_DEFECTO,
     CONDICIONES_POR_DEFECTO,
     ESTADOS,
-    PLANES_CON_MANTENIMIENTO,
+    refMantenimiento,
     PLAZOS_SUGERIDOS,
     calcularTotales,
     formatearNumero,
@@ -187,7 +187,7 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
             const sinMantenimiento = d.mensuales.filter((m) => !m.refId?.startsWith("mantenimiento:"));
             if (yaEstaba) return { ...d, lineas: sinPlan, mensuales: sinMantenimiento };
 
-            const mantenimiento = lineaDeMantenimiento(plan.name);
+            const mantenimiento = lineaDeMantenimiento(plan);
             // El plazo sigue al plan mientras nadie lo haya escrito a mano.
             const plazoAutomatico = !d.plazo.trim() || PLAZOS_SUGERIDOS.includes(d.plazo.trim());
             return {
@@ -223,9 +223,9 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
         });
     }
 
-    function alternarMantenimiento(nombrePlan: string) {
-        const ref = `mantenimiento:${nombrePlan}`;
-        const linea = lineaDeMantenimiento(nombrePlan);
+    function alternarMantenimiento(plan: PricingPlan) {
+        const ref = refMantenimiento(plan);
+        const linea = lineaDeMantenimiento(plan);
         editar((d) =>
             d.mensuales.some((m) => m.refId === ref)
                 ? { ...d, mensuales: d.mensuales.filter((m) => m.refId !== ref) }
@@ -728,7 +728,7 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
                             <div className="grid gap-3 sm:grid-cols-3">
                                 {planes.map((plan) => {
                                     const activo = planElegido?.refId === plan.id;
-                                    const cuota = CUOTA_MENSUAL[plan.name];
+                                    const cuota = cuotaMensual(plan);
                                     return (
                                         <button
                                             key={plan.id}
@@ -855,23 +855,26 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
 
                     <Seccion numero={5} titulo="Mantenimiento mensual" descripcion="Opcional. Va aparte del total del proyecto">
                         <div className="flex flex-wrap gap-2">
-                            {PLANES_CON_MANTENIMIENTO.map((nombre) => {
-                                const activo = doc.mensuales.some((m) => m.refId === `mantenimiento:${nombre}`);
+                            {planes.filter((p) => cuotaMensual(p)).length === 0 && (
+                                <p className="text-sm text-gray-400">Ningún plan tiene cuota mensual. Se carga en Precios, en cada plan.</p>
+                            )}
+                            {planes.filter((p) => cuotaMensual(p)).map((plan) => {
+                                const activo = doc.mensuales.some((m) => m.refId === refMantenimiento(plan));
                                 return (
                                     <button
-                                        key={nombre}
+                                        key={plan.id}
                                         type="button"
                                         aria-pressed={activo}
-                                        onClick={() => alternarMantenimiento(nombre)}
+                                        onClick={() => alternarMantenimiento(plan)}
                                         className={`inline-flex items-center gap-2 rounded-sm border-2 px-3 py-2 text-sm font-bold transition-all ${activo
                                             ? "border-black bg-accent-yellow text-ink-black shadow-neobrutalism-sm"
                                             : "border-white/15 bg-white/5 text-white hover:border-white/40"
                                             }`}
                                     >
                                         <span aria-hidden="true" className="material-icons text-base">{activo ? "check" : "add"}</span>
-                                        {nombre}
+                                        {plan.name}
                                         <span className={`font-medium tabular-nums ${activo ? "text-ink-black/70" : "text-gray-400"}`}>
-                                            {formatearPesos(CUOTA_MENSUAL[nombre])}/mes
+                                            {formatearPesos(cuotaMensual(plan)!)}/mes
                                         </span>
                                     </button>
                                 );

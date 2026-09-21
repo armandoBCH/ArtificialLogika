@@ -22,7 +22,7 @@ const ALLOWED_FIELDS: Record<AllowedTable, string[]> = {
     pricing_plans: [
         "name", "subtitle", "price", "original_price", "currency",
         "payment_type", "price_note", "features", "is_featured",
-        "featured_label", "cta_text", "cta_style", "header_bg",
+        "featured_label", "monthly_price", "cta_text", "cta_style", "header_bg",
         "display_order", "is_active",
     ],
     portfolio_projects: [

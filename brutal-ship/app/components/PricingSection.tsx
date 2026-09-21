@@ -3,7 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import type { PricingPlan, PricingFeature } from "@/lib/types/database";
 import type { SiteConfigMap } from "@/lib/types/database";
-import { CARACTERISTICAS_A_LA_VISTA, CUOTA_MENSUAL, formatearPesos, formatearPrecio } from "@/lib/precios";
+import { CARACTERISTICAS_A_LA_VISTA, cuotaMensual, formatearPesos, formatearPrecio } from "@/lib/precios";
 import { textoSobreFondo } from "@/lib/iconos-plan";
 
 const containerVariants: Variants = {
@@ -104,9 +104,9 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
                         <span className="text-4xl lg:text-5xl font-bold tabular-nums">{formatearPrecio(plan.price, plan.currency)}</span>
                         <span className="text-base lg:text-lg font-bold text-ink-black/80 mb-1">una vez</span>
                     </div>
-                    {CUOTA_MENSUAL[plan.name] && (
+                    {cuotaMensual(plan) && (
                         <p className="text-sm font-bold text-ink-black/80">
-                            + {formatearPesos(CUOTA_MENSUAL[plan.name])}/mes de mantenimiento{" "}
+                            + {formatearPesos(cuotaMensual(plan)!)}/mes de mantenimiento{" "}
                             <span className="font-medium text-ink-black/70">(opcional)</span>
                         </p>
                     )}
@@ -206,7 +206,17 @@ const NOTA_PRECIO: Record<string, string> = {
 
 const QUIERO_FALLBACK = "Una web que trabaje para tu negocio.";
 
+// Una sombra por fila, en el orden en que estaban: menta, negra, violeta.
+const SOMBRAS_CUOTA = [
+    "shadow-neobrutalism-mint",
+    "shadow-neobrutalism sm:shadow-neobrutalism-lg",
+    "shadow-neobrutalism-primary",
+];
+
 export default function PricingSection({ plans, config }: PricingSectionProps) {
+    const conCuota = plans
+        .map((plan) => ({ plan, cuota: cuotaMensual(plan) }))
+        .filter((x): x is { plan: PricingPlan; cuota: number } => x.cuota !== null);
     const whatsappUrl = `https://wa.me/${config.whatsapp_number}?text=${encodeURIComponent("Hola, tengo dudas sobre los planes web")}`;
 
     return (
@@ -241,6 +251,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                 {/* El mantenimiento mensual es opcional. Mostrarlo abierto en el momento de decidir
                     sumaba tres compromisos de precio mas a los tres planes. Sigue estando completo y
                     findable, pero ya no compite con la decision principal. */}
+                {conCuota.length > 0 && (
                 <details className="mt-16 max-w-5xl mx-auto w-full px-4 sm:px-0 relative z-10 group">
                     <summary className="cursor-pointer list-none flex items-center justify-between gap-4 bg-white border-4 border-black rounded-xl shadow-neobrutalism px-6 py-5 font-black uppercase tracking-tight text-lg sm:text-xl transition-all hover:-translate-y-0.5">
                         <span>¿Para qué es el pago mensual?</span>
@@ -299,36 +310,28 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                                     <span className="text-[10px] sm:text-xs tracking-wide bg-black text-white px-2 py-0.5 mt-2 inline-block rotate-1 rounded-sm border border-black shadow-neobrutalism-primary">DE SOPORTE Y MANTENIMIENTO</span>
                                 </h4>
                                 <div className="space-y-4 sm:space-y-5 relative z-10">
-                                    <div className="bg-white border-4 border-black shadow-neobrutalism-mint sm:shadow-neobrutalism-mint p-4 sm:p-5 rounded-xl flex flex-col justify-between transform transition-transform hover:-translate-y-1 hover:shadow-neobrutalism-mint sm:hover:shadow-neobrutalism-mint">
-                                        <div className="flex flex-wrap justify-between items-center gap-2 w-full">
-                                            <span className="font-bold text-sm sm:text-base md:text-lg uppercase min-w-0">Landing Page</span>
-                                            <div className="flex items-end text-black relative bg-background-light px-2 sm:px-3 py-1 border-2 border-black rounded-lg shadow-neobrutalism-sm">
-                                                <span className="font-black text-xl sm:text-2xl md:text-3xl">{formatearPesos(CUOTA_MENSUAL["Landing Page"])}</span>
-                                                <span className="font-bold text-ink-black/70 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
+                                    {/* Sale de los planes: cada uno con cuota aparece aca, en el
+                                        orden del sitio. Antes eran tres filas escritas a mano con
+                                        nombres fijos, y un plan nuevo o renombrado no aparecia. */}
+                                    {conCuota.map(({ plan, cuota }, i) => (
+                                        <div
+                                            key={plan.id}
+                                            className={`bg-white border-4 border-black ${SOMBRAS_CUOTA[i % SOMBRAS_CUOTA.length]} p-4 sm:p-5 rounded-xl flex flex-col justify-between transform transition-transform hover:-translate-y-1 relative overflow-hidden`}
+                                        >
+                                            {plan.payment_type === "Precio Base" && (
+                                                <div className="absolute top-0 right-0 bg-accent-yellow text-black text-[9px] sm:text-[10px] font-black px-2 py-0.5 border-b-2 border-l-2 border-black shadow-neobrutalism-sm rounded-bl-lg z-10 uppercase tracking-wider">
+                                                    Precio Base
+                                                </div>
+                                            )}
+                                            <div className={`flex flex-wrap justify-between items-center gap-2 w-full ${plan.payment_type === "Precio Base" ? "mt-2" : ""}`}>
+                                                <span className="font-bold text-sm sm:text-base md:text-lg uppercase min-w-0">{plan.name}</span>
+                                                <div className="flex items-end text-black relative bg-background-light px-2 sm:px-3 py-1 border-2 border-black rounded-lg shadow-neobrutalism-sm">
+                                                    <span className="font-black text-xl sm:text-2xl md:text-3xl">{formatearPesos(cuota)}</span>
+                                                    <span className="font-bold text-ink-black/70 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="bg-white border-4 border-black shadow-neobrutalism sm:shadow-neobrutalism-lg p-4 sm:p-5 rounded-xl flex flex-col justify-between transform transition-transform hover:-translate-y-1 hover:shadow-neobrutalism-lg sm:hover:shadow-neobrutalism-lg">
-                                        <div className="flex flex-wrap justify-between items-center gap-2 w-full">
-                                            <span className="font-bold text-sm sm:text-base md:text-lg uppercase min-w-0">Sitio Institucional</span>
-                                            <div className="flex items-end text-black relative bg-background-light px-2 sm:px-3 py-1 border-2 border-black rounded-lg shadow-neobrutalism-sm">
-                                                <span className="font-black text-xl sm:text-2xl md:text-3xl">{formatearPesos(CUOTA_MENSUAL["Sitio Institucional"])}</span>
-                                                <span className="font-bold text-ink-black/70 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="bg-white border-4 border-black shadow-neobrutalism-primary sm:shadow-neobrutalism-primary p-4 sm:p-5 rounded-xl flex flex-col justify-between transform transition-transform hover:-translate-y-1 hover:shadow-neobrutalism-primary sm:hover:shadow-neobrutalism-primary relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 bg-accent-yellow text-black text-[9px] sm:text-[10px] font-black px-2 py-0.5 border-b-2 border-l-2 border-black shadow-neobrutalism-sm rounded-bl-lg z-10 uppercase tracking-wider">
-                                            Precio Base
-                                        </div>
-                                        <div className="flex flex-wrap justify-between items-center gap-2 w-full mt-2">
-                                            <span className="font-bold text-sm sm:text-base md:text-lg uppercase min-w-0">E-commerce</span>
-                                            <div className="flex items-end text-black relative bg-background-light px-2 sm:px-3 py-1 border-2 border-black rounded-lg shadow-neobrutalism-sm">
-                                                <span className="font-black text-xl sm:text-2xl md:text-3xl">{formatearPesos(CUOTA_MENSUAL["E-commerce"])}</span>
-                                                <span className="font-bold text-ink-black/70 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    ))}
                                 </div>
                                 <div className="mt-6 sm:mt-10 flex w-full relative z-10">
                                     <div className="flex-1 items-center justify-center gap-2 sm:gap-3 bg-hot-coral border-4 border-black px-4 py-3 sm:py-4 rounded-xl shadow-neobrutalism flex flex-row hover:-translate-y-1 hover:shadow-neobrutalism-lg transition-transform cursor-default">
@@ -340,6 +343,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                         </div>
                     </motion.div>
                 </details>
+                )}
 
                 {/* Aca habia dos cajas rotadas. La del E-commerce se mudo a la tarjeta de
                     ese plan, pegada al precio que califica. La de "50% de sena + garantia"

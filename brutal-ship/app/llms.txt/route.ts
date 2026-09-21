@@ -2,7 +2,7 @@ import { SITE_URL, BUSINESS } from "@/lib/seo/constants";
 import { getPricingPlans } from "@/lib/data/pricing";
 import { getFaqs } from "@/lib/data/faqs";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
-import { formatearPrecio } from "@/lib/precios";
+import { cuotaMensual, formatearPesos, formatearPrecio } from "@/lib/precios";
 
 /**
  * /llms.txt — resumen del negocio en texto plano, para modelos de lenguaje.
@@ -58,11 +58,13 @@ export async function GET() {
 
     for (const plan of planes) {
         const nota = plan.price_note ? ` ${limpiar(plan.price_note)}` : "";
+        const cuota = cuotaMensual(plan);
+        const mensual = cuota ? ` Mantenimiento opcional: ${formatearPesos(cuota)}/mes.` : "";
         lineas.push(
             // `${currency}$${price}` daba "USD$149", y poner la moneda al final
             // ademas daba "US$149 USD". El simbolo ya dice cual es, y en pesos
             // hacen falta los separadores de miles: "$229000" no se lee.
-            `- **${plan.name}**: desde ${formatearPrecio(plan.price, plan.currency)}. ${limpiar(plan.subtitle)}${nota}`
+            `- **${plan.name}**: desde ${formatearPrecio(plan.price, plan.currency)}. ${limpiar(plan.subtitle)}${nota}${mensual}`
         );
     }
 

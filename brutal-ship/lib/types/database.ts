@@ -20,6 +20,8 @@ export interface PricingPlan {
     features: PricingFeature[];
     is_featured: boolean;
     featured_label: string | null;
+    /** Mantenimiento mensual opcional. Null = el plan no tiene cuota. */
+    monthly_price: number | null;
     cta_text: string;
     cta_style: "primary" | "secondary" | "default";
     header_bg: string;

@@ -1,4 +1,4 @@
-import { CUOTA_MENSUAL, formatearPesos } from "@/lib/precios";
+import { cuotaMensual, formatearPesos } from "@/lib/precios";
 import type { PricingPlan } from "@/lib/types/database";
 
 /* ─────────────────────────────────────────────────────────────
@@ -270,20 +270,23 @@ export function plazoDePlan(nombre: string): string {
     return /landing/i.test(nombre) ? "1 a 2 semanas" : "2 a 4 semanas";
 }
 
-export function lineaDeMantenimiento(nombrePlan: string): LineaMensual | null {
-    const precio = CUOTA_MENSUAL[nombrePlan];
+/** La cuota viene del plan (`monthly_price`), no de una tabla aparte por nombre. */
+export function lineaDeMantenimiento(plan: PricingPlan): LineaMensual | null {
+    const precio = cuotaMensual(plan);
     if (!precio) return null;
     return {
         id: nuevoId(),
-        refId: `mantenimiento:${nombrePlan}`,
-        nombre: `Mantenimiento ${nombrePlan}`,
+        // El refId sigue siendo por nombre: asi lo tienen los presupuestos ya guardados.
+        refId: refMantenimiento(plan),
+        nombre: `Mantenimiento ${plan.name}`,
         detalle: DETALLE_MANTENIMIENTO,
         precio,
     };
 }
 
-/** Las cuotas publicadas, sin el alias "E-commerce / Plataforma". */
-export const PLANES_CON_MANTENIMIENTO = Object.keys(CUOTA_MENSUAL).filter((n) => n !== "E-commerce / Plataforma");
+export function refMantenimiento(plan: PricingPlan): string {
+    return `mantenimiento:${plan.name}`;
+}
 
 /**
  * Las características del plan, para sugerir como detalle de la línea.
