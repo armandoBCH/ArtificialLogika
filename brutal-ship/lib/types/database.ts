@@ -36,6 +36,8 @@ export interface PricingFeature {
     icon: string;
     is_highlighted: boolean;
     icon_bg: string;
+    /** Va dentro de "Ver las N restantes". Sin dato: las primeras 4 a la vista. */
+    collapsed?: boolean;
 }
 
 export interface PortfolioProject {

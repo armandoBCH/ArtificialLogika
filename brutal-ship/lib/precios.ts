@@ -42,8 +42,28 @@ export function cuotaMensual(plan: { monthly_price?: number | string | null }): 
 }
 
 /**
- * Cuantas caracteristicas de cada plan se ven sin abrir "Ver las N restantes".
- * Lo lee la tarjeta del sitio y el editor del admin, que marca el corte: por eso
- * el orden de las caracteristicas importa tanto como el de los planes.
+ * Cuantas caracteristicas quedan a la vista cuando ninguna dice lo contrario.
+ * Desde que cada caracteristica elige si va a la vista o en "Ver mas"
+ * (`collapsed`), esto solo aplica a las que todavia no tienen el dato: las
+ * cargadas antes de que existiera la opcion.
  */
 export const CARACTERISTICAS_A_LA_VISTA = 4;
+
+type ConColapso = { collapsed?: boolean | null };
+
+/** Si la caracteristica va dentro de "Ver las N restantes". */
+export function estaEnVerMas(f: ConColapso, indice: number): boolean {
+    return typeof f.collapsed === "boolean" ? f.collapsed : indice >= CARACTERISTICAS_A_LA_VISTA;
+}
+
+/**
+ * Parte las caracteristicas en las que se ven y las de "Ver mas", respetando el
+ * orden de cada grupo. La usan la tarjeta del sitio y el admin, asi los dos
+ * muestran exactamente lo mismo.
+ */
+export function separarCaracteristicas<T extends ConColapso>(features: T[]): { aLaVista: T[]; enVerMas: T[] } {
+    const aLaVista: T[] = [];
+    const enVerMas: T[] = [];
+    features.forEach((f, i) => (estaEnVerMas(f, i) ? enVerMas : aLaVista).push(f));
+    return { aLaVista, enVerMas };
+}

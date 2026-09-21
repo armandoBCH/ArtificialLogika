@@ -3,7 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import type { PricingPlan, PricingFeature } from "@/lib/types/database";
 import type { SiteConfigMap } from "@/lib/types/database";
-import { CARACTERISTICAS_A_LA_VISTA, cuotaMensual, formatearPesos, formatearPrecio } from "@/lib/precios";
+import { cuotaMensual, formatearPesos, formatearPrecio, separarCaracteristicas } from "@/lib/precios";
 import { textoSobreFondo } from "@/lib/iconos-plan";
 
 const containerVariants: Variants = {
@@ -55,6 +55,7 @@ function FeatureItem({ feature }: { feature: PricingFeature }) {
 
 function PlanCard({ plan }: { plan: PricingPlan }) {
     const isFeatured = plan.is_featured;
+    const { aLaVista, enVerMas } = separarCaracteristicas(plan.features ?? []);
 
     // El énfasis visual se DERIVA de is_featured, no de `header_bg`/`cta_style`.
     // Esos campos vivían sueltos en la base y se habían desincronizado: la tarjeta
@@ -133,23 +134,26 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
                     )}
                 </div>
                 {/* Ocho features por tarjeta x tres tarjetas eran 24 filas compitiendo en
-                    la pantalla donde la persona decide. Las cuatro primeras quedan a la
-                    vista; el resto se abre a pedido. Nada se esconde: se ordena. */}
-                <div className="space-y-3 mb-4 text-left">
-                    {plan.features.slice(0, CARACTERISTICAS_A_LA_VISTA).map((feature, i) => (
-                        <FeatureItem key={i} feature={feature} />
-                    ))}
-                </div>
-                {plan.features.length > CARACTERISTICAS_A_LA_VISTA && (
+                    la pantalla donde la persona decide. Unas pocas quedan a la vista y el
+                    resto se abre a pedido. Nada se esconde: se ordena. Cuales van a la
+                    vista se elige en el admin, caracteristica por caracteristica. */}
+                {aLaVista.length > 0 && (
+                    <div className="space-y-3 mb-4 text-left">
+                        {aLaVista.map((feature, i) => (
+                            <FeatureItem key={i} feature={feature} />
+                        ))}
+                    </div>
+                )}
+                {enVerMas.length > 0 && (
                     <details className="mb-6 text-left group/mas">
                         <summary className="cursor-pointer list-none inline-flex items-center gap-1 min-h-11 font-bold text-sm uppercase tracking-wider text-primary hover:underline decoration-2 underline-offset-2">
-                            <span className="group-open/mas:hidden">Ver las {plan.features.length - CARACTERISTICAS_A_LA_VISTA} restantes</span>
+                            <span className="group-open/mas:hidden">Ver las {enVerMas.length} restantes</span>
                             <span className="hidden group-open/mas:inline">Ver menos</span>
                             <span aria-hidden="true" className="material-icons text-base transition-transform group-open/mas:rotate-180">expand_more</span>
                         </summary>
                         <div className="space-y-3 pt-3">
-                            {plan.features.slice(CARACTERISTICAS_A_LA_VISTA).map((feature, i) => (
-                                <FeatureItem key={i + CARACTERISTICAS_A_LA_VISTA} feature={feature} />
+                            {enVerMas.map((feature, i) => (
+                                <FeatureItem key={`mas-${i}`} feature={feature} />
                             ))}
                         </div>
                     </details>

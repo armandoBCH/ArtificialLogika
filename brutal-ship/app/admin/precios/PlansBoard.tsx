@@ -12,7 +12,7 @@ import {
 } from "../components/SortControls";
 import { useReorderQueue } from "../hooks/useReorderQueue";
 import { COLS_CLASS, useViewPrefs } from "../hooks/useViewPrefs";
-import { CARACTERISTICAS_A_LA_VISTA, cuotaMensual, formatearPesos, formatearPrecio } from "@/lib/precios";
+import { cuotaMensual, formatearPesos, formatearPrecio, separarCaracteristicas } from "@/lib/precios";
 import { FONDO_POR_DEFECTO, ICONO_POR_DEFECTO, textoSobreFondo } from "@/lib/iconos-plan";
 import type { PlanFeature } from "./FeatureEditor";
 
@@ -204,7 +204,10 @@ function ActiveToggle<T extends BoardPlan>({ plan, onToggleActive }: { plan: T; 
    arrastre y eso solo vale si todas las tarjetas miden lo mismo. */
 function PlanCard<T extends BoardPlan>({ plan, ctx, position, total, onMove, onEdit, onDelete, onToggleActive }: CardProps<T>) {
     const features = plan.features ?? [];
-    const resto = features.length - CARACTERISTICAS_A_LA_VISTA;
+    const { aLaVista, enVerMas } = separarCaracteristicas(features);
+    // La tarjeta tiene alto fijo: entran cuatro filas, el resto se cuenta.
+    const PREVIA = 4;
+    const visiblesSinLugar = Math.max(0, aLaVista.length - PREVIA);
 
     return (
         <div
@@ -246,12 +249,17 @@ function PlanCard<T extends BoardPlan>({ plan, ctx, position, total, onMove, onE
             </div>
 
             <div className="p-3 flex-1 min-h-0 space-y-1.5 overflow-hidden">
-                {features.slice(0, CARACTERISTICAS_A_LA_VISTA).map((f, i) => (
+                {aLaVista.slice(0, PREVIA).map((f, i) => (
                     <FeatureChip key={i} f={f} />
                 ))}
                 {features.length === 0 && <p className="text-xs text-gray-500 italic">Sin características</p>}
-                {resto > 0 && (
-                    <p className="text-[10px] text-gray-500 font-bold pl-7">+{resto} en &quot;ver más&quot;</p>
+                {(visiblesSinLugar > 0 || enVerMas.length > 0) && (
+                    <p className="text-[10px] text-gray-500 font-bold pl-7">
+                        {[
+                            visiblesSinLugar > 0 && `+${visiblesSinLugar} a la vista`,
+                            enVerMas.length > 0 && `${enVerMas.length} en "ver más"`,
+                        ].filter(Boolean).join(" · ")}
+                    </p>
                 )}
             </div>
 

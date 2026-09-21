@@ -5,7 +5,7 @@ import SortableGrid from "../components/SortableGrid";
 import { DragHandle, MoveButtons } from "../components/SortControls";
 import IconPicker from "../components/IconPicker";
 import { arrayMove } from "../hooks/useReorderQueue";
-import { CARACTERISTICAS_A_LA_VISTA } from "@/lib/precios";
+import { estaEnVerMas } from "@/lib/precios";
 import { FONDO_POR_DEFECTO, ICONO_POR_DEFECTO, textoSobreFondo } from "@/lib/iconos-plan";
 
 export interface PlanFeature {
@@ -13,6 +13,8 @@ export interface PlanFeature {
     icon: string;
     is_highlighted: boolean;
     icon_bg: string;
+    /** Va dentro de "Ver las N restantes" en la tarjeta del sitio. */
+    collapsed?: boolean;
 }
 
 /**
@@ -20,7 +22,7 @@ export interface PlanFeature {
  * arrastrar necesita una identidad estable y el texto no sirve (se edita, y
  * puede repetirse). Se descarta al guardar, ver `sinClaves`.
  */
-export type EditableFeature = PlanFeature & { _key: string };
+export type EditableFeature = PlanFeature & { _key: string; collapsed: boolean };
 
 let contador = 0;
 export function nuevaClave(): string {
@@ -34,17 +36,54 @@ export function nuevaClave(): string {
  * navegador generarian claves distintas al hidratar.
  */
 export function conClaves(features: PlanFeature[] | null | undefined): EditableFeature[] {
-    return (features ?? []).map((f) => ({
+    const lista = (features ?? []).map((f, i) => ({
         text: f.text ?? "",
         icon: f.icon || ICONO_POR_DEFECTO,
         is_highlighted: !!f.is_highlighted,
         icon_bg: f.icon_bg || FONDO_POR_DEFECTO,
+        // Las cargadas antes de que existiera la opcion toman la regla vieja
+        // (las primeras cuatro a la vista), asi el sitio no cambia al abrirlas.
+        collapsed: estaEnVerMas(f, i),
         _key: nuevaClave(),
     }));
+    return agrupar(lista);
 }
 
 export function sinClaves(features: EditableFeature[]): PlanFeature[] {
-    return features.map(({ text, icon, is_highlighted, icon_bg }) => ({ text, icon, is_highlighted, icon_bg }));
+    return features.map(({ text, icon, is_highlighted, icon_bg, collapsed }) => ({
+        text, icon, is_highlighted, icon_bg, collapsed,
+    }));
+}
+
+/**
+ * Las de "a la vista" primero, despues las de "ver mas", cada grupo en su orden.
+ * Asi el orden del editor es el mismo que el de la tarjeta del sitio.
+ */
+function agrupar(lista: EditableFeature[]): EditableFeature[] {
+    return [...lista.filter((f) => !f.collapsed), ...lista.filter((f) => f.collapsed)];
+}
+
+/**
+ * Despues de mover una, decide de que lado queda segun donde la soltaron: toma
+ * el lado de la que quedo justo arriba (o "a la vista" si quedo primera). Con la
+ * lista agrupada, eso nunca deja una de "ver mas" en medio de las visibles.
+ */
+function ubicarMovida(lista: EditableFeature[], key: string): EditableFeature[] {
+    const i = lista.findIndex((f) => f._key === key);
+    if (i < 0) return lista;
+    const collapsed = i === 0 ? false : lista[i - 1].collapsed;
+    return lista.map((f) => (f._key === key ? { ...f, collapsed } : f));
+}
+
+/** La unica clave que cambio de lugar entre dos ordenes (un arrastre mueve una). */
+function claveMovida(antes: string[], despues: string[]): string | null {
+    for (const k of antes) {
+        if (antes.indexOf(k) === despues.indexOf(k)) continue;
+        const a = antes.filter((x) => x !== k);
+        const d = despues.filter((x) => x !== k);
+        if (a.every((x, i) => x === d[i])) return k;
+    }
+    return null;
 }
 
 type Props = {
@@ -66,14 +105,27 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
 
     const reorder = (keys: string[]) => {
         const byKey = new Map(features.map((f) => [f._key, f]));
-        onChange(keys.map((k) => byKey.get(k)).filter((f): f is EditableFeature => !!f));
+        const lista = keys.map((k) => byKey.get(k)).filter((f): f is EditableFeature => !!f);
+        const movida = claveMovida(features.map((f) => f._key), keys);
+        onChange(movida ? ubicarMovida(lista, movida) : lista);
     };
 
     const move = (key: string, to: number) => {
         const from = features.findIndex((f) => f._key === key);
         const clamped = Math.max(0, Math.min(features.length - 1, to));
         if (from < 0 || from === clamped) return;
-        onChange(arrayMove(features, from, clamped));
+        onChange(ubicarMovida(arrayMove(features, from, clamped), key));
+    };
+
+    /** Pasa una de lado y la deja en el borde entre los dos grupos. */
+    const toggleCollapsed = (key: string) => {
+        const f = features.find((x) => x._key === key);
+        if (!f) return;
+        const resto = features.filter((x) => x._key !== key);
+        const borde = resto.filter((x) => !x.collapsed).length;
+        const lista = resto.slice();
+        lista.splice(borde, 0, { ...f, collapsed: !f.collapsed });
+        onChange(lista);
     };
 
     const add = (base?: PlanFeature) => {
@@ -82,10 +134,14 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
             icon: base?.icon || ICONO_POR_DEFECTO,
             is_highlighted: base?.is_highlighted ?? false,
             icon_bg: base?.icon_bg || FONDO_POR_DEFECTO,
+            // Entra al final, del lado de la ultima; despues se cambia con un clic.
+            collapsed: features.length ? features[features.length - 1].collapsed : false,
             _key: nuevaClave(),
         };
         onChange([...features, nueva]);
     };
+
+    const visibles = features.filter((f) => !f.collapsed).length;
 
     const editing = features.find((f) => f._key === pickerKey) ?? null;
     const closePicker = useCallback(() => setPickerKey(null), []);
@@ -93,10 +149,15 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
     return (
         <div className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-[10px] text-gray-500 flex items-center gap-1.5">
+                <p className="text-[10px] text-gray-500 flex flex-wrap items-center gap-1.5">
                     <span aria-hidden="true" className="material-icons text-[13px] text-secondary">visibility</span>
-                    Las primeras {CARACTERISTICAS_A_LA_VISTA} se ven en la tarjeta; el resto queda en
-                    &quot;Ver las N restantes&quot;. Arrastrá para decidir cuáles van arriba.
+                    Tocá <strong className="text-gray-300">A la vista / En ver más</strong> en cada una para elegir
+                    dónde aparece. Arrastrá para el orden.
+                    {features.length > 0 && (
+                        <span className="font-bold text-gray-400">
+                            {visibles} a la vista · {features.length - visibles} en ver más
+                        </span>
+                    )}
                 </p>
                 <button
                     type="button"
@@ -119,7 +180,7 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
                     className="flex flex-col gap-1.5"
                 >
                     {(f, ctx) => {
-                        const aLaVista = ctx.index < CARACTERISTICAS_A_LA_VISTA;
+                        const aLaVista = !f.collapsed;
                         return (
                             <div
                                 className={`h-14 flex items-center gap-2 px-2 rounded-sm border-2 transition-colors ${
@@ -162,18 +223,24 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
                                     onChange={(e) => patch(f._key, { text: e.target.value })}
                                 />
 
-                                <span
-                                    className={`hidden lg:inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-sm border shrink-0 ${
+                                <button
+                                    type="button"
+                                    onClick={() => toggleCollapsed(f._key)}
+                                    aria-pressed={aLaVista}
+                                    title={aLaVista
+                                        ? "Se ve en la tarjeta. Clic para mandarla a “Ver las N restantes”"
+                                        : "Está dentro de “Ver las N restantes”. Clic para que se vea en la tarjeta"}
+                                    className={`inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider px-1.5 py-1 rounded-sm border shrink-0 transition-colors ${
                                         aLaVista
-                                            ? "text-secondary border-secondary/30 bg-secondary/10"
-                                            : "text-gray-500 border-white/10"
+                                            ? "text-secondary border-secondary/40 bg-secondary/10 hover:bg-secondary/20"
+                                            : "text-gray-400 border-white/15 bg-white/5 hover:border-white/40 hover:text-white"
                                     }`}
                                 >
-                                    <span aria-hidden="true" className="material-icons text-[11px]">
+                                    <span aria-hidden="true" className="material-icons text-[12px]">
                                         {aLaVista ? "visibility" : "unfold_more"}
                                     </span>
-                                    {aLaVista ? "A la vista" : "En ver más"}
-                                </span>
+                                    <span className="hidden sm:inline">{aLaVista ? "A la vista" : "En ver más"}</span>
+                                </button>
 
                                 <button
                                     type="button"
