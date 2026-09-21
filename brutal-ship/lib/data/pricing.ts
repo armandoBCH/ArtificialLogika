@@ -102,7 +102,10 @@ export async function getPricingPlans(): Promise<PricingPlan[]> {
             .from("pricing_plans")
             .select("*")
             .eq("is_active", true)
-            .order("display_order", { ascending: true });
+            // Desempate fijo, igual que en el portafolio: con dos planes en el
+            // mismo display_order el orden quedaba a criterio de Postgres.
+            .order("display_order", { ascending: true })
+            .order("created_at", { ascending: true });
 
         if (error || !data || data.length === 0) {
             return DEFAULT_PLANS;

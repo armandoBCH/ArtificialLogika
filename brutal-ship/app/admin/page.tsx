@@ -5,10 +5,9 @@ import AnalyticsSection from "./components/AnalyticsSection";
 async function getStats() {
     const supabase = await createClient();
 
-    const [plans, services, projects, testimonials, faqs, leads, config] =
+    const [plans, projects, testimonials, faqs, leads, config] =
         await Promise.all([
             supabase.from("pricing_plans").select("id", { count: "exact" }),
-            supabase.from("services").select("id", { count: "exact" }),
             supabase.from("portfolio_projects").select("id", { count: "exact" }),
             supabase.from("testimonials").select("id", { count: "exact" }),
             supabase.from("faqs").select("id", { count: "exact" }),
@@ -23,7 +22,6 @@ async function getStats() {
     return {
         counts: {
             plans: plans.count ?? 0,
-            services: services.count ?? 0,
             projects: projects.count ?? 0,
             testimonials: testimonials.count ?? 0,
             faqs: faqs.count ?? 0,
@@ -35,7 +33,6 @@ async function getStats() {
 
 const statCards = [
     { key: "plans", label: "Planes", icon: "💰", href: "/admin/precios", color: "bg-primary" },
-    { key: "services", label: "Servicios", icon: "⚡", href: "/admin/servicios", color: "bg-secondary" },
     { key: "projects", label: "Proyectos", icon: "🎨", href: "/admin/portafolio", color: "bg-primary" },
     { key: "testimonials", label: "Testimonios", icon: "💬", href: "/admin/testimonios", color: "bg-accent-yellow" },
     { key: "faqs", label: "FAQs", icon: "❓", href: "/admin/faqs", color: "bg-hot-coral" },
@@ -67,7 +64,7 @@ export default async function AdminDashboard() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                 {statCards.map((card) => (
                     <Link
                         key={card.key}

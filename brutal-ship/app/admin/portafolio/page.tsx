@@ -9,22 +9,24 @@ import ProjectsBoard from "./ProjectsBoard";
 
 const ScreenshotCropModal = dynamic(() => import("../components/ScreenshotCropModal"), { ssr: false });
 
-// Las features de un servicio se guardan como {order, text, visible} en la base.
-// El union contempla ademas el string suelto, que es la forma vieja que todavia
-// puede aparecer en filas antiguas. Antes esto era `any`, que apagaba el chequeo
-// justo en el punto donde conviven dos formatos.
-type FeatureDeServicio = string | { text: string; order?: number; visible?: boolean };
 
 interface PortfolioStat {
     value: string;
     label: string;
 }
 
-interface ServiceData {
+// "Que se hizo" en cada proyecto sale de los planes de precios. Antes salia de
+// la tabla `services`, que se saco del admin porque ya no se mostraba en el
+// sitio. Lo que un proyecto ya tiene guardado se sigue mostrando aunque no
+// coincida con ningun plan actual, asi se puede sacar.
+interface PlanOption {
     name: string;
     features: string[];
-    icon: string;
 }
+
+// Una caracteristica de plan llega como {text, icon, ...}; el string suelto
+// contempla filas viejas.
+type FeatureDePlan = string | { text?: string } | null;
 
 interface PortfolioProject {
     id: string;
@@ -75,15 +77,22 @@ export default function PortafolioPage() {
     const { data, loading, saving, create, update, remove, reorder, error } = useAdminData<PortfolioProject>("portfolio_projects");
     const [editing, setEditing] = useState<PortfolioProject | null>(null);
     const [creating, setCreating] = useState(false);
-    const [availableServices, setAvailableServices] = useState<ServiceData[]>([]);
+    const [availablePlans, setAvailablePlans] = useState<PlanOption[]>([]);
 
     useEffect(() => {
-        fetch("/api/admin/services")
+        fetch("/api/admin/pricing_plans")
             .then((res) => res.json())
-            .then((services: ServiceData[]) => {
-                setAvailableServices(services);
+            .then((plans: { name: string; features?: FeatureDePlan[] }[]) => {
+                setAvailablePlans(
+                    (Array.isArray(plans) ? plans : []).map((p) => ({
+                        name: p.name,
+                        features: (p.features ?? [])
+                            .map((f) => (typeof f === "string" ? f : f?.text ?? "").trim())
+                            .filter(Boolean),
+                    }))
+                );
             })
-            .catch(() => setAvailableServices([]));
+            .catch(() => setAvailablePlans([]));
     }, []);
 
     const [tagInput, setTagInput] = useState("");
@@ -208,20 +217,19 @@ export default function PortafolioPage() {
 
     const showForm = creating || editing;
 
-    // Helper: toggle service
-    const toggleService = (svcName: string) => {
+    // Helper: toggle plan
+    const togglePlan = (planName: string) => {
         const current = form.applied_services || [];
-        if (current.includes(svcName)) {
-            // Remove service and its features
-            const svc = availableServices.find(s => s.name === svcName);
-            const featsToRemove = (svc?.features || []).map((f: FeatureDeServicio) => typeof f === 'string' ? f : f.text);
+        if (current.includes(planName)) {
+            // Al sacar el plan se van tambien sus caracteristicas.
+            const featsToRemove = availablePlans.find((p) => p.name === planName)?.features ?? [];
             setForm({
                 ...form,
-                applied_services: current.filter(s => s !== svcName),
-                applied_features: (form.applied_features || []).filter(f => !featsToRemove.includes(f)),
+                applied_services: current.filter((s) => s !== planName),
+                applied_features: (form.applied_features || []).filter((f) => !featsToRemove.includes(f)),
             });
         } else {
-            setForm({ ...form, applied_services: [...current, svcName] });
+            setForm({ ...form, applied_services: [...current, planName] });
         }
     };
 
@@ -235,12 +243,17 @@ export default function PortafolioPage() {
         }
     };
 
-    // Get all features from selected services
-    const selectedServiceFeatures = availableServices
-        .filter(s => (form.applied_services || []).includes(s.name))
-        .flatMap(s => s.features)
-        .map((f: FeatureDeServicio) => typeof f === 'string' ? f : f.text)
-        .filter((v: string, i: number, a: string[]) => a.indexOf(v) === i); // deduplicate
+    // Caracteristicas de los planes elegidos, sin repetir.
+    const selectedPlanFeatures = availablePlans
+        .filter((p) => (form.applied_services || []).includes(p.name))
+        .flatMap((p) => p.features)
+        .filter((v, i, a) => a.indexOf(v) === i);
+
+    // Lo guardado que no coincide con ningun plan actual: nombres de la epoca
+    // de `services`. Se muestra aparte para que se pueda quitar.
+    const planNames = availablePlans.map((p) => p.name);
+    const legacyPlans = (form.applied_services || []).filter((s) => !planNames.includes(s));
+    const legacyFeatures = (form.applied_features || []).filter((f) => !selectedPlanFeatures.includes(f));
 
     // Helpers for stats array
     const addStat = () => {
@@ -542,23 +555,23 @@ export default function PortafolioPage() {
                             </div>
                         </div>
 
-                        {/* ── SECTION 3: Services - Visual Cards ── */}
+                        {/* ── SECTION 3: Planes aplicados ── */}
                         <div className="space-y-3 border-t border-white/10 pt-4">
                             <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
                                 <span aria-hidden="true" className="material-icons text-base">build_circle</span>
-                                Servicios Aplicados
+                                Plan aplicado
                             </h3>
-                            <p className="text-[10px] text-gray-500">Tocá los servicios que se usaron en este proyecto.</p>
+                            <p className="text-[10px] text-gray-500">Tocá el plan (o los planes) que se usaron en este proyecto. Salen de Precios.</p>
 
-                            {availableServices.length > 0 ? (
+                            {availablePlans.length > 0 || legacyPlans.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    {availableServices.map((svc) => {
-                                        const isSelected = (form.applied_services || []).includes(svc.name);
+                                    {availablePlans.map((plan) => {
+                                        const isSelected = (form.applied_services || []).includes(plan.name);
                                         return (
                                             <button
-                                                key={svc.name}
+                                                key={plan.name}
                                                 type="button"
-                                                onClick={() => toggleService(svc.name)}
+                                                onClick={() => togglePlan(plan.name)}
                                                 className={`p-4 border-2 rounded-sm text-left transition-all flex flex-col gap-2 ${isSelected
                                                     ? "bg-[#9b51e0] text-white border-[#9b51e0] shadow-neobrutalism-white scale-[1.02]"
                                                     : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
@@ -566,9 +579,9 @@ export default function PortafolioPage() {
                                             >
                                                 <div className="flex items-center gap-2">
                                                     <span aria-hidden="true" className={`material-icons text-xl ${isSelected ? "text-white" : "text-gray-500"}`}>
-                                                        {svc.icon || "web"}
+                                                        web
                                                     </span>
-                                                    <span className="font-black text-sm uppercase tracking-wide">{svc.name}</span>
+                                                    <span className="font-black text-sm uppercase tracking-wide">{plan.name}</span>
                                                 </div>
                                                 <div className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? "text-white/70" : "text-gray-600"}`}>
                                                     {isSelected ? "✓ Seleccionado" : "Clic para agregar"}
@@ -576,23 +589,40 @@ export default function PortafolioPage() {
                                             </button>
                                         );
                                     })}
+                                    {legacyPlans.map((name) => (
+                                        <button
+                                            key={name}
+                                            type="button"
+                                            onClick={() => togglePlan(name)}
+                                            title="Nombre guardado que ya no coincide con ningún plan. Clic para quitarlo."
+                                            className="p-4 border-2 border-dashed rounded-sm text-left transition-all flex flex-col gap-2 bg-[#9b51e0]/20 text-white border-[#9b51e0]/60 hover:border-hot-coral hover:bg-hot-coral/10"
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <span aria-hidden="true" className="material-icons text-xl text-white/60">history</span>
+                                                <span className="font-black text-sm uppercase tracking-wide">{name}</span>
+                                            </div>
+                                            <div className="text-[10px] font-bold uppercase tracking-wider text-white/50">
+                                                Nombre anterior · clic para quitar
+                                            </div>
+                                        </button>
+                                    ))}
                                 </div>
                             ) : (
-                                <p className="text-xs text-gray-500 italic">No hay servicios cargados. Cargá servicios primero.</p>
+                                <p className="text-xs text-gray-500 italic">No hay planes cargados. Creá uno en Precios.</p>
                             )}
                         </div>
 
-                        {/* ── SECTION 4: Features (only if services selected) ── */}
-                        {selectedServiceFeatures.length > 0 && (
+                        {/* ── SECTION 4: Qué incluye (sale de los planes elegidos) ── */}
+                        {(selectedPlanFeatures.length > 0 || legacyFeatures.length > 0) && (
                             <div className="space-y-3 border-t border-white/10 pt-4">
                                 <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
                                     <span aria-hidden="true" className="material-icons text-base">auto_awesome</span>
-                                    Sub-servicios Incluidos
+                                    Qué incluye
                                 </h3>
-                                <p className="text-[10px] text-gray-500">Seleccioná qué sub-servicios son relevantes para este proyecto. No es necesario seleccionarlos todos.</p>
+                                <p className="text-[10px] text-gray-500">Marcá lo que se destaca en este proyecto. No hace falta elegir todo.</p>
 
                                 <div className="flex flex-wrap gap-2">
-                                    {selectedServiceFeatures.map((feat) => {
+                                    {selectedPlanFeatures.map((feat) => {
                                         const isActive = (form.applied_features || []).includes(feat);
                                         return (
                                             <button
@@ -611,7 +641,25 @@ export default function PortafolioPage() {
                                             </button>
                                         );
                                     })}
+                                    {legacyFeatures.map((feat) => (
+                                        <button
+                                            key={`legacy-${feat}`}
+                                            type="button"
+                                            onClick={() => toggleFeature(feat)}
+                                            title="Guardado de antes, no está en los planes elegidos. Clic para quitarlo."
+                                            className="px-3 py-2 text-xs font-bold uppercase tracking-wider border-2 border-dashed rounded-sm transition-all flex items-center gap-1.5 bg-white/80 text-black border-white/60 hover:bg-hot-coral/20 hover:text-white hover:border-hot-coral"
+                                        >
+                                            <span aria-hidden="true" className="material-icons text-sm">history</span>
+                                            {feat}
+                                        </button>
+                                    ))}
                                 </div>
+                                {legacyFeatures.length > 0 && (
+                                    <p className="text-[10px] text-gray-500 flex items-center gap-1">
+                                        <span aria-hidden="true" className="material-icons text-[12px]">history</span>
+                                        Los punteados se guardaron antes y no están en los planes elegidos. Se siguen viendo en el sitio hasta que los quites.
+                                    </p>
+                                )}
                             </div>
                         )}
 

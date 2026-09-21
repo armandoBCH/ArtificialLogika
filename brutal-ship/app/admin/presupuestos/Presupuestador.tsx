@@ -2,7 +2,7 @@
 
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { CUOTA_MENSUAL, formatearPesos } from "@/lib/precios";
-import type { PricingPlan, Service } from "@/lib/types/database";
+import type { PricingPlan } from "@/lib/types/database";
 import { escribir } from "./api";
 import Catalogo from "./Catalogo";
 import { ANCHO_HOJA_PX, descargarImagen, descargarPdf, nombreDeArchivo } from "./exportar";
@@ -26,7 +26,7 @@ import {
     plazoDePlan,
     precioDePlan,
     presupuestoNuevo,
-    sugerenciasDeServicio,
+    sugerenciasDePlan,
     textoWhatsApp,
     tituloDe,
     type Empresa,
@@ -45,7 +45,7 @@ import {
  * El recorrido va en el orden en que se piensa una venta (quién, qué plan, qué
  * extras, cuánto, cómo se paga) y la hoja de la derecha se actualiza con cada
  * tecla. Los datos de partida salen de lo que ya está cargado en el panel —
- * planes, servicios, cuotas de mantenimiento, consultas— pero todo lo que llega
+ * planes, cuotas de mantenimiento, catálogo, consultas— pero todo lo que llega
  * al presupuesto es una copia editable: cambiar un precio acá no toca el sitio.
  *
  * El trabajo en curso se guarda solo en este navegador a cada cambio, así que
@@ -62,7 +62,6 @@ const BOTON_SECUNDARIO =
 
 interface Props {
     planes: PricingPlan[];
-    servicios: Service[];
     leads: Lead[];
     catalogo: ItemCatalogo[];
     guardados: PresupuestoGuardado[];
@@ -103,7 +102,7 @@ function leerEnCurso(): EnCurso | null {
     }
 }
 
-export default function Presupuestador({ planes, servicios, leads, catalogo: catalogoInicial, guardados: guardadosIniciales, empresa, baseLista }: Props) {
+export default function Presupuestador({ planes, leads, catalogo: catalogoInicial, guardados: guardadosIniciales, empresa, baseLista }: Props) {
     const [enCurso, setEnCurso] = useState<EnCurso>(() => leerEnCurso() ?? enBlanco());
     const [catalogo, setCatalogo] = useState(catalogoInicial);
     const [guardados, setGuardados] = useState(guardadosIniciales);
@@ -844,7 +843,7 @@ export default function Presupuestador({ planes, servicios, leads, catalogo: cat
                                         linea={linea}
                                         posicion={i}
                                         total={doc.lineas.length}
-                                        sugerencias={linea.tipo === "plan" ? sugerenciasDeServicio(linea.nombre, servicios) : []}
+                                        sugerencias={linea.tipo === "plan" ? sugerenciasDePlan(linea.nombre, planes) : []}
                                         onCambio={(cambios) => setLinea(linea.id, cambios)}
                                         onMover={(dir) => moverLinea(i, dir)}
                                         onQuitar={() => editar((d) => ({ ...d, lineas: d.lineas.filter((l) => l.id !== linea.id) }))}

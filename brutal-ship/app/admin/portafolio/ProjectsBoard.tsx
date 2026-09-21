@@ -1,7 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useState } from "react";
 import SortableGrid, { type SortableRenderContext } from "../components/SortableGrid";
+import {
+    DragHandle,
+    MoveButtons,
+    PresetButton,
+    SaveBadge,
+    UndoButton,
+    ViewSwitcher,
+} from "../components/SortControls";
+import { useReorderQueue, type SaveState } from "../hooks/useReorderQueue";
+import { COLS_CLASS, useViewPrefs, type ViewMode } from "../hooks/useViewPrefs";
 
 export interface BoardProject {
     id: string;
@@ -19,9 +29,8 @@ export interface BoardProject {
     created_at?: string;
 }
 
-type ViewMode = "grid" | "list";
 type StatusFilter = "all" | "active" | "hidden" | "sample";
-type SaveState = "idle" | "pending" | "saving" | "saved" | "error";
+type Preset = "az" | "za" | "category" | "active" | "newest" | "reverse";
 
 type Props<T extends BoardProject> = {
     projects: T[];
@@ -32,83 +41,6 @@ type Props<T extends BoardProject> = {
     onReorder: (orderedIds: string[]) => Promise<boolean>;
 };
 
-const VIEW_KEY = "admin:portafolio:view";
-/** Margen entre el ultimo cambio y el guardado: absorbe rafagas de clics. */
-const SAVE_DELAY = 600;
-
-const COLS: Record<number, string> = {
-    2: "grid-cols-1 md:grid-cols-2",
-    3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
-    4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
-};
-
-/* ── Preferencia de vista ───────────────────────────────────────────────────
-   Va por useSyncExternalStore y no por un efecto que llame setState: en el
-   servidor no hay localStorage, y leerlo en el primer render romperia la
-   hidratacion. Ademas se sincroniza sola entre pestañas.
-   ───────────────────────────────────────────────────────────────────────── */
-
-type ViewPrefs = { mode: ViewMode; cols: number };
-
-const DEFAULT_VIEW: ViewPrefs = { mode: "grid", cols: 3 };
-
-let viewCache: { raw: string | null; value: ViewPrefs } = { raw: null, value: DEFAULT_VIEW };
-const viewListeners = new Set<() => void>();
-
-function readView(): ViewPrefs {
-    let raw: string | null = null;
-    try {
-        raw = localStorage.getItem(VIEW_KEY);
-    } catch {
-        /* modo privado o storage bloqueado */
-    }
-    // getSnapshot tiene que devolver la misma referencia si nada cambio, o
-    // React entra en loop de renders.
-    if (raw === viewCache.raw) return viewCache.value;
-
-    let value = DEFAULT_VIEW;
-    try {
-        const parsed = raw ? (JSON.parse(raw) as Partial<ViewPrefs>) : null;
-        if (parsed) {
-            value = {
-                mode: parsed.mode === "list" ? "list" : "grid",
-                cols: parsed.cols && COLS[parsed.cols] ? parsed.cols : DEFAULT_VIEW.cols,
-            };
-        }
-    } catch {
-        /* json corrupto: volvemos al default */
-    }
-    viewCache = { raw, value };
-    return value;
-}
-
-function writeView(next: ViewPrefs) {
-    const raw = JSON.stringify(next);
-    try {
-        localStorage.setItem(VIEW_KEY, raw);
-    } catch {
-        /* sin persistencia, pero la sesion sigue funcionando */
-    }
-    viewCache = { raw, value: next };
-    for (const listener of viewListeners) listener();
-}
-
-function subscribeView(onChange: () => void) {
-    viewListeners.add(onChange);
-    window.addEventListener("storage", onChange);
-    return () => {
-        viewListeners.delete(onChange);
-        window.removeEventListener("storage", onChange);
-    };
-}
-
-function arrayMove<T>(list: T[], from: number, to: number): T[] {
-    const next = list.slice();
-    const [moved] = next.splice(from, 1);
-    next.splice(to, 0, moved);
-    return next;
-}
-
 export default function ProjectsBoard<T extends BoardProject>({
     projects,
     loading,
@@ -116,35 +48,14 @@ export default function ProjectsBoard<T extends BoardProject>({
     onDelete,
     onReorder,
 }: Props<T>) {
-    const view = useSyncExternalStore(subscribeView, readView, () => DEFAULT_VIEW);
-    const { mode, cols } = view;
-    const setMode = useCallback((next: ViewMode) => writeView({ ...readView(), mode: next }), []);
-    const setCols = useCallback((next: number) => writeView({ mode: "grid", cols: next }), []);
+    const { mode, cols, setMode, setCols } = useViewPrefs("admin:portafolio:view");
 
     const [query, setQuery] = useState("");
     const [status, setStatus] = useState<StatusFilter>("all");
     const [category, setCategory] = useState("all");
 
-    // Orden optimista mientras el guardado esta en vuelo. Null = mandan los datos
-    // del servidor.
-    const [localOrder, setLocalOrder] = useState<string[] | null>(null);
-    const [saveState, setSaveState] = useState<SaveState>("idle");
-    const [undoStack, setUndoStack] = useState<string[][]>([]);
-
-    const pending = useRef<string[] | null>(null);
-    const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const savedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    // ── Orden efectivo y lista visible ─────────────────────────────────────
-    const ordered = useMemo(() => {
-        if (!localOrder) return projects;
-        const byId = new Map(projects.map((p) => [p.id, p]));
-        const mapped = localOrder.map((id) => byId.get(id)).filter((p): p is T => !!p);
-        // Si llego un proyecto nuevo mientras habia un orden local, lo colgamos
-        // al final en vez de hacerlo desaparecer.
-        const seen = new Set(localOrder);
-        return [...mapped, ...projects.filter((p) => !seen.has(p.id))];
-    }, [projects, localOrder]);
+    const { ordered, positionById, saveState, canUndo, undo, applyVisibleOrder, moveWithin } =
+        useReorderQueue(projects, onReorder);
 
     const allCategories = useMemo(() => {
         const set = new Set<string>();
@@ -174,108 +85,15 @@ export default function ProjectsBoard<T extends BoardProject>({
         });
     }, [ordered, query, status, category]);
 
-    const positionById = useMemo(() => {
-        const map = new Map<string, number>();
-        ordered.forEach((p, i) => map.set(p.id, i + 1));
-        return map;
-    }, [ordered]);
-
     const isFiltered = query.trim() !== "" || status !== "all" || category !== "all";
 
-    // ── Guardado con debounce ──────────────────────────────────────────────
-    // `onReorder` cambia de identidad con cada refetch. Si `flush` dependiera de
-    // el, el efecto de limpieza se re-ejecutaria a cada rato y mandaria el orden
-    // antes de tiempo, justo lo que el debounce viene a evitar.
-    const onReorderRef = useRef(onReorder);
-    useEffect(() => {
-        onReorderRef.current = onReorder;
-    });
-
-    const flush = useCallback(async () => {
-        const next = pending.current;
-        if (!next) return;
-        pending.current = null;
-        setSaveState("saving");
-        const ok = await onReorderRef.current(next);
-        setLocalOrder(null);
-        setSaveState(ok ? "saved" : "error");
-        if (ok) {
-            if (savedTimer.current) clearTimeout(savedTimer.current);
-            savedTimer.current = setTimeout(() => setSaveState("idle"), 2200);
-        }
-    }, []);
-
-    const commit = useCallback(
-        (nextIds: string[], record = true) => {
-            if (record) {
-                const before = ordered.map((p) => p.id);
-                setUndoStack((stack) => [...stack.slice(-19), before]);
-            }
-            setLocalOrder(nextIds);
-            setSaveState("pending");
-            pending.current = nextIds;
-            if (timer.current) clearTimeout(timer.current);
-            timer.current = setTimeout(flush, SAVE_DELAY);
-        },
-        [ordered, flush]
-    );
-
-    // Si se va de la pagina con un orden sin mandar, lo mandamos ya.
-    useEffect(() => {
-        return () => {
-            if (timer.current) clearTimeout(timer.current);
-            if (savedTimer.current) clearTimeout(savedTimer.current);
-            if (pending.current) void flush();
-        };
-    }, [flush]);
-
-    useEffect(() => {
-        const warn = (e: BeforeUnloadEvent) => {
-            if (!pending.current) return;
-            e.preventDefault();
-        };
-        window.addEventListener("beforeunload", warn);
-        return () => window.removeEventListener("beforeunload", warn);
-    }, []);
-
-    /**
-     * Traduce un orden de la lista visible al orden global.
-     *
-     * Con un filtro puesto, los proyectos visibles ocupan un conjunto de
-     * posiciones globales. Reordenarlos entre si permuta esas posiciones y deja
-     * todo lo filtrado donde estaba. Asi arrastrar sigue teniendo sentido aunque
-     * haya una busqueda activa.
-     */
-    const applyVisibleOrder = useCallback(
-        (visibleIds: string[]) => {
-            const globalIds = ordered.map((p) => p.id);
-            const inView = new Set(visibleIds);
-            const slots: number[] = [];
-            globalIds.forEach((id, i) => {
-                if (inView.has(id)) slots.push(i);
-            });
-            const next = globalIds.slice();
-            slots.forEach((slot, i) => {
-                next[slot] = visibleIds[i];
-            });
-            commit(next);
-        },
-        [ordered, commit]
-    );
-
     const moveVisible = useCallback(
-        (id: string, to: number) => {
-            const visibleIds = visible.map((p) => p.id);
-            const from = visibleIds.indexOf(id);
-            const clamped = Math.max(0, Math.min(visibleIds.length - 1, to));
-            if (from < 0 || from === clamped) return;
-            applyVisibleOrder(arrayMove(visibleIds, from, clamped));
-        },
-        [visible, applyVisibleOrder]
+        (id: string, to: number) => moveWithin(visible.map((p) => p.id), id, to),
+        [visible, moveWithin]
     );
 
     const applyPreset = useCallback(
-        (preset: "az" | "za" | "category" | "active" | "newest" | "reverse") => {
+        (preset: Preset) => {
             const list = visible.slice();
             const byTitle = (a: T, b: T) =>
                 a.title.localeCompare(b.title, "es", { sensitivity: "base" });
@@ -305,13 +123,6 @@ export default function ProjectsBoard<T extends BoardProject>({
         [visible, applyVisibleOrder]
     );
 
-    const undo = useCallback(() => {
-        const prev = undoStack[undoStack.length - 1];
-        if (!prev) return;
-        setUndoStack((stack) => stack.slice(0, -1));
-        commit(prev, false);
-    }, [undoStack, commit]);
-
     const getId = useCallback((p: T) => p.id, []);
 
     const clearFilters = () => {
@@ -324,7 +135,7 @@ export default function ProjectsBoard<T extends BoardProject>({
     const gridClass =
         mode === "list"
             ? "flex flex-col gap-2"
-            : `grid ${COLS[cols]} gap-4 items-start`;
+            : `grid ${COLS_CLASS[cols]} gap-4 items-start`;
 
     return (
         <div className="space-y-4">
@@ -342,14 +153,16 @@ export default function ProjectsBoard<T extends BoardProject>({
                 categories={allCategories}
                 counts={{ visible: visible.length, total: projects.length }}
                 saveState={saveState}
-                canUndo={undoStack.length > 0}
+                canUndo={canUndo}
                 onUndo={undo}
                 onPreset={applyPreset}
                 isFiltered={isFiltered}
                 onClearFilters={clearFilters}
             />
 
-            {loading ? (
+            {/* Solo la primera carga muestra "Cargando": los refetch despues de
+                editar dejan la grilla quieta en vez de hacerla parpadear. */}
+            {loading && projects.length === 0 ? (
                 <div className="text-center py-12 text-gray-400">Cargando...</div>
             ) : visible.length === 0 ? (
                 <div className="text-center py-12 border-2 border-dashed border-white/10 rounded-sm">
@@ -412,7 +225,7 @@ export default function ProjectsBoard<T extends BoardProject>({
    Toolbar
    ═══════════════════════════════════════════════════════════════════════════ */
 
-const PRESETS: { key: "az" | "za" | "category" | "active" | "newest" | "reverse"; label: string; icon: string }[] = [
+const PRESETS: { key: Preset; label: string; icon: string }[] = [
     { key: "az", label: "A → Z", icon: "sort_by_alpha" },
     { key: "za", label: "Z → A", icon: "sort_by_alpha" },
     { key: "category", label: "Por categoría", icon: "category" },
@@ -444,7 +257,7 @@ function Toolbar(props: {
     saveState: SaveState;
     canUndo: boolean;
     onUndo: () => void;
-    onPreset: (p: "az" | "za" | "category" | "active" | "newest" | "reverse") => void;
+    onPreset: (p: Preset) => void;
     isFiltered: boolean;
     onClearFilters: () => void;
 }) {
@@ -512,40 +325,8 @@ function Toolbar(props: {
                     </select>
                 )}
 
-                {/* Densidad de la grilla */}
-                <div className="flex rounded-sm border-2 border-white/10 overflow-hidden ml-auto">
-                    {[2, 3, 4].map((n) => (
-                        <button
-                            key={n}
-                            onClick={() => setCols(n)}
-                            title={`${n} columnas`}
-                            aria-label={`Ver en ${n} columnas`}
-                            aria-pressed={mode === "grid" && cols === n}
-                            className={`px-2.5 py-2 text-xs font-black transition-colors ${
-                                mode === "grid" && cols === n
-                                    ? "bg-primary text-white"
-                                    : "text-gray-400 hover:bg-white/5 hover:text-white"
-                            }`}
-                        >
-                            <span className="flex items-center gap-1">
-                                <span aria-hidden="true" className="material-icons text-[16px]">grid_view</span>
-                                {n}
-                            </span>
-                        </button>
-                    ))}
-                    <button
-                        onClick={() => setMode("list")}
-                        title="Vista de lista compacta"
-                        aria-label="Vista de lista compacta"
-                        aria-pressed={mode === "list"}
-                        className={`px-2.5 py-2 transition-colors ${
-                            mode === "list"
-                                ? "bg-primary text-white"
-                                : "text-gray-400 hover:bg-white/5 hover:text-white"
-                        }`}
-                    >
-                        <span aria-hidden="true" className="material-icons text-[16px]">view_list</span>
-                    </button>
+                <div className="ml-auto">
+                    <ViewSwitcher mode={mode} cols={cols} setMode={setMode} setCols={setCols} />
                 </div>
             </div>
 
@@ -555,29 +336,16 @@ function Toolbar(props: {
                     Ordenar
                 </span>
                 {PRESETS.map((preset) => (
-                    <button
+                    <PresetButton
                         key={preset.key}
+                        label={preset.label}
+                        icon={preset.icon}
+                        flipIcon={preset.key === "za"}
                         onClick={() => onPreset(preset.key)}
-                        className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-gray-300 bg-white/5 border border-white/10 rounded-sm hover:bg-primary/20 hover:text-white hover:border-primary/40 transition-colors"
-                    >
-                        <span
-                            aria-hidden="true"
-                            className={`material-icons text-[14px] ${preset.key === "za" ? "scale-y-[-1]" : ""}`}
-                        >
-                            {preset.icon}
-                        </span>
-                        {preset.label}
-                    </button>
+                    />
                 ))}
 
-                <button
-                    onClick={onUndo}
-                    disabled={!canUndo}
-                    className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-gray-300 bg-white/5 border border-white/10 rounded-sm hover:bg-white/10 hover:text-white transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
-                >
-                    <span aria-hidden="true" className="material-icons text-[14px]">undo</span>
-                    Deshacer
-                </button>
+                <UndoButton canUndo={canUndo} onUndo={onUndo} />
 
                 <div className="ml-auto flex items-center gap-3">
                     <span className="text-[11px] text-gray-500 font-mono">
@@ -602,100 +370,6 @@ function Toolbar(props: {
                 </p>
             )}
         </div>
-    );
-}
-
-function SaveBadge({ state }: { state: SaveState }) {
-    if (state === "idle") {
-        return (
-            <span className="text-[11px] font-bold text-gray-600 flex items-center gap-1">
-                <span aria-hidden="true" className="material-icons text-[14px]">drag_indicator</span>
-                Arrastrá para ordenar
-            </span>
-        );
-    }
-
-    const map: Record<Exclude<SaveState, "idle">, { icon: string; text: string; cls: string }> = {
-        pending: { icon: "more_horiz", text: "Cambios sin guardar", cls: "text-[#FDE047]" },
-        saving: { icon: "sync", text: "Guardando orden...", cls: "text-[#FDE047]" },
-        saved: { icon: "check_circle", text: "Orden guardado", cls: "text-secondary" },
-        error: { icon: "error", text: "No se pudo guardar", cls: "text-hot-coral" },
-    };
-    const s = map[state];
-
-    return (
-        <span
-            role="status"
-            aria-live="polite"
-            className={`text-[11px] font-bold flex items-center gap-1 ${s.cls}`}
-        >
-            <span
-                aria-hidden="true"
-                className={`material-icons text-[14px] ${state === "saving" ? "animate-spin" : ""}`}
-            >
-                {s.icon}
-            </span>
-            {s.text}
-        </span>
-    );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   Botonera de movimiento rapido
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-function MoveButtons({
-    id,
-    index,
-    total,
-    onMove,
-    compact = false,
-}: {
-    id: string;
-    index: number;
-    total: number;
-    onMove: (id: string, to: number) => void;
-    compact?: boolean;
-}) {
-    const first = index === 0;
-    const last = index === total - 1;
-    const size = compact ? "w-6 h-6 text-[14px]" : "w-7 h-7 text-[16px]";
-
-    const btn = (label: string, icon: string, to: number, disabled: boolean) => (
-        <button
-            type="button"
-            onClick={() => onMove(id, to)}
-            disabled={disabled}
-            title={label}
-            aria-label={label}
-            className={`${size} flex items-center justify-center rounded-sm bg-white/5 border border-white/10 text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-colors disabled:opacity-20 disabled:cursor-not-allowed disabled:hover:bg-white/5 disabled:hover:text-gray-300 disabled:hover:border-white/10`}
-        >
-            <span aria-hidden="true" className="material-icons" style={{ fontSize: "inherit" }}>
-                {icon}
-            </span>
-        </button>
-    );
-
-    return (
-        <div className="flex items-center gap-1">
-            {btn("Mover al principio", "keyboard_double_arrow_up", 0, first)}
-            {btn("Subir una posición", "keyboard_arrow_up", index - 1, first)}
-            {btn("Bajar una posición", "keyboard_arrow_down", index + 1, last)}
-            {btn("Mover al final", "keyboard_double_arrow_down", total - 1, last)}
-        </div>
-    );
-}
-
-function DragHandle({ ctx, compact = false }: { ctx: SortableRenderContext; compact?: boolean }) {
-    return (
-        <span
-            {...ctx.handleProps}
-            className={`flex items-center justify-center rounded-sm border-2 border-black bg-white/90 text-black shadow-neobrutalism-sm hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors ${
-                compact ? "w-6 h-7" : "w-7 h-7"
-            }`}
-        >
-            <span aria-hidden="true" className="material-icons text-[18px]">drag_indicator</span>
-        </span>
     );
 }
 

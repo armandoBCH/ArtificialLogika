@@ -6,14 +6,14 @@ import {
     DEFAULT_OG_IMAGE,
     buildBreadcrumbs,
 } from "@/lib/seo/constants";
-import type { Service, Testimonial } from "@/lib/types/database";
+import type { PricingPlan, Testimonial } from "@/lib/types/database";
 
 interface JsonLdProps {
-    services: Service[];
+    plans: PricingPlan[];
     testimonials?: Testimonial[];
 }
 
-export default function JsonLd({ services, testimonials }: JsonLdProps) {
+export default function JsonLd({ plans, testimonials }: JsonLdProps) {
     // 1. Organization schema
     const organizationSchema = {
         "@context": "https://schema.org",
@@ -89,14 +89,18 @@ export default function JsonLd({ services, testimonials }: JsonLdProps) {
         hasOfferCatalog: {
             "@type": "OfferCatalog",
             name: "Servicios de Diseño Web",
-            itemListElement: services
-                .filter((s) => s.is_active)
-                .map((service, index) => ({
+            // Sale de los planes de precios, que es lo que efectivamente se vende.
+            // Antes leia la tabla `services`, que ya no se mostraba en el sitio y
+            // tenia descripciones cruzadas: le decia a Google que el Sitio
+            // Institucional era para campañas puntuales.
+            itemListElement: plans
+                .filter((p) => p.is_active)
+                .map((plan, index) => ({
                     "@type": "Offer",
                     itemOffered: {
                         "@type": "Service",
-                        name: service.name,
-                        description: service.description,
+                        name: plan.name,
+                        description: plan.subtitle,
                         provider: {
                             "@type": "Organization",
                             name: BUSINESS.legalName,

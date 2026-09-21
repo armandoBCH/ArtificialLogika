@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { getPricingPlans } from "@/lib/data/pricing";
-import { getServices } from "@/lib/data/services";
 import { SITE_URL } from "@/lib/seo/constants";
 import Presupuestador from "./PresupuestadorCliente";
 import { CATALOGO_BASE, type ItemCatalogo, type Lead, type PresupuestoGuardado } from "./modelo";
@@ -12,11 +11,10 @@ export const metadata = {
 export default async function PresupuestosPage() {
     const supabase = await createClient();
 
-    // Planes y servicios pasan por lib/data: si la base falla, traen los mismos
-    // valores por defecto que muestra el sitio.
-    const [planes, servicios, config, leads, catalogo, guardados] = await Promise.all([
+    // Los planes pasan por lib/data: si la base falla, traen los mismos valores
+    // por defecto que muestra el sitio.
+    const [planes, config, leads, catalogo, guardados] = await Promise.all([
         getPricingPlans(),
-        getServices(),
         supabase.from("site_config").select("key, value"),
         supabase.from("contact_leads").select("*").order("created_at", { ascending: false }).limit(50),
         supabase.from("quote_catalog").select("*").order("display_order", { ascending: true }),
@@ -30,7 +28,6 @@ export default async function PresupuestosPage() {
     return (
         <Presupuestador
             planes={planes}
-            servicios={servicios}
             leads={(leads.data ?? []) as Lead[]}
             catalogo={
                 baseLista

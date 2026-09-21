@@ -6,7 +6,6 @@ import { rateLimit, getClientIp } from "@/lib/rate-limit";
 const ALLOWED_TABLES = [
     "site_config",
     "pricing_plans",
-    "services",
     "portfolio_projects",
     "testimonials",
     "faqs",
@@ -25,11 +24,6 @@ const ALLOWED_FIELDS: Record<AllowedTable, string[]> = {
         "payment_type", "price_note", "features", "is_featured",
         "featured_label", "cta_text", "cta_style", "header_bg",
         "display_order", "is_active",
-    ],
-    services: [
-        "name", "description", "price_from", "icon", "icon_color",
-        "accent_color", "features", "is_popular", "popular_label",
-        "cta_text", "cta_style", "display_order", "is_active",
     ],
     portfolio_projects: [
         "title", "category", "categories", "tags", "description", "description_long",

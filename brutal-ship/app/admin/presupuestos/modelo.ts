@@ -1,5 +1,5 @@
 import { CUOTA_MENSUAL, formatearPesos } from "@/lib/precios";
-import type { PricingPlan, Service } from "@/lib/types/database";
+import type { PricingPlan } from "@/lib/types/database";
 
 /* ─────────────────────────────────────────────────────────────
    Tipos
@@ -285,14 +285,20 @@ export function lineaDeMantenimiento(nombrePlan: string): LineaMensual | null {
 /** Las cuotas publicadas, sin el alias "E-commerce / Plataforma". */
 export const PLANES_CON_MANTENIMIENTO = Object.keys(CUOTA_MENSUAL).filter((n) => n !== "E-commerce / Plataforma");
 
-/** Las características detalladas del servicio que corresponde al plan, para sugerir. */
-export function sugerenciasDeServicio(nombrePlan: string, servicios: Service[]): string[] {
-    const servicio = servicios.find((s) => s.name === nombrePlan || s.name.startsWith(nombrePlan));
-    if (!servicio || !Array.isArray(servicio.features)) return [];
-    return servicio.features
-        .map((f) => (typeof f === "string" ? { text: f, visible: true } : f))
-        .filter((f) => f.visible !== false && f.text)
-        .map((f) => f.text.replace(/\*+$/, "").trim());
+/**
+ * Las características del plan, para sugerir como detalle de la línea.
+ *
+ * Salen del mismo plan que se muestra en el sitio, así el presupuesto promete lo
+ * mismo que la tarjeta de precios. Antes salían de la tabla `services`, que tenía
+ * otra lista (y ya no se veía en ningún lado).
+ */
+export function sugerenciasDePlan(nombrePlan: string, planes: PricingPlan[]): string[] {
+    const plan = planes.find((p) => p.name === nombrePlan);
+    if (!plan || !Array.isArray(plan.features)) return [];
+    return plan.features
+        .map((f) => (typeof f === "string" ? f : f?.text ?? ""))
+        .map((t) => t.trim())
+        .filter(Boolean);
 }
 
 /** WhatsApp argentino: 11 2345-6789 -> 5491123456789. */

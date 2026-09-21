@@ -36,31 +36,6 @@ export interface PricingFeature {
     icon_bg: string;
 }
 
-export interface ServiceFeature {
-    text: string;
-    visible: boolean;
-    order: number;
-}
-
-export interface Service {
-    id: string;
-    name: string;
-    description: string;
-    price_from: string;
-    icon: string;
-    icon_color: string;
-    accent_color: string;
-    features: ServiceFeature[];
-    is_popular: boolean;
-    popular_label: string | null;
-    cta_text: string;
-    cta_style: "primary" | "secondary" | "default";
-    display_order: number;
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-}
-
 export interface PortfolioProject {
     id: string;
     title: string;

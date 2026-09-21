@@ -3,7 +3,8 @@
 import { motion, Variants } from "framer-motion";
 import type { PricingPlan, PricingFeature } from "@/lib/types/database";
 import type { SiteConfigMap } from "@/lib/types/database";
-import { CUOTA_MENSUAL, formatearPesos, formatearPrecio } from "@/lib/precios";
+import { CARACTERISTICAS_A_LA_VISTA, CUOTA_MENSUAL, formatearPesos, formatearPrecio } from "@/lib/precios";
+import { textoSobreFondo } from "@/lib/iconos-plan";
 
 const containerVariants: Variants = {
     hidden: {},
@@ -36,7 +37,9 @@ interface PricingSectionProps {
 function FeatureItem({ feature }: { feature: PricingFeature }) {
     return (
         <div className="flex items-center gap-3">
-            <div className={`w-6 h-6 ${feature.icon_bg} border-2 border-black shadow-neobrutalism-sm flex items-center justify-center flex-shrink-0 ${feature.icon_bg === 'bg-hot-coral' ? 'text-white' : ''}`}>
+            {/* El color del glifo sale del fondo: con fondos oscuros (coral, violeta,
+                negro) va en blanco. Antes solo se contemplaba el coral. */}
+            <div className={`w-6 h-6 ${feature.icon_bg} ${textoSobreFondo(feature.icon_bg)} border-2 border-black shadow-neobrutalism-sm flex items-center justify-center flex-shrink-0`}>
                 <span aria-hidden="true" className="material-icons text-sm font-black">{feature.icon}</span>
             </div>
             <span className={feature.is_highlighted ? "font-bold underline decoration-hot-coral decoration-2 underline-offset-2" : "font-medium"}>
@@ -133,20 +136,20 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
                     la pantalla donde la persona decide. Las cuatro primeras quedan a la
                     vista; el resto se abre a pedido. Nada se esconde: se ordena. */}
                 <div className="space-y-3 mb-4 text-left">
-                    {plan.features.slice(0, 4).map((feature, i) => (
+                    {plan.features.slice(0, CARACTERISTICAS_A_LA_VISTA).map((feature, i) => (
                         <FeatureItem key={i} feature={feature} />
                     ))}
                 </div>
-                {plan.features.length > 4 && (
+                {plan.features.length > CARACTERISTICAS_A_LA_VISTA && (
                     <details className="mb-6 text-left group/mas">
                         <summary className="cursor-pointer list-none inline-flex items-center gap-1 min-h-11 font-bold text-sm uppercase tracking-wider text-primary hover:underline decoration-2 underline-offset-2">
-                            <span className="group-open/mas:hidden">Ver las {plan.features.length - 4} restantes</span>
+                            <span className="group-open/mas:hidden">Ver las {plan.features.length - CARACTERISTICAS_A_LA_VISTA} restantes</span>
                             <span className="hidden group-open/mas:inline">Ver menos</span>
                             <span aria-hidden="true" className="material-icons text-base transition-transform group-open/mas:rotate-180">expand_more</span>
                         </summary>
                         <div className="space-y-3 pt-3">
-                            {plan.features.slice(4).map((feature, i) => (
-                                <FeatureItem key={i + 4} feature={feature} />
+                            {plan.features.slice(CARACTERISTICAS_A_LA_VISTA).map((feature, i) => (
+                                <FeatureItem key={i + CARACTERISTICAS_A_LA_VISTA} feature={feature} />
                             ))}
                         </div>
                     </details>

@@ -20,7 +20,6 @@ import FAQJsonLd from "./components/FAQJsonLd";
 import PricingJsonLd from "./components/PricingJsonLd";
 
 import { getPricingPlans } from "@/lib/data/pricing";
-import { getServices } from "@/lib/data/services";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getTestimonials } from "@/lib/data/testimonials";
 import { getFaqs } from "@/lib/data/faqs";
@@ -29,10 +28,9 @@ import { getSiteConfig } from "@/lib/data/config";
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 export default async function Home() {
-  const [plans, services, projects, testimonials, faqs, config] =
+  const [plans, projects, testimonials, faqs, config] =
     await Promise.all([
       getPricingPlans(),
-      getServices(),
       getPortfolioProjects(),
       getTestimonials(),
       getFaqs(),
@@ -41,7 +39,7 @@ export default async function Home() {
 
   return (
     <>
-      <JsonLd services={services} testimonials={testimonials} />
+      <JsonLd plans={plans} testimonials={testimonials} />
       <FAQJsonLd faqs={faqs} />
       <PricingJsonLd plans={plans} />
       <Navbar config={config} />
@@ -51,10 +49,11 @@ export default async function Home() {
       <MarqueeBanner />
       {/* Orden pensado para conversión: tesis -> problema -> prueba visual -> cómo ->
           prueba real -> qué recibís -> cuánto cuesta -> objeciones -> acción.
-          Servicios y Precios quedan pegados a propósito: separarlos obligaba al
-          comprador a cruzar 1.364px de testimonios para comparar qué recibe con
-          cuánto sale. Dos secciones de features se removieron por redundancia
-          con WhoDoesWhatSection. */}
+          Qué recibís y cuánto cuesta viven juntos en Precios: cada plan lista sus
+          características. Hubo una sección de Servicios aparte, pero obligaba a
+          cruzar 1.364px de testimonios para comparar, y se sacó junto con su
+          tabla. Dos secciones de features se removieron por redundancia con
+          WhoDoesWhatSection. */}
       <WhoDoesWhatSection />
       <OldWebsiteSection />
       <ProcessSection />

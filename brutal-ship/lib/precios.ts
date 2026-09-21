@@ -39,3 +39,10 @@ export const CUOTA_MENSUAL: Record<string, number> = {
     "E-commerce": 54000,
     "E-commerce / Plataforma": 54000,
 };
+
+/**
+ * Cuantas caracteristicas de cada plan se ven sin abrir "Ver las N restantes".
+ * Lo lee la tarjeta del sitio y el editor del admin, que marca el corte: por eso
+ * el orden de las caracteristicas importa tanto como el de los planes.
+ */
+export const CARACTERISTICAS_A_LA_VISTA = 4;
