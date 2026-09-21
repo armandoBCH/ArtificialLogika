@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Bitter } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
-import { SITE_URL, BUSINESS, SEO_KEYWORDS } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, SEO_KEYWORDS, vistaPrevia } from "@/lib/seo/constants";
 import ScrollProgress from "./components/ScrollProgress";
 import IconFontGate from "./components/IconFontGate";
 import PageTransition from "./components/PageTransition";
@@ -101,30 +101,19 @@ export const metadata: Metadata = {
     },
   },
 
-  // Open Graph
-  openGraph: {
-    type: "website",
-    locale: BUSINESS.locale,
-    url: SITE_URL,
-    siteName: BUSINESS.name,
-    title: `${BUSINESS.name} — ${BUSINESS.slogan}`,
-    description: BUSINESS.shortDescription,
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: `${BUSINESS.name} — ${BUSINESS.slogan}`,
-      },
-    ],
-  },
+  // Open Graph de la home. La imagen la genera app/opengraph-image.tsx, y cada
+  // ruta publica tiene la suya al lado de su page.tsx.
+  ...vistaPrevia({
+    titulo: `${BUSINESS.name} — ${BUSINESS.slogan}`,
+    descripcion: BUSINESS.shortDescription,
+    ruta: "/",
+  }),
 
-  // Twitter Cards
+  // Solo el tipo de tarjeta. Si aca hubiera titulo e imagen, todas las paginas
+  // que no declaran `twitter` heredarian los de la home (pasaba en el blog).
+  // Sin eso, Next copia titulo, descripcion e imagen del Open Graph de cada una.
   twitter: {
     card: "summary_large_image",
-    title: `${BUSINESS.name} — ${BUSINESS.slogan}`,
-    description: BUSINESS.shortDescription,
-    images: ["/og-image.png"],
   },
 
   // Canonical & Alternates

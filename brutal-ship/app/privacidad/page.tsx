@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import LegalPage from "../legal/LegalPage";
+import { DOCUMENTOS } from "../legal/documentos";
 import { getSiteConfig } from "@/lib/data/config";
-import { BUSINESS, SITE_URL } from "@/lib/seo/constants";
+import { BUSINESS, SITE_URL, vistaPrevia } from "@/lib/seo/constants";
 
 export const revalidate = 3600;
 
@@ -9,6 +10,12 @@ export const metadata: Metadata = {
     title: "Política de Privacidad",
     description:
         "Qué datos personales recolecta Logika, para qué los usa, con quién los comparte y cómo pedir que los borremos.",
+    ...vistaPrevia({
+        titulo: `Política de Privacidad | ${BUSINESS.name}`,
+        descripcion:
+            "Qué datos personales recolecta Logika, para qué los usa, con quién los comparte y cómo pedir que los borremos.",
+        ruta: "/privacidad",
+    }),
     alternates: { canonical: `${SITE_URL}/privacidad` },
     robots: { index: true, follow: true },
 };
@@ -20,9 +27,9 @@ export default async function PrivacidadPage() {
     return (
         <LegalPage
             config={config}
-            titulo="Política de Privacidad"
-            actualizado="23 de agosto de 2026"
-            intro="Qué datos tuyos guardamos, para qué los usamos y cómo pedir que los borremos. Sin letra chica."
+            titulo={DOCUMENTOS.privacidad.titulo}
+            actualizado={DOCUMENTOS.privacidad.actualizado}
+            intro={DOCUMENTOS.privacidad.intro}
         >
             <h2>Quiénes somos</h2>
             <p>

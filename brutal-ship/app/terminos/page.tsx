@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import LegalPage from "../legal/LegalPage";
+import { DOCUMENTOS } from "../legal/documentos";
 import { getSiteConfig } from "@/lib/data/config";
-import { BUSINESS, SITE_URL } from "@/lib/seo/constants";
+import { BUSINESS, SITE_URL, vistaPrevia } from "@/lib/seo/constants";
 
 export const revalidate = 3600;
 
@@ -9,6 +10,12 @@ export const metadata: Metadata = {
     title: "Términos de Servicio",
     description:
         "Cómo trabajamos en Logika: alcance, plazos, forma de pago, revisiones, garantía de la seña, propiedad del sitio y mantenimiento.",
+    ...vistaPrevia({
+        titulo: `Términos de Servicio | ${BUSINESS.name}`,
+        descripcion:
+            "Cómo trabajamos en Logika: alcance, plazos, forma de pago, revisiones, garantía de la seña, propiedad del sitio y mantenimiento.",
+        ruta: "/terminos",
+    }),
     alternates: { canonical: `${SITE_URL}/terminos` },
     robots: { index: true, follow: true },
 };
@@ -21,9 +28,9 @@ export default async function TerminosPage() {
     return (
         <LegalPage
             config={config}
-            titulo="Términos de Servicio"
-            actualizado="16 de septiembre de 2026"
-            intro="Cómo trabajamos, qué incluye cada plan, cuándo se paga y qué pasa si algo no sale como esperabas."
+            titulo={DOCUMENTOS.terminos.titulo}
+            actualizado={DOCUMENTOS.terminos.actualizado}
+            intro={DOCUMENTOS.terminos.intro}
         >
             <h2>1. Quiénes somos y qué alcanzan estos términos</h2>
             <p>

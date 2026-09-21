@@ -2,6 +2,7 @@ import Link from "next/link";
 import PortfolioViewer from "./PortfolioViewer";
 import BlockReveal from "./BlockReveal";
 import type { PortfolioProject } from "@/lib/types/database";
+import { esMuestra, isRealStat } from "@/lib/data/portfolio";
 
 interface PortfolioShowcaseProps {
     projects: PortfolioProject[];
@@ -34,34 +35,11 @@ const accentColors: Record<string, { bg: string; textColor: string; borderColor:
     },
 };
 
-// CMS placeholders that must never render as if they were a result. A case study with
-// no measured outcome shows no stat block at all — an empty slot is more honest than
-// "SITIO DE MUESTRA" set in the same weight as "+20% DE VENTAS".
-const PLACEHOLDER_STAT = /^(sitio de muestra|nueva m[eé]trica|proyecto de muestra|placeholder|tbd|n\/a|-+)$/i;
-
-function isRealStat(stat: { value?: string | null; label?: string | null }) {
-    const value = (stat.value ?? "").trim();
-    const label = (stat.label ?? "").trim();
-    if (!value || !label) return false;
-    return !PLACEHOLDER_STAT.test(value) && !PLACEHOLDER_STAT.test(label);
-}
-
 function ProjectCard({ project, index }: { project: PortfolioProject; index: number }) {
     const colors = accentColors[project.accent_color] || accentColors.primary;
     const isEven = index % 2 === 0;
-    const stats = project.stats ?? [];
-    const realStats = stats.filter(isRealStat);
-
-    // El sello decia "Proyecto de Muestra" tambien cuando el proyecto no tenia
-    // ninguna metrica cargada. Eso etiquetaba como demo a dos clientes reales
-    // (Expresion Honesta y Boda Carlos y Jenlys), que existen y estan publicados:
-    // simplemente todavia no tienen numeros medidos.
-    //
-    // No cargar metricas no dice nada sobre si el trabajo es real. Lo que si dice
-    // algo es tener metricas y que sean todas de relleno: eso es una demo aunque
-    // el flag diga lo contrario, y esa proteccion se mantiene.
-    const soloTienePlaceholders = stats.length > 0 && realStats.length === 0;
-    const showSampleBadge = project.is_sample || soloTienePlaceholders;
+    const realStats = (project.stats ?? []).filter(isRealStat);
+    const showSampleBadge = esMuestra(project);
 
     return (
         <article className="group relative bg-white border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-lg transition-all duration-300 transform hover:-translate-y-1 hover:-rotate-1 hover:scale-[1.01]">

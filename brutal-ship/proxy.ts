@@ -6,12 +6,13 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: [
-        /*
-         * Match all request paths except:
-         * - _next/static, _next/image, favicon.ico
-         * - Static assets (.svg, .png, .jpg, .jpeg, .gif, .webp)
-         */
-        "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-    ],
+    /*
+     * Solo donde hay una sesion que cuidar: el panel, su API y el cierre de sesion.
+     *
+     * Antes corria en todas las rutas, asi que cada visita a una pagina publica
+     * (y cada bot que arma una vista previa: LinkedIn, WhatsApp, Slack) pagaba
+     * una ejecucion extra antes de recibir una pagina que no usa sesion.
+     * `/admin/:path*` tambien cubre `/admin` a secas.
+     */
+    matcher: ["/admin/:path*", "/api/admin/:path*", "/auth/:path*"],
 };

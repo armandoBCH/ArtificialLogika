@@ -3,6 +3,8 @@
 // Domain: logikaweb.com.ar
 // ============================================================
 
+import type { Metadata } from "next";
+
 export const SITE_URL = "https://www.logikaweb.com.ar";
 
 export const BUSINESS = {
@@ -104,7 +106,60 @@ export const SEO_KEYWORDS = [
     "agencia digital Argentina",
 ];
 
+// La sirve app/opengraph-image.tsx. Las paginas no la referencian: cada ruta
+// tiene su propio opengraph-image.tsx y Next arma la etiqueta solo. Esta
+// constante queda para el structured data, que necesita una URL fija.
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image`;
+
+interface VistaPrevia {
+    titulo: string;
+    descripcion: string;
+    /** Ruta desde la raiz: "/blog", "/portafolio/abc". "/" es la home. */
+    ruta: string;
+    /** Notas del blog y casos del portafolio: se publican como `article`. */
+    articulo?: { publicado?: string; modificado?: string; seccion?: string };
+}
+
+/**
+ * El bloque Open Graph completo de una pagina: lo que leen LinkedIn, WhatsApp,
+ * Facebook y Slack para armar la tarjeta.
+ *
+ * Existe porque Next no mezcla `openGraph` entre niveles: lo reemplaza entero.
+ * El blog declaraba titulo y url y perdia `siteName` y `locale`; las paginas
+ * legales no declaraban nada y heredaban el `og:url` de la home, asi que
+ * compartir /privacidad en LinkedIn terminaba mostrando la home (LinkedIn sigue
+ * el `og:url`).
+ *
+ * La imagen no va aca: la pone el opengraph-image.tsx de cada ruta. Twitter no
+ * se declara por pagina porque Next lo completa con el titulo, la descripcion y
+ * la imagen de Open Graph.
+ */
+export function vistaPrevia({
+    titulo,
+    descripcion,
+    ruta,
+    articulo,
+}: VistaPrevia): Pick<Metadata, "openGraph"> {
+    const base = {
+        locale: BUSINESS.locale,
+        siteName: BUSINESS.name,
+        url: ruta === "/" ? SITE_URL : `${SITE_URL}${ruta}`,
+        title: titulo,
+        description: descripcion,
+    };
+
+    return {
+        openGraph: articulo
+            ? {
+                  ...base,
+                  type: "article",
+                  publishedTime: articulo.publicado,
+                  modifiedTime: articulo.modificado,
+                  section: articulo.seccion,
+              }
+            : { ...base, type: "website" },
+    };
+}
 
 // BreadcrumbList helper — used across pages
 export function buildBreadcrumbs(

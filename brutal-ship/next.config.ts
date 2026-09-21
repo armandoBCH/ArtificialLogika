@@ -31,6 +31,13 @@ const nextConfig: NextConfig = {
   // Compress responses for faster transfer
   compress: true,
 
+  // Las imagenes de vista previa (opengraph-image.tsx) leen sus fuentes del
+  // disco. Las del portafolio se regeneran en el servidor cuando cambia un
+  // proyecto, asi que los TTF tienen que viajar con esas funciones.
+  outputFileTracingIncludes: {
+    "**/opengraph-image*": ["./lib/og/fonts/*.ttf"],
+  },
+
   // Power header configuration for SEO + security + performance
   async headers() {
     return [

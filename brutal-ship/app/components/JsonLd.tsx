@@ -25,11 +25,13 @@ export default function JsonLd({ plans, testimonials }: JsonLdProps) {
         // "logica", que es lo que sale si te dijeron el nombre de boca.
         alternateName: [...BUSINESS.nameVariants],
         url: SITE_URL,
+        // El logo es la marca tejida, no la tarjeta para redes: Google pide el
+        // logo en si (minimo 112px) y antes recibia un banner de 1200x630.
         logo: {
             "@type": "ImageObject",
-            url: `${SITE_URL}/og-image.png`,
-            width: 1200,
-            height: 630,
+            url: `${SITE_URL}/apple-touch-icon.png`,
+            width: 180,
+            height: 180,
         },
         image: DEFAULT_OG_IMAGE,
         description: BUSINESS.description,

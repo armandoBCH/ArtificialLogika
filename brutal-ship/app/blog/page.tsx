@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
-import { SITE_URL, BUSINESS, DEFAULT_OG_IMAGE, buildBreadcrumbs } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia } from "@/lib/seo/constants";
 import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { getSiteConfig } from "@/lib/data/config";
 
+// Estatica, pero el navbar y el footer leen la configuracion del panel. Guardar
+// en el panel la regenera al instante; esto cubre un build que no llego a la base.
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
     title: "Blog",
     description:
         "Artículos sobre diseño web, tiendas online y presencia digital para negocios argentinos. Consejos prácticos para mejorar tu web.",
-    openGraph: {
-        title: `Blog | ${BUSINESS.name}`,
-        description:
+    ...vistaPrevia({
+        titulo: `Blog | ${BUSINESS.name}`,
+        descripcion:
             "Artículos sobre diseño web, tiendas online y presencia digital para negocios argentinos.",
-        url: `${SITE_URL}/blog`,
-        images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
-    },
+        ruta: "/blog",
+    }),
     alternates: {
         canonical: `${SITE_URL}/blog`,
     },

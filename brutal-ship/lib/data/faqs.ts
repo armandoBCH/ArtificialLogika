@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { FAQ } from "@/lib/types/database";
 
 const DEFAULT_FAQS: FAQ[] = [
@@ -78,7 +78,7 @@ const DEFAULT_FAQS: FAQ[] = [
 
 export async function getFaqs(): Promise<FAQ[]> {
     try {
-        const supabase = await createClient();
+        const supabase = createPublicClient();
         const { data, error } = await supabase
             .from("faqs")
             .select("*")

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { SITE_URL, BUSINESS, DEFAULT_OG_IMAGE, buildBreadcrumbs } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia } from "@/lib/seo/constants";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { getSiteConfig } from "@/lib/data/config";
@@ -11,6 +11,10 @@ import { getArticulo } from "./articles";
 interface BlogPostPageProps {
     params: Promise<{ slug: string }>;
 }
+
+// Mismo criterio que el indice del blog: estatica, con la configuracion del
+// panel al dia.
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
     return BLOG_POSTS.map((post) => ({ slug: post.slug }));
@@ -26,14 +30,12 @@ export async function generateMetadata({
     return {
         title: post.title,
         description: post.excerpt,
-        openGraph: {
-            title: `${post.title} | ${BUSINESS.name}`,
-            description: post.excerpt,
-            url: `${SITE_URL}/blog/${slug}`,
-            type: "article",
-            publishedTime: post.date,
-            images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
-        },
+        ...vistaPrevia({
+            titulo: `${post.title} | ${BUSINESS.name}`,
+            descripcion: post.excerpt,
+            ruta: `/blog/${slug}`,
+            articulo: { publicado: post.date, seccion: post.category },
+        }),
         alternates: {
             canonical: `${SITE_URL}/blog/${slug}`,
         },
@@ -94,7 +96,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             "@type": "WebPage",
             "@id": `${SITE_URL}/blog/${slug}`,
         },
-        image: DEFAULT_OG_IMAGE,
+        // La tapa propia de la nota (./opengraph-image.tsx), no la de la home.
+        image: `${SITE_URL}/blog/${slug}/opengraph-image`,
     };
 
     return (

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import {
     SITE_URL,
     BUSINESS,
-    DEFAULT_OG_IMAGE,
     buildBreadcrumbs,
+    vistaPrevia,
 } from "@/lib/seo/constants";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getSiteConfig } from "@/lib/data/config";
@@ -17,20 +17,12 @@ export const metadata: Metadata = {
     title: "Catálogo de Proyectos",
     description:
         "Explorá nuestro historial de trabajos reales y proyectos de demostración. Diseños web de alto impacto para negocios que buscan crecer.",
-    openGraph: {
-        title: `Catálogo de Proyectos | ${BUSINESS.name}`,
-        description:
+    ...vistaPrevia({
+        titulo: `Catálogo de Proyectos | ${BUSINESS.name}`,
+        descripcion:
             "Explorá nuestro historial de trabajos reales y proyectos de demostración. Diseños web de alto impacto para negocios que buscan crecer.",
-        url: `${SITE_URL}/portafolio`,
-        images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: `Catálogo de Proyectos | ${BUSINESS.name}`,
-        description:
-            "Explorá nuestro historial de trabajos reales y proyectos de demostración.",
-        images: [DEFAULT_OG_IMAGE],
-    },
+        ruta: "/portafolio",
+    }),
     alternates: {
         canonical: `${SITE_URL}/portafolio`,
     },

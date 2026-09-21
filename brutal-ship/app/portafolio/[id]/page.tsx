@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getSiteConfig } from "@/lib/data/config";
-import { SITE_URL, BUSINESS, buildBreadcrumbs } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia } from "@/lib/seo/constants";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import StickyMobileCTA from "@/app/components/StickyMobileCTA";
@@ -34,31 +34,21 @@ export async function generateMetadata({ params }: ProjectPageProps) {
 
     const projectUrl = `${SITE_URL}/portafolio/${project.id}`;
 
+    // La imagen ya no es la captura cruda: era un WebP 4:3 declarado como
+    // 1200x630, y LinkedIn no lo toma. La arma ./opengraph-image.tsx.
     return {
         title: `${project.title} - Portafolio`,
         description: project.description,
-        openGraph: {
-            title: `${project.title} | ${BUSINESS.name}`,
-            description: project.description,
-            url: projectUrl,
-            type: "article",
-            images: project.image_url
-                ? [
-                    {
-                        url: project.image_url,
-                        width: 1200,
-                        height: 630,
-                        alt: project.image_alt || project.title,
-                    },
-                ]
-                : undefined,
-        },
-        twitter: {
-            card: "summary_large_image",
-            title: `${project.title} | ${BUSINESS.name}`,
-            description: project.description,
-            images: project.image_url ? [project.image_url] : undefined,
-        },
+        ...vistaPrevia({
+            titulo: `${project.title} | ${BUSINESS.name}`,
+            descripcion: project.description,
+            ruta: `/portafolio/${project.id}`,
+            articulo: {
+                publicado: project.created_at || undefined,
+                modificado: project.updated_at || undefined,
+                seccion: "Portafolio",
+            },
+        }),
         alternates: {
             canonical: projectUrl,
         },

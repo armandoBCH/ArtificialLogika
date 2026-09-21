@@ -1,0 +1,21 @@
+Fuentes de las imagenes de vista previa (lib/og)
+================================================
+
+Instancias estaticas (TTF, subset latino) de las fuentes variables que el sitio
+ya usa via next/font/google. Se generaron fijando el eje wght con fontTools.
+
+  SpaceGrotesk-Bold.ttf     Space Grotesk, peso 700
+  SpaceGrotesk-Medium.ttf   Space Grotesk, peso 500
+  Bitter-Medium.ttf         Bitter, peso 500
+  Bitter-Bold.ttf           Bitter, peso 700
+
+Space Grotesk
+  Copyright 2020 The Space Grotesk Project Authors
+  (https://github.com/floriankarsten/space-grotesk)
+
+Bitter
+  Copyright 2011 The Bitter Project Authors
+  (https://github.com/solmatas/BitterPro)
+
+Las dos se distribuyen bajo la SIL Open Font License, version 1.1:
+https://openfontlicense.org/open-font-license-official-text/

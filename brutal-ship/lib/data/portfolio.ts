@@ -1,5 +1,36 @@
-import { createClient } from "@/lib/supabase/server";
-import type { PortfolioProject } from "@/lib/types/database";
+import { createPublicClient } from "@/lib/supabase/public";
+import type { PortfolioProject, PortfolioStat } from "@/lib/types/database";
+
+// CMS placeholders that must never render as if they were a result. A case study with
+// no measured outcome shows no stat block at all — an empty slot is more honest than
+// "SITIO DE MUESTRA" set in the same weight as "+20% DE VENTAS".
+const PLACEHOLDER_STAT = /^(sitio de muestra|nueva m[eé]trica|proyecto de muestra|placeholder|tbd|n\/a|-+)$/i;
+
+export function isRealStat(stat: Partial<PortfolioStat>) {
+    const value = (stat.value ?? "").trim();
+    const label = (stat.label ?? "").trim();
+    if (!value || !label) return false;
+    return !PLACEHOLDER_STAT.test(value) && !PLACEHOLDER_STAT.test(label);
+}
+
+/**
+ * Si el proyecto lleva el sello "Proyecto de Muestra". Vive aca y no en el
+ * componente porque lo usan la home y la imagen de vista previa de cada caso.
+ *
+ * El sello decia "Proyecto de Muestra" tambien cuando el proyecto no tenia
+ * ninguna metrica cargada. Eso etiquetaba como demo a dos clientes reales
+ * (Expresion Honesta y Boda Carlos y Jenlys), que existen y estan publicados:
+ * simplemente todavia no tienen numeros medidos.
+ *
+ * No cargar metricas no dice nada sobre si el trabajo es real. Lo que si dice
+ * algo es tener metricas y que sean todas de relleno: eso es una demo aunque
+ * el flag diga lo contrario, y esa proteccion se mantiene.
+ */
+export function esMuestra(project: Pick<PortfolioProject, "is_sample" | "stats">) {
+    const stats = project.stats ?? [];
+    const soloTienePlaceholders = stats.length > 0 && !stats.some(isRealStat);
+    return project.is_sample || soloTienePlaceholders;
+}
 
 const DEFAULT_PROJECTS: PortfolioProject[] = [
     {
@@ -81,7 +112,7 @@ const DEFAULT_PROJECTS: PortfolioProject[] = [
 
 export async function getPortfolioProjects(): Promise<PortfolioProject[]> {
     try {
-        const supabase = await createClient();
+        const supabase = createPublicClient();
         const { data, error } = await supabase
             .from("portfolio_projects")
             .select("*")

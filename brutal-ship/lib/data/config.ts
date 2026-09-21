@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { SiteConfigMap } from "@/lib/types/database";
 
 const DEFAULT_CONFIG: SiteConfigMap = {
@@ -12,7 +12,7 @@ const DEFAULT_CONFIG: SiteConfigMap = {
 
 export async function getSiteConfig(): Promise<SiteConfigMap> {
     try {
-        const supabase = await createClient();
+        const supabase = createPublicClient();
         const { data, error } = await supabase
             .from("site_config")
             .select("key, value")

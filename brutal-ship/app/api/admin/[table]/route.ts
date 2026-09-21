@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse, type NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 // Generic CRUD API for admin tables
@@ -47,6 +48,23 @@ const ALLOWED_FIELDS: Record<AllowedTable, string[]> = {
 
 function isAllowedTable(table: string): table is AllowedTable {
     return ALLOWED_TABLES.includes(table as AllowedTable);
+}
+
+// Tablas que se ven en el sitio publico. Las paginas publicas son estaticas
+// (ISR): sin esto, un cambio guardado en el panel tardaba hasta que vencia el
+// `revalidate` de cada una en aparecer. Se regenera todo el arbol, incluidas
+// las imagenes de vista previa, porque site_config toca el navbar y el footer
+// de todas las paginas.
+const TABLAS_PUBLICAS: ReadonlySet<AllowedTable> = new Set([
+    "site_config",
+    "pricing_plans",
+    "portfolio_projects",
+    "testimonials",
+    "faqs",
+]);
+
+function refrescarSitioPublico(table: AllowedTable) {
+    if (TABLAS_PUBLICAS.has(table)) revalidatePath("/", "layout");
 }
 
 /** Strip any fields not in the whitelist for a given table */
@@ -183,6 +201,7 @@ export async function POST(
         return NextResponse.json({ error: "Error al crear registro" }, { status: 500 });
     }
 
+    refrescarSitioPublico(table);
     return NextResponse.json(data, { status: 201 });
 }
 
@@ -239,6 +258,7 @@ export async function PUT(
         return NextResponse.json({ error: "Error al actualizar registro" }, { status: 500 });
     }
 
+    refrescarSitioPublico(table);
     return NextResponse.json(data);
 }
 
@@ -321,6 +341,7 @@ export async function PATCH(
         }
     }
 
+    refrescarSitioPublico(table);
     return NextResponse.json({ success: true, updated: items.length });
 }
 
@@ -361,5 +382,6 @@ export async function DELETE(
         return NextResponse.json({ error: "Error al eliminar registro" }, { status: 500 });
     }
 
+    refrescarSitioPublico(table);
     return NextResponse.json({ success: true });
 }
