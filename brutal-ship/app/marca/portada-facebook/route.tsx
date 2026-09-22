@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import { fuentes } from "@/lib/og/fuentes";
 import {
+    BANDA,
+    Banda,
     COLOR,
     CUERPO,
     DISPLAY,
@@ -32,9 +34,6 @@ const ALTO = 624;
 
 const PONEMOS = ["El diseño completo", "Dominio y hosting", "El candadito verde", "Que Google te encuentre"];
 
-/** Las mismas frases que corren en la banda de la home. */
-const BANDA = ["Diseño atractivo", "Entrega rápida", "Resultados reales", "Nos encargamos de todo"];
-
 export async function GET() {
     return new ImageResponse(
         (
@@ -65,51 +64,7 @@ export async function GET() {
                     }}
                 />
 
-                {/* La banda del sitio, abajo: llena el espacio que igual tapa la
-                    foto de perfil, y las frases se repiten para que lo que quede
-                    a la vista se lea entero. */}
-                <div
-                    style={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        height: 88,
-                        display: "flex",
-                        alignItems: "center",
-                        overflow: "hidden",
-                        backgroundColor: COLOR.tinta,
-                        borderTop: `3px solid ${COLOR.tinta}`,
-                    }}
-                >
-                    {[...BANDA, ...BANDA, ...BANDA].map((frase, i) => (
-                        <div key={`${frase}-${i}`} style={{ display: "flex", alignItems: "center" }}>
-                            <div
-                                style={{
-                                    width: 12,
-                                    height: 12,
-                                    margin: "0 26px",
-                                    backgroundColor: i % 2 === 0 ? COLOR.verde : COLOR.amarillo,
-                                    transform: "rotate(45deg)",
-                                }}
-                            />
-                            <div
-                                style={{
-                                    display: "flex",
-                                    fontFamily: DISPLAY,
-                                    fontWeight: 700,
-                                    fontSize: 24,
-                                    letterSpacing: 2.4,
-                                    textTransform: "uppercase",
-                                    color: COLOR.blanco,
-                                    whiteSpace: "nowrap",
-                                }}
-                            >
-                                {frase}
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <Banda frases={BANDA} />
 
                 <div
                     style={{

@@ -218,6 +218,60 @@ export function Firma({
     );
 }
 
+/** Las frases que corren en la banda de la home. */
+export const BANDA = ["Diseño atractivo", "Entrega rápida", "Resultados reales", "Nos encargamos de todo"];
+
+/**
+ * La banda negra del sitio, al pie de las portadas de Facebook: llena el
+ * espacio que de todos modos tapa la foto de perfil, y las frases se repiten
+ * para que lo que quede a la vista se lea entero.
+ */
+export function Banda({ frases = BANDA, alto = 88 }: { frases?: readonly string[]; alto?: number }) {
+    return (
+        <div
+            style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: alto,
+                display: "flex",
+                alignItems: "center",
+                overflow: "hidden",
+                backgroundColor: COLOR.tinta,
+            }}
+        >
+            {[...frases, ...frases, ...frases].map((frase, i) => (
+                <div key={`${frase}-${i}`} style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                        style={{
+                            width: 12,
+                            height: 12,
+                            margin: "0 26px",
+                            backgroundColor: i % 2 === 0 ? COLOR.verde : COLOR.amarillo,
+                            transform: "rotate(45deg)",
+                        }}
+                    />
+                    <div
+                        style={{
+                            display: "flex",
+                            fontFamily: DISPLAY,
+                            fontWeight: 700,
+                            fontSize: 24,
+                            letterSpacing: 2.4,
+                            textTransform: "uppercase",
+                            color: COLOR.blanco,
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                        {frase}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
 /** El pie comun: el logo a la izquierda y la direccion a la derecha. */
 export function Pie({
     direccion,
