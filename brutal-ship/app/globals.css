@@ -1268,6 +1268,16 @@ article .prose strong {
   --ficha-fondo: #FDE047;
 }
 
+/* Roles largos (ej. "Community manager y marketing") no entran en una línea
+   dentro de la ficha angosta del equipo; acá se permite el wrap sin tocar
+   el resto de usos de .ficha-etiqueta (que sí dependen de nowrap). */
+.ficha-etiqueta.ficha-etiqueta-wrap {
+  white-space: normal;
+  max-width: calc(100% - 3.5rem);
+  line-height: 1.25;
+  text-align: left;
+}
+
 /* ===================================================================
    VISOR DE PORTAFOLIO
    El <dialog> nativo ya trae trampa de foco, Escape e inertización.

@@ -33,6 +33,13 @@ const EQUIPO: Persona[] = [
         foto: "/equipo/armando.webp",
         iniciales: "A",
     },
+    {
+        nombre: "Fran Roquel",
+        rol: "Community manager y marketing",
+        linea: "Maneja las redes y la estrategia de marketing.",
+        foto: "/equipo/fran.webp",
+        iniciales: "F",
+    },
 ];
 
 export default function AboutSection() {
@@ -96,7 +103,7 @@ export default function AboutSection() {
                                     key={p.nombre}
                                     className="ficha bg-white rounded-xl shadow-neobrutalism-lg p-7 pt-9 text-center"
                                 >
-                                    <span className="ficha-etiqueta text-ink-black">{p.rol}</span>
+                                    <span className="ficha-etiqueta ficha-etiqueta-wrap text-ink-black">{p.rol}</span>
 
                                     <span className="mx-auto block w-32 h-32 rounded-full border-4 border-black overflow-hidden bg-primary shadow-neobrutalism">
                                         {p.foto ? (
