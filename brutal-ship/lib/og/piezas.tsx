@@ -105,17 +105,22 @@ export function tamanioQueEntra(
 export function Lienzo({
     fondo = COLOR.fondo,
     puntos = "rgba(26, 26, 26, 0.2)",
+    ancho = TAMANIO.width,
+    alto = TAMANIO.height,
     children,
 }: {
     fondo?: string;
     puntos?: string;
+    /** Otras medidas que 1200x630: la portada de Facebook es 1640x624. */
+    ancho?: number;
+    alto?: number;
     children: ReactNode;
 }) {
     return (
         <div
             style={{
-                width: TAMANIO.width,
-                height: TAMANIO.height,
+                width: ancho,
+                height: alto,
                 display: "flex",
                 position: "relative",
                 overflow: "hidden",

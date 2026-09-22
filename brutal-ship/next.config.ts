@@ -102,10 +102,29 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // OG image: cache but allow updates
+      // Las imagenes de vista previa, en las dos formas que tienen las rutas:
+      // /opengraph-image (la home) y /loquesea/opengraph-image (el resto).
+      //
+      // El permiso de origen cruzado es lo que les faltaba: WhatsApp Web arma la
+      // miniatura dentro del navegador, y sin esa cabecera no puede leer la
+      // imagen, asi que mostraba la tarjeta sin foto. Vercel se lo pone solo a
+      // los archivos de /public —la imagen vieja lo tenia por eso—, pero no a
+      // las que genera una ruta. Son imagenes publicas y sin sesion: dejarlas
+      // leer desde cualquier origen no expone nada.
       {
         source: "/opengraph-image",
         headers: [
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
+        source: "/:ruta*/opengraph-image",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "*" },
           {
             key: "Cache-Control",
             value: "public, max-age=3600, stale-while-revalidate=86400",
