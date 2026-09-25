@@ -14,6 +14,12 @@ import BlockReveal from "./BlockReveal";
  * El encabezado tampoco puede depender de que haya columnas: en celular se apilan. Por eso
  * la bajada cuenta ítems ("Cuatro de tu lado. Once del nuestro") en vez de señalar una
  * disposición espacial que en móvil no existe.
+ *
+ * Desde 2026-09 es la única sección de "Cómo funciona". Hubo además una ProcessSection
+ * con la misma asimetría contada como línea de tiempo, y la página explicaba el proceso
+ * tres veces seguidas antes de mostrar un solo trabajo. De esa sección queda lo único que
+ * esta no decía: cuánto tarda cada parte (la línea del reloj, al pie). Sus tres promesas
+ * pasaron a la franja de garantía, pegada a los precios.
  */
 
 const CLIENTE = [
@@ -40,16 +46,20 @@ const LOGIKA = [
 export default function WhoDoesWhatSection() {
     return (
         <section
-            id="quien-hace-que"
-            aria-labelledby="quien-hace-que-heading"
+            id="como-funciona"
+            aria-labelledby="como-funciona-heading"
             className="relative bg-background-light border-b-2 border-black px-4 py-20 md:px-10 lg:px-20 overflow-hidden"
         >
+            {/* Anclas de antes: #quien-hace-que era el id de esta sección y #proceso el de la
+                que se fundió acá. Un link guardado o compartido sigue cayendo en su lugar. */}
+            <span id="quien-hace-que" aria-hidden="true" className="absolute top-0"></span>
+            <span id="proceso" aria-hidden="true" className="absolute top-0"></span>
             <div className="absolute inset-0 pattern-dots opacity-[0.06] pointer-events-none" aria-hidden="true"></div>
 
             <div className="relative z-10 max-w-7xl mx-auto">
                 <BlockReveal>
                     <h2
-                        id="quien-hace-que-heading"
+                        id="como-funciona-heading"
                         className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] max-w-3xl"
                     >
                         Tu parte del trabajo
@@ -119,6 +129,18 @@ export default function WhoDoesWhatSection() {
                         </p>
                     </div>
                 </div>
+
+                {/* Los tiempos que traía la línea de tiempo del proceso, en una sola línea.
+                    "De 1 a 4 semanas" y no "1 a 2": la landing tarda 1–2 y el sitio o la
+                    tienda 2–4, que es lo que dice la pregunta frecuente de plazos. */}
+                <p className="mt-10 flex items-start gap-3 max-w-3xl text-lg font-medium leading-snug text-ink-black/80">
+                    <span aria-hidden="true" className="material-icons shrink-0 text-2xl leading-6 text-primary">schedule</span>
+                    <span>
+                        <strong className="font-bold text-ink-black">Tu parte:</strong> 5 minutos para contarnos y un rato para
+                        mirar el diseño. <strong className="font-bold text-ink-black">La nuestra:</strong> de 1 a 4 semanas según
+                        el plan, hasta dejar tu web online.
+                    </span>
+                </p>
             </div>
         </section>
     );

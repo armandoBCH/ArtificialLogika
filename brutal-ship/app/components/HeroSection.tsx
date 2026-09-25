@@ -60,16 +60,28 @@ export default function HeroSection() {
                                 </span>
                             </h1>
                         </div>
+                        {/* "o renovamos la que ya tenés" es lo que quedó de la sección "¿Tu web es
+                            vieja?". Su trabajo era enganchar a los dos públicos a la vez, y eso se
+                            hace mejor acá, donde la persona decide si la página le habla a ella,
+                            que en dos pantallas de argumento a mitad del recorrido. */}
                         <p className="text-xl md:text-2xl font-medium py-2 max-w-lg">
-                            Diseñamos y creamos la página web que tu negocio necesita. Vos no te preocupás por nada — nosotros nos encargamos de todo.
+                            Diseñamos y creamos la página web que tu negocio necesita, o renovamos la que ya tenés. Vos no te preocupás por nada — nosotros nos encargamos de todo.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-4">
                             <MagneticWrapper>
                                 <a href="#contacto" className="w-full sm:w-auto bg-primary text-white border-2 border-black font-bold text-lg py-4 px-8 shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all rounded-lg flex items-center justify-center gap-2">
                                     Quiero mi web
                                     <span aria-hidden="true" className="material-icons">arrow_forward</span>
                                 </a>
                             </MagneticWrapper>
+                            {/* La oferta vivía en una banda propia debajo del hero: en un celular de
+                                812px quedaba a 1.039px, fuera de la primera pantalla. Vuelve acá como
+                                una línea de apoyo y no como chip, que era lo que competía con el botón.
+                                En celular va pegada al botón; desde sm pasa a su propia fila. */}
+                            <p className="text-center text-sm font-medium text-ink-black/75 sm:order-last sm:basis-full sm:text-left sm:text-base">
+                                <span aria-hidden="true" className="material-icons mr-1 align-[-4px] text-lg text-primary">verified</span>
+                                Diseño previo y presupuesto sin cargo. Lo ves antes de pagar nada.
+                            </p>
                             <a href="#portafolio" className="md:hidden flex items-center justify-center gap-2 text-black font-bold text-lg py-2 mt-2 underline decoration-2 underline-offset-4">
                                 Ver Nuestro Trabajo
                                 <span aria-hidden="true" className="material-icons text-sm">open_in_new</span>

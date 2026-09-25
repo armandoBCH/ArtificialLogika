@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { SiteConfigMap } from "@/lib/types/database";
+import TeamCard from "./TeamCard";
 
 interface ContactSectionProps {
     config: SiteConfigMap;
@@ -108,27 +109,20 @@ export default function ContactSection({ config }: ContactSectionProps) {
 
             <div className="relative z-10 max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="mb-16 text-center">
+                <div className="mb-12 text-center">
                     <h2 id="contacto-heading" className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] text-white mb-4 drop-shadow-neobrutalism">
                         ¿Listo Para Tu <br className="hidden md:block" />Nueva Web?
                     </h2>
+                    {/* La oferta se decía cuatro veces en esta sección: acá, en un sello rotado
+                        sobre el formulario, en su título y en el párrafo de abajo. Queda una. */}
                     <p className="text-white/90 text-lg md:text-xl font-medium max-w-2xl mx-auto">
-                        Contanos sobre tu negocio y te enviamos <strong className="text-white underline decoration-2 underline-offset-4">un presupuesto + mockup gratis</strong> en menos de {config.response_time || '48hs'}.
+                        Contanos de tu negocio y en menos de {config.response_time || '48hs'} te mandamos <strong className="text-white underline decoration-2 underline-offset-4">el presupuesto y un diseño previo de tu web, gratis</strong>.
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Contact Form Card */}
-                    <div className="lg:col-span-7 bg-white rounded-lg border-2 border-black p-6 md:p-10 shadow-neobrutalism relative">
-                        {/* Free offer badge */}
-                        <div className="absolute -top-4 left-6 bg-accent-yellow border-2 border-black px-4 py-1 font-bold text-sm shadow-neobrutalism-sm transform -rotate-2 rounded z-20">
-                            🎁 PRESUPUESTO + MOCKUP GRATIS
-                        </div>
-                        <h3 className="text-black text-2xl font-bold mb-2 flex items-center gap-2 mt-4">
-                            <span aria-hidden="true" className="material-icons text-primary">mail</span>
-                            Recibí tu presupuesto sin compromiso
-                        </h3>
-                        <p className="text-ink-black/70 text-sm mb-6">Completá el formulario y te enviamos un mockup de cómo se vería tu web + presupuesto detallado. 100% gratis.</p>
+                    <div className="order-2 lg:order-none lg:col-span-7 bg-white rounded-lg border-2 border-black p-6 md:p-10 shadow-neobrutalism relative">
                         {prefill && (
                             <p className="mb-6 flex items-start gap-2 rounded border-2 border-black bg-accent-yellow px-4 py-3 text-sm font-bold shadow-neobrutalism-sm">
                                 <span aria-hidden="true" className="material-icons text-base leading-5">bookmark</span>
@@ -146,9 +140,9 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                     <span aria-hidden="true" className="material-icons text-black">check</span>
                                 </span>
                                 <div>
-                                    <h4 className="text-black text-2xl font-bold">¡Listo! Recibimos tu mensaje.</h4>
+                                    <h3 className="text-black text-2xl font-bold">¡Listo! Recibimos tu mensaje.</h3>
                                     <p className="mt-2 text-black/80 font-medium">
-                                        Te escribimos con tu presupuesto y un mockup de tu web en menos de {config.response_time || '48hs'}. No hace falta que hagas nada más.
+                                        Te escribimos con tu presupuesto y un diseño previo de tu web en menos de {config.response_time || '48hs'}. No hace falta que hagas nada más.
                                     </p>
                                 </div>
                                 <div className="flex flex-col sm:flex-row gap-3 w-full pt-2">
@@ -310,26 +304,30 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                     <span aria-hidden="true" className="material-icons text-green-600 text-sm">check_circle</span>
                                     Respuesta en {config.response_time || '48hs'}
                                 </span>
-                                <span className="flex items-center gap-1">
-                                    <span aria-hidden="true" className="material-icons text-green-600 text-sm">check_circle</span>
-                                    Mockup incluido
-                                </span>
                             </div>
                         </form>
                         )}
                     </div>
 
-                    {/* Sidebar / Info Cards */}
-                    <div className="lg:col-span-5 flex flex-col gap-6">
+                    {/* Columna lateral. En escritorio es una columna al lado del formulario; en
+                        celular `contents` la disuelve en la grilla para que el equipo quede ARRIBA
+                        del formulario (order-1) y el resto debajo: las caras tienen que verse
+                        antes de que la persona empiece a escribir, no después. */}
+                    <div className="contents lg:col-span-5 lg:flex lg:flex-col lg:gap-6">
+                        <div className="order-1 lg:order-none">
+                            <TeamCard />
+                        </div>
+
                         {/* WhatsApp Card */}
-                        <div className="bg-ink-black rounded-lg border-2 border-white/10 p-8 shadow-neobrutalism relative overflow-hidden group">
+                        <div className="order-3 lg:order-none bg-ink-black rounded-lg border-2 border-white/10 p-8 shadow-neobrutalism relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -mr-16 -mt-16 transition-all group-hover:bg-secondary/20"></div>
                             <div className="relative z-10">
                                 <div className="size-12 bg-secondary rounded-lg flex items-center justify-center border-2 border-black mb-4 shadow-neobrutalism-white">
                                     <span aria-hidden="true" className="material-icons text-black text-2xl">chat</span>
                                 </div>
                                 <h3 className="text-white text-2xl font-bold mb-2">¿Preferís WhatsApp?</h3>
-                                <p className="text-ink-black/60 mb-6 font-light">
+                                {/* Era text-ink-black/60 sobre fondo ink-black: el texto no se veía. */}
+                                <p className="text-white/75 mb-6 font-medium">
                                     Escribinos directo y te respondemos al toque. Sin formularios, sin esperas.
                                 </p>
                                 <a
@@ -341,47 +339,48 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                     <span>Chatear por WhatsApp</span>
                                     <span aria-hidden="true" className="material-icons text-sm">arrow_outward</span>
                                 </a>
+                                {/* Lo que era la caja "Contacto directo". Si el mail no está cargado
+                                    no se muestra nada: antes caía en "Configurar en admin", en público. */}
+                                {config.email && (
+                                    <p className="mt-5 flex flex-wrap items-center gap-x-1.5 text-sm font-medium text-white/70">
+                                        O por mail:
+                                        <a
+                                            href={`mailto:${config.email}`}
+                                            className="inline-flex min-h-11 items-center font-bold text-white underline decoration-2 underline-offset-4 break-all hover:text-secondary transition-colors"
+                                        >
+                                            {config.email}
+                                        </a>
+                                    </p>
+                                )}
+                                {config.location && (
+                                    <p className="flex items-center gap-1.5 text-sm font-medium text-white/70">
+                                        <span aria-hidden="true" className="material-icons text-base">location_on</span>
+                                        {config.location}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         {/* What happens after you send. Replaces an invented testimonial
                             ("María L.") illustrated with generated avatars — a promise we
                             actually control beats social proof we do not have yet. */}
-                        <div className="bg-white/10 backdrop-blur-sm rounded-lg border-2 border-white/20 p-6">
-                            <h4 className="text-white font-bold text-sm uppercase tracking-wide mb-3">Qué pasa después</h4>
-                            <ol className="space-y-2 text-white/80 text-sm font-medium">
+                        <div className="order-3 lg:order-none bg-white/10 backdrop-blur-sm rounded-lg border-2 border-white/20 p-6">
+                            <h3 className="text-white font-bold text-sm uppercase tracking-wide mb-3">Qué pasa después</h3>
+                            {/* text-white y no /80: sobre el velo blanco del violeta, el 80% daba 3,98:1. */}
+                            <ol className="space-y-2 text-white text-sm font-medium">
                                 <li className="flex gap-2">
                                     <span aria-hidden="true" className="font-black text-white">1.</span>
                                     Leemos lo que nos contás y preparamos una propuesta.
                                 </li>
                                 <li className="flex gap-2">
                                     <span aria-hidden="true" className="font-black text-white">2.</span>
-                                    Te mandamos presupuesto y un mockup de tu web.
+                                    Te mandamos el presupuesto y un diseño previo de tu web.
                                 </li>
                                 <li className="flex gap-2">
                                     <span aria-hidden="true" className="font-black text-white">3.</span>
                                     Si te gusta, arrancamos. Si no, no pagás nada.
                                 </li>
                             </ol>
-                        </div>
-
-                        {/* Info Box */}
-                        <div className="bg-[#2a2a2a] rounded-lg border-2 border-white/10 p-8">
-                            <h4 className="text-white font-bold text-lg mb-4 uppercase tracking-wide border-b border-white/10 pb-2">
-                                Contacto Directo
-                            </h4>
-                            <ul className="space-y-4">
-                                <li className="flex items-start gap-3 text-ink-black/60">
-                                    <span aria-hidden="true" className="material-icons text-secondary shrink-0">location_on</span>
-                                    <span>
-                                        {config.location || 'Buenos Aires, Argentina'}
-                                    </span>
-                                </li>
-                                <li className="flex items-center gap-3 text-ink-black/60">
-                                    <span aria-hidden="true" className="material-icons text-secondary shrink-0">mail</span>
-                                    <span className="min-w-0 break-all">{config.email || 'Configurar en admin'}</span>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>

@@ -193,7 +193,7 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                         </li>
                         <li className="flex items-center gap-2">
                             <span aria-hidden="true" className="material-icons text-xl text-primary">check_circle</span>
-                            Armamos una propuesta y un mockup visual, sin cargo
+                            Armamos una propuesta y un diseño previo de tu web, sin cargo
                         </li>
                         <li className="flex items-center gap-2">
                             <span aria-hidden="true" className="material-icons text-xl text-primary">check_circle</span>

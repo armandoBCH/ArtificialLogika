@@ -1,136 +1,107 @@
 import Link from "next/link";
 import PortfolioViewer from "./PortfolioViewer";
 import BlockReveal from "./BlockReveal";
-import type { PortfolioProject } from "@/lib/types/database";
+import TestimonialQuotes from "./TestimonialQuotes";
+import type { PortfolioProject, Testimonial } from "@/lib/types/database";
 import { esMuestra, isRealStat } from "@/lib/data/portfolio";
 
 interface PortfolioShowcaseProps {
     projects: PortfolioProject[];
+    testimonials?: Testimonial[];
 }
 
-const accentColors: Record<string, { bg: string; textColor: string; borderColor: string; ctaHover: string; tagBg: string; tagText: string }> = {
-    primary: {
-        bg: "bg-primary",
-        textColor: "text-white",
-        borderColor: "border-black",
-        ctaHover: "group-hover:bg-mint",
-        tagBg: "bg-white/20",
-        tagText: "text-white",
-    },
-    mint: {
-        bg: "bg-mint",
-        textColor: "text-black",
-        borderColor: "border-black",
-        ctaHover: "hover:bg-white hover:text-black hover:border-black",
-        tagBg: "bg-white/40",
-        tagText: "text-black",
-    },
-    coral: {
-        bg: "bg-hot-coral",
-        textColor: "text-white",
-        borderColor: "border-black",
-        ctaHover: "group-hover:bg-primary group-hover:text-white group-hover:border-white",
-        tagBg: "bg-white/20",
-        tagText: "text-white",
-    },
+/**
+ * Trabajos y clientes, en una sola sección.
+ *
+ * Antes cada proyecto era un bloque partido a media pantalla —texto sobre color de un
+ * lado, captura del otro— y los tres juntos medían 3,75 pantallas de celular. Después,
+ * 2,5 pantallas más abajo, los mismos clientes volvían como testimonios. Ahora las
+ * tarjetas son compactas y en grilla, al estilo de los índices de trabajo de las
+ * agencias de referencia: captura, rubro, nombre, una descripción corta y la salida al
+ * caso completo. El detalle (etiquetas, descripción larga) vive en /portafolio/[id].
+ *
+ * Lo que no se resigna: las métricas reales van a la vista, porque RAGO es la única
+ * prueba medida del sitio, y el sello "Proyecto de Muestra" sigue saliendo solo.
+ */
+
+// El color de acento de cada proyecto (se elige en el admin) es el de la cortina que
+// descubre la captura al entrar en pantalla.
+const FONDO_DE_ACENTO: Record<string, string> = {
+    primary: "bg-primary",
+    mint: "bg-mint",
+    coral: "bg-hot-coral",
 };
 
-function ProjectCard({ project, index }: { project: PortfolioProject; index: number }) {
-    const colors = accentColors[project.accent_color] || accentColors.primary;
-    const isEven = index % 2 === 0;
+function ProjectCard({ project }: { project: PortfolioProject }) {
+    const fondo = FONDO_DE_ACENTO[project.accent_color] ?? FONDO_DE_ACENTO.primary;
     const realStats = (project.stats ?? []).filter(isRealStat);
     const showSampleBadge = esMuestra(project);
+    const categoria = project.categories?.[0] ?? project.category;
 
     return (
-        <article className="group relative bg-white border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-lg transition-all duration-300 transform hover:-translate-y-1 hover:-rotate-1 hover:scale-[1.01]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
-                {/* Content side */}
-                <div className={`order-2 ${isEven ? 'lg:order-1 lg:border-r-2 lg:border-b-0' : 'lg:order-2'} ${colors.bg} p-6 md:p-12 flex flex-col justify-between ${colors.borderColor} relative overflow-hidden`}>
-                    {project.accent_color === 'primary' && (
-                        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl"></div>
-                    )}
-                    {project.accent_color === 'mint' && (
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-20 -mr-16 -mt-16 rotate-45 border-4 border-black"></div>
-                    )}
-                    {project.accent_color === 'coral' && (
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full border-[20px] border-white opacity-10 rounded-full scale-150"></div>
-                    )}
-                    <div className="relative z-10">
-                        {showSampleBadge && (
-                            <div className="absolute -top-3 -right-3 md:-top-6 md:-right-6 z-20 transform rotate-[10deg] animate-float">
-                                <div className="sello sello-derecha bg-accent-yellow text-ink-black text-[10px] md:text-sm shadow-neobrutalism-sm whitespace-nowrap">
-                                    Proyecto de Muestra
-                                </div>
-                            </div>
-                        )}
-                        <div className="flex flex-wrap items-center gap-2 mb-5 md:mb-6">
-                            {(project.categories && project.categories.length > 0
-                                ? project.categories
-                                : project.category ? [project.category] : []
-                            ).map((cat, i) => (
-                                <span key={`cat-${i}`} className="px-2 py-0.5 md:px-3 md:py-1 bg-black text-white text-[10px] md:text-xs font-bold uppercase tracking-wider border-2 border-white/25">
-                                    {cat}
-                                </span>
-                            ))}
-                            {project.tags.map((tag, i) => (
-                                <span key={`tag-${i}`} className={`px-2 py-0.5 md:px-3 md:py-1 ${colors.tagBg} ${colors.tagText} text-[10px] md:text-xs font-bold uppercase tracking-wider border-2 border-white/25`}>
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
-                        <h3 className={`text-3xl sm:text-4xl md:text-5xl font-bold ${colors.textColor} mb-3 md:mb-4 leading-tight`}>{project.title}</h3>
-                        <p className={`${colors.textColor === 'text-white' ? 'text-white/90' : 'text-black/80'} text-base md:text-lg mb-6 md:mb-8 ${colors.textColor === 'text-white' ? 'font-light' : 'font-medium'} max-w-md`}>
-                            {project.description}
-                        </p>
-                    </div>
-                    <div className={`relative z-10 border-t ${colors.textColor === 'text-white' ? 'border-white/20' : 'border-black/20'} pt-6 md:pt-8 mt-auto`}>
-                        {realStats.length > 0 && (
-                            <div className="flex flex-row justify-between items-center md:grid md:grid-cols-2 gap-2 md:gap-8 mb-6 md:mb-8 bg-black/10 md:bg-transparent p-3 md:p-0 rounded-lg md:rounded-none">
-                                {realStats.map((stat, i) => (
-                                    <div key={i} className="text-center md:text-left flex-1 md:flex-none">
-                                        <p className={`text-xl sm:text-2xl md:text-3xl font-black leading-none mb-1 ${colors.textColor}`}>{stat.value}</p>
-                                        <p className={`text-[10px] md:text-sm ${colors.textColor === 'text-white' ? 'text-white/80' : 'text-black/80'} tracking-widest uppercase font-bold`}>{stat.label}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                        {/* Habia dos botones por tarjeta: "Quiero mi web" y "Ver Proyecto".
-                            El primero aparecia 12 veces en la pagina, y en una tarjeta de
-                            portafolio llega antes de tiempo: la persona esta mirando prueba,
-                            no comprando. Queda la accion que corresponde a este momento. */}
-                        <a className={`cta inline-flex items-center justify-center w-full sm:w-auto px-4 md:px-6 py-3 md:py-4 ${colors.textColor === 'text-white' ? 'bg-white text-black' : 'bg-black text-white'} font-bold text-sm md:text-lg uppercase border-2 ${colors.textColor === 'text-white' ? 'border-black' : 'border-transparent'} shadow-neobrutalism-sm hover:shadow-neobrutalism hover:translate-x-1 hover:-translate-y-1 transition-all duration-200 ${colors.ctaHover}`} href={`/portafolio/${project.id}`}>
-                            Ver proyecto
-                            <span aria-hidden="true" className="material-icons ml-2 text-base md:text-xl">arrow_forward</span>
-                        </a>
-                    </div>
+        <article className="relative flex flex-col bg-white border-2 border-black rounded-xl shadow-neobrutalism-white transition-transform duration-300 hover:-translate-y-1">
+            {showSampleBadge && (
+                <div className="absolute -top-3 -right-2 z-30 animate-float">
+                    <p className="sello sello-derecha bg-accent-yellow text-ink-black text-xs shadow-neobrutalism-sm whitespace-nowrap">
+                        Proyecto de Muestra
+                    </p>
                 </div>
-                {/* Image side */}
-                <div className={`order-1 ${isEven ? 'lg:order-2' : 'lg:order-1 lg:border-r-2'} bg-background-light px-4 pt-8 pb-4 md:p-12 flex items-center md:items-end justify-center relative overflow-hidden border-b-2 lg:border-b-0 border-black`}>
-                    <div className="w-full max-w-lg transform group-hover:scale-105 transition-transform duration-500 ease-out">
-                        <div className="bg-white rounded-t-lg border-2 border-black shadow-neobrutalism overflow-hidden">
-                            <div className="bg-background-light border-b-2 border-black p-2 flex gap-2">
-                                <div className="w-3 h-3 rounded-full bg-black"></div>
-                                <div className="w-3 h-3 rounded-full bg-white border border-black"></div>
-                                <div className="w-3 h-3 rounded-full bg-white border border-black"></div>
+            )}
+
+            {/* La captura llena la parte de arriba de la tarjeta, de borde a borde. Es la imagen
+                que el panel recorta en 4:3 ("Detalle + Inicio"), así que el contenedor es 4:3 en
+                todos los tamaños: entra entera, sin márgenes ni recorte. Antes iba dentro de una
+                franja de color con margen y una barra de navegador, y en celular se recortaba
+                a 16:10.
+                Tampoco lleva el gris que tenían las capturas de acento menta hasta el hover:
+                en un teléfono no hay hover y el trabajo quedaba gris para siempre.
+                El borde va en el envoltorio y no en la caja 4:3: con box-sizing border-box, un
+                borde adentro le come 2px de alto al área de la imagen y deja de ser 4:3. */}
+            <div className="overflow-hidden rounded-t-[10px] border-b-2 border-black">
+                <div className="relative aspect-[4/3] bg-background-light">
+                    <BlockReveal bgColor={fondo}>
+                        {project.image_url ? (
+                            <PortfolioViewer
+                                src={project.image_url}
+                                alt={project.image_alt}
+                                titulo={project.title}
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                                <span className="text-ink-black/60 text-sm">Sin imagen</span>
                             </div>
-                            <div className="aspect-[4/3] bg-background-light relative">
-                                <BlockReveal bgColor={`${colors.bg}`}>
-                                    {project.image_url ? (
-                                        <PortfolioViewer
-                                            src={project.image_url}
-                                            alt={project.image_alt}
-                                            titulo={project.title}
-                                            filtro={project.accent_color === 'mint' ? 'grayscale group-hover:grayscale-0 transition-all duration-500' : ''}
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-background-light flex items-center justify-center">
-                                            <span className="text-ink-black/60 text-sm">Sin imagen</span>
-                                        </div>
-                                    )}
-                                </BlockReveal>
-                            </div>
-                        </div>
-                    </div>
+                        )}
+                    </BlockReveal>
+                </div>
+            </div>
+
+            <div className="flex flex-col p-5 md:p-6">
+                {categoria && (
+                    <p className="text-xs font-black uppercase tracking-[0.15em] text-ink-black/60">{categoria}</p>
+                )}
+                <h3 className="mt-1 text-2xl font-bold leading-tight text-ink-black">{project.title}</h3>
+                <p className="mt-2 font-medium leading-snug text-ink-black/75 line-clamp-2 md:line-clamp-3">{project.description}</p>
+
+                {realStats.length > 0 && (
+                    <ul className="mt-4 grid grid-cols-2 gap-3">
+                        {realStats.map((stat, i) => (
+                            <li key={i} className="rounded-lg border-2 border-black bg-accent-yellow px-3 py-2 text-center">
+                                <p className="text-2xl font-black leading-none tabular-nums text-ink-black">{stat.value}</p>
+                                <p className="mt-1 text-xs font-bold uppercase tracking-wider text-ink-black/80">{stat.label}</p>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+
+                <div className="pt-4">
+                    <Link
+                        href={`/portafolio/${project.id}`}
+                        className="cta inline-flex min-h-11 items-center gap-2 font-bold uppercase text-sm tracking-wider text-ink-black hover:text-primary transition-colors"
+                    >
+                        <span className="underline decoration-2 underline-offset-4">Ver proyecto</span>
+                        <span className="sr-only">{project.title}</span>
+                        <span aria-hidden="true" className="material-icons text-lg">arrow_forward</span>
+                    </Link>
                 </div>
             </div>
         </article>
@@ -158,18 +129,18 @@ function elegirDestacados(proyectos: PortfolioProject[], cuantos = 3): Portfolio
     return [...reales, ...muestras].slice(0, cuantos);
 }
 
-export default function PortfolioShowcase({ projects }: PortfolioShowcaseProps) {
+export default function PortfolioShowcase({ projects, testimonials = [] }: PortfolioShowcaseProps) {
     const featuredProjects = elegirDestacados(projects);
+    // La bajada no puede prometer "negocios reales" si entra una muestra a rellenar.
+    const hayMuestras = featuredProjects.some(esMuestra);
 
     return (
         <section id="portafolio" aria-labelledby="portafolio-heading" className="relative w-full bg-ink-black pb-20">
-            {/* Decorative Top Bar */}
             <div aria-hidden="true" className="w-full h-4 bg-accent-yellow border-b-4 border-black"></div>
-            {/* Header Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-16 pb-8 md:pb-12">
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-16">
                 <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6 border-b-4 border-white/25 pb-6 md:pb-8">
-                    {/* Star Icon */}
-                    <div aria-hidden="true" className="text-secondary shrink-0 transform hover:rotate-12 transition-transform duration-300">
+                    <div aria-hidden="true" className="text-secondary shrink-0">
                         <svg
                             className="drop-shadow-neobrutalism w-14 h-14 md:w-20 md:h-20"
                             fill="currentColor"
@@ -188,29 +159,46 @@ export default function PortfolioShowcase({ projects }: PortfolioShowcaseProps) 
                         <h2 id="portafolio-heading" className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] text-white">
                             Nuestro <span className="text-accent-yellow">Trabajo</span>
                         </h2>
-                        <p className="mt-3 md:mt-4 text-base md:text-xl font-medium text-white/75 max-w-xl md:pl-4 md:ml-1">
-                            Explorá proyectos entregados y demos que construimos para que veas nuestro nivel.
+                        <p className="mt-3 md:mt-4 text-base md:text-xl font-medium text-white/75 max-w-xl">
+                            {hayMuestras
+                                ? "Proyectos entregados y demos que construimos para que veas nuestro nivel."
+                                : "Negocios reales, con su web publicada y andando."}
                         </p>
                     </div>
                 </div>
-            </div>
-            {/* Projects Grid */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 md:space-y-16">
-                {featuredProjects.map((project, index) => (
-                    <div key={project.id}>
-                        <ProjectCard project={project} index={index} />
-                        {index < featuredProjects.length - 1 && (
-                            <div aria-hidden="true" className="w-full h-0 border-t-4 border-dashed border-white/25 mt-10 md:mt-16"></div>
-                        )}
+
+                {/* En celular, fila horizontal con snap: cada tarjeta ocupa el 82% del ancho y la
+                    siguiente asoma, que es lo que dice "hay más, deslizá". Apiladas medían casi dos
+                    pantallas. Desde tablet vuelve a ser grilla. `items-start` para que cada tarjeta
+                    mida lo suyo: estirarlas a la más alta dejaba un hueco donde otra tenía métricas. */}
+                <ul className="mt-10 md:mt-12 -mx-4 sm:-mx-6 flex items-start gap-4 overflow-x-auto snap-x snap-mandatory scroll-px-4 sm:scroll-px-6 px-4 sm:px-6 pt-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:px-0 md:pt-0 md:pb-0 lg:grid-cols-3">
+                    {featuredProjects.map((project) => (
+                        <li key={project.id} className="w-[82%] shrink-0 snap-start md:w-auto">
+                            <ProjectCard project={project} />
+                        </li>
+                    ))}
+                </ul>
+                {featuredProjects.length > 1 && (
+                    <p className="md:hidden mt-1 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wider text-white/70">
+                        Deslizá para ver más
+                        <span aria-hidden="true" className="material-icons text-base">arrow_forward</span>
+                    </p>
+                )}
+
+                <div className="mt-10 text-center">
+                    <Link
+                        className="cta inline-block w-full sm:w-auto px-6 py-4 md:px-10 bg-accent-yellow text-ink-black text-sm md:text-lg font-bold uppercase tracking-widest border-2 border-transparent hover:bg-white hover:border-black shadow-neobrutalism-white transition-all duration-300 hover:-translate-y-1"
+                        href="/portafolio"
+                    >
+                        Ver todos los trabajos
+                    </Link>
+                </div>
+
+                {testimonials.length > 0 && (
+                    <div className="mt-12 md:mt-20 border-t-4 border-white/25 pt-10 md:pt-16">
+                        <TestimonialQuotes testimonials={testimonials} />
                     </div>
-                ))}
-            </div>
-            {/* Bottom CTA */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 md:mt-16 text-center">
-                <p className="text-base md:text-lg text-white/75 mb-4 md:mb-6 font-medium medida-comoda mx-auto">Estos son solo algunos ejemplos. Tenemos más proyectos para mostrarte.</p>
-                <Link className="cta inline-block w-full sm:w-auto px-6 py-4 md:px-12 md:py-6 bg-accent-yellow text-ink-black text-sm md:text-xl font-bold uppercase tracking-widest border-2 border-transparent hover:bg-white hover:text-black hover:border-black shadow-neobrutalism hover:shadow-neobrutalism-lg transition-all duration-300 transform hover:-translate-y-1" href="/portafolio">
-                    Ver Catálogo Completo
-                </Link>
+                )}
             </div>
         </section>
     );

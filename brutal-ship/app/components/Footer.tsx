@@ -16,14 +16,21 @@ export default function Footer({ config }: FooterProps) {
             <div className="geometric-shape bottom-0 left-0 w-64 h-64 bg-primary rounded-full blur-[100px] opacity-20"></div>
 
             <div className="max-w-7xl mx-auto relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 md:gap-12 mb-16">
                     {/* Brand Column */}
-                    <div className="lg:col-span-1">
+                    <div className="col-span-2 md:col-span-1">
                         <div className="flex items-center gap-3 text-white mb-6">
                             <LogikaLogo className="h-10 md:h-12 w-auto" />
                         </div>
-                        <p className="text-white/70 text-sm leading-relaxed mb-6">
+                        <p className="text-white/70 text-sm leading-relaxed mb-4">
                             Hacemos páginas web profesionales para todo tipo de negocio. Vos te enfocás en lo tuyo, nosotros nos encargamos de tu presencia digital.
+                        </p>
+                        {/* Vivía en la sección "Nosotros". Aclarar la K sirve a las dos puntas: a
+                            quien escuchó el nombre y lo busca como "logica", y a Google, que asocia
+                            las dos formas con la misma marca sin esconder texto ni repetir palabras
+                            clave. En el footer está en todas las páginas, no solo en la home. */}
+                        <p className="text-white/70 text-sm leading-relaxed mb-6">
+                            Y sí: es <strong className="font-bold text-white">Logika con K</strong>. Si nos buscaste como <em>logica</em>, llegaste bien.
                         </p>
                         <div className="flex gap-4">
                             <a
@@ -65,29 +72,29 @@ export default function Footer({ config }: FooterProps) {
                         <h3 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Navegación</h3>
                         <ul className="space-y-3">
                             <li>
-                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
+                                <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
                                     Servicios
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#portafolio">
+                                <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#portafolio">
                                     Nuestro Trabajo
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#proceso">
-                                    Proceso
-                                </a>
+                                <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#como-funciona">
+                                    Cómo funciona
+                                </Link>
                             </li>
                             <li>
-                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#faq">
+                                <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#faq">
                                     FAQ
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#contacto">
+                                <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#contacto">
                                     Contacto
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -97,35 +104,35 @@ export default function Footer({ config }: FooterProps) {
                         <h3 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Servicios</h3>
                         <ul className="space-y-3">
                             <li>
-                                <a className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
+                                <Link className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
                                     Landing Page
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
+                                <Link className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
                                     Sitio Institucional
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-max" href="#precios">
+                                <Link className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
                                     E-commerce / Plataforma
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
 
                     {/* CTA Column */}
-                    <div>
+                    <div className="col-span-2 md:col-span-1">
                         <h3 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">¿Listo para Arrancar?</h3>
                         <p className="text-white/70 text-sm mb-4">
                             Escribinos hoy y en menos de {config.response_time || '48hs'} te respondemos con una propuesta para tu proyecto.
                         </p>
-                        <a
-                            href="#contacto"
+                        <Link
+                            href="/#contacto"
                             className="cta block w-full bg-white text-black font-bold text-sm uppercase py-3 px-6 rounded hover:bg-white/10 transition-colors border-2 border-transparent hover:border-primary text-center"
                         >
                             Quiero mi web
-                        </a>
+                        </Link>
                     </div>
                 </div>
 

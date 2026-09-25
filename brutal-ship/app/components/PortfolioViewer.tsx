@@ -70,7 +70,8 @@ export default function PortfolioViewer({ src, alt, titulo, filtro = "" }: Portf
                         src={src}
                         width={800}
                         height={600}
-                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        // Una columna en celular, dos en tablet y tres (de ~384px) en escritorio.
+                        sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 400px"
                         loading="lazy"
                     />
                 </span>

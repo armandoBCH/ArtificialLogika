@@ -16,27 +16,24 @@ interface NavbarProps {
  *  siempre terminan divergiendo (ya había pasado: la nav apuntaba a #servicios,
  *  una sección que ya no existe). `soloMovil` marca las que caben en el panel
  *  pero saturarían la barra horizontal. */
-/* Dos etiquetas no coincidian con su seccion:
+/* Desde 2026-09 la home tiene seis bloques y la nav apunta a los que existen:
 
-   - "Como funciona" apuntaba a #quien-hace-que, cuyo titulo es "Tu parte del
-     trabajo". Como funciona describe al PROCESO, asi que habia dos entradas que
-     sonaban igual y la primera llevaba al lugar equivocado.
-   - "Planes" apuntaba a #precios, titulado "Que recibis y cuanto sale". Precios
-     es la palabra que la gente busca y la que usa la seccion.
+   - "Cómo funciona" lleva a #como-funciona. Antes había dos entradas que sonaban
+     igual ("Quién hace qué" y "Cómo funciona") para dos secciones que decían lo
+     mismo; quedó una sola sección y una sola entrada.
+   - "Clientes" salió: las citas viven dentro de Nuestro trabajo.
+   - "Nosotros" lleva a la ficha del equipo, que ahora está en Contacto.
+   - "Precios" es la palabra que la gente busca y la que usa la sección.
 
-   Los colores de hover tambien se limpiaron. Habia cinco hex sueltos, uno de
-   ellos (#4A90FF) fuera de la paleta y otro (#FF6B6B) un casi-acierto del token
-   hot-coral (#FF5A5F). Un color por entrada no comunicaba nada: era un arcoiris
-   arbitrario. Ahora hay un solo acento, que es el de la marca. */
+   Un solo color de hover, el de la marca: el arcoíris de cinco hex sueltos que
+   había antes no comunicaba nada. */
 const SECCIONES = [
-    { href: "#quien-hace-que", etiqueta: "Quién hace qué", soloMovil: false },
-    { href: "#proceso", etiqueta: "Cómo funciona", soloMovil: true },
+    { href: "#como-funciona", etiqueta: "Cómo funciona", soloMovil: false },
     { href: "/portafolio", etiqueta: "Trabajos", soloMovil: false },
-    { href: "#quienes-somos", etiqueta: "Nosotros", soloMovil: true },
-    { href: "#clientes", etiqueta: "Clientes", soloMovil: true },
-    { href: "#garantia", etiqueta: "Garantía", soloMovil: true },
     { href: "#precios", etiqueta: "Precios", soloMovil: false },
+    { href: "#garantia", etiqueta: "Garantía", soloMovil: true },
     { href: "#faq", etiqueta: "Preguntas", soloMovil: false },
+    { href: "#quienes-somos", etiqueta: "Nosotros", soloMovil: true },
 ];
 
 export default function Navbar({ config }: NavbarProps) {

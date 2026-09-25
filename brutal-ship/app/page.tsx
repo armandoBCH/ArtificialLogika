@@ -1,14 +1,8 @@
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
-import OfferBand from "./components/OfferBand";
-import MarqueeBanner from "./components/MarqueeBanner";
 import WhoDoesWhatSection from "./components/WhoDoesWhatSection";
-import ProcessSection from "./components/ProcessSection";
-import AboutSection from "./components/AboutSection";
 import PortfolioShowcase from "./components/PortfolioShowcase";
-import OldWebsiteSection from "./components/OldWebsiteSection";
 import GuaranteeSection from "./components/GuaranteeSection";
-import TestimonialsSection from "./components/TestimonialsSection";
 import PricingSection from "./components/PricingSection";
 import FAQSection from "./components/FAQSection";
 import ContactSection from "./components/ContactSection";
@@ -45,21 +39,21 @@ export default async function Home() {
       <Navbar config={config} />
       <main id="contenido">
       <HeroSection />
-      <OfferBand />
-      <MarqueeBanner />
-      {/* Orden pensado para conversión: tesis -> problema -> prueba visual -> cómo ->
-          prueba real -> qué recibís -> cuánto cuesta -> objeciones -> acción.
-          Qué recibís y cuánto cuesta viven juntos en Precios: cada plan lista sus
-          características. Hubo una sección de Servicios aparte, pero obligaba a
-          cruzar 1.364px de testimonios para comparar, y se sacó junto con su
-          tabla. Dos secciones de features se removieron por redundancia con
-          WhoDoesWhatSection. */}
+      {/* Seis bloques, uno por pregunta de quien llega sin conocernos:
+          ¿qué hacen? -> ¿qué tengo que hacer yo? -> ¿son reales? ->
+          ¿cuánto sale y si no me gusta? -> mis otras dudas -> ¿con quién hablo?
+
+          Hasta 2026-09 eran trece y medían 27,6 pantallas de celular. Se fue lo
+          que decía otra vez algo ya dicho:
+          - Banda de oferta y marquee: la oferta es una línea del hero.
+          - "¿Tu web es vieja?": su gancho es media frase del hero.
+          - Proceso: contaba la misma asimetría que Cómo funciona; quedan sus
+            tiempos (al pie de esa sección) y sus promesas (en la garantía).
+          - Nosotros: es la ficha del equipo en Contacto.
+          - Testimonios: son los mismos clientes del portafolio; van ahí.
+          La garantía no es una parada propia: es la franja que abre Precios. */}
       <WhoDoesWhatSection />
-      <OldWebsiteSection />
-      <ProcessSection />
-      <AboutSection />
-      <PortfolioShowcase projects={projects} />
-      <TestimonialsSection testimonials={testimonials} />
+      <PortfolioShowcase projects={projects} testimonials={testimonials} />
       <GuaranteeSection />
       <PricingSection plans={plans} config={config} />
       <FAQSection faqs={faqs} config={config} />
@@ -73,4 +67,3 @@ export default async function Home() {
     </>
   );
 }
-

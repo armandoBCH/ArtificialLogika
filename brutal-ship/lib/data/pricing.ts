@@ -12,7 +12,7 @@ const DEFAULT_PLANS: PricingPlan[] = [
         payment_type: "Pago Único",
         price_note: null,
         features: [
-            { text: "Mockup previo gratis", icon: "draw", is_highlighted: true, icon_bg: "bg-hot-coral" },
+            { text: "Diseño previo gratis", icon: "draw", is_highlighted: true, icon_bg: "bg-hot-coral" },
             { text: "Presupuesto sin cargo", icon: "request_quote", is_highlighted: true, icon_bg: "bg-accent-yellow" },
             { text: "Página con tu info", icon: "check", is_highlighted: false, icon_bg: "bg-accent-yellow" },
             { text: "Perfecto en celular", icon: "check", is_highlighted: false, icon_bg: "bg-accent-yellow" },
@@ -46,7 +46,7 @@ const DEFAULT_PLANS: PricingPlan[] = [
         // que responden sobre el negocio.
         price_note: null,
         features: [
-            { text: "Mockup previo gratis", icon: "draw", is_highlighted: true, icon_bg: "bg-hot-coral" },
+            { text: "Diseño previo gratis", icon: "draw", is_highlighted: true, icon_bg: "bg-hot-coral" },
             { text: "Presupuesto sin cargo", icon: "request_quote", is_highlighted: true, icon_bg: "bg-accent-yellow" },
             { text: "Todo Institucional +", icon: "check", is_highlighted: true, icon_bg: "bg-accent-yellow" },
             { text: "Catálogo con fotos", icon: "check", is_highlighted: false, icon_bg: "bg-accent-yellow" },
@@ -76,7 +76,7 @@ const DEFAULT_PLANS: PricingPlan[] = [
         payment_type: "Pago Único",
         price_note: null,
         features: [
-            { text: "Mockup previo gratis", icon: "draw", is_highlighted: true, icon_bg: "bg-hot-coral" },
+            { text: "Diseño previo gratis", icon: "draw", is_highlighted: true, icon_bg: "bg-hot-coral" },
             { text: "Presupuesto sin cargo", icon: "request_quote", is_highlighted: true, icon_bg: "bg-accent-yellow" },
             { text: "Todo lo de Landing +", icon: "check", is_highlighted: true, icon_bg: "bg-accent-yellow" },
             { text: "Diseño a medida", icon: "check", is_highlighted: false, icon_bg: "bg-accent-yellow" },

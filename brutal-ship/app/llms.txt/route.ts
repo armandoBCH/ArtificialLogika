@@ -77,12 +77,12 @@ export async function GET() {
         "1. El cliente cuenta qué necesita, por WhatsApp o formulario (unos 5 minutos).",
         "2. Logika muestra un diseño antes de construir nada. El cliente lo revisa y pide cambios.",
         "3. Si el diseño no convence, se devuelve la seña completa y ahí termina.",
-        "4. Aprobado el diseño, el desarrollo lleva de 1 a 2 semanas.",
+        "4. Aprobado el diseño, el desarrollo lleva de 1 a 2 semanas para una landing page, y de 2 a 4 para un sitio institucional o un e-commerce.",
         "5. Logika publica el sitio y configura dominio, correo y todo lo técnico.",
         "",
         "Se arranca con el 50% de seña. El resto se paga cuando la web está lista.",
         "Incluye un mes de soporte sin costo extra.",
-        "El mockup y el presupuesto no tienen cargo ni compromiso.",
+        "El diseño previo (mockup) y el presupuesto no tienen cargo ni compromiso.",
         ""
     );
 

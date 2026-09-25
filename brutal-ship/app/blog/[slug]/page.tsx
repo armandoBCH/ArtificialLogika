@@ -226,7 +226,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     <div className="relative z-10">
                         <h2 className="text-4xl md:text-5xl font-black uppercase mb-4 tracking-tight leading-none text-black">¿Necesitás tu web<br /> <span className="text-primary">profesional?</span></h2>
                         <p className="text-xl md:text-2xl font-medium text-ink-black mb-8 max-w-2xl mx-auto">
-                            Contactanos y en menos de 48hs te enviamos un presupuesto + mockup gratis. Sin letra chica.
+                            Contactanos y en menos de 48hs te enviamos un presupuesto y un diseño previo de tu web, gratis. Sin letra chica.
                         </p>
                         <Link
                             href="/#contacto"
