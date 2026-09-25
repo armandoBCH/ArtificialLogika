@@ -32,6 +32,8 @@ export interface LineaMensual {
     refId: string | null;
     nombre: string;
     detalle: string;
+    /** Renglones de lo que cubre la cuota, como el "qué incluye" de un ítem. */
+    incluye: string[];
     precio: number;
 }
 
@@ -70,6 +72,8 @@ export interface ItemCatalogo {
     id: string;
     name: string;
     description: string;
+    /** Renglones que viajan al presupuesto cuando se suma el ítem. */
+    includes: string[];
     price: number;
     unit: string;
     category: string;
@@ -124,9 +128,19 @@ export const CONDICIONES_POR_DEFECTO = [
 
 export const MEDIOS_DE_PAGO_POR_DEFECTO = "Transferencia bancaria. Si lo necesitás, armamos un plan de pago.";
 
-/** Lo que cubre la cuota, tal como lo lista la sección de precios del sitio. */
-export const DETALLE_MANTENIMIENTO =
-    "Hosting, dominio, certificado de seguridad, copias de respaldo, actualizaciones y soporte por WhatsApp.";
+/**
+ * Lo que cubre la cuota del plan, igual que la sección de precios del sitio.
+ * Va en renglones y no en un párrafo: leído de corrido, el cliente no distingue
+ * cuántas cosas está recibiendo por ese precio.
+ */
+export const INCLUYE_MANTENIMIENTO = [
+    "Hosting en servidores rápidos",
+    "Dominio web anual",
+    "Certificado de seguridad (el candadito)",
+    "Copias de respaldo automáticas",
+    "Actualizaciones y mantenimiento",
+    "Soporte directo por WhatsApp",
+];
 
 export const PLAZOS_SUGERIDOS = ["1 a 2 semanas", "2 a 4 semanas", "4 a 6 semanas"];
 
@@ -136,24 +150,49 @@ export const PLAZOS_SUGERIDOS = ["1 a 2 semanas", "2 a 4 semanas", "4 a 6 semana
  */
 const DOLAR_REFERENCIA = 1530;
 
-/** El catálogo de supabase/presupuestos-y-pesos-2026-09-16.sql, para cuando la tabla todavía no existe. */
-export const CATALOGO_BASE: ItemCatalogo[] = [
-    ["Página adicional", "Una sección nueva con su propio diseño y contenido.", 45000, "por página", "Contenido"],
-    ["Blog con artículos", "Sección de notas para publicar novedades y aparecer más en Google.", 90000, "", "Contenido"],
-    ["Sitio en otro idioma", "Versión completa del sitio en un segundo idioma.", 120000, "por idioma", "Contenido"],
-    ["Carga de productos", "Cargamos fotos, precios y descripciones al catálogo.", 45000, "cada 50 productos", "Contenido"],
-    ["Turnos y reservas online", "Tus clientes eligen día y horario desde la web.", 150000, "", "Funciones"],
-    ["Conexión con otro sistema", "Integración con una planilla, un sistema de gestión o un servicio externo.", 120000, "", "Funciones"],
-    ["Diseño de logo", "Logo a medida con sus variantes para web y redes.", 90000, "", "Diseño"],
-    ["Entrega prioritaria", "Tu proyecto pasa adelante en la agenda.", 80000, "", "Plazos"],
-].map(([name, description, price, unit, category], i) => ({
+/** El catálogo que siembran los SQL de supabase/, para cuando la tabla todavía no existe. */
+export const CATALOGO_BASE: ItemCatalogo[] = (
+    [
+        ["Página adicional", "Una sección nueva con su propio diseño y contenido.", 45000, "por página", "Contenido", false, []],
+        ["Blog con artículos", "Sección de notas para publicar novedades y aparecer más en Google.", 90000, "", "Contenido", false, []],
+        ["Sitio en otro idioma", "Versión completa del sitio en un segundo idioma.", 120000, "por idioma", "Contenido", false, []],
+        ["Carga de productos", "Cargamos fotos, precios y descripciones al catálogo.", 45000, "cada 50 productos", "Contenido", false, []],
+        ["Turnos y reservas online", "Tus clientes eligen día y horario desde la web.", 150000, "", "Funciones", false, []],
+        ["Conexión con otro sistema", "Integración con una planilla, un sistema de gestión o un servicio externo.", 120000, "", "Funciones", false, []],
+        ["Diseño de logo", "Logo a medida con sus variantes para web y redes.", 90000, "", "Diseño", false, []],
+        ["Entrega prioritaria", "Tu proyecto pasa adelante en la agenda.", 80000, "", "Plazos", false, []],
+        ["Hosting y dominio", "Mantener la web online, a tu nombre.", 23000, "", "Mensuales", true, [
+            "Hosting en servidores rápidos",
+            "Dominio .com o .com.ar",
+            "Certificado de seguridad (el candadito)",
+            "Casilla de correo del negocio",
+        ]],
+        ["Mantenimiento y soporte", "Nos ocupamos de que la web siga andando y al día.", 39000, "", "Mensuales", true, [
+            "Cambios de textos y fotos",
+            "Copias de respaldo automáticas",
+            "Actualizaciones de seguridad",
+            "Soporte directo por WhatsApp",
+        ]],
+        ["Carga de contenido", "Publicamos lo nuevo por vos, todos los meses.", 45000, "", "Mensuales", true, [
+            "Publicamos novedades o productos",
+            "Fotos preparadas para la web",
+            "Textos revisados",
+        ]],
+        ["Informe de visitas", "Todos los meses te contamos cómo viene la web.", 18000, "", "Mensuales", true, [
+            "Cuánta gente entró",
+            "De dónde llegan tus clientes",
+            "Qué páginas miran más",
+        ]],
+    ] as [string, string, number, string, string, boolean, string[]][]
+).map(([name, description, price, unit, category, is_recurring, includes], i) => ({
     id: `base-${i + 1}`,
-    name: name as string,
-    description: description as string,
-    price: price as number,
-    unit: unit as string,
-    category: category as string,
-    is_recurring: false,
+    name,
+    description,
+    includes,
+    price,
+    unit,
+    category,
+    is_recurring,
     display_order: i + 1,
     is_active: true,
 }));
@@ -228,7 +267,10 @@ export function normalizar(datos: unknown): Presupuesto {
         lineas: Array.isArray(d.lineas)
             ? d.lineas.map((l) => ({ ...lineaLibre(), ...l, incluye: Array.isArray(l.incluye) ? l.incluye : [] }))
             : [],
-        mensuales: Array.isArray(d.mensuales) ? d.mensuales : [],
+        // `incluye` no existía cuando se guardaron los primeros presupuestos.
+        mensuales: Array.isArray(d.mensuales)
+            ? d.mensuales.map((m) => ({ ...lineaMensualLibre(), ...m, incluye: Array.isArray(m.incluye) ? m.incluye : [] }))
+            : [],
         aportaCliente: Array.isArray(d.aportaCliente) ? d.aportaCliente : base.aportaCliente,
         condiciones: Array.isArray(d.condiciones) ? d.condiciones : base.condiciones,
     };
@@ -279,9 +321,27 @@ export function lineaDeMantenimiento(plan: PricingPlan): LineaMensual | null {
         // El refId sigue siendo por nombre: asi lo tienen los presupuestos ya guardados.
         refId: refMantenimiento(plan),
         nombre: `Mantenimiento ${plan.name}`,
-        detalle: DETALLE_MANTENIMIENTO,
+        detalle: "",
+        incluye: [...INCLUYE_MANTENIMIENTO],
         precio,
     };
+}
+
+/** Un servicio mensual del catálogo, listo para sumar al presupuesto. */
+export function lineaMensualDeCatalogo(item: ItemCatalogo): LineaMensual {
+    return {
+        id: nuevoId(),
+        refId: item.id,
+        nombre: item.name,
+        detalle: item.description,
+        incluye: [...(item.includes ?? [])],
+        precio: Number(item.price) || 0,
+    };
+}
+
+/** Una cuota escrita a mano, sin catálogo atrás. */
+export function lineaMensualLibre(): LineaMensual {
+    return { id: nuevoId(), refId: null, nombre: "", detalle: "", incluye: [], precio: 0 };
 }
 
 export function refMantenimiento(plan: PricingPlan): string {
@@ -386,6 +446,7 @@ export function textoWhatsApp(p: Presupuesto, t: Totales, numero: number | null,
     if (p.mensuales.length > 0) {
         r.push("");
         for (const m of p.mensuales) r.push(`${m.nombre.trim() || "Mensual"} (opcional): ${formatearPesos(m.precio)}/mes`);
+        if (p.mensuales.length > 1) r.push(`Total por mes: ${formatearPesos(t.mensual)}`);
     }
 
     if (p.plazo.trim()) {

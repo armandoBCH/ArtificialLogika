@@ -5,6 +5,13 @@ import { useRef, useState, type ReactNode } from "react";
 const miles = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 });
 
 /**
+ * Los `!` de los padding no son capricho: `.admin-input` vive en globals.css fuera
+ * de toda capa, y en la cascada eso le gana a las utilidades de Tailwind, que sí
+ * están en @layer utilities. Sin ellos, el padding de la clase pisa el espacio
+ * reservado para el "$" y para el "/mes", y el número se les monta encima.
+ */
+
+/**
  * Monto en pesos con separador de miles mientras se escribe. "229000" en un input
  * se lee mal y se tipea mal; "229.000" no. Guarda siempre un número entero.
  */
@@ -30,7 +37,7 @@ export function PesosInput({
                 type="text"
                 inputMode="numeric"
                 aria-label={etiqueta}
-                className={`admin-input w-full pl-7 text-right font-bold tabular-nums ${sufijo ? "pr-12" : ""}`}
+                className={`admin-input w-full pl-7! text-right font-bold tabular-nums ${sufijo ? "pr-12!" : ""}`}
                 placeholder="0"
                 value={valor ? miles.format(valor) : ""}
                 onFocus={(e) => e.currentTarget.select()}
@@ -75,7 +82,7 @@ export function NumeroInput({
                 type="text"
                 inputMode="decimal"
                 aria-label={etiqueta}
-                className={`admin-input w-full font-bold tabular-nums ${sufijo ? (sufijo.length > 2 ? "pr-12" : "pr-8") : ""}`}
+                className={`admin-input w-full font-bold tabular-nums ${sufijo ? (sufijo.length > 2 ? "pr-12!" : "pr-8!") : ""}`}
                 value={texto ?? (valor === 0 ? "" : String(valor).replace(".", ","))}
                 placeholder="0"
                 onFocus={(e) => e.currentTarget.select()}
@@ -159,7 +166,7 @@ export function ListaEditable({
                         ref={(el) => {
                             refs.current[i] = el;
                         }}
-                        className="admin-input flex-1 py-1.5 text-sm"
+                        className="admin-input flex-1 py-1.5! text-sm"
                         value={item}
                         placeholder={placeholder}
                         aria-label={`${placeholder} ${i + 1}`}

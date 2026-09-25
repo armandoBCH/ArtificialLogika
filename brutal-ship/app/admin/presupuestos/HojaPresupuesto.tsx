@@ -224,22 +224,51 @@ export default function HojaPresupuesto({ presupuesto: p, totales: t, numero, em
                             className="ficha rounded-lg bg-background-light p-5 pt-7"
                             style={{ "--ficha-fondo": "#f7f6f8" } as CSSProperties}
                         >
-                            <span className="ficha-etiqueta text-ink-black">Mantenimiento mensual · opcional</span>
+                            <span className="ficha-etiqueta text-ink-black">
+                                {mensuales.length > 1 ? "Servicios mensuales · opcionales" : "Mantenimiento mensual · opcional"}
+                            </span>
                             <ul className="space-y-3">
                                 {mensuales.map((m) => (
-                                    <li key={m.id} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-                                        <div className="min-w-0 flex-1">
-                                            <p className="font-display font-bold">{m.nombre}</p>
-                                            {m.detalle.trim() && <p className="text-sm text-ink-black/70">{m.detalle}</p>}
+                                    <li key={m.id} className="no-cortar border-t border-black/10 pt-3 first:border-t-0 first:pt-0">
+                                        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                                            <div className="min-w-0 flex-1">
+                                                <p className="font-display font-bold">{m.nombre}</p>
+                                                {m.detalle.trim() && <p className="text-sm text-ink-black/70">{m.detalle}</p>}
+                                            </div>
+                                            <p className="font-display text-xl font-bold tabular-nums">
+                                                {formatearPesos(m.precio)}
+                                                <span className="text-sm font-bold text-ink-black/60">/mes</span>
+                                            </p>
                                         </div>
-                                        <p className="font-display text-xl font-bold tabular-nums">
-                                            {formatearPesos(m.precio)}
-                                            <span className="text-sm font-bold text-ink-black/60">/mes</span>
-                                        </p>
+                                        {m.incluye.filter((i) => i.trim()).length > 0 && (
+                                            <ul className="mt-2 grid gap-x-6 gap-y-1.5 @lg:grid-cols-2 @3xl:grid-cols-3">
+                                                {m.incluye
+                                                    .filter((i) => i.trim())
+                                                    .map((item, i) => (
+                                                        <li key={i} className="flex items-start gap-2 text-[13px] leading-snug">
+                                                            <Tilde />
+                                                            <span>{item}</span>
+                                                        </li>
+                                                    ))}
+                                            </ul>
+                                        )}
                                     </li>
                                 ))}
                             </ul>
-                            <p className="mt-3 text-xs font-bold text-ink-black/60">No es obligatorio y lo cancelás cuando quieras.</p>
+                            {/* Con más de una cuota, la suma es el número que el cliente
+                                necesita para decidir; leerlo sumando de a uno no es su trabajo. */}
+                            {mensuales.length > 1 && (
+                                <div className="mt-4 flex items-baseline justify-between gap-4 border-t-2 border-black/15 pt-3">
+                                    <p className="font-display text-xs font-bold uppercase tracking-[0.14em]">Total por mes</p>
+                                    <p className="font-display text-xl font-bold tabular-nums">
+                                        {formatearPesos(t.mensual)}
+                                        <span className="text-sm font-bold text-ink-black/60">/mes</span>
+                                    </p>
+                                </div>
+                            )}
+                            <p className="mt-3 text-xs font-bold text-ink-black/60">
+                                {mensuales.length > 1 ? "No son obligatorios y los cancelás cuando quieras." : "No es obligatorio y lo cancelás cuando quieras."}
+                            </p>
                         </section>
                     </div>
                 )}

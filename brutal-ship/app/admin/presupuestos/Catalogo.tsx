@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { escribir } from "./api";
-import { PesosInput } from "./controles";
+import { ListaEditable, PesosInput } from "./controles";
 import type { ItemCatalogo } from "./modelo";
 
 /**
@@ -22,13 +22,14 @@ interface Props {
 type Borrador = Omit<ItemCatalogo, "id"> & { id: string | null; clave: string };
 
 /** Solo lo editable: `updated_at` cambia en cada guardado y marcaría la fila como sucia. */
-const firma = (x: Borrador) => JSON.stringify([x.name, x.description, x.price, x.unit, x.category, x.is_recurring, x.is_active]);
+const firma = (x: Borrador) => JSON.stringify([x.name, x.description, x.includes, x.price, x.unit, x.category, x.is_recurring, x.is_active]);
 
 const vacio = (orden: number): Borrador => ({
     id: null,
     clave: `nuevo-${Date.now()}`,
     name: "",
     description: "",
+    includes: [],
     price: 0,
     unit: "",
     category: "Extras",
@@ -65,7 +66,7 @@ export default function Catalogo({ abierto, onCerrar, items, onCambio, baseLista
                     <div>
                         <h2 id="catalogo-titulo" className="font-display text-xl font-bold">Catálogo de extras</h2>
                         <p className="text-sm text-gray-400">
-                            Lo que sumás a un presupuesto con un clic. Cambiar un precio acá no toca los presupuestos ya guardados.
+                            Extras que se cobran una vez y servicios que se cobran por mes. Cambiar un precio acá no toca los presupuestos ya guardados.
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -166,6 +167,7 @@ function Fila({
         const campos = {
             name: b.name.trim(),
             description: b.description.trim(),
+            includes: b.includes.filter((i) => i.trim()),
             price: b.price,
             unit: b.unit.trim(),
             category: b.category.trim() || "Extras",
@@ -175,7 +177,7 @@ function Fila({
         };
         try {
             const fila = await escribir<ItemCatalogo>("quote_catalog", b.id ? "PUT" : "POST", b.id ? { id: b.id, ...campos } : campos);
-            const guardado = { ...fila, price: Number(fila.price) };
+            const guardado = { ...fila, price: Number(fila.price), includes: fila.includes ?? [] };
             setEstado("quieto");
             setB({ ...guardado, clave: b.clave });
             onGuardado(guardado);
@@ -203,7 +205,7 @@ function Fila({
                 <input
                     className="admin-input w-full font-bold"
                     aria-label="Nombre"
-                    placeholder="Nombre del extra"
+                    placeholder={b.is_recurring ? "Nombre del servicio mensual" : "Nombre del extra"}
                     value={b.name}
                     disabled={!baseLista}
                     autoFocus={b.id === null}
@@ -229,9 +231,10 @@ function Fila({
                 <input
                     className="admin-input w-full text-sm"
                     aria-label="Unidad"
-                    placeholder="por página"
-                    value={b.unit}
-                    disabled={!baseLista}
+                    placeholder={b.is_recurring ? "por mes" : "por página"}
+                    value={b.is_recurring ? "" : b.unit}
+                    disabled={!baseLista || b.is_recurring}
+                    title={b.is_recurring ? "Un servicio mensual siempre se cobra por mes" : undefined}
                     onChange={(e) => set({ unit: e.target.value })}
                 />
                 <fieldset disabled={!baseLista} className="contents">
@@ -257,9 +260,33 @@ function Fila({
                     </button>
                 </div>
             </div>
+            <details className="group mt-2">
+                <summary className="flex cursor-pointer list-none items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-500 hover:text-white">
+                    <span aria-hidden="true" className="material-icons text-base transition-transform group-open:rotate-90">chevron_right</span>
+                    Qué incluye{b.includes.filter((i) => i.trim()).length > 0 ? ` (${b.includes.filter((i) => i.trim()).length})` : ""}
+                    <span className="font-medium normal-case tracking-normal text-gray-600">· viaja al presupuesto</span>
+                </summary>
+                <div className="mt-2 pl-5">
+                    <fieldset disabled={!baseLista}>
+                        <ListaEditable
+                            items={b.includes}
+                            onChange={(includes) => set({ includes })}
+                            placeholder="Algo que incluye"
+                            agregar="Agregar renglón"
+                        />
+                    </fieldset>
+                </div>
+            </details>
+
             <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs font-bold text-gray-400">
                 <label className="flex cursor-pointer items-center gap-1.5">
-                    <input type="checkbox" className="h-4 w-4 accent-[#8523e1]" checked={b.is_recurring} disabled={!baseLista} onChange={(e) => set({ is_recurring: e.target.checked })} />
+                    <input
+                        type="checkbox"
+                        className="h-4 w-4 accent-[#8523e1]"
+                        checked={b.is_recurring}
+                        disabled={!baseLista}
+                        onChange={(e) => set({ is_recurring: e.target.checked, unit: e.target.checked ? "" : b.unit })}
+                    />
                     Se cobra por mes
                 </label>
                 <label className="flex cursor-pointer items-center gap-1.5">

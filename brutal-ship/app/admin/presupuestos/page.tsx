@@ -23,6 +23,9 @@ export default async function PresupuestosPage() {
 
     // Si alguna de las dos tablas no existe, el SQL todavía no se corrió.
     const baseLista = !catalogo.error && !guardados.error;
+    // La columna `includes` llegó después: sin ella no se pueden guardar los
+    // renglones de cada servicio.
+    const faltaColumnaIncluye = baseLista && (catalogo.data ?? []).some((i) => i.includes === undefined);
     const ajustes = Object.fromEntries((config.data ?? []).map((fila) => [fila.key, fila.value])) as Record<string, string>;
 
     return (
@@ -31,7 +34,7 @@ export default async function PresupuestosPage() {
             leads={(leads.data ?? []) as Lead[]}
             catalogo={
                 baseLista
-                    ? ((catalogo.data ?? []) as ItemCatalogo[]).map((i) => ({ ...i, price: Number(i.price) }))
+                    ? ((catalogo.data ?? []) as ItemCatalogo[]).map((i) => ({ ...i, price: Number(i.price), includes: i.includes ?? [] }))
                     : CATALOGO_BASE
             }
             guardados={
@@ -46,6 +49,7 @@ export default async function PresupuestosPage() {
                 web: new URL(SITE_URL).host.replace(/^www\./, ""),
             }}
             baseLista={baseLista}
+            faltaColumnaIncluye={faltaColumnaIncluye}
         />
     );
 }

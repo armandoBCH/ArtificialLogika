@@ -41,7 +41,7 @@ const ALLOWED_FIELDS: Record<AllowedTable, string[]> = {
     // `number` no esta: lo asigna la base y es el correlativo que ve el cliente.
     quotes: ["client_name", "title", "status", "total", "data"],
     quote_catalog: [
-        "name", "description", "price", "unit", "category",
+        "name", "description", "includes", "price", "unit", "category",
         "is_recurring", "display_order", "is_active",
     ],
 };

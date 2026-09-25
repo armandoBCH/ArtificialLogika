@@ -20,6 +20,8 @@ import {
     lineaDeMantenimiento,
     lineaDePlan,
     lineaLibre,
+    lineaMensualDeCatalogo,
+    lineaMensualLibre,
     normalizar,
     normalizarWhatsApp,
     nuevoId,
@@ -53,7 +55,8 @@ import {
  */
 
 const CLAVE_EN_CURSO = "logika:presupuesto-en-curso";
-const SQL_PENDIENTE = "supabase/presupuestos-y-pesos-2026-09-16.sql";
+const SQL_TABLAS = "supabase/presupuestos-y-pesos-2026-09-16.sql";
+const SQL_MENSUALES = "supabase/servicios-mensuales-2026-09-22.sql";
 
 const BOTON_PRIMARIO =
     "inline-flex items-center justify-center gap-1.5 rounded-sm border-2 border-black bg-primary px-4 py-2 text-sm font-bold text-white shadow-neobrutalism-sm transition-all hover:translate-x-px hover:translate-y-px hover:shadow-none disabled:pointer-events-none disabled:opacity-50";
@@ -67,6 +70,7 @@ interface Props {
     guardados: PresupuestoGuardado[];
     empresa: Empresa;
     baseLista: boolean;
+    faltaColumnaIncluye: boolean;
 }
 
 interface EnCurso {
@@ -102,7 +106,15 @@ function leerEnCurso(): EnCurso | null {
     }
 }
 
-export default function Presupuestador({ planes, leads, catalogo: catalogoInicial, guardados: guardadosIniciales, empresa, baseLista }: Props) {
+export default function Presupuestador({
+    planes,
+    leads,
+    catalogo: catalogoInicial,
+    guardados: guardadosIniciales,
+    empresa,
+    baseLista,
+    faltaColumnaIncluye,
+}: Props) {
     const [enCurso, setEnCurso] = useState<EnCurso>(() => leerEnCurso() ?? enBlanco());
     const [catalogo, setCatalogo] = useState(catalogoInicial);
     const [guardados, setGuardados] = useState(guardadosIniciales);
@@ -207,7 +219,7 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
                     ...d,
                     mensuales: esta
                         ? d.mensuales.filter((m) => m.refId !== item.id)
-                        : [...d.mensuales, { id: nuevoId(), refId: item.id, nombre: item.name, detalle: item.description, precio: Number(item.price) }],
+                        : [...d.mensuales, lineaMensualDeCatalogo(item)],
                 };
             }
             const esta = d.lineas.some((l) => l.refId === item.id);
@@ -240,7 +252,7 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
     }
 
     function agregarMensualLibre() {
-        const linea: LineaMensual = { id: nuevoId(), refId: null, nombre: "", detalle: "", precio: 0 };
+        const linea = lineaMensualLibre();
         editar((d) => ({ ...d, mensuales: [...d.mensuales, linea] }));
         requestAnimationFrame(() => document.getElementById(`mensual-${linea.id}`)?.focus());
     }
@@ -277,7 +289,7 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
 
     async function guardar(opciones: { estado?: EstadoPresupuesto; silencioso?: boolean } = {}) {
         if (!baseLista) {
-            setError(`Para guardar falta crear la tabla de presupuestos: corré ${SQL_PENDIENTE} en el SQL Editor de Supabase.`);
+            setError(`Para guardar falta crear la tabla de presupuestos: corré ${SQL_TABLAS} en el SQL Editor de Supabase.`);
             return null;
         }
         const estadoFinal = opciones.estado ?? estado;
@@ -449,7 +461,11 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
     /* ── Derivados para la vista ─────────────────────────── */
 
     const catalogoVisible = catalogo.filter((i) => i.is_active);
-    const categorias = Array.from(new Set(catalogoVisible.map((i) => i.category || "Extras")));
+    // Los mensuales no viven con los extras: se cobran distinto y van en su sección.
+    const extras = catalogoVisible.filter((i) => !i.is_recurring);
+    const serviciosMensuales = catalogoVisible.filter((i) => i.is_recurring);
+    const categorias = Array.from(new Set(extras.map((i) => i.category || "Extras")));
+    const planesConCuota = planes.filter((p) => cuotaMensual(p));
     const planElegido = doc.lineas.find((l) => l.tipo === "plan");
     const filtrados = guardados.filter((g) =>
         `${formatearNumero(g.number)} ${g.client_name} ${g.title}`.toLowerCase().includes(busqueda.trim().toLowerCase())
@@ -480,15 +496,20 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
                 </div>
             </div>
 
-            {(!baseLista || planesEnDolares) && (
+            {(!baseLista || planesEnDolares || faltaColumnaIncluye) && (
                 <div role="note" className="flex items-start gap-3 rounded-sm border-2 border-accent-yellow/60 bg-accent-yellow/10 p-4 print:hidden">
                     <span aria-hidden="true" className="material-icons text-accent-yellow">construction</span>
                     <div className="text-sm">
                         <p className="font-bold text-accent-yellow">Falta un paso en la base de datos</p>
                         <p className="mt-1 text-white/80">
-                            Corré <code className="rounded-sm bg-black/40 px-1.5 py-0.5 text-white">{SQL_PENDIENTE}</code> en Supabase → SQL Editor.
+                            Corré{" "}
+                            <code className="rounded-sm bg-black/40 px-1.5 py-0.5 text-white">
+                                {baseLista ? SQL_MENSUALES : SQL_TABLAS}
+                            </code>{" "}
+                            en Supabase → SQL Editor.
                             {!baseLista && " Hasta entonces podés armar, descargar y mandar presupuestos, pero no guardarlos ni editar el catálogo."}
                             {planesEnDolares && " Los planes siguen en dólares en la base: acá se muestran convertidos a pesos."}
+                            {baseLista && faltaColumnaIncluye && " Falta la columna de renglones del catálogo: los servicios mensuales funcionan, pero su \"qué incluye\" no se guarda."}
                         </p>
                     </div>
                 </div>
@@ -515,7 +536,7 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
                             onChange={(e) => setBusqueda(e.target.value)}
                             placeholder="Buscar por cliente, título o número"
                             aria-label="Buscar presupuestos"
-                            className="admin-input w-full py-1.5 text-sm sm:w-72"
+                            className="admin-input w-full py-1.5! text-sm sm:w-72"
                         />
                     </header>
                     {!baseLista ? (
@@ -689,7 +710,7 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
                                     value=""
                                     onChange={(e) => traerLead(e.target.value)}
                                     aria-label="Traer datos de una consulta recibida"
-                                    className="admin-input max-w-[15rem] py-1.5 text-xs [color-scheme:dark]"
+                                    className="admin-input max-w-[15rem] py-1.5! text-xs [color-scheme:dark]"
                                 >
                                     <option value="">Traer de una consulta…</option>
                                     {leads.map((l) => (
@@ -774,41 +795,26 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
                             </button>
                         }
                     >
-                        {catalogoVisible.length === 0 ? (
-                            <p className="text-sm text-gray-400">El catálogo está vacío. Sumá extras desde “Editar catálogo”.</p>
+                        {extras.length === 0 ? (
+                            <p className="text-sm text-gray-400">No hay extras cargados. Sumalos desde “Editar catálogo”.</p>
                         ) : (
                             <div className="space-y-4">
                                 {categorias.map((categoria) => (
                                     <div key={categoria}>
                                         <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">{categoria}</p>
                                         <div className="flex flex-wrap gap-2">
-                                            {catalogoVisible
+                                            {extras
                                                 .filter((i) => (i.category || "Extras") === categoria)
-                                                .map((item) => {
-                                                    const activo = item.is_recurring
-                                                        ? doc.mensuales.some((m) => m.refId === item.id)
-                                                        : doc.lineas.some((l) => l.refId === item.id);
-                                                    return (
-                                                        <button
-                                                            key={item.id}
-                                                            type="button"
-                                                            aria-pressed={activo}
-                                                            onClick={() => alternarExtra(item)}
-                                                            title={item.description}
-                                                            className={`inline-flex items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-bold transition-all ${activo
-                                                                ? "border-black bg-accent-yellow text-ink-black shadow-neobrutalism-sm"
-                                                                : "border-white/15 bg-white/5 text-white hover:border-white/40"
-                                                                }`}
-                                                        >
-                                                            <span aria-hidden="true" className="material-icons text-base">{activo ? "check" : "add"}</span>
-                                                            {item.name}
-                                                            <span className={`font-medium tabular-nums ${activo ? "text-ink-black/70" : "text-gray-400"}`}>
-                                                                {formatearPesos(item.price)}
-                                                                {item.is_recurring ? "/mes" : item.unit ? ` ${item.unit}` : ""}
-                                                            </span>
-                                                        </button>
-                                                    );
-                                                })}
+                                                .map((item) => (
+                                                    <ChipAgregar
+                                                        key={item.id}
+                                                        activo={doc.lineas.some((l) => l.refId === item.id)}
+                                                        nombre={item.name}
+                                                        precio={`${formatearPesos(item.price)}${item.unit ? ` ${item.unit}` : ""}`}
+                                                        detalle={item.description}
+                                                        onClick={() => alternarExtra(item)}
+                                                    />
+                                                ))}
                                         </div>
                                     </div>
                                 ))}
@@ -853,68 +859,79 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
                         )}
                     </Seccion>
 
-                    <Seccion numero={5} titulo="Mantenimiento mensual" descripcion="Opcional. Va aparte del total del proyecto">
-                        <div className="flex flex-wrap gap-2">
-                            {planes.filter((p) => cuotaMensual(p)).length === 0 && (
-                                <p className="text-sm text-gray-400">Ningún plan tiene cuota mensual. Se carga en Precios, en cada plan.</p>
+                    <Seccion
+                        numero={5}
+                        titulo="Servicios mensuales"
+                        descripcion="Opcional. Van aparte del total del proyecto"
+                        accion={
+                            <button type="button" onClick={() => setCatalogoAbierto(true)} className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-[#c9a3f5] hover:text-white">
+                                <span aria-hidden="true" className="material-icons text-base">edit</span>
+                                Editar catálogo
+                            </button>
+                        }
+                    >
+                        <div className="space-y-4">
+                            {planesConCuota.length > 0 && (
+                                <div>
+                                    <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">Mantenimiento del plan</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {planesConCuota.map((plan) => (
+                                            <ChipAgregar
+                                                key={plan.id}
+                                                activo={doc.mensuales.some((m) => m.refId === refMantenimiento(plan))}
+                                                nombre={plan.name}
+                                                precio={`${formatearPesos(cuotaMensual(plan)!)}/mes`}
+                                                detalle="La cuota que publica el sitio para este plan"
+                                                onClick={() => alternarMantenimiento(plan)}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
                             )}
-                            {planes.filter((p) => cuotaMensual(p)).map((plan) => {
-                                const activo = doc.mensuales.some((m) => m.refId === refMantenimiento(plan));
-                                return (
-                                    <button
-                                        key={plan.id}
-                                        type="button"
-                                        aria-pressed={activo}
-                                        onClick={() => alternarMantenimiento(plan)}
-                                        className={`inline-flex items-center gap-2 rounded-sm border-2 px-3 py-2 text-sm font-bold transition-all ${activo
-                                            ? "border-black bg-accent-yellow text-ink-black shadow-neobrutalism-sm"
-                                            : "border-white/15 bg-white/5 text-white hover:border-white/40"
-                                            }`}
-                                    >
-                                        <span aria-hidden="true" className="material-icons text-base">{activo ? "check" : "add"}</span>
-                                        {plan.name}
-                                        <span className={`font-medium tabular-nums ${activo ? "text-ink-black/70" : "text-gray-400"}`}>
-                                            {formatearPesos(cuotaMensual(plan)!)}/mes
-                                        </span>
-                                    </button>
-                                );
-                            })}
+                            {serviciosMensuales.length > 0 && (
+                                <div>
+                                    <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">Del catálogo</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {serviciosMensuales.map((item) => (
+                                            <ChipAgregar
+                                                key={item.id}
+                                                activo={doc.mensuales.some((m) => m.refId === item.id)}
+                                                nombre={item.name}
+                                                precio={`${formatearPesos(item.price)}/mes`}
+                                                detalle={item.description}
+                                                onClick={() => alternarExtra(item)}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            {planesConCuota.length === 0 && serviciosMensuales.length === 0 && (
+                                <p className="text-sm text-gray-400">
+                                    No hay servicios mensuales cargados. Agregalos desde “Editar catálogo”, o sumá uno a mano acá abajo.
+                                </p>
+                            )}
                         </div>
+
                         {doc.mensuales.length > 0 && (
-                            <ul className="mt-4 space-y-2">
+                            <ul className="mt-4 space-y-3">
                                 {doc.mensuales.map((m) => (
-                                    <li key={m.id} className="grid gap-2 rounded-sm border-2 border-white/10 bg-white/[0.03] p-3 sm:grid-cols-[minmax(0,1fr)_10rem_auto] sm:items-start">
-                                        <div className="grid gap-2">
-                                            <input
-                                                id={`mensual-${m.id}`}
-                                                className="admin-input w-full py-2 font-bold"
-                                                aria-label="Nombre de la cuota"
-                                                placeholder="Nombre de la cuota"
-                                                value={m.nombre}
-                                                onChange={(e) => setMensual(m.id, { nombre: e.target.value })}
-                                            />
-                                            <input
-                                                className="admin-input w-full py-1.5 text-sm"
-                                                aria-label="Qué incluye la cuota"
-                                                placeholder="Qué incluye (opcional)"
-                                                value={m.detalle}
-                                                onChange={(e) => setMensual(m.id, { detalle: e.target.value })}
-                                            />
-                                        </div>
-                                        <PesosInput etiqueta="Precio por mes" valor={m.precio} sufijo="/mes" onChange={(precio) => setMensual(m.id, { precio })} />
-                                        <BotonIcono
-                                            icono="delete_outline"
-                                            etiqueta="Quitar cuota"
-                                            peligro
-                                            onClick={() => editar((d) => ({ ...d, mensuales: d.mensuales.filter((x) => x.id !== m.id) }))}
-                                        />
-                                    </li>
+                                    <EditorMensual
+                                        key={m.id}
+                                        mensual={m}
+                                        onCambio={(cambios) => setMensual(m.id, cambios)}
+                                        onQuitar={() => editar((d) => ({ ...d, mensuales: d.mensuales.filter((x) => x.id !== m.id) }))}
+                                    />
                                 ))}
                             </ul>
                         )}
-                        <button type="button" onClick={agregarMensualLibre} className="mt-3 inline-flex items-center gap-1 py-1 text-xs font-bold uppercase tracking-wider text-[#c9a3f5] hover:text-white">
+
+                        <button
+                            type="button"
+                            onClick={agregarMensualLibre}
+                            className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-sm border-2 border-dashed border-white/15 py-2.5 text-xs font-bold uppercase tracking-wider text-[#c9a3f5] transition-colors hover:border-white/40 hover:text-white"
+                        >
                             <span aria-hidden="true" className="material-icons text-base">add</span>
-                            Cuota libre
+                            Servicio mensual a mano
                         </button>
                     </Seccion>
 
@@ -945,7 +962,7 @@ export default function Presupuestador({ planes, leads, catalogo: catalogoInicia
                                     )}
                                 </div>
                                 <input
-                                    className="admin-input w-full py-1.5 text-sm"
+                                    className="admin-input w-full py-1.5! text-sm"
                                     aria-label="Motivo del descuento"
                                     placeholder="Motivo (opcional): pago contado, referido…"
                                     value={doc.descuento.motivo}
@@ -1119,7 +1136,7 @@ function EditorLinea({
                         <span className={`shrink-0 rounded-sm border px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${tipo.clase}`}>{tipo.texto}</span>
                         <input
                             id={`linea-${l.id}`}
-                            className="admin-input w-full py-2 font-bold"
+                            className="admin-input w-full py-2! font-bold"
                             aria-label="Nombre del ítem"
                             placeholder="Nombre del ítem"
                             value={l.nombre}
@@ -1127,7 +1144,7 @@ function EditorLinea({
                         />
                     </div>
                     <input
-                        className="admin-input w-full py-1.5 text-sm"
+                        className="admin-input w-full py-1.5! text-sm"
                         aria-label="Descripción del ítem"
                         placeholder="Descripción corta (opcional)"
                         value={l.detalle}
@@ -1186,6 +1203,91 @@ function EditorLinea({
                 </div>
             </details>
         </li>
+    );
+}
+
+/** Un servicio mensual dentro del presupuesto: nombre, precio y sus renglones. */
+function EditorMensual({
+    mensual: m,
+    onCambio,
+    onQuitar,
+}: {
+    mensual: LineaMensual;
+    onCambio: (cambios: Partial<LineaMensual>) => void;
+    onQuitar: () => void;
+}) {
+    const cantidadIncluye = m.incluye.filter((i) => i.trim()).length;
+
+    return (
+        <li className="rounded-sm border-2 border-white/10 bg-white/[0.03]">
+            <div className="grid gap-2 p-3 sm:grid-cols-[minmax(0,1fr)_10rem_auto] sm:items-start">
+                <div className="grid gap-2">
+                    <input
+                        id={`mensual-${m.id}`}
+                        className="admin-input w-full py-2! font-bold"
+                        aria-label="Nombre del servicio mensual"
+                        placeholder="Nombre del servicio mensual"
+                        value={m.nombre}
+                        onChange={(e) => onCambio({ nombre: e.target.value })}
+                    />
+                    <input
+                        className="admin-input w-full py-1.5! text-sm"
+                        aria-label="Descripción del servicio mensual"
+                        placeholder="Descripción corta (opcional)"
+                        value={m.detalle}
+                        onChange={(e) => onCambio({ detalle: e.target.value })}
+                    />
+                </div>
+                <PesosInput etiqueta={`Precio por mes de ${m.nombre || "el servicio"}`} valor={m.precio} sufijo="/mes" onChange={(precio) => onCambio({ precio })} />
+                <BotonIcono icono="delete_outline" etiqueta="Quitar servicio mensual" peligro onClick={onQuitar} />
+            </div>
+            <details className="group border-t-2 border-white/5">
+                <summary className="flex cursor-pointer list-none items-center gap-1.5 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-white">
+                    <span aria-hidden="true" className="material-icons text-base transition-transform group-open:rotate-90">chevron_right</span>
+                    Qué incluye{cantidadIncluye > 0 ? ` (${cantidadIncluye})` : ""}
+                </summary>
+                <div className="px-3 pb-3">
+                    <ListaEditable
+                        items={m.incluye}
+                        onChange={(incluye) => onCambio({ incluye })}
+                        placeholder="Algo que incluye la cuota"
+                        agregar="Agregar renglón"
+                    />
+                </div>
+            </details>
+        </li>
+    );
+}
+
+/** El botón de sumar del catálogo: mismo gesto para extras, planes y mensuales. */
+function ChipAgregar({
+    activo,
+    nombre,
+    precio,
+    detalle,
+    onClick,
+}: {
+    activo: boolean;
+    nombre: string;
+    precio: string;
+    detalle?: string;
+    onClick: () => void;
+}) {
+    return (
+        <button
+            type="button"
+            aria-pressed={activo}
+            onClick={onClick}
+            title={detalle}
+            className={`inline-flex items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-bold transition-all ${activo
+                ? "border-black bg-accent-yellow text-ink-black shadow-neobrutalism-sm"
+                : "border-white/15 bg-white/5 text-white hover:border-white/40"
+                }`}
+        >
+            <span aria-hidden="true" className="material-icons text-base">{activo ? "check" : "add"}</span>
+            {nombre}
+            <span className={`font-medium tabular-nums ${activo ? "text-ink-black/70" : "text-gray-400"}`}>{precio}</span>
+        </button>
     );
 }
 
