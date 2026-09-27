@@ -28,7 +28,9 @@ export default function GaleriaProyecto({ imagenes, alt, titulo }: GaleriaProyec
 
     return (
         <div>
-            <div className={`relative overflow-hidden rounded-xl border-2 border-black bg-background-light shadow-neobrutalism ${imagen.formato === "4:3" ? "aspect-[4/3]" : "aspect-video"}`}>
+            {/* En celular la captura va de borde a borde, sin marco: se integra con la página
+                como la foto de un producto. Desde tablet vuelve el marco, que la separa del panel. */}
+            <div className={`relative -mx-4 overflow-hidden bg-background-light sm:mx-0 sm:rounded-xl sm:border-2 sm:border-black sm:shadow-neobrutalism ${imagen.formato === "4:3" ? "aspect-[4/3]" : "aspect-video"}`}>
                 <PortfolioViewer key={imagen.src} src={imagen.src} alt={alt} titulo={titulo} sizes="(max-width: 1023px) 100vw, 720px" />
             </div>
 

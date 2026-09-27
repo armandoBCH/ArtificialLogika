@@ -81,7 +81,7 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
             : "bg-white text-ink-black shadow-neobrutalism-sm active:translate-y-[1px] active:shadow-none"}`;
 
     return (
-        <div className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 md:pb-24 md:pt-12 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 md:pb-24 lg:px-8">
             <nav aria-label="Ruta" className="text-sm font-bold text-ink-black/60">
                 <Link href="/" className="inline-flex min-h-11 items-center hover:text-primary">Inicio</Link>
                 <span aria-hidden="true" className="mx-2">/</span>

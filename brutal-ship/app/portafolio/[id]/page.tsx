@@ -136,7 +136,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
      * bloque negro de cierre que repetía el CTA.
      */
     return (
-        <main className="min-h-screen bg-white text-ink-black pt-24">
+        <main className="min-h-screen bg-white text-ink-black pt-[72px] sm:pt-20 md:pt-28">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
@@ -147,7 +147,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             />
             <Navbar config={config} />
 
-            <div className="mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6 md:pt-10 lg:px-8">
+            <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
                 <nav aria-label="Ruta" className="flex flex-wrap items-center text-sm font-bold text-ink-black/60">
                     <Link href="/" className="inline-flex min-h-11 items-center hover:text-primary">Inicio</Link>
                     <span aria-hidden="true" className="mx-2">/</span>
@@ -181,10 +181,12 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                 {project.description}
                             </p>
 
+                            {/* Flex y no grilla fija: con una sola métrica ocupa todo el ancho; con tres,
+                                la tercera toma la fila entera en vez de dejar medio hueco. */}
                             {stats.length > 0 && (
-                                <dl className="mt-5 grid grid-cols-2 gap-3">
+                                <dl className="mt-5 flex flex-wrap gap-3">
                                     {stats.map((s, i) => (
-                                        <div key={i} className="flex flex-col-reverse items-center rounded-lg border-2 border-black bg-accent-yellow px-3 py-3 text-center">
+                                        <div key={i} className="flex min-w-[calc(50%-6px)] flex-1 flex-col-reverse items-center rounded-lg border-2 border-black bg-accent-yellow px-3 py-3 text-center">
                                             <dt className="mt-1 text-xs font-bold uppercase tracking-wider text-ink-black/80">{s.label}</dt>
                                             <dd className="text-3xl font-black leading-none tabular-nums">{s.value}</dd>
                                         </div>

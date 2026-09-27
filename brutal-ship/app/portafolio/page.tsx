@@ -64,7 +64,7 @@ export default async function PortafolioPage() {
     };
 
     return (
-        <main className="min-h-screen bg-white text-ink-black pt-24 bg-dot-pattern">
+        <main className="min-h-screen bg-white text-ink-black pt-[72px] sm:pt-20 md:pt-28 bg-dot-pattern">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
