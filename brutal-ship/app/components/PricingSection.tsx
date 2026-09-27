@@ -211,15 +211,15 @@ const NOTA_PRECIO: Record<string, string> = {
 
 const QUIERO_FALLBACK = "Una web que trabaje para tu negocio.";
 
-// Titulo corto para escanear, detalle chico para quien quiere saber mas. Antes era
+// Titulo en lenguaje llano (lo que gana el cliente); el termino tecnico va en el detalle. Antes era
 // una lista de siete renglones largos con el mismo peso: habia que leerla toda.
 const INCLUYE = [
-    { icon: "dns", titulo: "Hosting", detalle: "Servidores ultrarrápidos" },
-    { icon: "language", titulo: "Dominio", detalle: "tu-marca.com, renovado cada año" },
-    { icon: "lock", titulo: "Seguridad SSL", detalle: "El candado HTTPS" },
-    { icon: "cloud_done", titulo: "Base de datos", detalle: "Y almacenamiento en la nube" },
-    { icon: "backup", titulo: "Backups", detalle: "Copias automáticas periódicas" },
-    { icon: "autorenew", titulo: "Actualizaciones", detalle: "Mantenimiento continuo" },
+    { icon: "dns", titulo: "Tu web siempre online", detalle: "Hosting en servidores rápidos" },
+    { icon: "language", titulo: "Tu dirección web", detalle: "tu-marca.com, renovada cada año" },
+    { icon: "lock", titulo: "Sitio seguro", detalle: "Candado de seguridad (SSL)" },
+    { icon: "cloud_done", titulo: "Tu información guardada", detalle: "Datos y archivos en la nube" },
+    { icon: "backup", titulo: "Copias de respaldo", detalle: "Si algo falla, lo recuperamos" },
+    { icon: "autorenew", titulo: "Siempre al día", detalle: "Actualizaciones técnicas" },
 ];
 
 // Se abre a mano y no con el toggle nativo: al desplegarse, el scroll anchoring de
@@ -327,7 +327,7 @@ function MantenimientoMensual({ conCuota }: { conCuota: { plan: PricingPlan; cuo
                                 </li>
                                 <li className="flex items-start gap-2.5">
                                     <span aria-hidden="true" className="material-icons shrink-0 text-lg leading-none text-primary">key</span>
-                                    <span><strong className="font-bold">¿Preferís no tomarlo?</strong> Te dejamos dominio y hosting configurados a tu nombre.</span>
+                                    <span><strong className="font-bold">¿Preferís no tomarlo?</strong> Te dejamos tu dirección web y el alojamiento a tu nombre, listos para que sigas por tu cuenta.</span>
                                 </li>
                             </ul>
                         </div>
