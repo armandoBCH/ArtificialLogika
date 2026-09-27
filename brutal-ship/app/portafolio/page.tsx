@@ -7,10 +7,13 @@ import {
 } from "@/lib/seo/constants";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getSiteConfig } from "@/lib/data/config";
+import { PORTFOLIO_FAQS } from "@/lib/data/faqs";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import StickyMobileCTA from "@/app/components/StickyMobileCTA";
 import WhatsAppChatWidget from "@/app/components/WhatsAppChatWidget";
+import FAQSection from "@/app/components/FAQSection";
+import FAQJsonLd from "@/app/components/FAQJsonLd";
 import CatalogGrid from "./CatalogGrid";
 
 export const metadata: Metadata = {
@@ -73,9 +76,12 @@ export default async function PortafolioPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
             />
+            <FAQJsonLd faqs={PORTFOLIO_FAQS} />
             <Navbar config={config} />
 
             <CatalogGrid initialProjects={projects} />
+
+            <FAQSection faqs={PORTFOLIO_FAQS} config={config} />
 
             <Footer config={config} />
             <StickyMobileCTA config={config} />
