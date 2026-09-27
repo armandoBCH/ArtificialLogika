@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: ProjectPageProps) {
     if (!project) {
         return {
             title: "Proyecto no encontrado",
+            robots: { index: false, follow: true },
         };
     }
 

@@ -2,6 +2,7 @@ import { SITE_URL, BUSINESS } from "@/lib/seo/constants";
 import { getPricingPlans } from "@/lib/data/pricing";
 import { getFaqs } from "@/lib/data/faqs";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
+import { BLOG_POSTS } from "../blog/page";
 import { cuotaMensual, formatearPesos, formatearPrecio } from "@/lib/precios";
 
 /**
@@ -50,7 +51,7 @@ export async function GET() {
         "",
         `La propuesta central: el cliente no gestiona dominio, hosting, correo ni despliegue. Todo eso queda del lado de Logika. El trato es directo con la persona que diseña y publica el sitio, sin intermediarios.`,
         "",
-        "## Precios",
+        "## Servicios y precios",
         "",
         "Precios de referencia, pago único, sin suscripción obligatoria:",
         "",
@@ -107,6 +108,14 @@ export async function GET() {
             lineas.push(`### ${limpiar(f.question)}`, "", limpiar(f.answer), "");
         }
     }
+
+    // Las notas son la parte citable del sitio: cada una responde una pregunta
+    // concreta de alguien que está por encargar una web.
+    lineas.push("## Blog", "");
+    for (const post of BLOG_POSTS) {
+        lineas.push(`- [${post.title}](${SITE_URL}/blog/${post.slug}): ${limpiar(post.excerpt)}`);
+    }
+    lineas.push("");
 
     lineas.push(
         "## Contacto",

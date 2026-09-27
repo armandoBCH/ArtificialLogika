@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Bitter } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
-import { SITE_URL, BUSINESS, SEO_KEYWORDS, vistaPrevia } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, SEO_KEYWORDS } from "@/lib/seo/constants";
 import ScrollProgress from "./components/ScrollProgress";
 import IconFontGate from "./components/IconFontGate";
 import PageTransition from "./components/PageTransition";
@@ -101,14 +101,6 @@ export const metadata: Metadata = {
     },
   },
 
-  // Open Graph de la home. La imagen la genera app/opengraph-image.tsx, y cada
-  // ruta publica tiene la suya al lado de su page.tsx.
-  ...vistaPrevia({
-    titulo: `${BUSINESS.name} — ${BUSINESS.slogan}`,
-    descripcion: BUSINESS.shortDescription,
-    ruta: "/",
-  }),
-
   // Solo el tipo de tarjeta. Si aca hubiera titulo e imagen, todas las paginas
   // que no declaran `twitter` heredarian los de la home (pasaba en el blog).
   // Sin eso, Next copia titulo, descripcion e imagen del Open Graph de cada una.
@@ -116,10 +108,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
   },
 
-  // Canonical & Alternates
-  alternates: {
-    canonical: SITE_URL,
-  },
+  // Sin canonical ni Open Graph a este nivel: se heredaban a toda pagina que no
+  // declarara los suyos (el 404 y el admin quedaban apuntando a la home). La
+  // home los declara en app/page.tsx y cada ruta publica, en su page.tsx.
 
   // Icons
   icons: {

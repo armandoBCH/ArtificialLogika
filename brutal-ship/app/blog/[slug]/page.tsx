@@ -25,7 +25,7 @@ export async function generateMetadata({
 }: BlogPostPageProps): Promise<Metadata> {
     const { slug } = await params;
     const post = BLOG_POSTS.find((p) => p.slug === slug);
-    if (!post) return {};
+    if (!post) return { robots: { index: false, follow: true } };
 
     return {
         title: post.title,

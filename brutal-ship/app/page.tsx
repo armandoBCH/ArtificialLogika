@@ -18,6 +18,20 @@ import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getTestimonials } from "@/lib/data/testimonials";
 import { getFaqs } from "@/lib/data/faqs";
 import { getSiteConfig } from "@/lib/data/config";
+import type { Metadata } from "next";
+import { SITE_URL, BUSINESS, vistaPrevia } from "@/lib/seo/constants";
+
+export const metadata: Metadata = {
+  // absolute: la home no lleva el "| Logika" del template, ya empieza con la marca.
+  title: { absolute: `${BUSINESS.name} — ${BUSINESS.slogan}` },
+  description: BUSINESS.description,
+  ...vistaPrevia({
+    titulo: `${BUSINESS.name} — ${BUSINESS.slogan}`,
+    descripcion: BUSINESS.shortDescription,
+    ruta: "/",
+  }),
+  alternates: { canonical: SITE_URL },
+};
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
