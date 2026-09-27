@@ -258,15 +258,24 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                 {conCuota.length > 0 && (
                 <details
                     className="mt-16 max-w-5xl mx-auto w-full px-4 sm:px-0 relative z-10 group"
-                    onToggle={(e) => {
-                        const el = e.currentTarget;
-                        if (!el.open) return;
-                        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-                        el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-                    }}
                     style={{ scrollMarginTop: "6rem" }}
                 >
-                    <summary className="cursor-pointer list-none flex items-center justify-between gap-4 bg-white border-4 border-black rounded-xl shadow-neobrutalism px-6 py-5 font-black uppercase tracking-tight text-lg sm:text-xl transition-all hover:-translate-y-0.5">
+                    <summary
+                        onClick={(e) => {
+                            // Abrimos a mano: con el toggle nativo el scroll anchoring de Chrome
+                            // se ancla a algo de abajo y tira la página al final del bloque.
+                            e.preventDefault();
+                            const details = e.currentTarget.parentElement as HTMLDetailsElement;
+                            const html = document.documentElement;
+                            html.style.overflowAnchor = "none";
+                            details.open = !details.open;
+                            if (details.open) {
+                                const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                                details.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+                            }
+                            window.setTimeout(() => { html.style.overflowAnchor = ""; }, 800);
+                        }}
+                        className="cursor-pointer list-none flex items-center justify-between gap-4 bg-white border-4 border-black rounded-xl shadow-neobrutalism px-6 py-5 font-black uppercase tracking-tight text-lg sm:text-xl transition-all hover:-translate-y-0.5">
                         <span>¿Para qué es el pago mensual?</span>
                         <span aria-hidden="true" className="material-icons shrink-0 border-2 border-black rounded-full bg-accent-yellow transition-transform group-open:rotate-45">add</span>
                     </summary>
