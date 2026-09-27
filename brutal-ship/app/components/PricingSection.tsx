@@ -256,22 +256,28 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                     sumaba tres compromisos de precio mas a los tres planes. Sigue estando completo y
                     findable, pero ya no compite con la decision principal. */}
                 {conCuota.length > 0 && (
-                <details className="mt-16 max-w-5xl mx-auto w-full px-4 sm:px-0 relative z-10 group">
+                <details
+                    className="mt-16 max-w-5xl mx-auto w-full px-4 sm:px-0 relative z-10 group"
+                    onToggle={(e) => {
+                        const el = e.currentTarget;
+                        if (!el.open) return;
+                        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                        el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+                    }}
+                    style={{ scrollMarginTop: "6rem" }}
+                >
                     <summary className="cursor-pointer list-none flex items-center justify-between gap-4 bg-white border-4 border-black rounded-xl shadow-neobrutalism px-6 py-5 font-black uppercase tracking-tight text-lg sm:text-xl transition-all hover:-translate-y-0.5">
                         <span>¿Para qué es el pago mensual?</span>
                         <span aria-hidden="true" className="material-icons shrink-0 border-2 border-black rounded-full bg-accent-yellow transition-transform group-open:rotate-45">add</span>
                     </summary>
-                    <motion.div
-                        initial={{ y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
+                    <div
                         /* Antes repetia las mismas clases de layout que el <details> que lo
                            envuelve — max-w-5xl, mx-auto, w-full, px-4. Abajo de 640px el px-4
                            se aplicaba DOS veces y, sumado a los border-4 y los p-6/p-4 de
                            adentro, a 320px dejaba 128px de contenido: los textos de la lista
                            se desbordaban de su fila. El contenedor de afuera ya se ocupa del
                            ancho y del padding. */
-                        className="mt-6 relative z-10"
+                        className="mt-6 relative z-10 group-open:animate-[cuota-reveal_0.4s_cubic-bezier(0.22,1,0.36,1)]"
                     >
                         <div className="bg-white border-4 border-black shadow-neobrutalism-lg overflow-hidden flex flex-col lg:flex-row rounded-xl relative">
                             <div className="bg-primary p-5 sm:p-6 md:p-10 lg:p-12 lg:w-3/5 border-b-4 lg:border-b-0 lg:border-r-4 border-black flex flex-col justify-center relative">
@@ -345,7 +351,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </details>
                 )}
 
