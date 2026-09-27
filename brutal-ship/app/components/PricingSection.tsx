@@ -258,7 +258,7 @@ function MantenimientoMensual({ conCuota }: { conCuota: { plan: PricingPlan; cuo
                         Opcional · desde <strong className="font-display font-bold text-ink-black tabular-nums">{formatearPesos(desde)}/mes</strong>
                     </span>
                 </span>
-                <span aria-hidden="true" className="material-icons shrink-0 w-9 h-9 flex items-center justify-center border-2 border-black rounded-full bg-accent-yellow transition-transform duration-300 group-open:rotate-45">add</span>
+                <span aria-hidden="true" className="shrink-0 w-9 h-9 flex items-center justify-center border-2 border-black rounded-full bg-accent-yellow transition-transform duration-300 group-open:rotate-45"><span className="material-icons">add</span></span>
             </summary>
 
             <div className="mt-4 group-open:animate-[cuota-reveal_0.4s_cubic-bezier(0.22,1,0.36,1)]">
@@ -276,17 +276,19 @@ function MantenimientoMensual({ conCuota }: { conCuota: { plan: PricingPlan; cuo
                     <div className="grid lg:grid-cols-5">
                         <div className="p-5 sm:p-8 lg:col-span-3 lg:border-r-4 border-black">
                             <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-ink-black/70">Qué incluye</h4>
-                            <ul className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
+                            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2.5 sm:gap-3">
                                 {INCLUYE.map((item) => (
-                                    <li key={item.titulo} className="flex flex-col gap-2 rounded-lg border-2 border-black bg-background-light p-3">
-                                        <span aria-hidden="true" className="material-icons w-9 h-9 flex items-center justify-center rounded-md border-2 border-black bg-white text-primary text-xl">{item.icon}</span>
-                                        <span className="font-display font-bold text-sm sm:text-base leading-tight">{item.titulo}</span>
-                                        <span className="-mt-1 text-xs text-ink-black/70 leading-snug">{item.detalle}</span>
+                                    <li key={item.titulo} className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 rounded-lg border-2 border-black bg-background-light p-3">
+                                        <span aria-hidden="true" className="shrink-0 w-9 h-9 lg:w-11 lg:h-11 flex items-center justify-center rounded-md border-2 border-black bg-white text-primary"><span className="material-icons text-xl lg:text-2xl">{item.icon}</span></span>
+                                        <span className="min-w-0 flex flex-col gap-1">
+                                            <span className="font-display font-bold text-sm sm:text-base leading-tight">{item.titulo}</span>
+                                            <span className="text-xs text-ink-black/70 leading-snug">{item.detalle}</span>
+                                        </span>
                                     </li>
                                 ))}
                                 {/* El soporte es lo unico humano de la lista: va entero y en menta. */}
                                 <li className="col-span-full flex items-center gap-3 rounded-lg border-2 border-black bg-mint p-3 shadow-neobrutalism-sm">
-                                    <span aria-hidden="true" className="material-icons shrink-0 w-9 h-9 flex items-center justify-center rounded-md border-2 border-black bg-white text-xl">support_agent</span>
+                                    <span aria-hidden="true" className="shrink-0 w-9 h-9 lg:w-11 lg:h-11 flex items-center justify-center rounded-md border-2 border-black bg-white"><span className="material-icons text-xl lg:text-2xl">support_agent</span></span>
                                     <span className="min-w-0">
                                         <span className="block font-display font-bold text-sm sm:text-base leading-tight">Soporte directo por WhatsApp</span>
                                         <span className="block text-xs text-ink-black/80 leading-snug">Nos escribís y lo resolvemos.</span>
