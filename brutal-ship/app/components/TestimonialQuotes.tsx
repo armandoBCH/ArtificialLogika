@@ -99,12 +99,10 @@ export default function TestimonialQuotes({ testimonials }: { testimonials: Test
                     <li><Cita t={visibles[0]} /></li>
                 </ul>
             ) : (
-                // En celular, la misma fila horizontal que los trabajos: tres citas apiladas medían
-                // más de una pantalla. El padding de abajo deja ver la sombra violeta, que el
-                // overflow del carrusel si no recortaría.
-                <ul className={`mt-8 -mx-4 sm:-mx-6 flex items-start gap-4 overflow-x-auto snap-x snap-mandatory scroll-px-4 sm:scroll-px-6 px-4 sm:px-6 pt-2 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:items-stretch md:gap-6 md:overflow-visible md:px-0 md:pt-0 md:pb-0 ${columnas}`}>
+                // Apiladas en celular, igual que los trabajos: el carrusel escondía dos de tres.
+                <ul className={`mt-8 grid grid-cols-1 gap-4 md:gap-6 ${columnas}`}>
                     {visibles.map((t) => (
-                        <li key={t.id} className="w-[85%] shrink-0 snap-start md:w-auto">
+                        <li key={t.id}>
                             <Cita t={t} />
                         </li>
                     ))}

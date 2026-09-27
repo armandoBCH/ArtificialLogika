@@ -7,6 +7,16 @@ import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import StickyMobileCTA from "@/app/components/StickyMobileCTA";
 import WhatsAppChatWidget from "@/app/components/WhatsAppChatWidget";
+import ProjectCard, { categoriasDe } from "@/app/components/ProjectCard";
+import { esMuestra, isRealStat } from "@/lib/data/portfolio";
+import GaleriaProyecto from "./GaleriaProyecto";
+
+// Lo que reduce el riesgo de pedir: las mismas condiciones que la home.
+const GARANTIAS = [
+    ["draw", "Diseño previo sin cargo", "Ves cómo va a quedar tu web antes de pagar."],
+    ["schedule", "De 1 a 4 semanas", "Según el plan, hasta dejarla online."],
+    ["undo", "Seña reintegrable", "Hasta que apruebes el primer diseño."],
+] as const;
 
 interface ProjectPageProps {
     params: Promise<{
@@ -68,8 +78,30 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         notFound();
     }
 
-    const hasServices = project.applied_services && project.applied_services.length > 0;
-    const hasFeatures = project.applied_features && project.applied_features.length > 0;
+    const servicios = project.applied_services ?? [];
+    const incluye = project.applied_features ?? [];
+    const stats = (project.stats ?? []).filter(isRealStat);
+    const muestra = esMuestra(project);
+    const categorias = categoriasDe(project);
+    const descripcionLarga = project.description_long && project.description_long !== project.description
+        ? project.description_long
+        : null;
+
+    // Primero la 4:3 de detalle; la panorámica solo si es otra imagen.
+    const imagenes = [
+        project.image_url ? { src: project.image_url, formato: "4:3" as const } : null,
+        project.image_url_wide && project.image_url_wide !== project.image_url
+            ? { src: project.image_url_wide, formato: "16:9" as const }
+            : null,
+    ].filter((x): x is { src: string; formato: "4:3" | "16:9" } => x !== null);
+
+    // Otros proyectos: el mismo criterio de la home, trabajo real primero.
+    const otros = projects
+        .filter((p) => p.id !== project.id && p.is_active)
+        .sort((a, b) => Number(esMuestra(a)) - Number(esMuestra(b)))
+        .slice(0, 3);
+
+    const whatsappUrl = `https://wa.me/${config.whatsapp_number}?text=${encodeURIComponent(`Hola! Vi el proyecto "${project.title}" en su web y quiero algo así para mi negocio.`)}`;
 
     // Breadcrumb + CreativeWork JSON-LD
     const breadcrumbSchema = buildBreadcrumbs([
@@ -93,8 +125,18 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         keywords: project.tags?.join(", ") || project.category,
     };
 
+    /*
+     * La página de un caso, armada como la de un producto en MercadoLibre:
+     *   · a la izquierda la galería, que es la prueba;
+     *   · a la derecha un panel fijo con lo que se decide: qué es, qué logró, cuánto cuesta
+     *     pedir algo así (nada: diseño previo sin cargo) y cómo pedirlo;
+     *   · abajo, el detalle para quien quiere comparar, y "otros proyectos" para seguir mirando.
+     * En celular el orden es galería → panel → detalle, y la barra fija de abajo mantiene el
+     * CTA a mano. Antes era un hero amarillo con el texto largo entero arriba del botón, y un
+     * bloque negro de cierre que repetía el CTA.
+     */
     return (
-        <main className="min-h-screen bg-white text-ink-black pt-20" suppressHydrationWarning>
+        <main className="min-h-screen bg-white text-ink-black pt-24">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
@@ -105,200 +147,156 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             />
             <Navbar config={config} />
 
-            {/* Hero Section */}
-            <section className="border-b-4 border-black bg-accent-yellow relative overflow-hidden">
-                <div className="absolute inset-0 bg-dot-pattern opacity-30"></div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 relative z-10 flex flex-col md:flex-row items-center gap-8">
-                    {/* Image Block (Order 1 in mobile, Order 2 in Desktop) */}
-                    <div className="w-full md:w-1/2 mt-4 md:mt-0 order-1 md:order-2">
-                        <div className="bg-white p-2 border-4 border-black shadow-neobrutalism-lg transform hover:rotate-1 transition-transform duration-300">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src={project.image_url}
-                                alt={project.image_alt || project.title}
-                                className="w-full aspect-[4/3] object-cover border-2 border-black"
-                            />
-                        </div>
+            <div className="mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6 md:pt-10 lg:px-8">
+                <nav aria-label="Ruta" className="flex flex-wrap items-center text-sm font-bold text-ink-black/60">
+                    <Link href="/" className="inline-flex min-h-11 items-center hover:text-primary">Inicio</Link>
+                    <span aria-hidden="true" className="mx-2">/</span>
+                    <Link href="/portafolio" className="inline-flex min-h-11 items-center hover:text-primary">Portafolio</Link>
+                    <span aria-hidden="true" className="mx-2">/</span>
+                    <span aria-current="page" className="truncate text-ink-black">{project.title}</span>
+                </nav>
+
+                <div className="mt-2 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+                    <div className="lg:col-span-7">
+                        <GaleriaProyecto imagenes={imagenes} alt={project.image_alt || project.title} titulo={project.title} />
                     </div>
-                    {/* Text Block (Order 2 in mobile, Order 1 in Desktop) */}
-                    <div className="w-full md:w-1/2 flex flex-col items-start pr-0 md:pr-8 order-2 md:order-1">
-                        <div className="flex flex-wrap gap-2 mb-4">
-                            {(project.categories && project.categories.length > 0
-                                ? project.categories
-                                : project.category ? [project.category] : []
-                            ).map((cat, idx) => (
-                                <span key={idx} className="px-3 py-1 bg-black text-white font-black uppercase tracking-widest text-[10px] md:text-xs">
-                                    {cat}
-                                </span>
-                            ))}
-                            {/* Estaba en bg-red-500, un rojo que no existe en la paleta, con
-                                rotacion propia. Es el mismo mensaje que la home marca con el
-                                sello, asi que usa el sello. */}
-                            {project.is_sample && (
-                                <span className="sello bg-hot-coral text-white text-[10px] md:text-xs shadow-neobrutalism-sm">
-                                    Proyecto de Muestra
-                                </span>
-                            )}
-                        </div>
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-black uppercase leading-[1.1] tracking-tighter mb-4 drop-shadow-neobrutalism-sm">
-                            {project.title}
-                        </h1>
-                        <p className="text-base md:text-lg text-black/80 font-medium mb-6">
-                            {project.description_long || project.description}
-                        </p>
 
-                        {/* CTA Buttons in Hero */}
-                        <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto">
-                            {project.external_url && (
-                                <a
-                                    href={project.external_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="cta inline-flex w-full sm:w-auto items-center justify-center gap-2 bg-black text-white px-6 py-3 md:py-4 font-black uppercase tracking-widest text-xs md:text-sm border-4 border-black shadow-neobrutalism hover:bg-white hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-                                >
-                                    <span aria-hidden="true" className="material-icons text-base">language</span>
-                                    Visitar el sitio
-                                    <span aria-hidden="true" className="material-icons text-sm">open_in_new</span>
-                                </a>
-                            )}
-                            <Link
-                                href="/#contacto"
-                                className="cta inline-flex w-full sm:w-auto items-center justify-center gap-2 bg-white text-black px-6 py-3 md:py-4 font-black uppercase tracking-widest text-xs md:text-sm border-4 border-black shadow-neobrutalism hover:bg-black hover:text-white transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-                            >
-                                <span aria-hidden="true" className="material-icons text-base">chat</span>
-                                Quiero mi web
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                    {/* El panel de decisión */}
+                    <aside className="lg:col-span-5 lg:row-span-2">
+                        <div className="rounded-xl border-2 border-black bg-white p-5 shadow-neobrutalism md:p-6 lg:sticky lg:top-32">
+                            <div className="flex flex-wrap items-center gap-2">
+                                {categorias.map((c) => (
+                                    <span key={c} className="rounded-full bg-ink-black px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-white">
+                                        {c}
+                                    </span>
+                                ))}
+                                {muestra && (
+                                    <span className="sello bg-accent-yellow text-ink-black text-[11px] shadow-neobrutalism-sm">Proyecto de muestra</span>
+                                )}
+                            </div>
+                            <h1 className="mt-3 text-3xl font-bold uppercase leading-[1.05] tracking-tight md:text-4xl">
+                                {project.title}
+                            </h1>
+                            <p className="mt-3 text-base font-medium leading-relaxed text-ink-black/80 md:text-lg">
+                                {project.description}
+                            </p>
 
-            {/* Services & Features Section */}
-            {(hasServices || hasFeatures) && (
-                <section className="bg-white bg-dot-pattern relative border-b-4 border-black">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col lg:flex-row gap-8 items-start">
-
-                        {/* Left: Applied Services (main service cards) */}
-                        {hasServices && (
-                            <div className="w-full lg:w-1/2">
-                                <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
-                                    <span aria-hidden="true" className="material-icons text-primary text-2xl md:text-3xl">verified</span>
-                                    <h2 className="text-xl md:text-2xl font-black text-black uppercase tracking-tight m-0 leading-none">
-                                        Servicios Aplicados
-                                    </h2>
-                                </div>
-                                {/* Con 1 o 2 servicios estas tarjetas funcionan. Con 4 se
-                                    estirarian igual que se estiraba "Que Incluye": cada una
-                                    ocupa unos 98px. El grid de dos columnas desde sm frena eso
-                                    antes de que pase, sin cambiar como se ven cuando hay pocas.
-
-                                    El padding tambien baja en telefono: p-3 con un icono de 40px
-                                    dejaba la etiqueta contra el borde. */}
-                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
-                                    {project.applied_services.map((svc, idx) => (
-                                        <div key={idx} className="bg-primary border-4 border-black p-4 md:p-5 shadow-neobrutalism flex items-center gap-3 md:gap-4 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
-                                            <div className="w-10 h-10 md:w-12 md:h-12 bg-white border-2 border-black flex items-center justify-center shrink-0">
-                                                <span aria-hidden="true" className="material-icons text-primary text-xl md:text-2xl">
-                                                    {svc.includes("One-Page") ? "web" : svc.includes("Landing") ? "track_changes" : "layers"}
-                                                </span>
-                                            </div>
-                                            <span className="text-white font-black uppercase text-sm md:text-base tracking-wide leading-snug">
-                                                {svc}
-                                            </span>
+                            {stats.length > 0 && (
+                                <dl className="mt-5 grid grid-cols-2 gap-3">
+                                    {stats.map((s, i) => (
+                                        <div key={i} className="flex flex-col-reverse items-center rounded-lg border-2 border-black bg-accent-yellow px-3 py-3 text-center">
+                                            <dt className="mt-1 text-xs font-bold uppercase tracking-wider text-ink-black/80">{s.label}</dt>
+                                            <dd className="text-3xl font-black leading-none tabular-nums">{s.value}</dd>
                                         </div>
                                     ))}
-                                </div>
+                                </dl>
+                            )}
+
+                            <div className="mt-6 flex flex-col gap-3">
+                                <Link
+                                    href="/#contacto"
+                                    className="cta inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-black bg-primary px-5 font-bold uppercase tracking-wide text-white shadow-neobrutalism-sm transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                                >
+                                    Quiero una web así
+                                    <span aria-hidden="true" className="material-icons text-lg">arrow_forward</span>
+                                </Link>
+                                <a
+                                    href={whatsappUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="cta inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-black bg-white px-5 font-bold uppercase tracking-wide text-ink-black transition-colors hover:bg-[#25D366]"
+                                >
+                                    <span aria-hidden="true" className="material-icons text-lg">chat</span>
+                                    Consultar por WhatsApp
+                                </a>
+                                {project.external_url && (
+                                    <a
+                                        href={project.external_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex min-h-11 items-center justify-center gap-1.5 text-sm font-bold text-ink-black underline decoration-2 underline-offset-4 hover:text-primary"
+                                    >
+                                        Visitar el sitio publicado
+                                        <span aria-hidden="true" className="material-icons text-base">open_in_new</span>
+                                    </a>
+                                )}
                             </div>
-                        )}
 
-                        {/* Right: Applied Features (sub-services chips) + Stats */}
-                        <div className={`w-full ${hasServices ? 'lg:w-1/2' : ''} flex flex-col gap-6`}>
-                            {hasFeatures && (
-                                <div>
-                                    {/* Antes cada item era un chip negro con borde y hover invertido.
-                                        Con 7 a 10 features de unos 27 caracteres, ninguno entraba de a
-                                        dos por fila en un telefono: el flex-wrap degeneraba en una pila
-                                        de barras negras de 424px, media pantalla de lista vertical.
-
-                                        El chip estaba haciendo trabajo decorativo, no informativo:
-                                        ninguna feature suelta merece su propia caja. Como lista de
-                                        verificacion en dos columnas ocupa la mitad y se lee de un
-                                        vistazo, que es lo que alguien quiere de un "que incluye".
-
-                                        El bloque entero va sobre una superficie para leerse como una
-                                        unidad, en lugar de como 10 objetos sueltos. */}
-                                    <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-                                        <span aria-hidden="true" className="material-icons text-black text-xl md:text-2xl">auto_awesome</span>
-                                        <h2 className="text-lg md:text-xl font-black text-black uppercase tracking-tight m-0 leading-none">
-                                            Qué Incluye
-                                        </h2>
-                                        <span className="ml-auto text-xs font-black tabular-nums text-ink-black/70">
-                                            {project.applied_features.length}
+                            {/* Lo que en MercadoLibre es el envío y la devolución: lo que reduce el
+                                riesgo de pedir. Son las mismas condiciones de la home. */}
+                            <ul className="mt-6 space-y-3 border-t-2 border-dashed border-black/15 pt-5 text-sm">
+                                {GARANTIAS.map(([icono, titulo, texto]) => (
+                                    <li key={titulo} className="flex items-start gap-3">
+                                        <span aria-hidden="true" className="material-icons shrink-0 text-xl text-primary">{icono}</span>
+                                        <span>
+                                            <span className="block font-bold text-ink-black">{titulo}</span>
+                                            <span className="block text-ink-black/70">{texto}</span>
                                         </span>
-                                    </div>
-                                    {/* Una columna en telefono, dos desde sm. A 375px las dos columnas dejan
-                                        146px por celda y 8 de 10 etiquetas envolvian a dos lineas: mas
-                                        corto en total, pero ilegible de un vistazo. En una columna cada
-                                        item entra en un renglon. */}
-                                    <ul className="grid grid-cols-1 gap-x-5 gap-y-2 rounded-xl border-2 border-black bg-white p-4 shadow-neobrutalism-sm sm:grid-cols-2 md:gap-y-2.5 md:p-5">
-                                        {project.applied_features.map((feat, idx) => (
-                                            <li key={idx} className="flex items-start gap-2">
-                                                <span aria-hidden="true" className="material-icons shrink-0 text-primary text-base leading-tight mt-px">
-                                                    check
-                                                </span>
-                                                <span className="text-xs md:text-sm font-bold leading-snug text-ink-black">
-                                                    {feat}
-                                                </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </aside>
+
+                    {/* El detalle, para quien quiere comparar */}
+                    {(descripcionLarga || incluye.length > 0 || servicios.length > 0) && (
+                        <div className="space-y-8 lg:col-span-7">
+                            {descripcionLarga && (
+                                <section aria-labelledby="sobre">
+                                    <h2 id="sobre" className="text-2xl font-bold uppercase tracking-tight md:text-3xl">Sobre el proyecto</h2>
+                                    <p className="medida-comoda mt-3 text-base font-medium leading-relaxed text-ink-black/80 md:text-lg">{descripcionLarga}</p>
+                                </section>
+                            )}
+
+                            {incluye.length > 0 && (
+                                <section aria-labelledby="incluye">
+                                    <h2 id="incluye" className="flex items-baseline gap-3 text-2xl font-bold uppercase tracking-tight md:text-3xl">
+                                        Qué incluye
+                                        <span className="text-sm font-black tabular-nums text-ink-black/50">{incluye.length}</span>
+                                    </h2>
+                                    <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2.5 rounded-xl border-2 border-black bg-background-light p-5 sm:grid-cols-2">
+                                        {incluye.map((f) => (
+                                            <li key={f} className="flex items-start gap-2 text-sm font-bold leading-snug md:text-base">
+                                                <span aria-hidden="true" className="material-icons mt-px shrink-0 text-base text-primary">check_circle</span>
+                                                {f}
                                             </li>
                                         ))}
                                     </ul>
-                                </div>
+                                </section>
                             )}
 
-                            {project.stats && project.stats.length > 0 && (
-                                <div>
-                                    <h2 className="text-lg md:text-xl font-black text-black uppercase tracking-tight mb-3 md:mb-4">Resultados del Proyecto</h2>
-                                    <div className="grid grid-cols-2 gap-2 md:gap-4">
-                                        {project.stats.map((stat, idx) => (
-                                            <div key={idx} className="bg-black text-white p-3 md:p-4 border-2 border-transparent hover:bg-white hover:text-black hover:border-black transition-all group flex flex-col justify-center items-center text-center shadow-neobrutalism">
-                                                <p className="text-2xl sm:text-3xl md:text-4xl font-black uppercase mb-1 group-hover:scale-105 transition-transform">
-                                                    {stat.value}
-                                                </p>
-                                                <p className="text-[9px] sm:text-[10px] md:text-xs font-bold text-white/70 group-hover:text-ink-black/70 uppercase tracking-widest">
-                                                    {stat.label}
-                                                </p>
-                                            </div>
+                            {servicios.length > 0 && (
+                                <section aria-labelledby="servicios-aplicados">
+                                    <h2 id="servicios-aplicados" className="text-2xl font-bold uppercase tracking-tight md:text-3xl">Servicios aplicados</h2>
+                                    <ul className="mt-4 flex flex-wrap gap-2">
+                                        {servicios.map((s) => (
+                                            <li key={s} className="rounded-lg border-2 border-black bg-white px-3 py-1.5 text-sm font-bold shadow-neobrutalism-sm">{s}</li>
                                         ))}
-                                    </div>
-                                </div>
+                                    </ul>
+                                </section>
                             )}
                         </div>
-
-                    </div>
-                </section>
-            )}
-
-            {/* Bottom Commercial CTA */}
-            <section className="bg-black py-16 border-t-8 border-black relative overflow-hidden">
-                {/* Habia un circulo de 600px con blur de 100px. En un sistema construido
-                    sobre bordes duros y sombras sin difuminar, un degradado gaussiano es de
-                    otro idioma. Lo reemplaza un aro de trazo, que si pertenece. */}
-                <div aria-hidden="true" className="absolute -top-24 -right-24 w-96 h-96 rounded-full border-4 border-white/10 pointer-events-none"></div>
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                    <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter mb-4 leading-none">
-                        ¿Dudás si tu negocio necesita <span className="text-accent-yellow">una web</span>?
-                    </h2>
-                    <p className="text-lg md:text-xl text-white/75 font-medium mb-8 max-w-2xl mx-auto">
-                        Tus clientes ya te están buscando en internet. Sacate todas las dudas hoy mismo hablando con nosotros y llevate un demo visual.
-                    </p>
-                    <Link
-                        href="/#contacto"
-                        className="cta inline-block bg-accent-yellow text-black px-8 py-4 text-xl font-black uppercase tracking-widest border-4 border-black shadow-neobrutalism-white hover:bg-white hover:shadow-neobrutalism-white hover:-translate-y-1 transition-all duration-300"
-                    >
-                        Quiero mi web
-                    </Link>
+                    )}
                 </div>
-            </section>
+
+                {otros.length > 0 && (
+                    <section aria-labelledby="otros" className="mt-16 border-t-4 border-black pt-10 md:mt-20">
+                        <div className="flex items-end justify-between gap-4">
+                            <h2 id="otros" className="text-3xl font-bold uppercase tracking-tight md:text-4xl">Otros proyectos</h2>
+                            <Link href="/portafolio" className="inline-flex min-h-11 shrink-0 items-center font-bold text-ink-black underline decoration-2 underline-offset-4 hover:text-primary">
+                                Ver todos
+                            </Link>
+                        </div>
+                        <ul className="mt-6 grid grid-cols-1 gap-4 md:gap-6">
+                            {otros.map((p) => (
+                                <li key={p.id}>
+                                    <ProjectCard project={p} variante="catalogo" />
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+                )}
+            </div>
 
             <Footer config={config} />
             <StickyMobileCTA config={config} />

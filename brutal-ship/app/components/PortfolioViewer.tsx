@@ -9,6 +9,8 @@ interface PortfolioViewerProps {
     titulo: string;
     /** Clase del filtro que ya aplicaba la tarjeta (escala de grises, etc.). */
     filtro?: string;
+    /** El `sizes` de next/image para el lugar donde se muestra (tarjeta o galería). */
+    sizes?: string;
 }
 
 /**
@@ -26,7 +28,7 @@ interface PortfolioViewerProps {
  * Escape, `::backdrop` e inertización del fondo. Reimplementar eso a mano siempre
  * sale peor.
  */
-export default function PortfolioViewer({ src, alt, titulo, filtro = "" }: PortfolioViewerProps) {
+export default function PortfolioViewer({ src, alt, titulo, filtro = "", sizes = "(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 400px" }: PortfolioViewerProps) {
     const dialogRef = useRef<HTMLDialogElement>(null);
     const disparadorRef = useRef<HTMLButtonElement>(null);
     const [abierto, setAbierto] = useState(false);
@@ -70,8 +72,7 @@ export default function PortfolioViewer({ src, alt, titulo, filtro = "" }: Portf
                         src={src}
                         width={800}
                         height={600}
-                        // Una columna en celular, dos en tablet y tres (de ~384px) en escritorio.
-                        sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 400px"
+                        sizes={sizes}
                         loading="lazy"
                     />
                 </span>

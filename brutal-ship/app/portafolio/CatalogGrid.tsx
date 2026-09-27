@@ -1,217 +1,208 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useMemo, useState } from "react";
 import type { PortfolioProject } from "@/lib/types/database";
+import ProjectCard, { categoriasDe } from "@/app/components/ProjectCard";
+import { esMuestra, isRealStat } from "@/lib/data/portfolio";
 
 interface CatalogGridProps {
     initialProjects: PortfolioProject[];
 }
 
+type Tipo = "todos" | "reales" | "muestras";
+
+// Los rubros se cargan a mano en el panel y llegan con mayúsculas mezcladas ("BLOG
+// LITERARIO", "Barbería"). Se agrupan sin distinguirlas y se muestran parejos.
+const clave = (rubro: string) => rubro.trim().toLocaleLowerCase("es");
+const etiqueta = (rubro: string) => {
+    const t = clave(rubro);
+    return t.charAt(0).toLocaleUpperCase("es") + t.slice(1);
+};
+const rubrosDe = (p: PortfolioProject) => [...new Set(categoriasDe(p).map(clave))];
+type Orden = "destacados" | "resultados" | "recientes";
+
+const ORDENES: { valor: Orden; etiqueta: string }[] = [
+    { valor: "destacados", etiqueta: "Destacados" },
+    { valor: "resultados", etiqueta: "Con resultados medidos" },
+    { valor: "recientes", etiqueta: "Más recientes" },
+];
+
+/**
+ * El catálogo, armado como un listado de MercadoLibre: la persona llega a comparar, no a
+ * mirar una galería. Por eso cada resultado es una fila (captura a la izquierda, datos a
+ * la derecha), los filtros dicen cuántos hay antes de tocarlos, y siempre se ve cuántos
+ * resultados quedan.
+ *
+ * En escritorio los filtros van en una columna fija a la izquierda; en celular, como una
+ * fila de chips arriba de la lista, que es donde el pulgar los encuentra.
+ *
+ * "Destacados" es el mismo criterio de la home: primero el trabajo real, después las
+ * muestras. Un proyecto de muestra nunca le gana el lugar a uno de un cliente.
+ */
 export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
-    const [activeCategory, setActiveCategory] = useState<string>("Todos");
+    const activos = useMemo(() => initialProjects.filter((p) => p.is_active), [initialProjects]);
+    const [rubro, setRubro] = useState<string | null>(null);
+    const [tipo, setTipo] = useState<Tipo>("todos");
+    const [orden, setOrden] = useState<Orden>("destacados");
 
-    // Extract unique categories from active projects
-    const categories = useMemo(() => {
-        const cats = new Set<string>();
-        initialProjects.filter(p => p.is_active).forEach(p => {
-            const projectCats = p.categories && p.categories.length > 0 ? p.categories : (p.category ? [p.category] : []);
-            projectCats.forEach(c => cats.add(c));
-        });
-        return ["Todos", ...Array.from(cats).sort()];
-    }, [initialProjects]);
+    const rubros = useMemo(() => {
+        const cuenta = new Map<string, number>();
+        activos.forEach((p) => rubrosDe(p).forEach((c) => cuenta.set(c, (cuenta.get(c) ?? 0) + 1)));
+        return [...cuenta.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    }, [activos]);
 
-    // Filter projects
-    const filteredProjects = useMemo(() => {
-        const active = initialProjects.filter(p => p.is_active);
-        if (activeCategory === "Todos") return active;
-        return active.filter(p => {
-            const projectCats = p.categories && p.categories.length > 0 ? p.categories : (p.category ? [p.category] : []);
-            return projectCats.includes(activeCategory);
+    const cantidadReales = activos.filter((p) => !esMuestra(p)).length;
+    const cantidadMuestras = activos.length - cantidadReales;
+
+    const resultados = useMemo(() => {
+        const filtrados = activos.filter((p) =>
+            (!rubro || rubrosDe(p).includes(rubro))
+            && (tipo === "todos" || (tipo === "reales" ? !esMuestra(p) : esMuestra(p))));
+        const tieneResultados = (p: PortfolioProject) => (p.stats ?? []).some(isRealStat);
+        return [...filtrados].sort((a, b) => {
+            if (orden === "recientes") return (b.created_at || "").localeCompare(a.created_at || "");
+            if (orden === "resultados" && tieneResultados(a) !== tieneResultados(b)) return tieneResultados(a) ? -1 : 1;
+            if (esMuestra(a) !== esMuestra(b)) return esMuestra(a) ? 1 : -1;
+            return (a.display_order ?? 0) - (b.display_order ?? 0);
         });
-    }, [initialProjects, activeCategory]);
+    }, [activos, rubro, tipo, orden]);
+
+    const hayFiltros = rubro !== null || tipo !== "todos";
+    const limpiar = () => { setRubro(null); setTipo("todos"); };
+
+    const opcion = (activa: boolean) =>
+        `flex w-full min-h-11 items-center justify-between gap-3 rounded-lg px-3 text-left text-sm font-bold transition-colors ${activa
+            ? "bg-ink-black text-white"
+            : "text-ink-black hover:bg-background-light"}`;
+    const chip = (activo: boolean) =>
+        `inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border-2 border-black px-4 text-sm font-bold transition-all ${activo
+            ? "bg-ink-black text-white"
+            : "bg-white text-ink-black shadow-neobrutalism-sm active:translate-y-[1px] active:shadow-none"}`;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-            {/* Header Content */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b-4 border-black pb-8 mb-12">
-                <div className="flex flex-col max-w-3xl">
-                    <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tight text-black drop-shadow-neobrutalism-sm leading-none">
-                        Catálogo de <span className="text-primary">Proyectos</span>
-                    </h1>
-                    <p className="mt-6 text-xl md:text-2xl font-medium text-ink-black/70 border-l-4 border-black pl-4 ml-1">
-                        Explorá nuestro historial de trabajos reales y proyectos de demostración. Filtrá por rubro para ver lo que podemos hacer por tu negocio.
-                    </p>
-                </div>
+        <div className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 md:pb-24 md:pt-12 lg:px-8">
+            <nav aria-label="Ruta" className="text-sm font-bold text-ink-black/60">
+                <Link href="/" className="inline-flex min-h-11 items-center hover:text-primary">Inicio</Link>
+                <span aria-hidden="true" className="mx-2">/</span>
+                <span aria-current="page" className="text-ink-black">Portafolio</span>
+            </nav>
 
-                {/* Filters */}
-                <div className="flex flex-wrap gap-3 md:justify-end">
-                    {categories.map((cat) => (
-                        <button
-                            key={cat}
-                            onClick={() => setActiveCategory(cat)}
-                            className={`inline-flex items-center min-h-11 px-4 py-2 text-sm font-bold uppercase tracking-wider border-2 border-black shadow-neobrutalism-sm transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${activeCategory === cat
-                                ? "bg-primary text-white scale-105"
-                                : "bg-white text-black hover:bg-background-light"
-                                }`}
-                        >
-                            {cat}
-                        </button>
-                    ))}
-                </div>
-            </div>
+            <header className="mt-2 border-b-4 border-black pb-6 md:pb-8">
+                <h1 className="text-4xl font-bold uppercase leading-none tracking-tight sm:text-5xl md:text-6xl">
+                    Nuestros <span className="text-primary">proyectos</span>
+                </h1>
+                <p className="mt-4 max-w-2xl text-base font-medium text-ink-black/75 sm:text-lg md:text-xl">
+                    Webs que hicimos para negocios reales y demos que construimos para mostrar lo que se puede hacer. Filtrá por rubro para ver algo parecido al tuyo.
+                </p>
+            </header>
 
-            {/* Grid */}
-            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <AnimatePresence mode="popLayout">
-                    {filteredProjects.map((project) => (
-                        <motion.div
-                            layout
-                            key={project.id}
-                            initial={{ scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: 0.2 }}
-                            className="bg-white border-2 border-black shadow-neobrutalism hover:shadow-neobrutalism-lg transition-shadow group flex flex-col h-full rounded-xl overflow-hidden relative"
-                        >
-                            {/* Sample Badge */}
-                            {/* El sello es el dispositivo propio de Logika y ya marca las
-                                muestras en la home. Aca habia un badge distinto, con otra
-                                tipografia y otro borde, para decir exactamente lo mismo. */}
-                            {project.is_sample && (
-                                <div className="absolute top-3 right-3 z-20">
-                                    <span className="sello bg-accent-yellow text-ink-black text-[10px] shadow-neobrutalism-sm whitespace-nowrap">
-                                        Muestra
-                                    </span>
-                                </div>
-                            )}
-
-                            {/* Image */}
-                            <div className="aspect-video w-full bg-background-light border-b-2 border-black relative overflow-hidden">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={project.image_url_wide || project.image_url}
-                                    alt={project.image_alt || project.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-4 md:p-5 flex flex-col flex-grow">
-                                <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                                    {(project.categories && project.categories.length > 0
-                                        ? project.categories
-                                        : project.category ? [project.category] : []
-                                    ).map((cat, ci) => (
-                                        <span key={ci} className="px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider">
-                                            {cat}
-                                        </span>
-                                    ))}
-                                    {project.tags.slice(0, 2).map((tag, i) => (
-                                        <span key={i} className="px-2 py-0.5 bg-background-light text-black text-[10px] font-bold uppercase tracking-wider border-2 border-black">
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-                                <h2 className="text-2xl md:text-3xl font-black text-black mb-2 leading-tight uppercase tracking-tight">
-                                    {project.title}
-                                </h2>
-                                <p className="text-base text-ink-black/70 mb-5 line-clamp-3 md:line-clamp-4 font-medium">
-                                    {project.description}
-                                </p>
-
-                                {/* Habia dos botones compitiendo: "Ver Detalles" y "Quiero algo
-                                    asi". En una tarjeta de catalogo la segunda llega antes de
-                                    tiempo, la persona todavia esta mirando. Y "Quiero algo asi" es
-                                    la misma intencion que el "Quiero mi web" del resto del sitio,
-                                    con otra etiqueta. Queda la accion que corresponde a este
-                                    momento; la de contacto espera en la pagina del proyecto. */}
-                                <div className="mt-auto pt-2">
-                                    <a
-                                        href={`/portafolio/${project.id}`}
-                                        className="cta w-full inline-flex min-h-11 items-center justify-center gap-2 py-3 px-4 bg-white text-ink-black font-bold uppercase text-xs sm:text-sm tracking-wider border-2 border-black shadow-neobrutalism hover:bg-black hover:text-white transition-all text-center"
-                                    >
-                                        Ver proyecto
-                                        <span aria-hidden="true" className="material-icons text-base">arrow_forward</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-
-                    {/* CTA Card (Tu Proyecto Aquí) */}
-                    <motion.a
-                        layout
-                        key="add-project-cta"
-                        initial={{ scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.2 }}
-                        href="/#contacto"
-                        className="bg-background-light border-4 border-dashed border-black/20 hover:border-black hover:bg-white transition-all group flex flex-col items-center justify-center p-6 text-center min-h-[300px] rounded-xl"
-                    >
-                        <div className="w-16 h-16 bg-primary border-2 border-black font-black flex items-center justify-center text-3xl text-white shadow-neobrutalism-sm rounded-xl mb-4 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-neobrutalism-sm transition-all">
-                            +
+            <div className="mt-6 lg:mt-10 lg:grid lg:grid-cols-[250px_1fr] lg:gap-10">
+                {/* Filtros de escritorio */}
+                <aside aria-label="Filtros" className="hidden lg:block">
+                    <div className="sticky top-32 space-y-8">
+                        <div>
+                            <h2 className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-ink-black/60">Rubro</h2>
+                            <ul className="space-y-1">
+                                <li>
+                                    <button type="button" aria-pressed={rubro === null} onClick={() => setRubro(null)} className={opcion(rubro === null)}>
+                                        Todos <span className="tabular-nums opacity-70">{activos.length}</span>
+                                    </button>
+                                </li>
+                                {rubros.map(([nombre, n]) => (
+                                    <li key={nombre}>
+                                        <button type="button" aria-pressed={rubro === nombre} onClick={() => setRubro(rubro === nombre ? null : nombre)} className={opcion(rubro === nombre)}>
+                                            {etiqueta(nombre)} <span className="tabular-nums opacity-70">{n}</span>
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                        <h2 className="text-lg md:text-xl font-black text-black uppercase tracking-tight mb-1">
-                            Tu Proyecto Aquí
-                        </h2>
-                        <p className="text-xs font-bold text-ink-black/70 uppercase tracking-widest">
-                            Empecemos
+                        {cantidadMuestras > 0 && cantidadReales > 0 && (
+                            <div>
+                                <h2 className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-ink-black/60">Tipo</h2>
+                                <ul className="space-y-1">
+                                    {([["todos", "Todos", activos.length], ["reales", "Clientes reales", cantidadReales], ["muestras", "Demos", cantidadMuestras]] as const).map(([valor, etiqueta, n]) => (
+                                        <li key={valor}>
+                                            <button type="button" aria-pressed={tipo === valor} onClick={() => setTipo(valor)} className={opcion(tipo === valor)}>
+                                                {etiqueta} <span className="tabular-nums opacity-70">{n}</span>
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                </aside>
+
+                <div className="min-w-0">
+                    {/* Filtros de celular: una fila de chips que se desliza. */}
+                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-3 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:hidden [&::-webkit-scrollbar]:hidden">
+                        <button type="button" aria-pressed={rubro === null} onClick={() => setRubro(null)} className={chip(rubro === null)}>
+                            Todos
+                        </button>
+                        {rubros.map(([nombre, n]) => (
+                            <button key={nombre} type="button" aria-pressed={rubro === nombre} onClick={() => setRubro(rubro === nombre ? null : nombre)} className={chip(rubro === nombre)}>
+                                {etiqueta(nombre)} <span className="tabular-nums opacity-60">{n}</span>
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-black/10 pb-3">
+                        <p role="status" className="text-sm font-bold text-ink-black/70">
+                            <span className="tabular-nums text-ink-black">{resultados.length}</span>{" "}
+                            {resultados.length === 1 ? "proyecto" : "proyectos"}
+                            {hayFiltros && (
+                                <button type="button" onClick={limpiar} className="ml-3 py-3 font-bold text-primary underline decoration-2 underline-offset-4">
+                                    Limpiar filtros
+                                </button>
+                            )}
                         </p>
-                    </motion.a>
-                </AnimatePresence>
-            </motion.div>
+                        <label className="flex items-center gap-2 text-sm font-bold text-ink-black/70">
+                            <span className="sr-only sm:not-sr-only">Ordenar por</span>
+                            <select
+                                value={orden}
+                                onChange={(e) => setOrden(e.target.value as Orden)}
+                                className="min-h-11 rounded-lg border-2 border-black bg-white px-3 font-bold text-ink-black"
+                            >
+                                {ORDENES.map((o) => <option key={o.valor} value={o.valor}>{o.etiqueta}</option>)}
+                            </select>
+                        </label>
+                    </div>
 
-            {filteredProjects.length === 0 && (
-                <div className="text-center py-20 border-4 border-dashed border-black/20">
-                    <p className="text-xl font-bold text-ink-black/70">No hay proyectos en esta categoría.</p>
-                </div>
-            )}
+                    {resultados.length > 0 ? (
+                        <ul className="mt-5 grid grid-cols-1 gap-4 md:gap-6">
+                            {resultados.map((p) => (
+                                <li key={p.id}>
+                                    <ProjectCard project={p} variante="catalogo" />
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <div className="mt-5 rounded-xl border-2 border-dashed border-black/25 px-6 py-16 text-center">
+                            <p className="text-xl font-bold">No hay proyectos con esos filtros.</p>
+                            <button type="button" onClick={limpiar} className="mt-4 inline-flex min-h-11 items-center font-bold text-primary underline decoration-2 underline-offset-4">
+                                Ver todos
+                            </button>
+                        </div>
+                    )}
 
-            {/* Commercial Bottom CTA */}
-            <div className="mt-16 md:mt-24 border-4 border-black bg-accent-yellow shadow-neobrutalism-lg p-6 md:p-8 lg:p-10 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 transform hover:-translate-y-1 transition-transform duration-300 relative">
-
-                {/* Aca habia un sticker rotado que gritaba "¡100% GRATIS!". La oferta es
-                    buena de verdad, y por eso no necesita gritarse: dicha en voz baja, dentro
-                    del texto, se lee como una condicion del trabajo en lugar de como un
-                    cartel de liquidacion. */}
-
-                <div className="flex-1 w-full max-w-2xl">
-                    <h2 className="text-3xl md:text-4xl font-black text-black uppercase leading-none tracking-tight mb-4">
-                        ¿Todavía no tenés página web?
-                    </h2>
-                    <p className="text-base md:text-lg text-black font-medium mb-6">
-                        Dejá de perder clientes que te buscan en Google y se van con la competencia. Contanos tu idea, sacate las dudas y te armamos un plan.
-                    </p>
-
-                    <ul className="space-y-2 mb-6 text-black font-bold text-sm md:text-base">
-                        <li className="flex items-center gap-2">
-                            <span aria-hidden="true" className="material-icons text-xl text-primary">check_circle</span>
-                            Te asesoramos sobre lo que realmente necesita tu negocio
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span aria-hidden="true" className="material-icons text-xl text-primary">check_circle</span>
-                            Armamos una propuesta y un diseño previo de tu web, sin cargo
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span aria-hidden="true" className="material-icons text-xl text-primary">check_circle</span>
-                            Si el diseño no te convence, no seguís y no pagás nada
-                        </li>
-                    </ul>
-                </div>
-
-                <div className="shrink-0 w-full lg:w-auto flex flex-col items-center">
-                    <Link
-                        href="/#contacto"
-                        className="cta w-full lg:w-auto bg-black text-white px-6 py-4 text-lg font-black uppercase tracking-widest border-2 border-black shadow-neobrutalism-white hover:bg-white hover:text-black hover:border-black hover:shadow-neobrutalism hover:translate-y-[2px] hover:translate-x-[2px] transition-all text-center group"
-                    >
-                        Quiero mi web
-                        <span className="block text-xs text-white/70 group-hover:text-ink-black/70 mt-0.5 uppercase tracking-wider">
-                            Presupuesto sin cargo
-                        </span>
-                    </Link>
+                    {/* El cierre: si no encontró algo parecido a su negocio, que no se vaya. */}
+                    <div className="mt-8 flex flex-col gap-4 rounded-xl border-2 border-black bg-accent-yellow p-5 shadow-neobrutalism sm:flex-row sm:items-center sm:justify-between md:p-6">
+                        <div>
+                            <h2 className="text-2xl font-bold uppercase leading-tight">¿No ves tu rubro?</h2>
+                            <p className="mt-1 font-medium text-ink-black/80">
+                                Hacemos webs para todo tipo de negocio. Te mostramos un diseño previo de la tuya, sin cargo.
+                            </p>
+                        </div>
+                        <Link
+                            href="/#contacto"
+                            className="cta inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-lg border-2 border-black bg-primary px-6 font-bold uppercase text-white shadow-neobrutalism-sm transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                        >
+                            Quiero mi web
+                            <span aria-hidden="true" className="material-icons text-lg">arrow_forward</span>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
