@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia, jsonLd } from "@/lib/seo/constants";
 import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
@@ -164,6 +164,21 @@ export default async function BlogPage() {
         { name: "Blog" },
     ]);
 
+    // Blog/CollectionPage listando los posts — mismo patrón que el ItemList
+    // de /portafolio, para que Google entienda el índice como un listado.
+    const blogSchema = {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        name: `Blog | ${BUSINESS.name}`,
+        url: `${SITE_URL}/blog`,
+        blogPost: BLOG_POSTS.map((post) => ({
+            "@type": "BlogPosting",
+            headline: post.title,
+            url: `${SITE_URL}/blog/${post.slug}`,
+            datePublished: post.date,
+        })),
+    };
+
     return (
         <main className="min-h-screen bg-background-light text-ink-black pt-24 relative overflow-hidden">
             {/* Elementos decorativos de fondo */}
@@ -172,7 +187,11 @@ export default async function BlogPage() {
             <div className="absolute bottom-40 left-[-50px] w-48 h-48 bg-hot-coral rounded-full blur-[80px] opacity-20 z-0 pointer-events-none"></div>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+                dangerouslySetInnerHTML={jsonLd(breadcrumbSchema)}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={jsonLd(blogSchema)}
             />
             <Navbar config={config} />
 

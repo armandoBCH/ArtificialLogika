@@ -5,15 +5,16 @@ import {
     SEO_KEYWORDS,
     DEFAULT_OG_IMAGE,
     buildBreadcrumbs,
+    jsonLd,
 } from "@/lib/seo/constants";
-import type { PricingPlan, Testimonial } from "@/lib/types/database";
+import type { PricingPlan } from "@/lib/types/database";
 
 interface JsonLdProps {
     plans: PricingPlan[];
-    testimonials?: Testimonial[];
 }
 
-export default function JsonLd({ plans, testimonials }: JsonLdProps) {
+export default function JsonLd({ plans }: JsonLdProps) {
+    const hayPlanesActivos = plans.some((p) => p.is_active);
     // 1. Organization schema
     const organizationSchema = {
         "@context": "https://schema.org",
@@ -88,53 +89,11 @@ export default function JsonLd({ plans, testimonials }: JsonLdProps) {
             "E-commerce",
             "Rediseño web",
         ],
-        hasOfferCatalog: {
-            "@type": "OfferCatalog",
-            name: "Servicios de Diseño Web",
-            // Sale de los planes de precios, que es lo que efectivamente se vende.
-            // Antes leia la tabla `services`, que ya no se mostraba en el sitio y
-            // tenia descripciones cruzadas: le decia a Google que el Sitio
-            // Institucional era para campañas puntuales.
-            itemListElement: plans
-                .filter((p) => p.is_active)
-                .map((plan, index) => ({
-                    "@type": "Offer",
-                    itemOffered: {
-                        "@type": "Service",
-                        name: plan.name,
-                        description: plan.subtitle,
-                        provider: {
-                            "@type": "Organization",
-                            name: BUSINESS.legalName,
-                        },
-                    },
-                    position: index + 1,
-                })),
-        },
-        // AggregateRating from testimonials
-        ...(testimonials &&
-            testimonials.length > 0 && {
-            aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: "5",
-                bestRating: "5",
-                worstRating: "1",
-                ratingCount: testimonials.length.toString(),
-                reviewCount: testimonials.length.toString(),
-            },
-            review: testimonials.slice(0, 3).map((t) => ({
-                "@type": "Review",
-                author: {
-                    "@type": "Person",
-                    name: t.name,
-                },
-                reviewRating: {
-                    "@type": "Rating",
-                    ratingValue: "5",
-                    bestRating: "5",
-                },
-                reviewBody: t.quote,
-            })),
+        // El catálogo completo (con precio) ya lo emite PricingJsonLd bajo este
+        // mismo @id — referenciarlo evita declarar dos OfferCatalog distintos
+        // para los mismos planes en la misma página.
+        ...(hayPlanesActivos && {
+            hasOfferCatalog: { "@id": `${SITE_URL}/#offercatalog` },
         }),
     };
 
@@ -150,14 +109,6 @@ export default function JsonLd({ plans, testimonials }: JsonLdProps) {
         inLanguage: BUSINESS.language,
         publisher: {
             "@id": `${SITE_URL}/#organization`,
-        },
-        potentialAction: {
-            "@type": "SearchAction",
-            target: {
-                "@type": "EntryPoint",
-                urlTemplate: `${SITE_URL}/portafolio?q={search_term_string}`,
-            },
-            "query-input": "required name=search_term_string",
         },
     };
 
@@ -192,33 +143,23 @@ export default function JsonLd({ plans, testimonials }: JsonLdProps) {
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(organizationSchema),
-                }}
+                dangerouslySetInnerHTML={jsonLd(organizationSchema)}
             />
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(localBusinessSchema),
-                }}
+                dangerouslySetInnerHTML={jsonLd(localBusinessSchema)}
             />
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(webSiteSchema),
-                }}
+                dangerouslySetInnerHTML={jsonLd(webSiteSchema)}
             />
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(webPageSchema),
-                }}
+                dangerouslySetInnerHTML={jsonLd(webPageSchema)}
             />
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(breadcrumbSchema),
-                }}
+                dangerouslySetInnerHTML={jsonLd(breadcrumbSchema)}
             />
         </>
     );

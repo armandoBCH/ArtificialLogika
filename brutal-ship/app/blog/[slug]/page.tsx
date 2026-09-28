@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia, jsonLd } from "@/lib/seo/constants";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { getSiteConfig } from "@/lib/data/config";
@@ -73,7 +73,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
     const articleSchema = {
         "@context": "https://schema.org",
-        "@type": "Article",
+        "@type": "BlogPosting",
         headline: post.title,
         description: post.excerpt,
         datePublished: post.date,
@@ -104,16 +104,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <main className="min-h-screen bg-background-light text-ink-black pt-24 relative">
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+                dangerouslySetInnerHTML={jsonLd(breadcrumbSchema)}
             />
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+                dangerouslySetInnerHTML={jsonLd(articleSchema)}
             />
             {faqSchema && (
                 <script
                     type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+                    dangerouslySetInnerHTML={jsonLd(faqSchema)}
                 />
             )}
             <Navbar config={config} />

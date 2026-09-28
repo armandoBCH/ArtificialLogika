@@ -4,6 +4,7 @@ import {
     BUSINESS,
     buildBreadcrumbs,
     vistaPrevia,
+    jsonLd,
 } from "@/lib/seo/constants";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getSiteConfig } from "@/lib/data/config";
@@ -67,11 +68,11 @@ export default async function PortafolioPage() {
         <main className="min-h-screen bg-white text-ink-black pt-[72px] sm:pt-20 md:pt-28 bg-dot-pattern">
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+                dangerouslySetInnerHTML={jsonLd(breadcrumbSchema)}
             />
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+                dangerouslySetInnerHTML={jsonLd(itemListSchema)}
             />
             <Navbar config={config} />
 

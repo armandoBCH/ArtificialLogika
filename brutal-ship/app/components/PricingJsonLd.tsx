@@ -1,4 +1,4 @@
-import { SITE_URL, BUSINESS } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, jsonLd } from "@/lib/seo/constants";
 import type { PricingPlan } from "@/lib/types/database";
 
 // `priceValidUntil` solo necesita ser estable, no exacto al milisegundo. A nivel de
@@ -21,6 +21,9 @@ export default function PricingJsonLd({ plans }: PricingJsonLdProps) {
     const offerCatalogSchema = {
         "@context": "https://schema.org",
         "@type": "OfferCatalog",
+        // Referenciado desde ProfessionalService.hasOfferCatalog en JsonLd.tsx:
+        // un solo OfferCatalog para los planes, no dos declaraciones distintas.
+        "@id": `${SITE_URL}/#offercatalog`,
         name: `Planes de Diseño Web — ${BUSINESS.name}`,
         description:
             "Planes de diseño web profesional con precios claros. Landing pages, sitios institucionales y tiendas online.",
@@ -55,9 +58,7 @@ export default function PricingJsonLd({ plans }: PricingJsonLdProps) {
     return (
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{
-                __html: JSON.stringify(offerCatalogSchema),
-            }}
+            dangerouslySetInnerHTML={jsonLd(offerCatalogSchema)}
         />
     );
 }

@@ -33,7 +33,7 @@ export default async function Home() {
 
   return (
     <>
-      <JsonLd plans={plans} testimonials={testimonials} />
+      <JsonLd plans={plans} />
       <FAQJsonLd faqs={faqs} />
       <PricingJsonLd plans={plans} />
       <Navbar config={config} />
