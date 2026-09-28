@@ -680,6 +680,84 @@ const articulos: Record<string, Articulo> = {
             },
         ],
     },
+
+    "como-hacer-una-pagina-web-para-tu-negocio": {
+        respuestaCorta:
+            "Hacer la página web de tu negocio tiene ocho pasos: definir qué tiene que lograr la web, elegir el tipo de sitio (landing desde $229.000, institucional desde $389.000 o tienda online desde $619.000), armar el presupuesto, preparar textos y fotos, elegir quién la hace, resolver el dominio y el hosting, calcular el plazo, que va de 1 a 4 semanas según el tipo, y recién al final configurarla para que Google la encuentre.",
+        contenido: `
+    <h2>¿Cómo se hace la página web de un negocio, paso a paso?</h2>
+    <p>Son ocho pasos, y el orden importa: saltarse uno de los primeros suele pagarse en tiempo o en plata más adelante. Esta guía los recorre todos, con un enlace a la nota completa de cada tema por si necesitás el detalle.</p>
+
+    <ul>
+      <li><strong>1. Definir el objetivo:</strong> qué tiene que lograr la web.</li>
+      <li><strong>2. Elegir el tipo de sitio:</strong> landing, institucional o tienda.</li>
+      <li><strong>3. Armar el presupuesto:</strong> cuánto vas a invertir.</li>
+      <li><strong>4. Preparar el contenido:</strong> textos, fotos y datos de contacto.</li>
+      <li><strong>5. Elegir quién la hace:</strong> agencia, independiente o plataforma.</li>
+      <li><strong>6. Resolver dominio y hosting:</strong> la dirección y el lugar donde vive.</li>
+      <li><strong>7. Calcular el plazo:</strong> de 1 a 4 semanas según el tipo.</li>
+      <li><strong>8. Dejarla lista para Google:</strong> que aparezca cuando te busquen.</li>
+    </ul>
+
+    <h3>1. ¿Qué es lo primero que hay que definir?</h3>
+    <p>Qué tiene que lograr la web, en una sola frase. Que te escriban por WhatsApp, que te pidan turno, que compren online, o que te encuentren cuando alguien busque tu rubro en Google.</p>
+    <p>Una web que persigue cinco objetivos a la vez no cumple ninguno bien. Elegí uno principal y organizá el resto del sitio alrededor de esa acción.</p>
+
+    <h3>2. ¿Qué tipo de sitio necesito: landing, institucional o tienda?</h3>
+    <p>Depende de cuánto tengas que explicar. Una <a href="/blog/landing-page-que-es-y-para-que-sirve">landing page</a> alcanza cuando el objetivo es uno solo y no hay catálogo que mostrar: sirve para oficios, profesionales independientes y servicios puntuales, desde $229.000.</p>
+    <p>Un sitio institucional se justifica cuando hay varios servicios que explicar por separado o cuando la web tiene que dar confianza antes de que hables con el cliente: clínicas, estudios, constructoras, desde $389.000. Y si vendés productos, hace falta una <a href="/blog/tienda-online-argentina-guia-completa">tienda online</a>, desde $619.000, con catálogo, carrito y medios de pago.</p>
+
+    <h3>3. ¿Cuánto presupuesto conviene manejar?</h3>
+    <p>Para un negocio chico o mediano en Argentina, el rango razonable en 2026 va de <strong>$230.000 a $770.000</strong> según el tipo de sitio. El desglose completo, con lo que incluye cada franja de precio, está en la <a href="/blog/cuanto-cuesta-una-pagina-web-en-argentina">nota de costos</a>.</p>
+    <p>Aparte de ese pago único hay un gasto mensual que se paga siempre: el hosting y el dominio, entre $15.000 y $30.000 por mes. Contemplalo antes de decidir, porque es el costo que no desaparece nunca.</p>
+
+    <h3>4. ¿Qué tengo que preparar antes de arrancar?</h3>
+    <p>Los textos de qué hacés, fotos propias de tu trabajo o tus productos, y tus datos de contacto y horarios. El logo ayuda pero no frena: se puede arrancar sin él.</p>
+    <p>Es el paso que más tiempo real le agrega a un proyecto, más que el desarrollo en sí. Tenerlo listo antes de pedir presupuesto es lo que separa un proyecto de dos semanas de uno que se estira a dos meses; el detalle completo está en <a href="/blog/que-necesito-antes-de-encargar-mi-web">qué necesito antes de encargar mi web</a>.</p>
+
+    <h3>5. ¿Cómo elijo quién me la hace?</h3>
+    <p>Mirando cinco cosas antes que el precio: <a href="/portafolio">trabajos publicados</a> que puedas visitar, que el dominio quede a tu nombre, qué incluye y qué no el presupuesto, un plazo concreto con qué pasa si no se cumple, y cómo vas a poder cambiar contenido después de la entrega.</p>
+    <p>Un presupuesto muy barato que no aclara ninguno de estos puntos suele salir más caro a la larga. La guía completa con las señales de alarma está en <a href="/blog/como-elegir-quien-me-hace-la-web">cómo elijo quién me hace la página web</a>.</p>
+
+    <h3>6. ¿Qué pasa con el dominio y el hosting?</h3>
+    <p>Son dos servicios distintos y hacen falta los dos. El <a href="/blog/que-es-un-dominio-web-cuanto-cuesta">dominio</a> es la dirección de tu web y se alquila por año; el <a href="/blog/que-es-el-hosting-web">hosting</a> es el lugar donde viven los archivos, y se paga mes a mes, siempre.</p>
+    <p>Lo único que hay que exigir, sea quien sea que te haga la web, es que el dominio quede registrado a tu nombre. Si queda a nombre del proveedor, el día que quieras cambiar no te podés llevar tu propia dirección.</p>
+
+    <h3>7. ¿Cuánto tiempo tarda el proceso completo?</h3>
+    <p>Entre 1 y 2 semanas una landing page, y entre 2 y 4 semanas un sitio institucional o una tienda online, contadas desde que aprobás el diseño, no desde la primera consulta.</p>
+    <p>Lo que más suele demorar no es el desarrollo sino que el cliente junte los textos y las fotos del paso 4. Si eso está listo antes, el plazo se cumple sin sobresaltos; el desglose completo está en <a href="/blog/cuanto-tarda-hacer-una-pagina-web">cuánto tarda en hacerse una página web</a>.</p>
+
+    <h3>8. ¿Qué hace falta para que Google la encuentre después de publicada?</h3>
+    <p>Dos cosas que no son lo mismo: dar de alta el Perfil de Empresa de Google, que es gratis y rinde en días, y tener la web configurada técnicamente para que el buscador la entienda, que rinde en semanas o meses. El paso a paso está en <a href="/blog/como-aparecer-en-google-con-mi-negocio">cómo aparecer en Google con mi negocio</a>.</p>
+    <p>Si pasadas unas semanas la web no aparece, casi siempre es por una de cuatro razones concretas, y la forma de diagnosticarlas en dos minutos está en <a href="/blog/por-que-mi-web-no-aparece-en-google">por qué mi página web no aparece en Google</a>.</p>
+
+    <h3>¿Y si ya tengo Instagram o WhatsApp Business, hace falta igual?</h3>
+    <p>Sí, porque resuelven cosas distintas. Instagram y WhatsApp sirven para que te descubran y para cerrar la conversación con quien ya te encontró; la web es lo que hace que te encuentren buscando en Google, y sigue funcionando aunque una cuenta se caiga o te suspendan el perfil.</p>
+    <p>Los motivos completos están en <a href="/blog/necesito-web-si-tengo-whatsapp-business">necesito web si tengo WhatsApp Business</a> y en <a href="/blog/5-razones-para-tener-pagina-web-profesional">5 razones para tener página web profesional</a>. Lo habitual, y lo que mejor funciona, es usar las tres cosas juntas.</p>
+  `,
+        preguntas: [
+            {
+                pregunta: "¿Por dónde empiezo si nunca tuve página web?",
+                respuesta:
+                    "Por definir en una frase qué tenés que lograr con la web. De ahí sale todo lo demás: el tipo de sitio que necesitás, el presupuesto y los contenidos que hay que preparar antes de pedir un diseño.",
+            },
+            {
+                pregunta: "¿Cuánto tengo que tener presupuestado para hacer mi página web?",
+                respuesta:
+                    "Para un negocio chico o mediano en Argentina, el rango razonable en 2026 va de $230.000 a $770.000 según el tipo de sitio, más entre $15.000 y $30.000 por mes de hosting y dominio.",
+            },
+            {
+                pregunta: "¿Puedo hacer todos los pasos yo mismo, sin agencia?",
+                respuesta:
+                    "El objetivo, el contenido y la elección de proveedor los definís vos. El desarrollo, el dominio, el hosting y la configuración técnica para Google conviene que los resuelva quien te hace la web, para que quede bien hecho desde el primer día.",
+            },
+            {
+                pregunta: "¿Cuánto tarda todo el proceso, de la consulta a la web publicada?",
+                respuesta:
+                    "Entre 1 y 2 semanas para una landing page y entre 2 y 4 semanas para un sitio institucional o una tienda online, siempre que los textos y las fotos estén listos antes de arrancar.",
+            },
+        ],
+    },
 };
 
 export function getArticulo(slug: string): Articulo | null {

@@ -152,6 +152,15 @@ const BLOG_POSTS = [
         readTime: "5 min",
         category: "SEO",
     },
+    {
+        slug: "como-hacer-una-pagina-web-para-tu-negocio",
+        title: "Cómo hacer la página web de tu negocio: guía completa paso a paso",
+        excerpt:
+            "Los ocho pasos en orden: qué definir primero, qué tipo de sitio elegir, cuánto presupuestar y qué hace falta para no perderte en el camino.",
+        date: "2026-09-27",
+        readTime: "8 min",
+        category: "Proceso",
+    },
 ];
 
 export { BLOG_POSTS };
