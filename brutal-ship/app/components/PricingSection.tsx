@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
+import type { MouseEvent } from "react";
 import type { PricingPlan, PricingFeature } from "@/lib/types/database";
 import type { SiteConfigMap } from "@/lib/types/database";
 import { cuotaMensual, formatearPesos, formatearPrecio, separarCaracteristicas } from "@/lib/precios";
@@ -210,12 +211,132 @@ const NOTA_PRECIO: Record<string, string> = {
 
 const QUIERO_FALLBACK = "Una web que trabaje para tu negocio.";
 
-// Una sombra por fila, en el orden en que estaban: menta, negra, violeta.
-const SOMBRAS_CUOTA = [
-    "shadow-neobrutalism-mint",
-    "shadow-neobrutalism sm:shadow-neobrutalism-lg",
-    "shadow-neobrutalism-primary",
+// Titulo en lenguaje llano (lo que gana el cliente); el termino tecnico va en el detalle. Antes era
+// una lista de siete renglones largos con el mismo peso: habia que leerla toda.
+const INCLUYE = [
+    { icon: "dns", titulo: "Tu web siempre online", detalle: "Hosting en servidores rápidos" },
+    { icon: "language", titulo: "Tu dirección web", detalle: "tu-marca.com, renovada cada año" },
+    { icon: "lock", titulo: "Sitio seguro", detalle: "Candado de seguridad (SSL)" },
+    { icon: "cloud_done", titulo: "Tu información guardada", detalle: "Datos y archivos en la nube" },
+    { icon: "backup", titulo: "Copias de respaldo", detalle: "Si algo falla, lo recuperamos" },
+    { icon: "autorenew", titulo: "Siempre al día", detalle: "Actualizaciones técnicas" },
 ];
+
+// Se abre a mano y no con el toggle nativo: al desplegarse, el scroll anchoring de
+// Chrome se anclaba a algo de abajo y tiraba la pagina al final del bloque.
+function abrirSinSalto(e: MouseEvent<HTMLElement>) {
+    e.preventDefault();
+    const details = e.currentTarget.parentElement as HTMLDetailsElement;
+    const html = document.documentElement;
+    html.style.overflowAnchor = "none";
+    details.open = !details.open;
+    if (details.open) {
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        details.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
+    window.setTimeout(() => { html.style.overflowAnchor = ""; }, 800);
+}
+
+function MantenimientoMensual({ conCuota }: { conCuota: { plan: PricingPlan; cuota: number }[] }) {
+    const desde = Math.min(...conCuota.map((x) => x.cuota));
+
+    return (
+        <details
+            className="group mt-16 max-w-5xl mx-auto w-full relative z-10 text-left"
+            style={{ scrollMarginTop: "6rem" }}
+        >
+            <summary
+                onClick={abrirSinSalto}
+                className="cursor-pointer list-none flex items-center gap-4 bg-white border-4 border-black rounded-xl shadow-neobrutalism px-5 py-4 sm:px-6 sm:py-5 transition-transform hover:-translate-y-0.5"
+            >
+                <span className="min-w-0 flex-1">
+                    <span className="block font-display font-bold uppercase tracking-tight text-lg sm:text-xl leading-tight">
+                        ¿Para qué es el pago mensual?
+                    </span>
+                    {/* Lo esencial sin abrir: que es opcional y desde cuanto. */}
+                    <span className="mt-1 block text-sm font-medium text-ink-black/75">
+                        Opcional · desde <strong className="font-display font-bold text-ink-black tabular-nums">{formatearPesos(desde)}/mes</strong>
+                    </span>
+                </span>
+                <span aria-hidden="true" className="shrink-0 w-9 h-9 flex items-center justify-center border-2 border-black rounded-full bg-accent-yellow transition-transform duration-300 group-open:rotate-45"><span className="material-icons">add</span></span>
+            </summary>
+
+            <div className="mt-4 group-open:animate-[cuota-reveal_0.4s_cubic-bezier(0.22,1,0.36,1)]">
+                <div className="bg-white border-4 border-black rounded-xl shadow-neobrutalism-lg overflow-hidden">
+                    <div className="bg-primary text-white px-5 py-6 sm:px-8 sm:py-8 border-b-4 border-black">
+                        <h3 className="text-3xl sm:text-4xl font-bold uppercase tracking-tighter leading-[1.05]">
+                            Para que tu web{" "}
+                            <span className="inline-block bg-accent-yellow text-ink-black px-2 -rotate-2 border-2 border-black shadow-neobrutalism-sm">siga viva</span>
+                        </h3>
+                        <p className="mt-3 max-w-xl text-base sm:text-lg font-medium text-white/90 leading-snug">
+                            Nos ocupamos de lo técnico para que funcione rápida y segura. Vos, de tu negocio.
+                        </p>
+                    </div>
+
+                    <div className="grid lg:grid-cols-5">
+                        <div className="p-5 sm:p-8 lg:col-span-3 lg:border-r-4 border-black">
+                            <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-ink-black/70">Qué incluye</h4>
+                            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2.5 sm:gap-3">
+                                {INCLUYE.map((item) => (
+                                    <li key={item.titulo} className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 rounded-lg border-2 border-black bg-background-light p-3">
+                                        <span aria-hidden="true" className="shrink-0 w-9 h-9 lg:w-11 lg:h-11 flex items-center justify-center rounded-md border-2 border-black bg-white text-primary"><span className="material-icons text-xl lg:text-2xl">{item.icon}</span></span>
+                                        <span className="min-w-0 flex flex-col gap-1">
+                                            <span className="font-display font-bold text-sm sm:text-base leading-tight">{item.titulo}</span>
+                                            <span className="text-xs text-ink-black/70 leading-snug">{item.detalle}</span>
+                                        </span>
+                                    </li>
+                                ))}
+                                {/* El soporte es lo unico humano de la lista: va entero y en menta. */}
+                                <li className="col-span-full flex items-center gap-3 rounded-lg border-2 border-black bg-mint p-3 shadow-neobrutalism-sm">
+                                    <span aria-hidden="true" className="shrink-0 w-9 h-9 lg:w-11 lg:h-11 flex items-center justify-center rounded-md border-2 border-black bg-white"><span className="material-icons text-xl lg:text-2xl">support_agent</span></span>
+                                    <span className="min-w-0">
+                                        <span className="block font-display font-bold text-sm sm:text-base leading-tight">Soporte directo por WhatsApp</span>
+                                        <span className="block text-xs text-ink-black/80 leading-snug">Nos escribís y lo resolvemos.</span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="flex flex-col p-5 sm:p-8 lg:col-span-2 border-t-4 lg:border-t-0 border-black bg-background-light">
+                            <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-ink-black/70">Cuánto sale, según tu plan</h4>
+                            {/* Sale de los planes: cada uno con cuota aparece aca, en el orden del sitio. */}
+                            <dl className="overflow-hidden rounded-lg border-2 border-black bg-white shadow-neobrutalism divide-y-2 divide-black">
+                                {conCuota.map(({ plan, cuota }) => (
+                                    <div key={plan.id} className={`flex items-center justify-between gap-3 px-4 py-3.5 ${plan.is_featured ? "bg-accent-yellow" : ""}`}>
+                                        <dt className="min-w-0">
+                                            <span className="block font-display font-bold uppercase text-sm leading-tight">{plan.name}</span>
+                                            {plan.is_featured && plan.featured_label && (
+                                                <span className="mt-0.5 block text-[11px] font-bold uppercase tracking-wider text-primary">{plan.featured_label}</span>
+                                            )}
+                                        </dt>
+                                        <dd className="shrink-0 text-right font-display leading-none">
+                                            {plan.payment_type === "Precio Base" && (
+                                                <span className="block mb-1 text-[11px] font-bold uppercase tracking-wider text-ink-black/70">desde</span>
+                                            )}
+                                            <span className="text-2xl sm:text-3xl font-bold tabular-nums">{formatearPesos(cuota)}</span>
+                                            <span className="ml-0.5 text-sm font-bold text-ink-black/70">/mes</span>
+                                        </dd>
+                                    </div>
+                                ))}
+                            </dl>
+
+                            <ul className="mt-6 space-y-3 text-sm leading-snug">
+                                <li className="flex items-start gap-2.5">
+                                    <span aria-hidden="true" className="material-icons shrink-0 text-lg leading-none text-primary">lock_open</span>
+                                    <span><strong className="font-bold">Cancelás cuando quieras.</strong> Sin penalidad.</span>
+                                </li>
+                                <li className="flex items-start gap-2.5">
+                                    <span aria-hidden="true" className="material-icons shrink-0 text-lg leading-none text-primary">key</span>
+                                    <span><strong className="font-bold">¿Preferís no tomarlo?</strong> Te dejamos tu dirección web y el alojamiento a tu nombre, listos para que sigas por tu cuenta.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+    );
+}
 
 export default function PricingSection({ plans, config }: PricingSectionProps) {
     const conCuota = plans
@@ -251,103 +372,10 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                     ))}
                 </motion.div>
 
-                {/* Monthly Fee Section */}
                 {/* El mantenimiento mensual es opcional. Mostrarlo abierto en el momento de decidir
-                    sumaba tres compromisos de precio mas a los tres planes. Sigue estando completo y
-                    findable, pero ya no compite con la decision principal. */}
-                {conCuota.length > 0 && (
-                <details className="mt-16 max-w-5xl mx-auto w-full px-4 sm:px-0 relative z-10 group">
-                    <summary className="cursor-pointer list-none flex items-center justify-between gap-4 bg-white border-4 border-black rounded-xl shadow-neobrutalism px-6 py-5 font-black uppercase tracking-tight text-lg sm:text-xl transition-all hover:-translate-y-0.5">
-                        <span>¿Para qué es el pago mensual?</span>
-                        <span aria-hidden="true" className="material-icons shrink-0 border-2 border-black rounded-full bg-accent-yellow transition-transform group-open:rotate-45">add</span>
-                    </summary>
-                    <motion.div
-                        initial={{ y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        /* Antes repetia las mismas clases de layout que el <details> que lo
-                           envuelve — max-w-5xl, mx-auto, w-full, px-4. Abajo de 640px el px-4
-                           se aplicaba DOS veces y, sumado a los border-4 y los p-6/p-4 de
-                           adentro, a 320px dejaba 128px de contenido: los textos de la lista
-                           se desbordaban de su fila. El contenedor de afuera ya se ocupa del
-                           ancho y del padding. */
-                        className="mt-6 relative z-10"
-                    >
-                        <div className="bg-white border-4 border-black shadow-neobrutalism-lg overflow-hidden flex flex-col lg:flex-row rounded-xl relative">
-                            <div className="bg-primary p-5 sm:p-6 md:p-10 lg:p-12 lg:w-3/5 border-b-4 lg:border-b-0 lg:border-r-4 border-black flex flex-col justify-center relative">
-                                {/* Decorative element hidden on mobile */}
-                                <div className="absolute -left-4 -top-4 w-12 h-12 bg-accent-yellow border-4 border-black rounded-full shadow-neobrutalism z-20 hidden sm:block"></div>
-
-                                <h3 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4 sm:mb-5 text-white relative z-10 leading-none mt-2 sm:mt-0">
-                                    Para que tu web<br />
-                                    <span className="bg-accent-yellow text-black px-2 mt-2 inline-block -rotate-2 border-4 border-black shadow-neobrutalism-sm sm:shadow-neobrutalism">siga viva</span>
-                                </h3>
-                                <p className="text-lg sm:text-xl font-bold mb-6 text-white/90 relative z-10">
-                                    Tu web es un ecosistema vivo. Nosotros nos hacemos cargo de la parte técnica para que funcione rapidísima y segura las 24 horas.
-                                </p>
-
-                                <div className="bg-white/10 p-3 sm:p-5 border-4 border-black rounded-xl shadow-neobrutalism relative z-10">
-                                    <p className="font-extrabold uppercase text-xs sm:text-sm mb-4 text-white border-b-2 border-white/20 pb-2">Todo esto está incluido:</p>
-                                    <div className="space-y-3">
-                                        {[
-                                            "Hosting en servidores ultrarrápidos",
-                                            "Dominio web anual (www.tu-marca.com)",
-                                            "Base de datos y almacenamiento en la nube",
-                                            "Certificado de Seguridad SSL (candado HTTPS)",
-                                            "Backups automáticos periódicos",
-                                            "Actualizaciones y mantenimiento continuo",
-                                            "Soporte directo por WhatsApp"
-                                        ].map((item, i) => (
-                                            <div key={i} className="flex items-start gap-3">
-                                                <div className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 sm:mt-0 bg-mint border-2 border-black shadow-neobrutalism-sm flex items-center justify-center flex-shrink-0">
-                                                    <span aria-hidden="true" className="material-icons text-black text-[12px] sm:text-[14px] font-black leading-none">check</span>
-                                                </div>
-                                                <span className="min-w-0 font-bold text-white text-sm sm:text-base md:text-lg leading-snug">{item}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-background-light p-6 md:p-10 lg:p-12 lg:w-2/5 flex flex-col justify-center relative bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
-                                <h4 className="text-xl sm:text-2xl font-black uppercase mb-6 sm:mb-8 text-center decoration-wavy underline decoration-hot-coral decoration-2 underline-offset-4 relative z-10 bg-white inline-block px-3 py-1 sm:px-4 sm:py-2 border-2 border-black -rotate-1 shadow-neobrutalism mx-auto leading-tight">
-                                    Valores Mensuales<br />
-                                    <span className="text-[10px] sm:text-xs tracking-wide bg-black text-white px-2 py-0.5 mt-2 inline-block rotate-1 rounded-sm border border-black shadow-neobrutalism-primary">DE SOPORTE Y MANTENIMIENTO</span>
-                                </h4>
-                                <div className="space-y-4 sm:space-y-5 relative z-10">
-                                    {/* Sale de los planes: cada uno con cuota aparece aca, en el
-                                        orden del sitio. Antes eran tres filas escritas a mano con
-                                        nombres fijos, y un plan nuevo o renombrado no aparecia. */}
-                                    {conCuota.map(({ plan, cuota }, i) => (
-                                        <div
-                                            key={plan.id}
-                                            className={`bg-white border-4 border-black ${SOMBRAS_CUOTA[i % SOMBRAS_CUOTA.length]} p-4 sm:p-5 rounded-xl flex flex-col justify-between transform transition-transform hover:-translate-y-1 relative overflow-hidden`}
-                                        >
-                                            {plan.payment_type === "Precio Base" && (
-                                                <div className="absolute top-0 right-0 bg-accent-yellow text-black text-[9px] sm:text-[10px] font-black px-2 py-0.5 border-b-2 border-l-2 border-black shadow-neobrutalism-sm rounded-bl-lg z-10 uppercase tracking-wider">
-                                                    Precio Base
-                                                </div>
-                                            )}
-                                            <div className={`flex flex-wrap justify-between items-center gap-2 w-full ${plan.payment_type === "Precio Base" ? "mt-2" : ""}`}>
-                                                <span className="font-bold text-sm sm:text-base md:text-lg uppercase min-w-0">{plan.name}</span>
-                                                <div className="flex items-end text-black relative bg-background-light px-2 sm:px-3 py-1 border-2 border-black rounded-lg shadow-neobrutalism-sm">
-                                                    <span className="font-black text-xl sm:text-2xl md:text-3xl">{formatearPesos(cuota)}</span>
-                                                    <span className="font-bold text-ink-black/70 mb-0.5 sm:mb-1 ml-1 text-[10px] sm:text-xs md:text-sm">/mes</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="mt-6 sm:mt-10 flex w-full relative z-10">
-                                    <div className="flex-1 items-center justify-center gap-2 sm:gap-3 bg-hot-coral border-4 border-black px-4 py-3 sm:py-4 rounded-xl shadow-neobrutalism flex flex-row hover:-translate-y-1 hover:shadow-neobrutalism-lg transition-transform cursor-default">
-                                        <span aria-hidden="true" className="material-icons text-ink-black text-xl sm:text-2xl font-black">lock_open</span>
-                                        <p className="text-[11px] sm:text-sm md:text-base font-black text-ink-black uppercase tracking-wider text-center">¡Sin ataduras! Cancelá cuando quieras.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                </details>
-                )}
+                    sumaba tres compromisos de precio mas a los tres planes. Queda plegado, pero el
+                    resumen ya dice lo esencial (opcional, desde cuanto) sin tener que abrirlo. */}
+                {conCuota.length > 0 && <MantenimientoMensual conCuota={conCuota} />}
 
                 {/* Aca habia dos cajas rotadas. La del E-commerce se mudo a la tarjeta de
                     ese plan, pegada al precio que califica. La de "50% de sena + garantia"

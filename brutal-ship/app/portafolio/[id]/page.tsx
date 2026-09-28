@@ -187,12 +187,19 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                 la tercera toma la fila entera en vez de dejar medio hueco. */}
                             {stats.length > 0 && (
                                 <dl className="mt-5 flex flex-wrap gap-3">
-                                    {stats.map((s, i) => (
-                                        <div key={i} className="flex min-w-[calc(50%-6px)] flex-1 flex-col-reverse items-center rounded-lg border-2 border-black bg-accent-yellow px-3 py-3 text-center">
-                                            <dt className="mt-1 text-xs font-bold uppercase tracking-wider text-ink-black/80">{s.label}</dt>
-                                            <dd className="text-3xl font-black leading-none tabular-nums">{s.value}</dd>
+                                    {stats.length === 1 ? (
+                                        <div className="flex flex-1 flex-row items-center justify-center gap-3 rounded-lg border-2 border-black bg-accent-yellow px-4 py-3 text-center">
+                                            <dd className="text-4xl font-black leading-none tabular-nums">{stats[0].value}</dd>
+                                            <dt className="text-left text-xs font-bold uppercase leading-tight tracking-wider text-ink-black/80">{stats[0].label}</dt>
                                         </div>
-                                    ))}
+                                    ) : (
+                                        stats.map((s, i) => (
+                                            <div key={i} className="flex min-w-[calc(50%-6px)] flex-1 flex-col-reverse items-center rounded-lg border-2 border-black bg-accent-yellow px-3 py-3 text-center">
+                                                <dt className="mt-1 text-xs font-bold uppercase tracking-wider text-ink-black/80">{s.label}</dt>
+                                                <dd className="text-3xl font-black leading-none tabular-nums">{s.value}</dd>
+                                            </div>
+                                        ))
+                                    )}
                                 </dl>
                             )}
 
