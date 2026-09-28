@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getSiteConfig } from "@/lib/data/config";
-import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia, jsonLd } from "@/lib/seo/constants";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import StickyMobileCTA from "@/app/components/StickyMobileCTA";
@@ -122,7 +122,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             "@type": "Organization",
             name: BUSINESS.legalName,
         },
-        dateModified: project.updated_at,
+        ...(project.created_at && { datePublished: project.created_at }),
+        ...(project.updated_at && { dateModified: project.updated_at }),
         keywords: project.tags?.join(", ") || project.category,
     };
 
@@ -140,11 +141,11 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         <main className="min-h-screen bg-white text-ink-black pt-[72px] sm:pt-20 md:pt-28">
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+                dangerouslySetInnerHTML={jsonLd(breadcrumbSchema)}
             />
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkSchema) }}
+                dangerouslySetInnerHTML={jsonLd(creativeWorkSchema)}
             />
             <Navbar config={config} />
 

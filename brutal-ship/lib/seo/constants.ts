@@ -176,3 +176,10 @@ export function buildBreadcrumbs(
         })),
     };
 }
+
+// Props para un <script type="application/ld+json">. Un dato con "</script>"
+// adentro (un título de proyecto, por ejemplo) cerraría el tag antes de tiempo;
+// escapar "<" lo evita sin tocar el JSON para quien lo lee (Google, validadores).
+export function jsonLd(data: unknown): { __html: string } {
+    return { __html: JSON.stringify(data).replace(/</g, "\\u003c") };
+}

@@ -94,3 +94,29 @@ export async function getFaqs(): Promise<FAQ[]> {
         return DEFAULT_FAQS;
     }
 }
+
+// Preguntas propias de /portafolio: no son genéricas del negocio (esas viven en
+// la tabla `faqs`), sino dudas puntuales del catálogo (reales vs. muestras, si
+// se puede pedir algo parecido). Por eso van hardcodeadas acá y no en Supabase.
+export const PORTFOLIO_FAQS: FAQ[] = [
+    {
+        id: "portafolio-1",
+        question: "¿Los proyectos del catálogo son de clientes reales?",
+        answer:
+            "No todos. Mostramos tanto trabajos reales que hicimos para clientes como proyectos de demostración armados por nosotros para mostrar qué se puede lograr en cada rubro. Podés filtrar el catálogo por \"Clientes reales\" o \"Demos\", y cada proyecto de muestra queda marcado como tal.",
+        display_order: 1,
+        is_active: true,
+        created_at: "",
+        updated_at: "",
+    },
+    {
+        id: "portafolio-2",
+        question: "¿Puedo pedir una web como alguno de estos proyectos para mi negocio?",
+        answer:
+            "Sí. Hacemos webs para todo tipo de negocio, encuentres o no tu rubro en el catálogo. Te mostramos un diseño previo de tu web sin cargo ni compromiso antes de que decidas.",
+        display_order: 2,
+        is_active: true,
+        created_at: "",
+        updated_at: "",
+    },
+];
