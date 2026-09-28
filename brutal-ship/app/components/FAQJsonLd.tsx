@@ -1,5 +1,4 @@
 import type { FAQ } from "@/lib/types/database";
-import { jsonLd } from "@/lib/seo/constants";
 
 interface FAQJsonLdProps {
     faqs: FAQ[];
@@ -24,7 +23,9 @@ export default function FAQJsonLd({ faqs }: FAQJsonLdProps) {
     return (
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={jsonLd(faqSchema)}
+            dangerouslySetInnerHTML={{
+                __html: JSON.stringify(faqSchema),
+            }}
         />
     );
 }
