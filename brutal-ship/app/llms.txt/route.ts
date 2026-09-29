@@ -1,7 +1,7 @@
 import { SITE_URL, BUSINESS } from "@/lib/seo/constants";
 import { getPricingPlans } from "@/lib/data/pricing";
 import { getFaqs } from "@/lib/data/faqs";
-import { getPortfolioProjects } from "@/lib/data/portfolio";
+import { getPortfolioProjects, rutaProyecto } from "@/lib/data/portfolio";
 import { BLOG_POSTS } from "../blog/page";
 import { cuotaMensual, formatearPesos, formatearPrecio } from "@/lib/precios";
 
@@ -96,7 +96,7 @@ export async function GET() {
                 .join(", ");
             const cola = metricas ? ` Resultados: ${metricas}.` : "";
             lineas.push(
-                `- **${p.title}** (${p.category}): ${limpiar(p.description)}${cola} ${SITE_URL}/portafolio/${p.id}`
+                `- **${p.title}** (${p.category}): ${limpiar(p.description)}${cola} ${SITE_URL}${rutaProyecto(p)}`
             );
         }
         lineas.push("");

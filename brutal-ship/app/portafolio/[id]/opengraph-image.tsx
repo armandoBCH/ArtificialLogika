@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { esMuestra, getPortfolioProjects, isRealStat } from "@/lib/data/portfolio";
+import { buscarProyecto, esMuestra, getPortfolioProjects, isRealStat } from "@/lib/data/portfolio";
 import { captura, comoJpeg, dominioPropio } from "@/lib/og/captura";
 import { fuentes } from "@/lib/og/fuentes";
 import {
@@ -33,7 +33,7 @@ export const revalidate = 3600;
 
 export async function generateStaticParams() {
     const proyectos = await getPortfolioProjects();
-    return proyectos.map((p) => ({ id: p.id }));
+    return proyectos.map((p) => ({ id: p.slug ?? p.id }));
 }
 
 const NAV_ANCHO = 620;
@@ -64,7 +64,7 @@ function recortar(texto: string, maximo: number) {
 
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const proyecto = (await getPortfolioProjects()).find((p) => p.id === id);
+    const proyecto = buscarProyecto(await getPortfolioProjects(), id);
 
     // Un id que no existe no genera (ni deja en cache) una tarjeta generica.
     if (!proyecto) return new Response("No encontrado", { status: 404 });

@@ -110,6 +110,31 @@ const DEFAULT_PROJECTS: PortfolioProject[] = [
     },
 ];
 
+// "Barbería Legacy" -> "barberia-legacy". Si dos títulos dan el mismo slug,
+// el segundo lleva el comienzo de su id para no pisarse.
+function conSlugs(projects: PortfolioProject[]): PortfolioProject[] {
+    const usados = new Set<string>();
+    return projects.map((p) => {
+        let slug = p.title
+            .normalize("NFD")
+            .replace(/[̀-ͯ]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "") || p.id;
+        if (usados.has(slug)) slug = `${slug}-${p.id.slice(0, 8)}`;
+        usados.add(slug);
+        return { ...p, slug };
+    });
+}
+
+// URL del detalle: el slug si está, el id si no.
+export const rutaProyecto = (p: Pick<PortfolioProject, "id" | "slug">) => `/portafolio/${p.slug ?? p.id}`;
+
+// Acepta el slug o el id viejo (enlaces ya compartidos o indexados).
+export function buscarProyecto(projects: PortfolioProject[], clave: string) {
+    return projects.find((p) => p.slug === clave) ?? projects.find((p) => p.id === clave);
+}
+
 export async function getPortfolioProjects(): Promise<PortfolioProject[]> {
     try {
         const supabase = createPublicClient();
@@ -125,11 +150,11 @@ export async function getPortfolioProjects(): Promise<PortfolioProject[]> {
             .order("created_at", { ascending: true });
 
         if (error || !data || data.length === 0) {
-            return DEFAULT_PROJECTS;
+            return conSlugs(DEFAULT_PROJECTS);
         }
 
-        return data as PortfolioProject[];
+        return conSlugs(data as PortfolioProject[]);
     } catch {
-        return DEFAULT_PROJECTS;
+        return conSlugs(DEFAULT_PROJECTS);
     }
 }

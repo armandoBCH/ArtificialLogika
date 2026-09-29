@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo/constants";
-import { getPortfolioProjects } from "@/lib/data/portfolio";
+import { getPortfolioProjects, rutaProyecto } from "@/lib/data/portfolio";
 import { BLOG_POSTS } from "./blog/page";
 
 // Mismo ISR que el resto del sitio: antes era force-dynamic y cada visita de un
@@ -32,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.6,
         })),
         ...projects.map((project) => ({
-            url: `${SITE_URL}/portafolio/${project.id}`,
+            url: `${SITE_URL}${rutaProyecto(project)}`,
             lastModified: project.updated_at ? new Date(project.updated_at) : undefined,
             changeFrequency: "monthly" as const,
             priority: 0.6,

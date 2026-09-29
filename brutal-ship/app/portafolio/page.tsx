@@ -6,7 +6,7 @@ import {
     vistaPrevia,
     jsonLd,
 } from "@/lib/seo/constants";
-import { getPortfolioProjects } from "@/lib/data/portfolio";
+import { getPortfolioProjects, rutaProyecto } from "@/lib/data/portfolio";
 import { getSiteConfig } from "@/lib/data/config";
 import { PORTFOLIO_FAQS } from "@/lib/data/faqs";
 import Navbar from "@/app/components/Navbar";
@@ -60,7 +60,7 @@ export default async function PortafolioPage() {
                 .map((project, index) => ({
                     "@type": "ListItem",
                     position: index + 1,
-                    url: `${SITE_URL}/portafolio/${project.id}`,
+                    url: `${SITE_URL}${rutaProyecto(project)}`,
                     name: project.title,
                     image: project.image_url,
                 })),

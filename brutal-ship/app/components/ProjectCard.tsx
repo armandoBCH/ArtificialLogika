@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { PortfolioProject } from "@/lib/types/database";
-import { esMuestra, isRealStat } from "@/lib/data/portfolio";
+import { esMuestra, isRealStat, rutaProyecto } from "@/lib/data/portfolio";
 
 /** Las categorías de un proyecto: `categories` si tiene, si no la `category` suelta. */
 export function categoriasDe(p: Pick<PortfolioProject, "categories" | "category">): string[] {
@@ -84,7 +84,7 @@ export default function ProjectCard({ project, variante = "home" }: ProjectCardP
                     )}
                     <h3 className={`mt-0.5 font-bold leading-tight text-ink-black line-clamp-2 ${lista ? "text-lg sm:text-xl md:text-2xl" : "text-lg md:text-2xl"}`}>
                         <Link
-                            href={`/portafolio/${project.id}`}
+                            href={rutaProyecto(project)}
                             className="after:absolute after:inset-0 after:z-[2] focus-visible:outline-none"
                         >
                             {project.title}

@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getPortfolioProjects } from "@/lib/data/portfolio";
 import { getSiteConfig } from "@/lib/data/config";
-import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia, jsonLd } from "@/lib/seo/constants";
+import { SITE_URL, BUSINESS, buildBreadcrumbs, vistaPrevia, jsonLd, recortar } from "@/lib/seo/constants";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import StickyMobileCTA from "@/app/components/StickyMobileCTA";
 import WhatsAppChatWidget from "@/app/components/WhatsAppChatWidget";
 import ProjectCard, { categoriasDe } from "@/app/components/ProjectCard";
-import { esMuestra, isRealStat } from "@/lib/data/portfolio";
+import { esMuestra, isRealStat, rutaProyecto, buscarProyecto } from "@/lib/data/portfolio";
 import GaleriaProyecto from "./GaleriaProyecto";
 
 // Lo que reduce el riesgo de pedir: las mismas condiciones que la home.
@@ -28,13 +28,13 @@ export const revalidate = 60;
 
 export async function generateStaticParams() {
     const projects = await getPortfolioProjects();
-    return projects.map((p) => ({ id: p.id }));
+    return projects.map((p) => ({ id: p.slug ?? p.id }));
 }
 
 export async function generateMetadata({ params }: ProjectPageProps) {
     const resolvedParams = await params;
     const projects = await getPortfolioProjects();
-    const project = projects.find((p) => p.id === resolvedParams.id);
+    const project = buscarProyecto(projects, resolvedParams.id);
 
     if (!project) {
         return {
@@ -43,17 +43,18 @@ export async function generateMetadata({ params }: ProjectPageProps) {
         };
     }
 
-    const projectUrl = `${SITE_URL}/portafolio/${project.id}`;
+    const projectUrl = `${SITE_URL}${rutaProyecto(project)}`;
+    const descripcion = recortar(project.description);
 
     // La imagen ya no es la captura cruda: era un WebP 4:3 declarado como
     // 1200x630, y LinkedIn no lo toma. La arma ./opengraph-image.tsx.
     return {
         title: `${project.title} - Portafolio`,
-        description: project.description,
+        description: descripcion,
         ...vistaPrevia({
             titulo: `${project.title} | ${BUSINESS.name}`,
-            descripcion: project.description,
-            ruta: `/portafolio/${project.id}`,
+            descripcion: descripcion,
+            ruta: rutaProyecto(project),
             articulo: {
                 publicado: project.created_at || undefined,
                 modificado: project.updated_at || undefined,
@@ -73,10 +74,14 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         getSiteConfig(),
     ]);
 
-    const project = projects.find((p) => p.id === resolvedParams.id);
+    const project = buscarProyecto(projects, resolvedParams.id);
 
     if (!project) {
         notFound();
+    }
+    // El id viejo sigue andando, pero manda a la URL legible.
+    if (project.slug && resolvedParams.id !== project.slug) {
+        permanentRedirect(rutaProyecto(project));
     }
 
     const servicios = project.applied_services ?? [];
@@ -117,7 +122,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         name: project.title,
         description: project.description,
         image: project.image_url,
-        url: `${SITE_URL}/portafolio/${project.id}`,
+        url: `${SITE_URL}${rutaProyecto(project)}`,
         creator: {
             "@type": "Organization",
             name: BUSINESS.legalName,

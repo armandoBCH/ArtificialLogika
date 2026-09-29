@@ -180,6 +180,12 @@ export function buildBreadcrumbs(
 // Props para un <script type="application/ld+json">. Un dato con "</script>"
 // adentro (un título de proyecto, por ejemplo) cerraría el tag antes de tiempo;
 // escapar "<" lo evita sin tocar el JSON para quien lo lee (Google, validadores).
+// Meta description: hasta n caracteres, cortando en el último espacio.
+export function recortar(texto: string, n = 160): string {
+    if (texto.length <= n) return texto;
+    return texto.slice(0, texto.lastIndexOf(" ", n - 1)).replace(/[\s,;:.]+$/, "") + "…";
+}
+
 export function jsonLd(data: unknown): { __html: string } {
     return { __html: JSON.stringify(data).replace(/</g, "\\u003c") };
 }

@@ -42,6 +42,8 @@ export interface PricingFeature {
 
 export interface PortfolioProject {
     id: string;
+    /** Calculado en getPortfolioProjects a partir del título; no es columna de la base. */
+    slug?: string;
     title: string;
     category: string;
     categories: string[];
