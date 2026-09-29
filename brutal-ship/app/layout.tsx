@@ -170,8 +170,8 @@ export default function RootLayout({
           Saltar al contenido
         </a>
         <IconFontGate />
-        <ScrollProgress />
         <PageTransition>
+          <ScrollProgress />
           {children}
         </PageTransition>
 
