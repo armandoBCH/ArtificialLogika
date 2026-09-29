@@ -51,6 +51,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const articulo = getArticulo(slug);
     if (!articulo) notFound();
 
+    // Tres notas para seguir leyendo: primero las de la misma categoria y, si
+    // no alcanzan, las que siguen en la lista (dando la vuelta), asi los enlaces
+    // se reparten entre todas las notas. Sin estos enlaces cada nota era un
+    // callejon sin salida y Google no llegaba a las demas.
+    const i = BLOG_POSTS.indexOf(post);
+    const otras = [...BLOG_POSTS.slice(i + 1), ...BLOG_POSTS.slice(0, i)];
+    const relacionados = [
+        ...otras.filter((p) => p.category === post.category),
+        ...otras.filter((p) => p.category !== post.category),
+    ].slice(0, 3);
+
     const breadcrumbSchema = buildBreadcrumbs([
         { name: "Inicio", url: SITE_URL },
         { name: "Blog", url: `${SITE_URL}/blog` },
@@ -215,6 +226,33 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                 </div>
                             ))}
                         </dl>
+                    </section>
+                )}
+
+                {relacionados.length > 0 && (
+                    <section aria-labelledby="notas-relacionadas" className="mt-24">
+                        <h2
+                            id="notas-relacionadas"
+                            className="text-3xl md:text-4xl font-black uppercase tracking-tight border-b-4 border-primary pb-2 inline-flex mb-8"
+                        >
+                            Artículos relacionados
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {relacionados.map((r) => (
+                                <Link
+                                    key={r.slug}
+                                    href={`/blog/${r.slug}`}
+                                    className="group flex flex-col bg-white border-4 border-black rounded-xl p-6 shadow-neobrutalism-lg hover:-translate-y-2 hover:-translate-x-1 hover:shadow-neobrutalism-xl transition-all duration-300"
+                                >
+                                    <span className="self-start bg-primary text-white text-xs font-bold px-3 py-1.5 border-2 border-black shadow-neobrutalism-sm uppercase rounded-full mb-4">
+                                        {r.category}
+                                    </span>
+                                    <h3 className="text-xl md:text-2xl font-black leading-tight tracking-tight group-hover:text-primary transition-colors">
+                                        {r.title}
+                                    </h3>
+                                </Link>
+                            ))}
+                        </div>
                     </section>
                 )}
 
