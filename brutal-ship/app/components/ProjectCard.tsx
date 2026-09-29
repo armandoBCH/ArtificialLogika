@@ -63,7 +63,7 @@ export default function ProjectCard({ project, variante = "home" }: ProjectCardP
                             src={imagen}
                             alt={project.image_alt || project.title}
                             fill
-                            sizes={lista ? "(max-width: 639px) 40vw, 320px" : "(max-width: 767px) 40vw, (max-width: 1023px) 50vw, 400px"}
+                            sizes={lista ? "(max-width: 639px) 40vw, 320px" : "(max-width: 767px) 40vw, (max-width: 1023px) 50vw, 384px"}
                             className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
                         />
                     ) : (
