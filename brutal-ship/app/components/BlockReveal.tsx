@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ReactNode } from "react";
 
 interface BlockRevealProps {
@@ -13,7 +13,7 @@ export default function BlockReveal({ children, bgColor = "bg-primary", delay = 
     return (
         <div className="relative overflow-hidden w-full h-full">
             {children}
-            <motion.div
+            <m.div
                 className={`absolute top-0 bottom-0 left-0 w-full z-20 ${bgColor} border-r-2 border-black`}
                 initial={{ x: 0 }}
                 whileInView={{ x: "100%" }}

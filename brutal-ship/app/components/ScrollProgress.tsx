@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useSpring } from "framer-motion";
+import { m, useScroll, useSpring } from "framer-motion";
 
 /**
  * El único elemento que cruza las once secciones.
@@ -23,7 +23,7 @@ export default function ScrollProgress() {
     });
 
     return (
-        <motion.div
+        <m.div
             aria-hidden="true"
             className="fixed top-0 left-0 right-0 h-1.5 bg-primary border-b-2 border-black origin-left z-[100] pointer-events-none print:hidden"
             style={{ scaleX: avance }}

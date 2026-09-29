@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import type { SiteConfigMap } from "@/lib/types/database";
 import TeamCard from "./TeamCard";
 
@@ -267,7 +267,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                     {/* `!== 'loading'` y no `=== 'idle'`: en estado de error el
                                         botón tiene que seguir mostrando su label para poder reintentar. */}
                                     {status !== 'loading' && (
-                                        <motion.div
+                                        <m.div
                                             key="idle"
                                             initial={{ y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
@@ -275,10 +275,10 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                             className="flex items-center gap-2"
                                         >
                                             Quiero Mi Presupuesto Gratis <span aria-hidden="true" className="material-icons text-sm">arrow_forward</span>
-                                        </motion.div>
+                                        </m.div>
                                     )}
                                     {status === 'loading' && (
-                                        <motion.div
+                                        <m.div
                                             key="loading"
                                             initial={{ scale: 0.8 }}
                                             animate={{ opacity: 1, scale: 1 }}
@@ -290,7 +290,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                             </svg>
                                             Enviando...
-                                        </motion.div>
+                                        </m.div>
                                     )}
                                 </AnimatePresence>
                             </button>
