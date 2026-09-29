@@ -29,6 +29,9 @@ const materialIcons = localFont({
   src: "./fonts/material-icons.woff2",
   variable: "--font-material-icons",
   display: "block",
+  // 126 KB: precargarla competia por ancho de banda con las fuentes del titular.
+  // Los iconos ya estan ocultos hasta que la fuente llega (IconFontGate).
+  preload: false,
   weight: "400",
   style: "normal",
 });
