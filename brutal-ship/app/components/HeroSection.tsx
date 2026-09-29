@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
 import MagneticWrapper from "./MagneticWrapper";
 
 /**
@@ -32,8 +32,8 @@ export default function HeroSection() {
     return (
         <header className="relative overflow-hidden bg-background-light pt-36 pb-24 border-b-2 border-black">
             {/* Abstract Shapes */}
-            <motion.div style={{ y: y1 }} className="absolute top-20 right-[-50px] w-64 h-64 bg-mint rounded-full border-2 border-black mix-blend-multiply opacity-80 hidden lg:block z-0 animate-pulse"></motion.div>
-            <motion.div style={{ y: y2 }} className="absolute bottom-10 left-10 w-32 h-32 bg-accent-yellow border-2 border-black transform rotate-12 z-0 hidden lg:block"></motion.div>
+            <m.div style={{ y: y1 }} className="absolute top-20 right-[-50px] w-64 h-64 bg-mint rounded-full border-2 border-black mix-blend-multiply opacity-80 hidden lg:block z-0 animate-pulse"></m.div>
+            <m.div style={{ y: y2 }} className="absolute bottom-10 left-10 w-32 h-32 bg-accent-yellow border-2 border-black transform rotate-12 z-0 hidden lg:block"></m.div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-8">

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { m, Variants } from "framer-motion";
 import type { MouseEvent } from "react";
 import type { PricingPlan, PricingFeature } from "@/lib/types/database";
 import type { SiteConfigMap } from "@/lib/types/database";
@@ -65,7 +65,7 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
     const cabecera = isFeatured ? "bg-primary" : "bg-ink-black";
 
     return (
-        <motion.div
+        <m.div
             variants={itemVariants}
             className={`group/plan relative flex flex-col bg-white rounded-xl overflow-hidden transition-all duration-300 ${isFeatured
                 ? "border-4 border-black shadow-neobrutalism-xl md:-translate-y-5 hover:-translate-y-6"
@@ -172,7 +172,7 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
                     <span aria-hidden="true" className="material-icons text-lg transition-transform group-hover/plan:translate-x-1">arrow_forward</span>
                 </a>
             </div>
-        </motion.div>
+        </m.div>
     );
 }
 
@@ -351,16 +351,16 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
             <div className="absolute top-10 left-10 text-9xl opacity-10 font-bold rotate-12 pointer-events-none">✦</div>
             <div className="absolute bottom-10 right-10 text-9xl opacity-10 font-bold -rotate-12 pointer-events-none">✦</div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                <motion.div
+                <m.div
                     initial={{ y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
                 >
                     <h2 id="precios-heading" className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] mb-4">Qué recibís<br /><span className="text-primary">y cuánto sale</span></h2>
                     <p className="text-xl font-medium mb-12 max-w-xl mx-auto">Todo en un solo lugar. Sin sorpresas, sin letra chica.</p>
-                </motion.div>
+                </m.div>
 
-                <motion.div
+                <m.div
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="show"
@@ -370,7 +370,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                     {plans.map((plan) => (
                         <PlanCard key={plan.id} plan={plan} />
                     ))}
-                </motion.div>
+                </m.div>
 
                 {/* El mantenimiento mensual es opcional. Mostrarlo abierto en el momento de decidir
                     sumaba tres compromisos de precio mas a los tres planes. Queda plegado, pero el

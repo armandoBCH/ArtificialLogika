@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { motion, useScroll, useMotionValueEvent, AnimatePresence, useReducedMotion } from "framer-motion";
+import { m, useScroll, useMotionValueEvent, AnimatePresence, useReducedMotion } from "framer-motion";
 import MagneticWrapper from "./MagneticWrapper";
 import LogikaLogo from "./LogikaLogo";
 import type { SiteConfigMap } from "@/lib/types/database";
@@ -106,7 +106,7 @@ export default function Navbar({ config }: NavbarProps) {
     }, [isMobileMenuOpen]);
 
     return (
-        <motion.nav
+        <m.nav
             variants={{
                 visible: { y: 0 },
                 hidden: { y: "-150%" }
@@ -140,7 +140,7 @@ export default function Navbar({ config }: NavbarProps) {
                     <div className="flex items-center gap-2 sm:gap-3 md:gap-4 shrink-0">
                         <AnimatePresence>
                             {!isMobileMenuOpen && (
-                                <motion.div
+                                <m.div
                                     // Solo opacidad: con `scale` el ancestro quedaba en 0.9 si la
                                     // animación no completaba, y el CTA medía 40px en vez de 44.
                                     // El tamaño táctil de un control no puede depender de una animación.
@@ -154,7 +154,7 @@ export default function Navbar({ config }: NavbarProps) {
                                             Quiero mi web
                                         </a>
                                     </MagneticWrapper>
-                                </motion.div>
+                                </m.div>
                             )}
                         </AnimatePresence>
 
@@ -177,7 +177,7 @@ export default function Navbar({ config }: NavbarProps) {
                     {isMobileMenuOpen && (
                         // `initial` no declaraba opacity, asi que el panel aparecia de golpe
                         // y recien al cerrarse hacia fade. Entrada y salida son simetricas.
-                        <motion.div
+                        <m.div
                             initial={sinMovimiento ? false : { opacity: 0, y: -8, scale: 0.98 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -8, scale: 0.98 }}
@@ -207,7 +207,7 @@ export default function Navbar({ config }: NavbarProps) {
                                         </>
                                     );
                                     return (
-                                        <motion.li
+                                        <m.li
                                             key={x.href}
                                             className="group/item"
                                             initial={sinMovimiento ? false : { opacity: 0, x: -12 }}
@@ -219,7 +219,7 @@ export default function Navbar({ config }: NavbarProps) {
                                             ) : (
                                                 <a href={getHref(x.href)} onClick={() => setIsMobileMenuOpen(false)} className={clase}>{contenido}</a>
                                             )}
-                                        </motion.li>
+                                        </m.li>
                                     );
                                 })}
                             </ul>
@@ -237,10 +237,10 @@ export default function Navbar({ config }: NavbarProps) {
                                     </a>
                                 </div>
                             </div>
-                        </motion.div>
+                        </m.div>
                     )}
                 </AnimatePresence>
             </div>
-        </motion.nav>
+        </m.nav>
     );
 }

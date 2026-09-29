@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { m, useMotionValue, useSpring } from "framer-motion";
 import { useRef, ReactNode } from "react";
 
 interface MagneticWrapperProps {
@@ -35,7 +35,7 @@ export default function MagneticWrapper({ children, className = "" }: MagneticWr
     };
 
     return (
-        <motion.div
+        <m.div
             ref={ref}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
@@ -43,6 +43,6 @@ export default function MagneticWrapper({ children, className = "" }: MagneticWr
             className={`inline-block ${className}`}
         >
             {children}
-        </motion.div>
+        </m.div>
     );
 }

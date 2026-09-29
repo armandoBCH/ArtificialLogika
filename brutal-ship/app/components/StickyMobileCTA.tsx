@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { m, useScroll, useMotionValueEvent } from "framer-motion";
 import type { SiteConfigMap } from "@/lib/types/database";
 
 interface StickyMobileCTAProps {
@@ -22,7 +22,7 @@ export default function StickyMobileCTA({ config }: StickyMobileCTAProps) {
     });
 
     return (
-        <motion.div
+        <m.div
             variants={{
                 visible: { y: 0 },
                 hidden: { y: "100%" }
@@ -50,6 +50,6 @@ export default function StickyMobileCTA({ config }: StickyMobileCTAProps) {
                     <span aria-hidden="true" className="material-icons text-sm">arrow_forward</span>
                 </a>
             </div>
-        </motion.div>
+        </m.div>
     );
 }
