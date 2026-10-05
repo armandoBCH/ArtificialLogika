@@ -130,6 +130,7 @@ export default function Presupuestador({
     const temporizador = useRef<number | undefined>(undefined);
     const menu = useRef<HTMLDivElement>(null);
     const hojaParaDescargar = useRef<HTMLElement>(null);
+    const entradaJson = useRef<HTMLInputElement>(null);
 
     const { doc, estado, id, numero } = enCurso;
     const totales = calcularTotales(doc);
@@ -334,6 +335,22 @@ export default function Presupuestador({
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
+    /** Entra como borrador nuevo, sin número: no pisa el guardado que estuviera abierto. */
+    async function importar(archivo: File | undefined) {
+        if (!archivo) return;
+        if (sucio && !confirm("Hay cambios sin guardar. ¿Importar igual y reemplazarlos?")) return;
+        try {
+            const datos: unknown = JSON.parse(await archivo.text());
+            if (!datos || typeof datos !== "object" || Array.isArray(datos)) throw new Error();
+            setEnCurso({ doc: normalizar(datos), estado: "borrador", id: null, numero: null, firmaGuardada: "" });
+            setError(null);
+            setVista("editar");
+            avisar("Presupuesto importado. Revisalo y guardalo para darle número.");
+        } catch {
+            setError(`No se pudo importar ${archivo.name}: tiene que ser un JSON con los datos de un presupuesto.`);
+        }
+    }
+
     function duplicar() {
         setEnCurso((e) => ({ doc: { ...e.doc, fecha: hoyISO() }, estado: "borrador", id: null, numero: null, firmaGuardada: "" }));
         avisar("Copia lista. Guardala para darle número.");
@@ -488,6 +505,20 @@ export default function Presupuestador({
                     <button type="button" onClick={() => setCatalogoAbierto(true)} className={BOTON_SECUNDARIO}>
                         <span aria-hidden="true" className="material-icons text-lg">inventory_2</span>
                         Catálogo
+                    </button>
+                    <input
+                        ref={entradaJson}
+                        type="file"
+                        accept=".json,application/json"
+                        hidden
+                        onChange={(e) => {
+                            void importar(e.target.files?.[0]);
+                            e.target.value = "";
+                        }}
+                    />
+                    <button type="button" onClick={() => entradaJson.current?.click()} className={BOTON_SECUNDARIO} title="Abrir un presupuesto desde un archivo JSON">
+                        <span aria-hidden="true" className="material-icons text-lg">upload_file</span>
+                        Importar
                     </button>
                     <button type="button" onClick={nuevo} className={BOTON_PRIMARIO}>
                         <span aria-hidden="true" className="material-icons text-lg">add</span>

@@ -253,26 +253,43 @@ export function presupuestoNuevo(): Presupuesto {
     };
 }
 
-/** Completa un presupuesto guardado con los campos que le falten, por si el formato cambia. */
+/**
+ * Toma de `datos` solo lo que tiene el mismo tipo que en `base`; lo demás queda
+ * como en `base`. Un JSON importado con un `null` o un número donde va texto
+ * rompería la hoja, y como el borrador vive en el navegador, también al recargar.
+ */
+function encajar<T extends object>(base: T, datos: unknown): T {
+    const d = (datos && typeof datos === "object" ? datos : {}) as Record<string, unknown>;
+    const r = { ...base } as Record<string, unknown>;
+    for (const [k, v] of Object.entries(base)) {
+        const x = d[k];
+        if (Array.isArray(v)) r[k] = Array.isArray(x) ? x : v;
+        // refId arranca en null pero guarda texto.
+        else if (v === null) r[k] = typeof x === "string" ? x : null;
+        else if (typeof v === "object") r[k] = encajar(v, x);
+        else if (typeof x === typeof v) r[k] = x;
+    }
+    return r as T;
+}
+
+const textos = (lista: unknown[]) => lista.filter((t): t is string => typeof t === "string");
+
+/** Completa un presupuesto guardado o importado con los campos que le falten o vengan mal. */
 export function normalizar(datos: unknown): Presupuesto {
-    const base = presupuestoNuevo();
-    if (!datos || typeof datos !== "object") return base;
-    const d = datos as Partial<Presupuesto>;
+    const p = encajar(presupuestoNuevo(), datos);
     return {
-        ...base,
-        ...d,
-        cliente: { ...base.cliente, ...(d.cliente ?? {}) },
-        descuento: { ...base.descuento, ...(d.descuento ?? {}) },
-        recargo: { ...base.recargo, ...(d.recargo ?? {}) },
-        lineas: Array.isArray(d.lineas)
-            ? d.lineas.map((l) => ({ ...lineaLibre(), ...l, incluye: Array.isArray(l.incluye) ? l.incluye : [] }))
-            : [],
+        ...p,
+        lineas: p.lineas.map((l) => {
+            const x = encajar(lineaLibre(), l);
+            return { ...x, tipo: x.tipo === "plan" || x.tipo === "extra" ? x.tipo : "libre", incluye: textos(x.incluye) };
+        }),
         // `incluye` no existía cuando se guardaron los primeros presupuestos.
-        mensuales: Array.isArray(d.mensuales)
-            ? d.mensuales.map((m) => ({ ...lineaMensualLibre(), ...m, incluye: Array.isArray(m.incluye) ? m.incluye : [] }))
-            : [],
-        aportaCliente: Array.isArray(d.aportaCliente) ? d.aportaCliente : base.aportaCliente,
-        condiciones: Array.isArray(d.condiciones) ? d.condiciones : base.condiciones,
+        mensuales: p.mensuales.map((m) => {
+            const x = encajar(lineaMensualLibre(), m);
+            return { ...x, incluye: textos(x.incluye) };
+        }),
+        aportaCliente: textos(p.aportaCliente),
+        condiciones: textos(p.condiciones),
     };
 }
 
