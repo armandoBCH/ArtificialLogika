@@ -19,9 +19,14 @@ export const ANCHO_HOJA_PX = 703;
 const MARGEN_MM = 12;
 const ANCHO_UTIL_MM = 210 - MARGEN_MM * 2;
 const ALTO_UTIL_MM = 297 - MARGEN_MM * 2;
-const MM_POR_PX = ANCHO_UTIL_MM / ANCHO_HOJA_PX;
 /** 2x para que el texto se lea nítido al hacer zoom o al imprimir el PDF. */
 const ESCALA = 2;
+/**
+ * Lo más que se achica la hoja para entrar en las páginas pedidas: al 70%, los
+ * renglones de 13 px quedan en ~7 pt, el límite para leerse impresos. Si ni así
+ * entra, sale con las páginas que necesite.
+ */
+const ACHIQUE_MAXIMO = 0.7;
 
 async function fotografiar(nodo: HTMLElement): Promise<HTMLCanvasElement> {
     await document.fonts.ready;
@@ -71,9 +76,23 @@ export async function descargarImagen(nodo: HTMLElement, nombre: string) {
     bajar(blob, `${nombre}.png`);
 }
 
-export async function descargarPdf(nodo: HTMLElement, nombre: string, titulo: string) {
-    const cortes = puntosDeCorte(nodo, ALTO_UTIL_MM / MM_POR_PX);
+/**
+ * Con `maxPaginas`, si la hoja no entra se la ensancha de a poco: al llevarla al
+ * ancho del A4 todo queda más chico, y como se reacomoda (el "qué incluye" pasa a
+ * tres columnas, los párrafos ocupan menos renglones) no quedan costados vacíos.
+ */
+export async function descargarPdf(nodo: HTMLElement, nombre: string, titulo: string, maxPaginas?: number) {
+    await document.fonts.ready;
+    const anchoMaximo = Math.round(ANCHO_HOJA_PX / ACHIQUE_MAXIMO);
+    let ancho = ANCHO_HOJA_PX;
+    let cortes = cortesConAncho(nodo, ancho);
+    while (maxPaginas && cortes.length - 1 > maxPaginas && ancho < anchoMaximo) {
+        ancho = Math.min(ancho + 15, anchoMaximo);
+        cortes = cortesConAncho(nodo, ancho);
+    }
+    const mmPorPx = ANCHO_UTIL_MM / ancho;
     const foto = await fotografiar(nodo);
+    nodo.style.width = "";
     const { jsPDF } = await import("jspdf");
 
     const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait", compress: true });
@@ -100,13 +119,19 @@ export async function descargarPdf(nodo: HTMLElement, nombre: string, titulo: st
             MARGEN_MM,
             MARGEN_MM,
             ANCHO_UTIL_MM,
-            (pagina.height / ESCALA) * MM_POR_PX,
+            (pagina.height / ESCALA) * mmPorPx,
             undefined,
             "FAST"
         );
     }
 
     bajar(pdf.output("blob"), `${nombre}.pdf`);
+    return { paginas: cortes.length - 1, escala: ANCHO_HOJA_PX / ancho };
+}
+
+function cortesConAncho(nodo: HTMLElement, ancho: number): number[] {
+    nodo.style.width = `${ancho}px`;
+    return puntosDeCorte(nodo, (ALTO_UTIL_MM * ancho) / ANCHO_UTIL_MM);
 }
 
 /**

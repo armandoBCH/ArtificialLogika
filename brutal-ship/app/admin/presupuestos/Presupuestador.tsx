@@ -127,6 +127,7 @@ export default function Presupuestador({
     const [aviso, setAviso] = useState<string | null>(null);
     const [menuDescarga, setMenuDescarga] = useState(false);
     const [descargando, setDescargando] = useState<"pdf" | "imagen" | null>(null);
+    const [dosPaginas, setDosPaginas] = useState(true);
     const temporizador = useRef<number | undefined>(undefined);
     const menu = useRef<HTMLDivElement>(null);
     const hojaParaDescargar = useRef<HTMLElement>(null);
@@ -416,8 +417,15 @@ export default function Presupuestador({
                 "Logika",
             ]);
             if (formato === "pdf") {
-                await descargarPdf(hoja, nombre, [`Presupuesto ${formatearNumero(numeroFinal)}`.trim(), tituloDe(doc)].join(" · "));
-                avisar("PDF descargado");
+                const titulo = [`Presupuesto ${formatearNumero(numeroFinal)}`.trim(), tituloDe(doc)].join(" · ");
+                const { paginas, escala } = await descargarPdf(hoja, nombre, titulo, dosPaginas ? 2 : undefined);
+                avisar(
+                    dosPaginas && paginas > 2
+                        ? `PDF descargado en ${paginas} páginas: más chico no se lee bien`
+                        : escala < 1
+                            ? `PDF descargado · achicado al ${Math.round(escala * 100)}% para que entre en 2 páginas`
+                            : "PDF descargado"
+                );
             } else {
                 await descargarImagen(hoja, nombre);
                 avisar("Imagen descargada");
@@ -702,6 +710,13 @@ export default function Presupuestador({
                                     className="absolute right-0 top-full z-40 mt-2 w-72 rounded-sm border-2 border-black bg-[#1e1530] p-1.5 shadow-neobrutalism-primary"
                                 >
                                     <OpcionDescarga autoFocus icono="picture_as_pdf" titulo="PDF" detalle="Hoja A4, para mandar o imprimir" onClick={() => descargar("pdf")} />
+                                    <OpcionDescarga
+                                        marcado={dosPaginas}
+                                        icono={dosPaginas ? "check_box" : "check_box_outline_blank"}
+                                        titulo="PDF en 2 páginas como máximo"
+                                        detalle="Si no entra, achica todo hasta que entre"
+                                        onClick={() => setDosPaginas((v) => !v)}
+                                    />
                                     <OpcionDescarga icono="image" titulo="Imagen" detalle="PNG, cómodo para mandar por WhatsApp" onClick={() => descargar("imagen")} />
                                     <div className="mx-2 my-1 border-t border-white/10" />
                                     <OpcionDescarga icono="print" titulo="Imprimir" detalle="Abre el diálogo de impresión" onClick={imprimir} />
@@ -1343,17 +1358,21 @@ function OpcionDescarga({
     detalle,
     onClick,
     autoFocus,
+    marcado,
 }: {
     icono: string;
     titulo: string;
     detalle: string;
     onClick: () => void;
     autoFocus?: boolean;
+    /** Si viene, es una opción que se prende y apaga en vez de una acción. */
+    marcado?: boolean;
 }) {
     return (
         <button
             type="button"
-            role="menuitem"
+            role={marcado === undefined ? "menuitem" : "menuitemcheckbox"}
+            aria-checked={marcado}
             onClick={onClick}
             autoFocus={autoFocus}
             className="flex w-full items-center gap-3 rounded-sm px-3 py-2.5 text-left transition-colors hover:bg-white/10 focus-visible:bg-white/10"
