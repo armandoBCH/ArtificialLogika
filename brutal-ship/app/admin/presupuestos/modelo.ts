@@ -381,6 +381,115 @@ export function sugerenciasDePlan(nombrePlan: string, planes: PricingPlan[]): st
         .filter(Boolean);
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Plantillas
+   Una por plan publicado, con el "qué incluye" ya escrito en palabras del dueño
+   del negocio. El precio y la cuota salen del plan que esté cargado en Precios,
+   así que si cambian allá, la plantilla cobra lo nuevo.
+   ───────────────────────────────────────────────────────────── */
+
+export interface Plantilla {
+    clave: string;
+    nombre: string;
+    /** Reconoce el plan por nombre, que es lo único estable entre la base y el sitio. */
+    patron: RegExp;
+    detalle: string;
+    incluye: string[];
+}
+
+const BASE_LANDING = [
+    "Una página con la información de tu negocio",
+    "Se ve perfecta en el celular",
+    "Botón de WhatsApp para que te escriban",
+    "Formulario de contacto",
+    "Aparece en Google",
+];
+
+const BASE_INSTITUCIONAL = [
+    ...BASE_LANDING,
+    "Diseño a medida con tu identidad",
+    "Hasta 5 páginas",
+    "Mapa para que te encuentren",
+    "Galería con las fotos de tu trabajo",
+];
+
+export const PLANTILLAS: Plantilla[] = [
+    {
+        clave: "landing",
+        nombre: "Landing Page",
+        patron: /landing/i,
+        detalle: "Una página clara para que te conozcan y te escriban.",
+        incluye: [...BASE_LANDING, "1 mes de soporte después de publicar"],
+    },
+    {
+        clave: "institucional",
+        nombre: "Sitio Institucional",
+        patron: /institucional/i,
+        detalle: "Tu negocio completo en internet, con varias secciones.",
+        incluye: [...BASE_INSTITUCIONAL, "1 mes de soporte después de publicar"],
+    },
+    {
+        clave: "ecommerce",
+        nombre: "E-commerce",
+        patron: /e-?commerce|tienda/i,
+        detalle: "Tu tienda propia para vender online todos los días.",
+        incluye: [
+            ...BASE_LANDING,
+            "Diseño a medida con tu identidad",
+            "Catálogo con fotos de tus productos",
+            "Carrito y pago online",
+            "Panel para cargar productos y ver pedidos",
+            "Reporte de visitas",
+            "1 mes de soporte después de publicar",
+        ],
+    },
+];
+
+/**
+ * El presupuesto actual con el plan y la cuota de la plantilla. Se conservan el
+ * cliente, la fecha, las condiciones y todo lo demás: solo cambia lo que se cobra.
+ */
+export function aplicarPlantilla(plantilla: Plantilla, plan: PricingPlan | undefined, actual: Presupuesto): Presupuesto {
+    const base = plan ? lineaDePlan(plan) : { ...lineaLibre(), tipo: "plan" as const, nombre: plantilla.nombre };
+    const mantenimiento = plan ? lineaDeMantenimiento(plan) : null;
+    return {
+        ...actual,
+        lineas: [{ ...base, detalle: plantilla.detalle, incluye: [...plantilla.incluye] }],
+        mensuales: mantenimiento ? [mantenimiento] : [],
+        plazo: plazoDePlan(plantilla.nombre),
+    };
+}
+
+/**
+ * El formato para pegar en una IA o completar a mano. Lleva solo lo que cambia de
+ * un presupuesto a otro: lo que falte (condiciones, garantía, medios de pago)
+ * se completa con lo de siempre al importar.
+ */
+export const FORMATO_JSON = JSON.stringify(
+    {
+        titulo: "Título del presupuesto (opcional)",
+        cliente: { nombre: "", negocio: "", whatsapp: "", email: "" },
+        plazo: "2 a 4 semanas",
+        lineas: [
+            {
+                nombre: "Nombre del ítem",
+                detalle: "Una frase que lo explique",
+                incluye: ["Qué recibe el cliente, en palabras simples"],
+                cantidad: 1,
+                unidad: "",
+                precio: 0,
+            },
+        ],
+        mensuales: [{ nombre: "Nombre del servicio mensual", detalle: "", incluye: ["Qué cubre la cuota"], precio: 0 }],
+        descuento: { modo: "porcentaje", valor: 0, motivo: "" },
+        recargo: { etiqueta: "IVA", porcentaje: 0 },
+        senaPorcentaje: 50,
+        notas: "",
+    },
+    null,
+    2
+);
+
 /** WhatsApp argentino: 11 2345-6789 -> 5491123456789. */
 export function normalizarWhatsApp(valor: string): string {
     let digitos = valor.replace(/\D/g, "");

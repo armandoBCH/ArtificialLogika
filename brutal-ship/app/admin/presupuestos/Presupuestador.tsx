@@ -12,6 +12,9 @@ import {
     APORTA_CLIENTE_POR_DEFECTO,
     CONDICIONES_POR_DEFECTO,
     ESTADOS,
+    FORMATO_JSON,
+    PLANTILLAS,
+    aplicarPlantilla,
     refMantenimiento,
     PLAZOS_SUGERIDOS,
     calcularTotales,
@@ -37,6 +40,7 @@ import {
     type Lead,
     type Linea,
     type LineaMensual,
+    type Plantilla,
     type Presupuesto,
     type PresupuestoGuardado,
 } from "./modelo";
@@ -120,6 +124,8 @@ export default function Presupuestador({
     const [guardados, setGuardados] = useState(guardadosIniciales);
     const [vista, setVista] = useState<"editar" | "previa">("editar");
     const [verGuardados, setVerGuardados] = useState(false);
+    const [verPlantillas, setVerPlantillas] = useState(false);
+    const [jsonPegado, setJsonPegado] = useState("");
     const [catalogoAbierto, setCatalogoAbierto] = useState(false);
     const [busqueda, setBusqueda] = useState("");
     const [guardando, setGuardando] = useState(false);
@@ -337,19 +343,42 @@ export default function Presupuestador({
     }
 
     /** Entra como borrador nuevo, sin número: no pisa el guardado que estuviera abierto. */
-    async function importar(archivo: File | undefined) {
-        if (!archivo) return;
+    function importarTexto(texto: string, origen: string) {
         if (sucio && !confirm("Hay cambios sin guardar. ¿Importar igual y reemplazarlos?")) return;
         try {
-            const datos: unknown = JSON.parse(await archivo.text());
+            const datos: unknown = JSON.parse(texto);
             if (!datos || typeof datos !== "object" || Array.isArray(datos)) throw new Error();
             setEnCurso({ doc: normalizar(datos), estado: "borrador", id: null, numero: null, firmaGuardada: "" });
             setError(null);
             setVista("editar");
+            setJsonPegado("");
+            setVerPlantillas(false);
             avisar("Presupuesto importado. Revisalo y guardalo para darle número.");
         } catch {
-            setError(`No se pudo importar ${archivo.name}: tiene que ser un JSON con los datos de un presupuesto.`);
+            setError(`No se pudo importar ${origen}: tiene que ser un JSON con los datos de un presupuesto.`);
         }
+    }
+
+    async function importarArchivo(archivo: File | undefined) {
+        if (archivo) importarTexto(await archivo.text(), archivo.name);
+    }
+
+    async function copiarFormato() {
+        try {
+            await navigator.clipboard.writeText(FORMATO_JSON);
+            avisar("Formato copiado. Completalo y pegalo acá abajo.");
+        } catch {
+            setError("No se pudo copiar al portapapeles. Probá de nuevo.");
+        }
+    }
+
+    /** Cambia solo lo que se cobra: el cliente, la fecha y las condiciones quedan como estaban. */
+    function usarPlantilla(plantilla: Plantilla) {
+        if (doc.lineas.length > 0 && !confirm("Esto reemplaza el plan, los ítems y los servicios mensuales actuales. ¿Seguir?")) return;
+        const plan = planes.find((p) => plantilla.patron.test(p.name));
+        editar((d) => aplicarPlantilla(plantilla, plan, d));
+        setVista("editar");
+        avisar(`Plantilla ${plantilla.nombre} cargada${plan ? "" : ": no encontré el plan en Precios, completá los montos"}`);
     }
 
     function duplicar() {
@@ -520,13 +549,13 @@ export default function Presupuestador({
                         accept=".json,application/json"
                         hidden
                         onChange={(e) => {
-                            void importar(e.target.files?.[0]);
+                            void importarArchivo(e.target.files?.[0]);
                             e.target.value = "";
                         }}
                     />
-                    <button type="button" onClick={() => entradaJson.current?.click()} className={BOTON_SECUNDARIO} title="Abrir un presupuesto desde un archivo JSON">
-                        <span aria-hidden="true" className="material-icons text-lg">upload_file</span>
-                        Importar
+                    <button type="button" onClick={() => setVerPlantillas((v) => !v)} aria-expanded={verPlantillas} className={BOTON_SECUNDARIO}>
+                        <span aria-hidden="true" className="material-icons text-lg">dashboard_customize</span>
+                        Plantillas
                     </button>
                     <button type="button" onClick={nuevo} className={BOTON_PRIMARIO}>
                         <span aria-hidden="true" className="material-icons text-lg">add</span>
@@ -562,6 +591,62 @@ export default function Presupuestador({
                         <span aria-hidden="true" className="material-icons text-lg">close</span>
                     </button>
                 </div>
+            )}
+
+            {/* ── Plantillas y JSON ── */}
+            {verPlantillas && (
+                <section aria-label="Plantillas e importación" className="space-y-5 rounded-sm border-2 border-white/10 bg-[#1e1530] p-5 print:hidden">
+                    <div>
+                        <h2 className="font-display text-base font-bold text-white">Plantillas por plan</h2>
+                        <p className="mt-0.5 text-xs text-gray-400">Cargan el plan, lo que incluye y la cuota mensual. El cliente y las condiciones no se tocan.</p>
+                        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                            {PLANTILLAS.map((pl) => {
+                                const plan = planes.find((p) => pl.patron.test(p.name));
+                                return (
+                                    <button
+                                        key={pl.clave}
+                                        type="button"
+                                        onClick={() => usarPlantilla(pl)}
+                                        className="flex flex-col items-start rounded-sm border-2 border-white/15 bg-white/5 p-4 text-left text-white transition-colors hover:border-primary/70 hover:bg-white/10"
+                                    >
+                                        <span className="font-display text-base font-bold">{pl.nombre}</span>
+                                        <span className="mt-0.5 text-xs text-gray-400">{pl.detalle}</span>
+                                        <span className="mt-3 font-display text-lg font-bold tabular-nums">{plan ? formatearPesos(precioDePlan(plan)) : "Sin plan en Precios"}</span>
+                                        <span className="text-[11px] text-gray-500">{pl.incluye.length} renglones incluidos</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    <div className="border-t-2 border-white/10 pt-4">
+                        <h2 className="font-display text-base font-bold text-white">Importar desde JSON</h2>
+                        <p className="mt-0.5 text-xs text-gray-400">Copiá el formato, completalo (a mano o con una IA) y pegalo acá. Entra como borrador nuevo.</p>
+                        <textarea
+                            value={jsonPegado}
+                            onChange={(e) => setJsonPegado(e.target.value)}
+                            aria-label="JSON del presupuesto"
+                            placeholder="Pegá acá el JSON completo"
+                            spellCheck={false}
+                            rows={6}
+                            className="admin-input mt-3 w-full resize-y font-mono text-xs"
+                        />
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            <button type="button" onClick={() => importarTexto(jsonPegado, "el texto pegado")} disabled={!jsonPegado.trim()} className={BOTON_PRIMARIO}>
+                                <span aria-hidden="true" className="material-icons text-lg">content_paste_go</span>
+                                Importar lo pegado
+                            </button>
+                            <button type="button" onClick={copiarFormato} className={BOTON_SECUNDARIO}>
+                                <span aria-hidden="true" className="material-icons text-lg">content_copy</span>
+                                Copiar formato
+                            </button>
+                            <button type="button" onClick={() => entradaJson.current?.click()} className={BOTON_SECUNDARIO}>
+                                <span aria-hidden="true" className="material-icons text-lg">upload_file</span>
+                                Abrir archivo .json
+                            </button>
+                        </div>
+                    </div>
+                </section>
             )}
 
             {/* ── Guardados ── */}
