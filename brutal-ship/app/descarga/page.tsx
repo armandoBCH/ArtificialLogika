@@ -9,11 +9,10 @@ export const metadata: Metadata = {
     robots: { index: false, follow: false },
 };
 
-// El archivo de la app. Cambiar este link cuando haya una version nueva.
-// Es el link directo de Drive (usercontent + confirm=t), no el de "ver": ese abre
-// la vista previa y, por ser un .exe, un cartel de "no se pudo analizar".
-const DOWNLOAD_URL =
-    "https://drive.usercontent.google.com/download?id=1WffqYLjVXQYT7Erot-5Gn7hn6IgYIBYA&export=download&confirm=t";
+// El archivo de la app vive en public/descarga/. Para una version nueva, se
+// reemplaza ese archivo y se publica. Antes era un link de Drive, pero con una
+// sesion de Google abierta Drive mostraba su propia pagina en vez de descargar.
+const DOWNLOAD_URL = "/descarga/Aliverti.exe";
 
 const PASOS = [
     "Tocá el botón Descargar.",
@@ -39,6 +38,7 @@ export default function Descarga() {
                 </p>
                 <a
                     href={DOWNLOAD_URL}
+                    download
                     className="cta inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-primary text-white border-4 border-black font-bold text-xl md:text-2xl uppercase py-5 px-12 shadow-neobrutalism-lg hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all rounded-lg"
                 >
                     <span aria-hidden="true" className="material-icons !text-3xl">download</span>
