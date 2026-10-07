@@ -102,6 +102,12 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // El instalador de /descarga: que ningun buscador lo indexe. La pagina ya
+      // pide noindex con su meta, pero un archivo no tiene donde ponerla.
+      {
+        source: "/descarga/:archivo*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
       // Las imagenes de vista previa, en las dos formas que tienen las rutas:
       // /opengraph-image (la home) y /loquesea/opengraph-image (el resto).
       //
