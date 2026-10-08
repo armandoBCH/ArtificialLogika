@@ -4,6 +4,11 @@ import { useRef, useState, type ReactNode } from "react";
 
 const miles = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 });
 
+export const BOTON_PRIMARIO =
+    "inline-flex items-center justify-center gap-1.5 rounded-sm border-2 border-black bg-primary px-4 py-2 text-sm font-bold text-white shadow-neobrutalism-sm transition-all hover:translate-x-px hover:translate-y-px hover:shadow-none disabled:pointer-events-none disabled:opacity-50";
+export const BOTON_SECUNDARIO =
+    "inline-flex items-center justify-center gap-1.5 rounded-sm border-2 border-white/15 bg-white/5 px-3.5 py-2 text-sm font-bold text-white transition-colors hover:border-white/40 hover:bg-white/10 disabled:pointer-events-none disabled:opacity-50";
+
 /**
  * Los `!` de los padding no son capricho: `.admin-input` vive en globals.css fuera
  * de toda capa, y en la cascada eso le gana a las utilidades de Tailwind, que sí

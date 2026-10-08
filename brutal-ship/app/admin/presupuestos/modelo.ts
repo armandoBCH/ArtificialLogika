@@ -64,6 +64,11 @@ export interface PresupuestoGuardado {
     status: EstadoPresupuesto;
     total: number;
     data: Presupuesto;
+    /** Las cuatro de cobro llegaron con supabase/clientes-2026-10-07.sql: antes de correrlo no vienen. */
+    client_id?: string | null;
+    payments?: unknown;
+    costs?: unknown;
+    monthly_active?: boolean;
     created_at: string;
     updated_at: string;
 }
