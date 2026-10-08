@@ -3,10 +3,11 @@
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { cuotaMensual, formatearPesos } from "@/lib/precios";
 import type { PricingPlan } from "@/lib/types/database";
+import { mismoCliente, nombreDe, type Cliente, type Contacto } from "../clientes/cuentas";
 import { escribir } from "./api";
 import Catalogo from "./Catalogo";
 import { ANCHO_HOJA_PX, descargarImagen, descargarPdf, nombreDeArchivo } from "./exportar";
-import { Atajos, Campo, Cantidad, ListaEditable, NumeroInput, PesosInput, Seccion } from "./controles";
+import { Atajos, BOTON_PRIMARIO, BOTON_SECUNDARIO, Campo, Cantidad, ListaEditable, NumeroInput, PesosInput, Seccion } from "./controles";
 import HojaPresupuesto from "./HojaPresupuesto";
 import {
     APORTA_CLIENTE_POR_DEFECTO,
@@ -61,11 +62,7 @@ import {
 const CLAVE_EN_CURSO = "logika:presupuesto-en-curso";
 const SQL_TABLAS = "supabase/presupuestos-y-pesos-2026-09-16.sql";
 const SQL_MENSUALES = "supabase/servicios-mensuales-2026-09-22.sql";
-
-const BOTON_PRIMARIO =
-    "inline-flex items-center justify-center gap-1.5 rounded-sm border-2 border-black bg-primary px-4 py-2 text-sm font-bold text-white shadow-neobrutalism-sm transition-all hover:translate-x-px hover:translate-y-px hover:shadow-none disabled:pointer-events-none disabled:opacity-50";
-const BOTON_SECUNDARIO =
-    "inline-flex items-center justify-center gap-1.5 rounded-sm border-2 border-white/15 bg-white/5 px-3.5 py-2 text-sm font-bold text-white transition-colors hover:border-white/40 hover:bg-white/10 disabled:pointer-events-none disabled:opacity-50";
+const SQL_CLIENTES = "supabase/clientes-2026-10-07.sql";
 
 interface Props {
     planes: PricingPlan[];
@@ -75,6 +72,8 @@ interface Props {
     empresa: Empresa;
     baseLista: boolean;
     faltaColumnaIncluye: boolean;
+    clientes: Cliente[];
+    clientesListos: boolean;
 }
 
 interface EnCurso {
@@ -82,16 +81,36 @@ interface EnCurso {
     estado: EstadoPresupuesto;
     id: string | null;
     numero: number | null;
+    /** El cliente elegido de la lista. Sin elegir, al guardar se busca o se crea uno. */
+    clienteId: string | null;
     /** Firma de lo último que se guardó en la base. Si no coincide, hay cambios sin guardar. */
     firmaGuardada: string;
 }
 
-const firmaDe = (doc: Presupuesto, estado: EstadoPresupuesto) => JSON.stringify({ doc, estado });
+// Sin cliente, la firma queda igual que antes de que existieran los clientes: así
+// los borradores que ya estaban en el navegador no aparecen "sin guardar".
+const firmaDe = (doc: Presupuesto, estado: EstadoPresupuesto, clienteId: string | null) =>
+    JSON.stringify(clienteId ? { doc, estado, clienteId } : { doc, estado });
 
 function enBlanco(): EnCurso {
     const doc = presupuestoNuevo();
-    return { doc, estado: "borrador", id: null, numero: null, firmaGuardada: firmaDe(doc, "borrador") };
+    return { doc, estado: "borrador", id: null, numero: null, clienteId: null, firmaGuardada: firmaDe(doc, "borrador", null) };
 }
+
+function desdeFila(g: PresupuestoGuardado): EnCurso {
+    const doc = normalizar(g.data);
+    const clienteId = g.client_id ?? null;
+    return { doc, estado: g.status, id: g.id, numero: g.number, clienteId, firmaGuardada: firmaDe(doc, g.status, clienteId) };
+}
+
+const datosDeCliente = (c: Cliente): Presupuesto["cliente"] => ({ nombre: c.name, negocio: c.business, whatsapp: c.whatsapp, email: c.email });
+
+const contactoDe = (d: Presupuesto): Contacto => ({
+    name: d.cliente.nombre.trim(),
+    business: d.cliente.negocio.trim(),
+    whatsapp: d.cliente.whatsapp.trim(),
+    email: d.cliente.email.trim(),
+});
 
 function leerEnCurso(): EnCurso | null {
     try {
@@ -103,11 +122,24 @@ function leerEnCurso(): EnCurso | null {
             estado: ESTADOS.some((e) => e.valor === x.estado) ? (x.estado as EstadoPresupuesto) : "borrador",
             id: typeof x.id === "string" ? x.id : null,
             numero: typeof x.numero === "number" ? x.numero : null,
+            clienteId: typeof x.clienteId === "string" ? x.clienteId : null,
             firmaGuardada: typeof x.firmaGuardada === "string" ? x.firmaGuardada : "",
         };
     } catch {
         return null;
     }
+}
+
+/**
+ * Lo que quedó abierto en este navegador. Si estaba guardado y sin cambios, se trae
+ * la versión de la base: desde Clientes se le puede haber cambiado el estado o el
+ * cliente, y guardar la copia vieja los pisaría.
+ */
+function estadoInicial(guardados: PresupuestoGuardado[]): EnCurso {
+    const local = leerEnCurso();
+    if (!local) return enBlanco();
+    const fila = local.id ? guardados.find((g) => g.id === local.id) : undefined;
+    return fila && firmaDe(local.doc, local.estado, local.clienteId) === local.firmaGuardada ? desdeFila(fila) : local;
 }
 
 export default function Presupuestador({
@@ -118,8 +150,11 @@ export default function Presupuestador({
     empresa,
     baseLista,
     faltaColumnaIncluye,
+    clientes: clientesIniciales,
+    clientesListos,
 }: Props) {
-    const [enCurso, setEnCurso] = useState<EnCurso>(() => leerEnCurso() ?? enBlanco());
+    const [enCurso, setEnCurso] = useState<EnCurso>(() => estadoInicial(guardadosIniciales));
+    const [clientes, setClientes] = useState(clientesIniciales);
     const [catalogo, setCatalogo] = useState(catalogoInicial);
     const [guardados, setGuardados] = useState(guardadosIniciales);
     const [vista, setVista] = useState<"editar" | "previa">("editar");
@@ -139,10 +174,14 @@ export default function Presupuestador({
     const hojaParaDescargar = useRef<HTMLElement>(null);
     const entradaJson = useRef<HTMLInputElement>(null);
 
-    const { doc, estado, id, numero } = enCurso;
+    const { doc, estado, id, numero, clienteId } = enCurso;
     const totales = calcularTotales(doc);
-    const sucio = firmaDe(doc, estado) !== enCurso.firmaGuardada;
+    const sucio = firmaDe(doc, estado, clienteId) !== enCurso.firmaGuardada;
     const planesEnDolares = planes.some((p) => p.currency === "USD");
+    const sqlPendiente = !baseLista ? SQL_TABLAS : faltaColumnaIncluye ? SQL_MENSUALES : !clientesListos ? SQL_CLIENTES : null;
+    const contacto = contactoDe(doc);
+    const clienteAsignado = clientes.find((c) => c.id === clienteId) ?? null;
+    const clienteParecido = clienteAsignado ? null : (clientes.find((c) => mismoCliente(c, contacto)) ?? null);
 
     useEffect(() => {
         try {
@@ -167,6 +206,22 @@ export default function Presupuestador({
             window.clearTimeout(temporizador.current);
         };
     }, []);
+
+    // Desde Clientes se llega con ?abrir=<presupuesto> o con ?cliente=<cliente> para uno nuevo.
+    const abrirDesdeUrl = useEffectEvent(() => {
+        const params = new URLSearchParams(window.location.search);
+        const g = guardados.find((x) => x.id === params.get("abrir"));
+        const c = clientes.find((x) => x.id === params.get("cliente"));
+        if (!g && !c) return;
+        window.history.replaceState(null, "", window.location.pathname);
+        if (g) abrir(g);
+        else if (c && (!sucio || confirm("Hay cambios sin guardar. ¿Empezar un presupuesto nuevo igual?"))) {
+            const base = enBlanco();
+            setEnCurso({ ...base, clienteId: c.id, doc: { ...base.doc, cliente: datosDeCliente(c) } });
+        }
+    });
+
+    useEffect(() => abrirDesdeUrl(), []);
 
     useEffect(() => {
         if (!menuDescarga) return;
@@ -301,19 +356,29 @@ export default function Presupuestador({
             return null;
         }
         const estadoFinal = opciones.estado ?? estado;
-        const cuerpo = {
-            client_name: doc.cliente.nombre.trim() || doc.cliente.negocio.trim(),
-            title: tituloDe(doc),
-            status: estadoFinal,
-            total: totales.total,
-            data: doc,
-        };
         setGuardando(true);
         setError(null);
         try {
+            const clienteFinal = clientesListos ? await resolverCliente() : null;
+            const cuerpo = {
+                client_name: doc.cliente.nombre.trim() || doc.cliente.negocio.trim(),
+                title: tituloDe(doc),
+                status: estadoFinal,
+                total: totales.total,
+                data: doc,
+                // Antes de correr el SQL de clientes la columna no existe y mandarla haría fallar el guardado.
+                ...(clientesListos ? { client_id: clienteFinal } : {}),
+            };
             const fila = await escribir<PresupuestoGuardado>("quotes", id ? "PUT" : "POST", id ? { id, ...cuerpo } : cuerpo);
             const guardado = { ...fila, total: Number(fila.total) };
-            setEnCurso((e) => ({ ...e, estado: estadoFinal, id: guardado.id, numero: guardado.number, firmaGuardada: firmaDe(doc, estadoFinal) }));
+            setEnCurso((e) => ({
+                ...e,
+                estado: estadoFinal,
+                id: guardado.id,
+                numero: guardado.number,
+                clienteId: clienteFinal,
+                firmaGuardada: firmaDe(doc, estadoFinal, clienteFinal),
+            }));
             setGuardados((lista) => [guardado, ...lista.filter((g) => g.id !== guardado.id)]);
             if (!opciones.silencioso) avisar(`Guardado · N° ${formatearNumero(guardado.number)}`);
             return guardado;
@@ -323,6 +388,21 @@ export default function Presupuestador({
         } finally {
             setGuardando(false);
         }
+    }
+
+    /** El elegido de la lista, uno que ya existe con estos datos, o uno nuevo. Sin nombre ni negocio, ninguno. */
+    async function resolverCliente(): Promise<string | null> {
+        if (clienteAsignado) return clienteAsignado.id;
+        if (clienteParecido) return clienteParecido.id;
+        if (!contacto.name && !contacto.business) return null;
+        const creado = await escribir<Cliente>("clients", "POST", contacto);
+        setClientes((lista) => [...lista, creado]);
+        return creado.id;
+    }
+
+    function elegirCliente(elegido: string) {
+        const c = clientes.find((x) => x.id === elegido);
+        setEnCurso((e) => ({ ...e, clienteId: c?.id ?? null, doc: c ? { ...e.doc, cliente: datosDeCliente(c) } : e.doc }));
     }
 
     function nuevo() {
@@ -335,8 +415,7 @@ export default function Presupuestador({
 
     function abrir(g: PresupuestoGuardado) {
         if (g.id !== id && sucio && !confirm("Hay cambios sin guardar en el presupuesto abierto. ¿Abrir este igual?")) return;
-        const docGuardado = normalizar(g.data);
-        setEnCurso({ doc: docGuardado, estado: g.status, id: g.id, numero: g.number, firmaGuardada: firmaDe(docGuardado, g.status) });
+        setEnCurso(desdeFila(g));
         setVerGuardados(false);
         setError(null);
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -348,7 +427,7 @@ export default function Presupuestador({
         try {
             const datos: unknown = JSON.parse(texto);
             if (!datos || typeof datos !== "object" || Array.isArray(datos)) throw new Error();
-            setEnCurso({ doc: normalizar(datos), estado: "borrador", id: null, numero: null, firmaGuardada: "" });
+            setEnCurso({ doc: normalizar(datos), estado: "borrador", id: null, numero: null, clienteId: null, firmaGuardada: "" });
             setError(null);
             setVista("editar");
             setJsonPegado("");
@@ -382,7 +461,7 @@ export default function Presupuestador({
     }
 
     function duplicar() {
-        setEnCurso((e) => ({ doc: { ...e.doc, fecha: hoyISO() }, estado: "borrador", id: null, numero: null, firmaGuardada: "" }));
+        setEnCurso((e) => ({ doc: { ...e.doc, fecha: hoyISO() }, estado: "borrador", id: null, numero: null, clienteId: e.clienteId, firmaGuardada: "" }));
         avisar("Copia lista. Guardala para darle número.");
     }
 
@@ -404,8 +483,8 @@ export default function Presupuestador({
             setGuardados((lista) => lista.map((x) => (x.id === g.id ? { ...fila, total: Number(fila.total) } : x)));
             if (g.id === id) {
                 setEnCurso((e) => {
-                    const limpio = firmaDe(e.doc, e.estado) === e.firmaGuardada;
-                    return { ...e, estado: nuevoEstado, firmaGuardada: limpio ? firmaDe(e.doc, nuevoEstado) : e.firmaGuardada };
+                    const limpio = firmaDe(e.doc, e.estado, e.clienteId) === e.firmaGuardada;
+                    return { ...e, estado: nuevoEstado, firmaGuardada: limpio ? firmaDe(e.doc, nuevoEstado, e.clienteId) : e.firmaGuardada };
                 });
             }
         } catch (e) {
@@ -564,7 +643,7 @@ export default function Presupuestador({
                 </div>
             </div>
 
-            {(!baseLista || planesEnDolares || faltaColumnaIncluye) && (
+            {(sqlPendiente || planesEnDolares) && (
                 <div role="note" className="flex items-start gap-3 rounded-sm border-2 border-accent-yellow/60 bg-accent-yellow/10 p-4 print:hidden">
                     <span aria-hidden="true" className="material-icons text-accent-yellow">construction</span>
                     <div className="text-sm">
@@ -572,12 +651,13 @@ export default function Presupuestador({
                         <p className="mt-1 text-white/80">
                             Corré{" "}
                             <code className="rounded-sm bg-black/40 px-1.5 py-0.5 text-white">
-                                {baseLista ? SQL_MENSUALES : SQL_TABLAS}
+                                {sqlPendiente ?? SQL_TABLAS}
                             </code>{" "}
                             en Supabase → SQL Editor.
                             {!baseLista && " Hasta entonces podés armar, descargar y mandar presupuestos, pero no guardarlos ni editar el catálogo."}
                             {planesEnDolares && " Los planes siguen en dólares en la base: acá se muestran convertidos a pesos."}
                             {baseLista && faltaColumnaIncluye && " Falta la columna de renglones del catálogo: los servicios mensuales funcionan, pero su \"qué incluye\" no se guarda."}
+                            {sqlPendiente === SQL_CLIENTES && " Falta la tabla de clientes: los presupuestos se guardan, pero sin cliente asignado ni seguimiento de cobros."}
                         </p>
                     </div>
                 </div>
@@ -855,6 +935,20 @@ export default function Presupuestador({
                         }
                     >
                         <div className="grid gap-3 sm:grid-cols-2">
+                            {clientesListos && clientes.length > 0 && (
+                                <Campo etiqueta="Cliente" className="sm:col-span-2">
+                                    <select className="admin-input w-full [color-scheme:dark]" value={clienteAsignado?.id ?? ""} onChange={(e) => elegirCliente(e.target.value)}>
+                                        <option value="">{clienteParecido ? `Sin elegir · se suma a ${nombreDe(clienteParecido)}` : "Cliente nuevo"}</option>
+                                        {[...clientes]
+                                            .sort((a, b) => nombreDe(a).localeCompare(nombreDe(b), "es"))
+                                            .map((c) => (
+                                                <option key={c.id} value={c.id}>
+                                                    {nombreDe(c)}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </Campo>
+                            )}
                             <Campo etiqueta="Nombre">
                                 <input className="admin-input w-full" value={doc.cliente.nombre} placeholder="Juana Pérez" onChange={(e) => setCliente({ nombre: e.target.value })} />
                             </Campo>
@@ -871,6 +965,19 @@ export default function Presupuestador({
                                 <input className="admin-input w-full" value={doc.titulo} placeholder={tituloDe({ ...doc, titulo: "" })} onChange={(e) => setCampo("titulo", e.target.value)} />
                             </Campo>
                         </div>
+                        {clientesListos && (
+                            <p className="mt-3 text-xs text-gray-400">
+                                {clienteAsignado ? (
+                                    <>Queda en la ficha de <strong className="text-white">{nombreDe(clienteAsignado)}</strong>, en Clientes.</>
+                                ) : clienteParecido ? (
+                                    <>Ya está en Clientes como <strong className="text-white">{nombreDe(clienteParecido)}</strong>: al guardar se suma a su ficha.</>
+                                ) : contacto.name || contacto.business ? (
+                                    "Al guardar se crea su ficha en Clientes."
+                                ) : (
+                                    "Con un nombre o un negocio, al guardar queda en Clientes."
+                                )}
+                            </p>
+                        )}
                     </Seccion>
 
                     <Seccion numero={2} titulo="Plan base" descripcion="Tocá uno para sumarlo; tocalo de nuevo para sacarlo">
