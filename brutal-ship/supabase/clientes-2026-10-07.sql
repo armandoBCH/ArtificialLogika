@@ -14,8 +14,13 @@
 --
 -- Se puede correr más de una vez: lo que ya existe no se toca y el paso 3 solo
 -- mira presupuestos que todavía no tienen cliente.
-
-BEGIN;
+--
+-- Sin BEGIN/COMMIT a propósito: el SQL Editor confirma cada sentencia por
+-- separado, así que no daban una transacción única. La primera versión de este
+-- archivo usaba una tabla temporal ON COMMIT DROP, que se borraba apenas se
+-- creaba ("relation clave_por_presupuesto does not exist"), y dejaba apagado el
+-- trigger de updated_at de quotes. Si te pasó eso, corré este entero: prende el
+-- trigger y completa lo que faltó.
 
 -- ─────────────────────────────────────────────────────────────
 -- 1. Clientes
@@ -72,55 +77,63 @@ CREATE INDEX IF NOT EXISTS quotes_client_id_idx ON quotes (client_id);
 --    presupuestador evita duplicados al guardar.
 -- ─────────────────────────────────────────────────────────────
 
-CREATE TEMP TABLE clave_por_presupuesto ON COMMIT DROP AS
-SELECT id, updated_at, nombre, negocio, whatsapp, email,
-       COALESCE(
-           CASE WHEN length(digitos) >= 8 THEN right(digitos, 10) END,
-           NULLIF(lower(email), ''),
-           NULLIF(lower(nombre || '|' || negocio), '|')
-       ) AS clave
-FROM (
-    SELECT id, updated_at,
-           btrim(COALESCE(data #>> '{cliente,nombre}', '')) AS nombre,
-           btrim(COALESCE(data #>> '{cliente,negocio}', '')) AS negocio,
-           btrim(COALESCE(data #>> '{cliente,whatsapp}', '')) AS whatsapp,
-           btrim(COALESCE(data #>> '{cliente,email}', '')) AS email,
-           regexp_replace(COALESCE(data #>> '{cliente,whatsapp}', ''), '\D', '', 'g') AS digitos
-    FROM quotes
-    WHERE client_id IS NULL
-) AS q;
+-- Si una corrida anterior se cortó a mitad, el trigger pudo quedar apagado.
+ALTER TABLE quotes ENABLE TRIGGER update_quotes_updated_at;
 
--- Sin esto, el trigger les pondría la fecha de hoy a todos los presupuestos y
--- la lista de guardados perdería su orden.
-ALTER TABLE quotes DISABLE TRIGGER update_quotes_updated_at;
-
+-- Un solo bloque: si algo falla adentro se deshace entero, trigger incluido.
 DO $$
 DECLARE
     r RECORD;
     nuevo UUID;
 BEGIN
-    -- De cada persona se toman los datos de su presupuesto más reciente.
+    -- Sin esto, el trigger les pondría la fecha de hoy a todos los presupuestos y
+    -- la lista de guardados perdería su orden.
+    ALTER TABLE quotes DISABLE TRIGGER update_quotes_updated_at;
+
     FOR r IN
-        SELECT DISTINCT ON (clave) clave, nombre, negocio, whatsapp, email
-        FROM clave_por_presupuesto
+        SELECT clave,
+               -- De cada persona, los datos de su presupuesto más reciente.
+               (array_agg(nombre ORDER BY updated_at DESC))[1] AS nombre,
+               (array_agg(negocio ORDER BY updated_at DESC))[1] AS negocio,
+               (array_agg(whatsapp ORDER BY updated_at DESC))[1] AS whatsapp,
+               (array_agg(email ORDER BY updated_at DESC))[1] AS email,
+               array_agg(id) AS ids
+        FROM (
+            SELECT id, updated_at, nombre, negocio, whatsapp, email,
+                   COALESCE(
+                       CASE WHEN length(digitos) >= 8 THEN right(digitos, 10) END,
+                       NULLIF(lower(email), ''),
+                       NULLIF(lower(nombre || '|' || negocio), '|')
+                   ) AS clave
+            FROM (
+                SELECT id, updated_at,
+                       btrim(COALESCE(data #>> '{cliente,nombre}', '')) AS nombre,
+                       btrim(COALESCE(data #>> '{cliente,negocio}', '')) AS negocio,
+                       btrim(COALESCE(data #>> '{cliente,whatsapp}', '')) AS whatsapp,
+                       btrim(COALESCE(data #>> '{cliente,email}', '')) AS email,
+                       regexp_replace(COALESCE(data #>> '{cliente,whatsapp}', ''), '\D', '', 'g') AS digitos
+                FROM quotes
+                WHERE client_id IS NULL
+            ) AS datos
+        ) AS con_clave
         WHERE clave IS NOT NULL
-        ORDER BY clave, updated_at DESC
+        GROUP BY clave
     LOOP
         INSERT INTO clients (name, business, whatsapp, email)
         VALUES (r.nombre, r.negocio, r.whatsapp, r.email)
         RETURNING id INTO nuevo;
 
-        UPDATE quotes SET client_id = nuevo
-        WHERE id IN (SELECT id FROM clave_por_presupuesto WHERE clave = r.clave);
+        UPDATE quotes SET client_id = nuevo WHERE id = ANY (r.ids);
     END LOOP;
+
+    ALTER TABLE quotes ENABLE TRIGGER update_quotes_updated_at;
 END $$;
 
-ALTER TABLE quotes ENABLE TRIGGER update_quotes_updated_at;
-
-COMMIT;
-
--- Para revisar: cada cliente con sus presupuestos.
-SELECT c.name, c.business, c.whatsapp, count(q.id) AS presupuestos
+-- Para revisar: cada cliente con sus presupuestos. La última columna tiene que
+-- decir "O": el trigger que actualiza la fecha de los presupuestos está prendido.
+-- (El editor muestra solo el resultado de la última consulta, por eso va junto.)
+SELECT c.name, c.business, c.whatsapp, count(q.id) AS presupuestos,
+       (SELECT tgenabled FROM pg_trigger WHERE tgname = 'update_quotes_updated_at') AS trigger_fecha
 FROM clients c
 LEFT JOIN quotes q ON q.client_id = c.id
 GROUP BY c.id
