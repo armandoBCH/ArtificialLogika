@@ -34,6 +34,7 @@ import {
     type Pago,
     type Trabajo,
 } from "./cuentas";
+import CobroAutomatico, { LinksDePago, type LinkGuardado, type SuscripcionGuardada } from "./MercadoPago";
 
 /**
  * Clientes: quién compró, cuánto pagó, cuánto falta y cuánto deja cada trabajo.
@@ -50,15 +51,33 @@ type T = Trabajo<PresupuestoGuardado>;
 
 const contactoVacio = (): Contacto => ({ name: "", business: "", whatsapp: "", email: "" });
 
+/** Mercado Pago: `listo` si ya están sus tablas; `conectado` si el servidor tiene el Access Token. */
+export interface EstadoMp {
+    listo: boolean;
+    conectado: boolean;
+}
+
 interface Props {
     listo: boolean;
     clientes: Cliente[];
     presupuestos: PresupuestoGuardado[];
+    suscripciones: SuscripcionGuardada[];
+    links: LinkGuardado[];
+    mp: EstadoMp;
 }
 
-export default function Clientes({ listo, clientes: clientesIniciales, presupuestos: presupuestosIniciales }: Props) {
+export default function Clientes({
+    listo,
+    clientes: clientesIniciales,
+    presupuestos: presupuestosIniciales,
+    suscripciones: suscripcionesIniciales,
+    links: linksIniciales,
+    mp,
+}: Props) {
     const [clientes, setClientes] = useState(clientesIniciales);
     const [presupuestos, setPresupuestos] = useState(presupuestosIniciales);
+    const [suscripciones, setSuscripciones] = useState(suscripcionesIniciales);
+    const [links, setLinks] = useState(linksIniciales);
     const [mes] = useState(mesDeHoy);
     const [abierto, setAbierto] = useState<string | null>(null);
     const [busqueda, setBusqueda] = useState("");
@@ -86,7 +105,10 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
         setError(null);
         try {
             const fila = await escribir<PresupuestoGuardado>("quotes", "PUT", { id: q.id, ...cambios });
-            setPresupuestos((lista) => lista.map((x) => (x.id === q.id ? { ...fila, total: Number(fila.total) } : x)));
+            // La fila de quotes no trae los cobros de Mercado Pago: se conservan los que ya estaban.
+            setPresupuestos((lista) =>
+                lista.map((x) => (x.id === q.id ? { ...fila, total: Number(fila.total), mp_payments: x.mp_payments, mp_charges: x.mp_charges } : x))
+            );
             avisar(ok);
         } catch (e) {
             fallo(e, "No se pudo guardar el cambio");
@@ -176,12 +198,78 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
         .filter(({ s }) => filtro === "todos" || (filtro === "deben" ? s.falta > 0 : s.trabajos > 0 && s.falta === 0))
         .sort((a, b) => b.s.falta - a.s.falta || nombreDe(a.c).localeCompare(nombreDe(b.c), "es"));
 
+    /** La que está en curso; si no hay, la última (para decir que se canceló). */
+    const suscripcionDe = (quoteId: string) => {
+        const suyas = suscripciones.filter((s) => s.quote_id === quoteId).sort((a, b) => b.created_at.localeCompare(a.created_at));
+        return suyas.find((s) => s.status !== "cancelled") ?? suyas[0] ?? null;
+    };
+
+    /** Para los mensajes de WhatsApp: la ficha del cliente y, si no tiene, lo que dice el presupuesto. */
+    const contactoDe = (q: PresupuestoGuardado) => {
+        const c = clientes.find((x) => x.id === q.client_id);
+        const d = q.data?.cliente;
+        return { nombre: c?.name || d?.nombre || "", whatsapp: c?.whatsapp || d?.whatsapp || "", email: c?.email || d?.email || "" };
+    };
+
+    const cobroAutomatico = (t: T) => {
+        const s = suscripcionDe(t.q.id);
+        if (!mp.listo || !t.mensual || !(t.activo || (s && s.status !== "cancelled"))) return null;
+        return (
+            <CobroAutomatico
+                suscripcion={s}
+                cobrosMp={t.cobrosMp}
+                m={t.mensual}
+                mes={mes}
+                quoteId={t.q.id}
+                contacto={contactoDe(t.q)}
+                conectado={mp.conectado}
+                onSuscripcion={(nueva) => setSuscripciones((lista) => [nueva, ...lista.filter((x) => x.id !== nueva.id)])}
+                onCobros={(cobros) => setPresupuestos((lista) => lista.map((x) => (x.id === t.q.id ? { ...x, mp_payments: cobros } : x)))}
+                avisar={avisar}
+                fallar={(texto) => setError(texto)}
+            />
+        );
+    };
+
+    /** Un link de Mercado Pago para pagar una vez, por el monto y con el concepto del formulario de pago. */
+    async function cobrarMp(t: T, d: { monto: number; nota: string }) {
+        setOcupado(t.q.id);
+        setError(null);
+        try {
+            const r = await escribir<{ link: LinkGuardado }>("mercadopago", "POST", { accion: "cobrar", quoteId: t.q.id, monto: d.monto, concepto: d.nota });
+            setLinks((lista) => [r.link, ...lista]);
+            avisar("Link listo: mandáselo por WhatsApp");
+        } catch (e) {
+            fallo(e, "No se pudo generar el link");
+        } finally {
+            setOcupado(null);
+        }
+    }
+
+    const cobraConMp = mp.listo && mp.conectado;
+
+    const linksMp = (t: T) =>
+        cobraConMp ? (
+            <LinksDePago
+                links={links.filter((l) => l.quote_id === t.q.id)}
+                cargosMp={t.cargosMp}
+                contacto={contactoDe(t.q)}
+                onLink={(l) => setLinks((lista) => lista.map((x) => (x.id === l.id ? l : x)))}
+                onPagos={(pagos) => setPresupuestos((lista) => lista.map((x) => (x.id === t.q.id ? { ...x, mp_charges: pagos } : x)))}
+                avisar={avisar}
+                fallar={(texto) => setError(texto)}
+            />
+        ) : null;
+
     const tarjeta = (t: T) => (
         <TarjetaTrabajo
             key={t.q.id}
             t={t}
             mes={mes}
             clientes={clientes}
+            automatico={cobroAutomatico(t)}
+            linksMp={linksMp(t)}
+            onCobrarMp={cobraConMp ? (d) => cobrarMp(t, d) : undefined}
             ocupado={ocupado === t.q.id}
             onEstado={(status) => actualizar(t.q, { status }, `N° ${formatearNumero(t.q.number)} marcado como ${status}`)}
             onCliente={(client_id) => actualizar(t.q, { client_id }, client_id ? "Presupuesto asignado" : "Presupuesto sin cliente")}
@@ -420,6 +508,9 @@ function TarjetaTrabajo({
     t,
     mes,
     clientes,
+    automatico,
+    linksMp,
+    onCobrarMp,
     ocupado,
     onEstado,
     onCliente,
@@ -431,6 +522,12 @@ function TarjetaTrabajo({
     t: T;
     mes: string;
     clientes: Cliente[];
+    /** El bloque de cobro automático con Mercado Pago, ya armado; null si no corresponde. */
+    automatico: React.ReactNode;
+    /** Los links de pago de Mercado Pago sin usar, ya armados. */
+    linksMp: React.ReactNode;
+    /** Solo si Mercado Pago está conectado. */
+    onCobrarMp?: (d: { monto: number; nota: string }) => void;
     ocupado: boolean;
     onEstado: (estado: EstadoPresupuesto) => void;
     onCliente: (clienteId: string | null) => void;
@@ -535,13 +632,22 @@ function TarjetaTrabajo({
                         ) : (
                             <ul className="divide-y divide-white/5 rounded-sm border border-white/10">
                                 {pagos.map((p) => (
-                                    <Renglon key={p.id} monto={p.monto} etiqueta={`Borrar el pago de ${formatearPesos(p.monto)}`} disabled={ocupado} onQuitar={() => onQuitarPago(p)}>
+                                    <Renglon
+                                        key={p.id}
+                                        monto={p.monto}
+                                        etiqueta={`Borrar el pago de ${formatearPesos(p.monto)}`}
+                                        disabled={ocupado}
+                                        // Los que cobró Mercado Pago no se borran: pasaron de verdad.
+                                        onQuitar={p.mp ? undefined : () => onQuitarPago(p)}
+                                    >
                                         <span className="shrink-0 tabular-nums text-gray-400">{p.fecha ? formatearFecha(p.fecha) : "Sin fecha"}</span>
+                                        {p.mp && <span className="shrink-0 rounded-sm bg-[#00b1ea]/15 px-1.5 text-[11px] font-bold text-[#7fd8f5]">Mercado Pago</span>}
                                         {p.nota && <span className="truncate text-white">{p.nota}</span>}
                                     </Renglon>
                                 ))}
                             </ul>
                         )}
+                        {linksMp}
                         <FormPago
                             // Se rearma con cada pago: la sugerencia pasa a ser lo que falta ahora.
                             key={cobro.cobrado}
@@ -550,9 +656,16 @@ function TarjetaTrabajo({
                             sugerido={{ monto: atajos[0]?.monto ?? 0 }}
                             atajos={atajos.length > 1 ? atajos : []}
                             notaPara={notaPara}
-                            ayuda={cobro.falta > 0 ? "¿Te pagó una parte? Cambiá el monto." : undefined}
+                            ayuda={
+                                onCobrarMp
+                                    ? "Si ya te pagó (transferencia, efectivo), registralo. Para cobrarle, elegí el monto y mandale un link de Mercado Pago."
+                                    : cobro.falta > 0
+                                      ? "¿Te pagó una parte? Cambiá el monto."
+                                      : undefined
+                            }
                             disabled={ocupado}
                             onAgregar={onPago}
+                            onCobrarMp={onCobrarMp}
                         />
                     </section>
 
@@ -586,7 +699,17 @@ function TarjetaTrabajo({
                 </div>
 
                 {mensual && (
-                    <SeccionMensual m={mensual} mes={mes} activo={t.activo} costosMes={t.costosMes} ocupado={ocupado} onPago={onPago} onQuitarPago={onQuitarPago} onMensual={onMensual} />
+                    <SeccionMensual
+                        m={mensual}
+                        mes={mes}
+                        activo={t.activo}
+                        costosMes={t.costosMes}
+                        automatico={automatico}
+                        ocupado={ocupado}
+                        onPago={onPago}
+                        onQuitarPago={onQuitarPago}
+                        onMensual={onMensual}
+                    />
                 )}
 
                 <div className="flex justify-end border-t-2 border-white/5 pt-4">
@@ -618,6 +741,7 @@ function SeccionMensual({
     mes,
     activo,
     costosMes,
+    automatico,
     ocupado,
     onPago,
     onQuitarPago,
@@ -627,6 +751,7 @@ function SeccionMensual({
     mes: string;
     activo: boolean;
     costosMes: number;
+    automatico: React.ReactNode;
     ocupado: boolean;
     onPago: (pago: Omit<Pago, "id">) => void;
     onQuitarPago: (pago: Pago) => void;
@@ -671,12 +796,22 @@ function SeccionMensual({
                 </p>
             )}
 
+            {automatico}
+
             {m.cuotas.length > 0 && (
                 // ponytail: muestra todas las cuotas; con años de historia conviene plegar las viejas.
                 <ul className="divide-y divide-white/5 rounded-sm border border-white/10">
                     {m.cuotas.map((c) => (
-                        <Renglon key={c.id} monto={c.monto} etiqueta={`Borrar la cuota de ${nombreMes(c.mes)}`} disabled={ocupado} onQuitar={() => onQuitarPago(c)}>
+                        <Renglon
+                            key={c.id}
+                            monto={c.monto}
+                            etiqueta={`Borrar la cuota de ${nombreMes(c.mes)}`}
+                            disabled={ocupado}
+                            // Las que cobró Mercado Pago no se borran: pasaron de verdad.
+                            onQuitar={c.mp ? undefined : () => onQuitarPago(c)}
+                        >
                             <span className="shrink-0 text-white capitalize">{nombreMes(c.mes)}</span>
+                            {c.mp && <span className="shrink-0 rounded-sm bg-[#00b1ea]/15 px-1.5 text-[11px] font-bold text-[#7fd8f5]">Mercado Pago</span>}
                             {c.fecha && <span className="truncate text-gray-400">pagada el {formatearFecha(c.fecha)}</span>}
                         </Renglon>
                     ))}
@@ -686,7 +821,7 @@ function SeccionMensual({
             {activo && (
                 <FormPago
                     key={`${m.proximo}-${m.cuotas.length}`}
-                    titulo="Registrar una cuota"
+                    titulo={automatico ? "Registrar una cuota a mano" : "Registrar una cuota"}
                     boton="Registrar cuota"
                     sugerido={{ monto: m.cuota, mes: m.proximo }}
                     meses={meses}
@@ -711,6 +846,7 @@ function FormPago({
     ayuda,
     disabled,
     onAgregar,
+    onCobrarMp,
 }: {
     titulo: string;
     boton: string;
@@ -722,6 +858,8 @@ function FormPago({
     ayuda?: string;
     disabled: boolean;
     onAgregar: (pago: Omit<Pago, "id">) => void;
+    /** Si viene, también se puede mandar un link de Mercado Pago por el monto y con la nota como concepto. */
+    onCobrarMp?: (d: { monto: number; nota: string }) => void;
 }) {
     const [fecha, setFecha] = useState(hoyISO);
     const [monto, setMonto] = useState(sugerido.monto);
@@ -772,7 +910,7 @@ function FormPago({
                         ))}
                     </select>
                 )}
-                <PesosInput etiqueta="Monto que te pagó" valor={monto} onChange={cambiarMonto} className="w-full sm:w-36" />
+                <PesosInput etiqueta="Monto del pago" valor={monto} onChange={cambiarMonto} className="w-full sm:w-36" />
                 <input
                     type="date"
                     aria-label="Fecha en que te pagó"
@@ -795,6 +933,17 @@ function FormPago({
                 <button type="submit" disabled={disabled || monto <= 0 || (!!meses && !mes)} className={BOTON_PRIMARIO}>
                     {boton}
                 </button>
+                {onCobrarMp && (
+                    <button
+                        type="button"
+                        disabled={disabled || monto <= 0}
+                        onClick={() => onCobrarMp({ monto, nota: nota.trim() || "Pago" })}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-sm border-2 border-black bg-[#00b1ea] px-3.5 py-2 text-sm font-bold text-ink-black shadow-neobrutalism-sm transition-all hover:translate-x-px hover:translate-y-px hover:shadow-none disabled:pointer-events-none disabled:opacity-50"
+                    >
+                        <span aria-hidden="true" className="material-icons text-lg">link</span>
+                        Cobrar con Mercado Pago
+                    </button>
+                )}
             </div>
             {ayuda && <p className="text-xs text-gray-500">{ayuda}</p>}
         </form>
@@ -923,26 +1072,32 @@ function Renglon({
     sufijo?: string;
     etiqueta: string;
     disabled: boolean;
-    onQuitar: () => void;
+    /** Sin esto, el renglón no se puede borrar. */
+    onQuitar?: () => void;
     children: React.ReactNode;
 }) {
     return (
         <li className="flex items-center gap-3 px-3 py-1.5 text-sm">
-            <span className="flex min-w-0 flex-1 items-center gap-3">{children}</span>
+            {/* Si no entra en una línea (en el celular), baja a la segunda en vez de taparse con el monto. */}
+            <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-0.5">{children}</span>
             <span className="font-bold text-white tabular-nums">
                 {formatearPesos(monto)}
                 {sufijo && <span className="text-xs font-medium text-gray-400">{sufijo}</span>}
             </span>
-            <button
-                type="button"
-                disabled={disabled}
-                onClick={onQuitar}
-                aria-label={etiqueta}
-                title={etiqueta}
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-sm text-gray-500 hover:bg-hot-coral/15 hover:text-hot-coral disabled:opacity-30"
-            >
-                <span aria-hidden="true" className="material-icons text-base">close</span>
-            </button>
+            {onQuitar ? (
+                <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={onQuitar}
+                    aria-label={etiqueta}
+                    title={etiqueta}
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-sm text-gray-500 hover:bg-hot-coral/15 hover:text-hot-coral disabled:opacity-30"
+                >
+                    <span aria-hidden="true" className="material-icons text-base">close</span>
+                </button>
+            ) : (
+                <span aria-hidden="true" className="h-7 w-7 shrink-0" />
+            )}
         </li>
     );
 }

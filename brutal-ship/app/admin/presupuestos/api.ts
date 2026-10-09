@@ -1,9 +1,10 @@
 /**
- * Escrituras contra /api/admin/[table]. A diferencia de useAdminData, devuelve la
- * fila que respondió la base: el presupuestador necesita el `id` y el `number`
- * recién asignados sin volver a pedir la lista entera.
+ * Escrituras contra /api/admin/[table] (y /api/admin/mercadopago, que tiene su
+ * propia ruta). A diferencia de useAdminData, devuelve la fila que respondió la
+ * base: el presupuestador necesita el `id` y el `number` recién asignados sin
+ * volver a pedir la lista entera.
  */
-export async function escribir<T>(tabla: "quotes" | "quote_catalog" | "clients", metodo: "POST" | "PUT" | "DELETE", cuerpo: unknown): Promise<T> {
+export async function escribir<T>(tabla: "quotes" | "quote_catalog" | "clients" | "mercadopago", metodo: "POST" | "PUT" | "DELETE", cuerpo: unknown): Promise<T> {
     const res = await fetch(`/api/admin/${tabla}`, {
         method: metodo,
         headers: { "Content-Type": "application/json" },

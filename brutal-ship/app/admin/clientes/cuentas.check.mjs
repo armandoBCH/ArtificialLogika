@@ -1,6 +1,6 @@
 // Chequeo de las cuentas de cobro. Correr con: node app/admin/clientes/cuentas.check.mjs
 import assert from "node:assert/strict";
-import { cobroDe, costosDe, mensualDe, mismoCliente, nombreMes, pagosDe, peorEstado, resumenDe, sumarMeses, trabajoDe } from "./cuentas.ts";
+import { cobroDe, costosDe, mensualDe, mesParaCobroMp, mismoCliente, nombreMes, pagosDe, peorEstado, resumenDe, sumarMeses, trabajoDe } from "./cuentas.ts";
 
 const pago = (monto, fecha = "2026-10-07") => ({ id: `${monto}-${fecha}`, fecha, monto, nota: "", mes: "" });
 const cuota = (mes, monto = 39000, fecha = `${mes}-05`) => ({ id: `c-${mes}`, fecha, monto, nota: "", mes });
@@ -109,6 +109,50 @@ assert.equal(r.gananciaPorMes, 31000);
 assert.equal(r.conMensual, 1);
 assert.equal(r.pagaronEsteMes, 1);
 assert.equal(r.estado, "sena-incompleta");
+
+// Cobros de Mercado Pago: cuentan como cuotas pero no se mezclan con los pagos cargados a mano.
+const cobroMp = (month, status = "approved") => ({ id: `mp${month}`, month, amount: 39000, paid_on: `${month}-09`, status });
+const conMp = trabajoDe(
+    fila({ status: "enviado", payments: [cuota("2026-08")], mp_payments: [cobroMp("2026-09"), cobroMp("2026-10", "rejected"), { id: 7, month: "mal" }] }),
+    totales,
+    "2026-10"
+);
+assert.equal(conMp.cuenta, true); // tiene cobros, aunque el presupuesto diga "enviado"
+assert.equal(conMp.todos.length, 1); // lo que se reescribe al guardar no lleva lo de Mercado Pago
+assert.deepEqual(conMp.mp.map((p) => [p.mes, p.mp]), [["2026-09", true]]);
+assert.equal(conMp.cobrosMp.length, 2); // el rechazado queda para avisar; el roto se descarta
+assert.deepEqual(conMp.mensual.deben, []); // agosto a mano, septiembre por Mercado Pago
+assert.equal(conMp.mensual.pagoEsteMes, false); // el de octubre fue rechazado
+const rMp = resumenDe([conMp], "2026-10");
+assert.equal(rMp.cobrado, 39000 * 2);
+assert.equal(rMp.entroEsteMes, 0);
+
+// Pagos del proyecto por link de Mercado Pago: cuentan para la seña y el saldo, y no se reescriben al guardar.
+const conLink = trabajoDe(
+    fila({
+        payments: [pago(50000, "2026-10-01")],
+        mp_charges: [
+            { id: "p1", amount: 100000, paid_on: "2026-10-09", status: "approved", concept: "Seña" },
+            { id: "p2", amount: 44500, paid_on: "2026-10-09", status: "rejected", concept: "Seña" },
+        ],
+    }),
+    totales,
+    "2026-10"
+);
+assert.equal(conLink.cobro.cobrado, 150000);
+assert.equal(conLink.cobro.faltaSena, 50000);
+assert.equal(conLink.cobro.estado, "sena-incompleta");
+assert.equal(conLink.todos.length, 1);
+assert.deepEqual(conLink.pagos.map((p) => [p.monto, Boolean(p.mp)]), [[50000, false], [100000, true]]); // por fecha
+assert.equal(conLink.cargosMp.length, 2); // el rechazado queda para mostrar el intento
+assert.equal(resumenDe([conLink], "2026-10").entroEsteMes, 150000);
+
+// Qué mes paga cada cobro nuevo de Mercado Pago.
+assert.equal(mesParaCobroMp([], [], true, "2026-10"), "2026-10"); // el primero: este mes
+assert.equal(mesParaCobroMp([cuota("2026-08")], ["2026-09"], true, "2026-10"), "2026-10");
+assert.equal(mesParaCobroMp([cuota("2026-07")], [], true, "2026-10"), "2026-08"); // primero lo que debe
+assert.equal(mesParaCobroMp([], ["2026-10"], true, "2026-10"), "2026-11"); // octubre ya tiene su cobro, aunque esté rechazado
+assert.equal(mesParaCobroMp([cuota("2026-07")], [], false, "2026-10"), "2026-10"); // dado de baja: no reclama deudas
 
 const contacto = (o) => ({ name: "", business: "", whatsapp: "", email: "", ...o });
 assert.ok(mismoCliente(contacto({ whatsapp: "11 2345-6789" }), contacto({ whatsapp: "+54 9 11 2345 6789" })));

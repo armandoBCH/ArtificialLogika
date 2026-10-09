@@ -27,6 +27,32 @@ export interface Pago {
     nota: string;
     /** YYYY-MM si es una cuota del mantenimiento mensual; vacío si es del proyecto (seña o saldo). */
     mes: string;
+    /** La cobró Mercado Pago solo: viene de mp_payments y no se borra desde el panel. */
+    mp?: boolean;
+}
+
+/** Un pago por link de Mercado Pago, de la seña o el saldo (tabla mp_charges). */
+export interface CargoMp {
+    id: string;
+    link_id: string | null;
+    concept: string;
+    amount: number;
+    /** YYYY-MM-DD de la aprobación, o del intento. */
+    paid_on: string;
+    /** approved cuenta como pagado; pending, in_process y rejected, no. */
+    status: string;
+}
+
+/** Un cobro mensual que avisó Mercado Pago (tabla mp_payments). */
+export interface CobroMp {
+    id: string;
+    /** YYYY-MM que paga. */
+    month: string;
+    amount: number;
+    /** YYYY-MM-DD del cobro, o del último intento si lo rechazaron. */
+    paid_on: string;
+    /** approved cuenta como pagado; rejected y los demás, no. */
+    status: string;
 }
 
 export interface Costo {
@@ -139,6 +165,17 @@ export function mensualDe(pagos: Pago[], delPresupuesto: number, activo: boolean
     return { cuota: cuotas[0]?.monto || delPresupuesto, cuotas, empezo, pagoEsteMes: pagados.has(mes), deben, proximo };
 }
 
+/**
+ * El mes que paga un cobro nuevo de Mercado Pago: el primero que no cubre ni una
+ * cuota cargada a mano ni otro cobro de Mercado Pago (aunque lo hayan rechazado:
+ * ese mes ya tiene el suyo). Es la misma regla con que el panel propone el mes al
+ * cargar una cuota a mano: primero lo que debe, después este mes, después el siguiente.
+ */
+export function mesParaCobroMp(pagos: Pago[], mesesMp: string[], activo: boolean, mes: string): string {
+    const cubiertos = mesesMp.map((m): Pago => ({ id: "", fecha: "", monto: 0, nota: "", mes: m }));
+    return mensualDe([...pagos, ...cubiertos], 0, activo, mes).proximo;
+}
+
 /* ─────────────────────────────────────────────────────────────
    Cada presupuesto guardado como trabajo, y el resumen de varios
    ───────────────────────────────────────────────────────────── */
@@ -151,13 +188,23 @@ export interface FilaCobro {
     payments?: unknown;
     costs?: unknown;
     monthly_active?: boolean;
+    /** Las filas de mp_payments de este presupuesto. */
+    mp_payments?: unknown;
+    /** Las filas de mp_charges de este presupuesto. */
+    mp_charges?: unknown;
 }
 
 export interface Trabajo<Q extends FilaCobro = FilaCobro> {
     q: Q;
-    /** Todos, como se guardan: los del proyecto y las cuotas. */
+    /** Los cargados a mano, como se guardan en quotes.payments: los del proyecto y las cuotas. */
     todos: Pago[];
-    /** Solo los del proyecto: la seña y el saldo. */
+    /** Lo que cobró Mercado Pago, cuotas y pagos por link. Va aparte de `todos` para no reescribirlo al guardar un pago. */
+    mp: Pago[];
+    /** Las cuotas que avisó Mercado Pago, rechazadas incluidas. */
+    cobrosMp: CobroMp[];
+    /** Los pagos por link que avisó Mercado Pago, rechazados y pendientes incluidos. */
+    cargosMp: CargoMp[];
+    /** Los del proyecto, la seña y el saldo, cargados a mano o por link, por fecha. */
     pagos: Pago[];
     costos: Costo[];
     /** Lo que suman los costos de todos los meses. */
@@ -174,18 +221,32 @@ export interface Trabajo<Q extends FilaCobro = FilaCobro> {
 /** `totales` sale de calcularTotales: va por parámetro para que este archivo no importe nada. */
 export function trabajoDe<Q extends FilaCobro>(q: Q, totales: { total: number; sena: number; mensual: number }, mes: string): Trabajo<Q> {
     const todos = pagosDe(q.payments);
+    const cobrosMp = cobrosMpDe(q.mp_payments);
+    const cargosMp = cargosMpDe(q.mp_charges);
+    const mp = [
+        ...cobrosMp
+            .filter((c) => c.status === "approved")
+            .map((c): Pago => ({ id: `mp-${c.id}`, fecha: c.paid_on, monto: c.amount, nota: "Mercado Pago", mes: c.month, mp: true })),
+        ...cargosMp
+            .filter((c) => c.status === "approved")
+            .map((c): Pago => ({ id: `mpl-${c.id}`, fecha: c.paid_on, monto: c.amount, nota: c.concept, mes: "", mp: true })),
+    ];
+    const conMp = [...todos, ...mp];
     const costos = costosDe(q.costs);
     const activo = q.monthly_active !== false;
     return {
         q,
         todos,
-        pagos: todos.filter((p) => !p.mes),
+        mp,
+        cobrosMp,
+        cargosMp,
+        pagos: conMp.filter((p) => !p.mes).sort((a, b) => a.fecha.localeCompare(b.fecha)),
         costos,
         costosMes: suma(costos.filter((c) => c.mensual)),
-        cobro: cobroDe(totales.total, totales.sena, todos, costos),
-        mensual: totales.mensual > 0 || todos.some((p) => p.mes) ? mensualDe(todos, totales.mensual, activo, mes) : null,
+        cobro: cobroDe(totales.total, totales.sena, conMp, costos),
+        mensual: totales.mensual > 0 || conMp.some((p) => p.mes) ? mensualDe(conMp, totales.mensual, activo, mes) : null,
         activo,
-        cuenta: q.status === "aceptado" || todos.length > 0,
+        cuenta: q.status === "aceptado" || conMp.length > 0,
     };
 }
 
@@ -220,8 +281,8 @@ export function resumenDe(trabajos: Trabajo[], mes: string): Resumen {
         trabajos: cuentan.length,
         falta: s((t) => t.cobro.falta + atrasadas(t) * (t.mensual?.cuota ?? 0)),
         cuotasAtrasadas: s(atrasadas),
-        cobrado: s((t) => suma(t.todos)),
-        entroEsteMes: s((t) => suma(t.todos.filter((p) => p.fecha.startsWith(mes)))),
+        cobrado: s((t) => suma(t.todos) + suma(t.mp)),
+        entroEsteMes: s((t) => suma([...t.todos, ...t.mp].filter((p) => p.fecha.startsWith(mes)))),
         ganancia: s((t) => t.cobro.ganancia),
         gananciaCobrada: s((t) => t.cobro.gananciaCobrada),
         porMes,
@@ -250,6 +311,25 @@ export function pagosDe(x: unknown): Pago[] {
         nota: texto(o.nota),
         mes: MES_VALIDO.test(texto(o.mes)) ? texto(o.mes) : "",
     }));
+}
+
+export function cobrosMpDe(x: unknown): CobroMp[] {
+    return objetos(x)
+        .map((o) => ({ id: String(o.id ?? ""), month: texto(o.month), amount: monto(o.amount), paid_on: texto(o.paid_on), status: texto(o.status) }))
+        .filter((c) => c.id && MES_VALIDO.test(c.month));
+}
+
+export function cargosMpDe(x: unknown): CargoMp[] {
+    return objetos(x)
+        .map((o) => ({
+            id: String(o.id ?? ""),
+            link_id: typeof o.link_id === "string" ? o.link_id : null,
+            concept: texto(o.concept),
+            amount: monto(o.amount),
+            paid_on: texto(o.paid_on),
+            status: texto(o.status),
+        }))
+        .filter((c) => c.id && c.paid_on);
 }
 
 export function costosDe(x: unknown): Costo[] {

@@ -8,15 +8,19 @@ import { calcularTotales, normalizar, type PresupuestoGuardado } from "./presupu
 /** Las mismas cuentas que muestra Clientes, para tenerlas a mano al entrar al panel. */
 async function getCobros() {
     const supabase = await createClient();
-    const { data, error } = await supabase
-        .from("quotes")
-        .select("id, status, data, client_id, payments, costs, monthly_active")
-        .order("updated_at", { ascending: false })
-        .limit(500);
+    const [{ data, error }, cobrosMp, cargosMp] = await Promise.all([
+        supabase.from("quotes").select("id, status, data, client_id, payments, costs, monthly_active").order("updated_at", { ascending: false }).limit(500),
+        // Sin las tablas (antes del SQL de Mercado Pago) vienen con error y se cuenta sin esos cobros.
+        supabase.from("mp_payments").select("*"),
+        supabase.from("mp_charges").select("*"),
+    ]);
     // Sin las columnas de cobro (antes del SQL de clientes) no hay nada que mostrar.
     if (error || !data) return null;
     const mes = mesDeHoy();
-    const trabajos = (data as PresupuestoGuardado[]).map((q) => trabajoDe(q, calcularTotales(normalizar(q.data)), mes));
+    const de = (filas: { quote_id: string }[] | null, id: string) => (filas ?? []).filter((f) => f.quote_id === id);
+    const trabajos = (data as PresupuestoGuardado[]).map((q) =>
+        trabajoDe({ ...q, mp_payments: de(cobrosMp.data, q.id), mp_charges: de(cargosMp.data, q.id) }, calcularTotales(normalizar(q.data)), mes)
+    );
     return resumenDe(trabajos, mes);
 }
 
