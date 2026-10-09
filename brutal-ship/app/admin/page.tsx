@@ -1,6 +1,24 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { formatearPesos } from "@/lib/precios";
 import AnalyticsSection from "./components/AnalyticsSection";
+import { mesDeHoy, resumenDe, trabajoDe } from "./clientes/cuentas";
+import { calcularTotales, normalizar, type PresupuestoGuardado } from "./presupuestos/modelo";
+
+/** Las mismas cuentas que muestra Clientes, para tenerlas a mano al entrar al panel. */
+async function getCobros() {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+        .from("quotes")
+        .select("id, status, data, client_id, payments, costs, monthly_active")
+        .order("updated_at", { ascending: false })
+        .limit(500);
+    // Sin las columnas de cobro (antes del SQL de clientes) no hay nada que mostrar.
+    if (error || !data) return null;
+    const mes = mesDeHoy();
+    const trabajos = (data as PresupuestoGuardado[]).map((q) => trabajoDe(q, calcularTotales(normalizar(q.data)), mes));
+    return resumenDe(trabajos, mes);
+}
 
 async function getStats() {
     const supabase = await createClient();
@@ -40,7 +58,7 @@ const statCards = [
 ] as const;
 
 export default async function AdminDashboard() {
-    const { counts, recentLeads } = await getStats();
+    const [{ counts, recentLeads }, cobros] = await Promise.all([getStats(), getCobros()]);
 
     return (
         <div className="space-y-8">
@@ -51,7 +69,7 @@ export default async function AdminDashboard() {
                         Dashboard
                     </h1>
                     <p className="text-gray-400 mt-1">
-                        Resumen general del contenido del sitio
+                        Cobros y contenido del sitio
                     </p>
                 </div>
                 <Link
@@ -62,6 +80,33 @@ export default async function AdminDashboard() {
                     Armar presupuesto
                 </Link>
             </div>
+
+            {cobros && (
+                <section aria-labelledby="cobros" className="space-y-4">
+                    <div className="flex items-center justify-between gap-4">
+                        <h2 id="cobros" className="text-xl font-black text-white font-body">
+                            💸 Cobros
+                        </h2>
+                        <Link href="/admin/clientes" className="text-primary text-sm font-bold hover:underline">
+                            Ver clientes →
+                        </Link>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-3">
+                        <CifraCobro
+                            etiqueta="Falta cobrar"
+                            valor={cobros.falta}
+                            clase={cobros.falta > 0 ? "text-accent-yellow" : "text-white"}
+                            detalle={`De ${cobros.trabajos} ${cobros.trabajos === 1 ? "trabajo" : "trabajos"}${cobros.cuotasAtrasadas > 0 ? ` y ${cobros.cuotasAtrasadas} ${cobros.cuotasAtrasadas === 1 ? "cuota atrasada" : "cuotas atrasadas"}` : ""}`}
+                        />
+                        <CifraCobro
+                            etiqueta="Entró este mes"
+                            valor={cobros.entroEsteMes}
+                            detalle={cobros.conMensual > 0 ? `Cuotas: ${cobros.pagaronEsteMes} de ${cobros.conMensual} pagadas` : undefined}
+                        />
+                        <CifraCobro etiqueta="Ganancia" valor={cobros.ganancia} clase="text-secondary" detalle={`Ya en mano: ${formatearPesos(cobros.gananciaCobrada)}`} />
+                    </div>
+                </section>
+            )}
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
@@ -136,6 +181,16 @@ export default async function AdminDashboard() {
 
             {/* Analytics Section */}
             <AnalyticsSection />
+        </div>
+    );
+}
+
+function CifraCobro({ etiqueta, valor, detalle, clase = "text-white" }: { etiqueta: string; valor: number; detalle?: string; clase?: string }) {
+    return (
+        <div className="bg-[#1e1530] border-2 border-white/10 rounded-sm p-5">
+            <p className="text-gray-400 text-[11px] font-bold uppercase tracking-wider">{etiqueta}</p>
+            <p className={`mt-1 font-display text-2xl font-bold tabular-nums ${clase}`}>{formatearPesos(valor)}</p>
+            {detalle && <p className="mt-0.5 text-xs text-gray-500">{detalle}</p>}
         </div>
     );
 }

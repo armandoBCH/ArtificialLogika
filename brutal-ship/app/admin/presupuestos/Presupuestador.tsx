@@ -801,7 +801,8 @@ export default function Presupuestador({
             )}
 
             {/* ── Barra de acciones ── */}
-            <div className="sticky top-0 z-30 -mx-8 border-y-2 border-white/10 bg-[#191121]/95 px-8 py-3 backdrop-blur print:hidden">
+            {/* El margen negativo sigue al padding de <main> en app/admin/layout.tsx. */}
+            <div className="sticky top-0 z-30 -mx-4 border-y-2 border-white/10 bg-[#191121]/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 print:hidden">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
                     <div className="mr-auto flex flex-wrap items-center gap-x-3 gap-y-1">
                         <span className="font-display text-lg font-bold text-white tabular-nums">
