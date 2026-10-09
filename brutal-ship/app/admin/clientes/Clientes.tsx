@@ -1031,8 +1031,13 @@ function DatosCliente({
                         WhatsApp
                     </a>
                 )}
-                <button type="button" onClick={onBorrar} className="ml-auto inline-flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-hot-coral">
-                    <span aria-hidden="true" className="material-icons text-base">delete_outline</span>
+                <button
+                    type="button"
+                    onClick={onBorrar}
+                    disabled={ocupado}
+                    className="ml-auto inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-sm border-2 border-hot-coral/50 px-3.5 py-2 text-sm font-bold text-hot-coral transition-colors hover:border-hot-coral hover:bg-hot-coral/10 disabled:pointer-events-none disabled:opacity-50"
+                >
+                    <span aria-hidden="true" className="material-icons text-lg">delete_outline</span>
                     Borrar cliente
                 </button>
             </div>
