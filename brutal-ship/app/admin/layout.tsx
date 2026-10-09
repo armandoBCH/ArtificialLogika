@@ -13,9 +13,10 @@ export default function AdminLayout({
     return (
         // `overflow-x-clip` y no `overflow-auto`: un contenedor con scroll propio anula
         // el `sticky` de adentro, y la barra de acciones del presupuestador lo necesita.
-        <div className="flex min-h-screen bg-[#191121] font-body print:block print:min-h-0 print:bg-white">
+        // En el celular el menú va arriba (columna); desde lg, a la izquierda.
+        <div className="flex min-h-screen flex-col bg-[#191121] font-body lg:flex-row print:block print:min-h-0 print:bg-white">
             <AdminSidebar />
-            <main className="min-w-0 flex-1 p-8 overflow-x-clip print:p-0">{children}</main>
+            <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8 overflow-x-clip print:p-0">{children}</main>
         </div>
     );
 }

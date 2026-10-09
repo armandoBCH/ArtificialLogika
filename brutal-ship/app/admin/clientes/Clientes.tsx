@@ -19,75 +19,34 @@ import {
 } from "../presupuestos/modelo";
 import {
     ESTADOS_COBRO,
-    cobroDe,
-    costosDe,
+    mesDeHoy,
     mismoCliente,
     nombreDe,
-    pagosDe,
-    peorEstado,
+    nombreMes,
+    resumenDe,
+    sumarMeses,
+    trabajoDe,
     type Cliente,
-    type Cobro,
     type Contacto,
     type Costo,
     type EstadoCobro,
+    type Mensual,
     type Pago,
+    type Trabajo,
 } from "./cuentas";
 
 /**
  * Clientes: quién compró, cuánto pagó, cuánto falta y cuánto deja cada trabajo.
  *
  * Un presupuesto entra en las cuentas cuando está aceptado o tiene algún pago.
- * Los pagos y los costos se guardan apenas se agregan; los datos del cliente,
- * con su botón.
+ * Los pagos, las cuotas y los costos se guardan apenas se agregan; los datos del
+ * cliente, con su botón.
  */
 
 const SQL = "supabase/clientes-2026-10-07.sql";
 
 type Filtro = "todos" | "deben" | "pagados";
-
-interface Trabajo {
-    q: PresupuestoGuardado;
-    pagos: Pago[];
-    costos: Costo[];
-    cobro: Cobro;
-    /** Lo que suman sus servicios mensuales, contratados o no. */
-    mensual: number;
-    /** Aceptado o con algún pago: entra en las cuentas. */
-    cuenta: boolean;
-}
-
-function trabajoDe(q: PresupuestoGuardado): Trabajo {
-    const t = calcularTotales(normalizar(q.data));
-    const pagos = pagosDe(q.payments);
-    const costos = costosDe(q.costs);
-    return {
-        q,
-        pagos,
-        costos,
-        cobro: cobroDe(t.total, t.sena, pagos, costos),
-        mensual: t.mensual,
-        cuenta: q.status === "aceptado" || pagos.length > 0,
-    };
-}
-
-function sumar(trabajos: Trabajo[]) {
-    const cuentan = trabajos.filter((t) => t.cuenta);
-    const s = (f: (t: Trabajo) => number) => cuentan.reduce((a, t) => a + f(t), 0);
-    const mensuales = cuentan.filter((t) => t.mensual > 0 && t.q.monthly_active !== false);
-    const mes = hoyISO().slice(0, 7);
-    return {
-        trabajos: cuentan.length,
-        cobrado: s((t) => t.cobro.cobrado),
-        cobradoMes: s((t) => t.pagos.filter((p) => p.fecha.startsWith(mes)).reduce((a, p) => a + p.monto, 0)),
-        falta: s((t) => t.cobro.falta),
-        ganancia: s((t) => t.cobro.ganancia),
-        gananciaCobrada: s((t) => t.cobro.gananciaCobrada),
-        mensual: mensuales.reduce((a, t) => a + t.mensual, 0),
-        // Clientes, no trabajos: uno con dos presupuestos aceptados sigue siendo uno.
-        conMensual: new Set(mensuales.map((t) => t.q.client_id ?? t.q.id)).size,
-        estado: peorEstado(cuentan.map((t) => t.cobro.estado)),
-    };
-}
+type T = Trabajo<PresupuestoGuardado>;
 
 const contactoVacio = (): Contacto => ({ name: "", business: "", whatsapp: "", email: "" });
 
@@ -100,6 +59,7 @@ interface Props {
 export default function Clientes({ listo, clientes: clientesIniciales, presupuestos: presupuestosIniciales }: Props) {
     const [clientes, setClientes] = useState(clientesIniciales);
     const [presupuestos, setPresupuestos] = useState(presupuestosIniciales);
+    const [mes] = useState(mesDeHoy);
     const [abierto, setAbierto] = useState<string | null>(null);
     const [busqueda, setBusqueda] = useState("");
     const [filtro, setFiltro] = useState<Filtro>("todos");
@@ -136,19 +96,17 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
     }
 
     /** Cobrar algo es aceptar el presupuesto: si no lo estaba, se marca en el mismo paso. */
-    function agregarPago(t: Trabajo, pago: Omit<Pago, "id">) {
-        const pagos = [...t.pagos, { ...pago, id: nuevoId() }].sort((a, b) => a.fecha.localeCompare(b.fecha));
+    function agregarPago(t: T, pago: Omit<Pago, "id">) {
+        const pagos = [...t.todos, { ...pago, id: nuevoId() }].sort((a, b) => a.fecha.localeCompare(b.fecha));
         const aceptar = t.q.status !== "aceptado";
-        void actualizar(
-            t.q,
-            aceptar ? { payments: pagos, status: "aceptado" } : { payments: pagos },
-            `Pago de ${formatearPesos(pago.monto)} registrado${aceptar ? " · presupuesto aceptado" : ""}`
-        );
+        const que = pago.mes ? `Cuota de ${nombreMes(pago.mes)} registrada` : `Pago de ${formatearPesos(pago.monto)} registrado`;
+        void actualizar(t.q, aceptar ? { payments: pagos, status: "aceptado" } : { payments: pagos }, `${que}${aceptar ? " · presupuesto aceptado" : ""}`);
     }
 
-    function quitarPago(t: Trabajo, pago: Pago) {
-        if (!confirm(`¿Borrar el pago de ${formatearPesos(pago.monto)}${pago.fecha ? ` del ${formatearFecha(pago.fecha)}` : ""}?`)) return;
-        void actualizar(t.q, { payments: t.pagos.filter((p) => p.id !== pago.id) }, "Pago borrado");
+    function quitarPago(t: T, pago: Pago) {
+        const que = pago.mes ? `la cuota de ${nombreMes(pago.mes)}` : `el pago de ${formatearPesos(pago.monto)}${pago.fecha ? ` del ${formatearFecha(pago.fecha)}` : ""}`;
+        if (!confirm(`¿Borrar ${que}?`)) return;
+        void actualizar(t.q, { payments: t.todos.filter((p) => p.id !== pago.id) }, pago.mes ? "Cuota borrada" : "Pago borrado");
     }
 
     async function crearCliente(datos: Contacto) {
@@ -204,24 +162,25 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
 
     /* ── Derivados ───────────────────────────────────────── */
 
-    const trabajos = presupuestos.map(trabajoDe);
-    const general = sumar(trabajos);
+    const trabajos = presupuestos.map((q) => trabajoDe(q, calcularTotales(normalizar(q.data)), mes));
+    const general = resumenDe(trabajos, mes);
     const ids = new Set(clientes.map((c) => c.id));
     const sueltos = trabajos.filter((t) => !t.q.client_id || !ids.has(t.q.client_id));
     const texto = busqueda.trim().toLowerCase();
     const filas = clientes
         .map((c) => {
             const suyos = trabajos.filter((t) => t.q.client_id === c.id);
-            return { c, suyos, s: sumar(suyos) };
+            return { c, suyos, s: resumenDe(suyos, mes) };
         })
         .filter(({ c }) => !texto || `${c.name} ${c.business} ${c.whatsapp} ${c.email}`.toLowerCase().includes(texto))
         .filter(({ s }) => filtro === "todos" || (filtro === "deben" ? s.falta > 0 : s.trabajos > 0 && s.falta === 0))
         .sort((a, b) => b.s.falta - a.s.falta || nombreDe(a.c).localeCompare(nombreDe(b.c), "es"));
 
-    const tarjeta = (t: Trabajo) => (
+    const tarjeta = (t: T) => (
         <TarjetaTrabajo
             key={t.q.id}
             t={t}
+            mes={mes}
             clientes={clientes}
             ocupado={ocupado === t.q.id}
             onEstado={(status) => actualizar(t.q, { status }, `N° ${formatearNumero(t.q.number)} marcado como ${status}`)}
@@ -229,7 +188,7 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
             onPago={(pago) => agregarPago(t, pago)}
             onQuitarPago={(pago) => quitarPago(t, pago)}
             onCostos={(costs, ok) => actualizar(t.q, { costs }, ok)}
-            onMensual={(monthly_active) => actualizar(t.q, { monthly_active }, monthly_active ? "Mensual contratado" : "Mensual sin contratar")}
+            onMensual={(monthly_active) => actualizar(t.q, { monthly_active }, monthly_active ? "Mantenimiento contratado" : "Mantenimiento dado de baja")}
         />
     );
 
@@ -280,7 +239,7 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
                                 void crearCliente(nuevo);
                             }}
                             aria-label="Nuevo cliente"
-                            className="rounded-sm border-2 border-white/10 bg-[#1e1530] p-5"
+                            className="rounded-sm border-2 border-white/10 bg-[#1e1530] p-4 sm:p-5"
                         >
                             <FormContacto datos={nuevo} onCambio={setNuevo} autoFocus />
                             <div className="mt-4 flex gap-2">
@@ -294,14 +253,30 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
                         </form>
                     )}
 
-                    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                        <Cifra etiqueta="Falta cobrar" valor={formatearPesos(general.falta)} clase={general.falta > 0 ? "text-accent-yellow" : "text-white"} detalle={`De ${general.trabajos} ${general.trabajos === 1 ? "trabajo" : "trabajos"}`} />
-                        <Cifra etiqueta="Cobrado" valor={formatearPesos(general.cobrado)} detalle={`Este mes: ${formatearPesos(general.cobradoMes)}`} />
-                        <Cifra etiqueta="Ganancia" valor={formatearPesos(general.ganancia)} clase="text-secondary" detalle={`Ya en mano: ${formatearPesos(general.gananciaCobrada)}`} />
+                    <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+                        <Cifra
+                            etiqueta="Falta cobrar"
+                            valor={formatearPesos(general.falta)}
+                            clase={general.falta > 0 ? "text-accent-yellow" : "text-white"}
+                            detalle={[
+                                `De ${general.trabajos} ${general.trabajos === 1 ? "trabajo" : "trabajos"}`,
+                                general.cuotasAtrasadas > 0 ? `Incluye ${general.cuotasAtrasadas} ${general.cuotasAtrasadas === 1 ? "cuota atrasada" : "cuotas atrasadas"}` : "",
+                            ]}
+                        />
+                        <Cifra etiqueta="Cobrado" valor={formatearPesos(general.cobrado)} detalle={[`Este mes: ${formatearPesos(general.entroEsteMes)}`]} />
+                        <Cifra etiqueta="Ganancia" valor={formatearPesos(general.ganancia)} clase="text-secondary" detalle={[`Ya en mano: ${formatearPesos(general.gananciaCobrada)}`]} />
                         <Cifra
                             etiqueta="Por mes"
-                            valor={`${formatearPesos(general.mensual)}/mes`}
-                            detalle={`${general.conMensual} ${general.conMensual === 1 ? "cliente" : "clientes"} con servicios mensuales`}
+                            valor={formatearPesos(general.porMes)}
+                            sufijo="/mes"
+                            detalle={
+                                general.conMensual === 0
+                                    ? ["Sin cuotas registradas todavía"]
+                                    : [
+                                          general.gananciaPorMes !== general.porMes ? `Te quedan ${formatearPesos(general.gananciaPorMes)}/mes` : "",
+                                          `Este mes cobraste ${general.pagaronEsteMes} de ${general.conMensual} ${general.conMensual === 1 ? "cuota" : "cuotas"}`,
+                                      ]
+                            }
                         />
                     </div>
 
@@ -355,9 +330,9 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
                                             type="button"
                                             aria-expanded={estaAbierto}
                                             onClick={() => setAbierto(estaAbierto ? null : c.id)}
-                                            className="flex w-full flex-wrap items-center gap-x-6 gap-y-2 px-5 py-4 text-left transition-colors hover:bg-white/[0.03]"
+                                            className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 px-4 py-4 text-left transition-colors hover:bg-white/[0.03] sm:flex sm:gap-x-6 sm:px-5"
                                         >
-                                            <div className="min-w-0 flex-1 basis-56">
+                                            <div className="min-w-0 sm:flex-1">
                                                 <p className="truncate font-bold text-white">{c.name.trim() || c.business.trim() || "Sin nombre"}</p>
                                                 <p className="truncate text-xs text-gray-400">
                                                     {[c.name.trim() && c.business.trim(), `${suyos.length} ${suyos.length === 1 ? "presupuesto" : "presupuestos"}`]
@@ -365,18 +340,25 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
                                                         .join(" · ")}
                                                 </p>
                                             </div>
-                                            <span className="flex items-center gap-x-6">
-                                                <EtiquetaCobro estado={s.estado} />
+                                            <span aria-hidden="true" className={`material-icons text-gray-400 transition-transform sm:order-last ${estaAbierto ? "rotate-180" : ""}`}>
+                                                expand_more
+                                            </span>
+                                            <span className="col-span-2 flex flex-wrap items-center gap-x-6 gap-y-2">
+                                                <span className="flex flex-wrap gap-1.5">
+                                                    <EtiquetaCobro estado={s.estado} />
+                                                    {s.cuotasAtrasadas > 0 && (
+                                                        <span className="rounded-sm border border-hot-coral/40 bg-hot-coral/15 px-2 py-0.5 text-xs font-bold text-hot-coral">
+                                                            Debe {s.cuotasAtrasadas} {s.cuotasAtrasadas === 1 ? "cuota" : "cuotas"}
+                                                        </span>
+                                                    )}
+                                                </span>
                                                 <Monto etiqueta="Falta cobrar" valor={s.falta} />
                                                 <Monto etiqueta="Ganancia" valor={s.ganancia} />
-                                                <span aria-hidden="true" className={`material-icons text-gray-400 transition-transform ${estaAbierto ? "rotate-180" : ""}`}>
-                                                    expand_more
-                                                </span>
                                             </span>
                                         </button>
 
                                         {estaAbierto && (
-                                            <div className="space-y-5 border-t-2 border-white/10 p-5">
+                                            <div className="space-y-5 border-t-2 border-white/10 p-4 sm:p-5">
                                                 <DatosCliente
                                                     key={c.updated_at}
                                                     cliente={c}
@@ -411,13 +393,13 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
 
                     {sueltos.length > 0 && (
                         <details className="group rounded-sm border-2 border-white/10 bg-[#1e1530]">
-                            <summary className="flex cursor-pointer list-none items-center gap-2 px-5 py-4 font-bold text-white">
+                            <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2 px-4 py-4 font-bold text-white sm:px-5">
                                 <span aria-hidden="true" className="material-icons text-gray-400 transition-transform group-open:rotate-90">chevron_right</span>
                                 Presupuestos sin cliente
                                 <span className="rounded-sm bg-white/10 px-1.5 text-xs tabular-nums">{sueltos.length}</span>
                                 <span className="text-xs font-normal text-gray-400">Guardados sin nombre ni negocio. Asignalos para seguir su cobro.</span>
                             </summary>
-                            <div className="space-y-3 border-t-2 border-white/10 p-5">{sueltos.map(tarjeta)}</div>
+                            <div className="space-y-3 border-t-2 border-white/10 p-4 sm:p-5">{sueltos.map(tarjeta)}</div>
                         </details>
                     )}
                 </>
@@ -436,6 +418,7 @@ export default function Clientes({ listo, clientes: clientesIniciales, presupues
 
 function TarjetaTrabajo({
     t,
+    mes,
     clientes,
     ocupado,
     onEstado,
@@ -445,7 +428,8 @@ function TarjetaTrabajo({
     onCostos,
     onMensual,
 }: {
-    t: Trabajo;
+    t: T;
+    mes: string;
     clientes: Cliente[];
     ocupado: boolean;
     onEstado: (estado: EstadoPresupuesto) => void;
@@ -455,9 +439,27 @@ function TarjetaTrabajo({
     onCostos: (costos: Costo[], ok: string) => void;
     onMensual: (activo: boolean) => void;
 }) {
-    const { q, cobro, pagos, costos } = t;
+    const { q, cobro, pagos, costos, mensual } = t;
     const claseEstado = ESTADOS.find((e) => e.valor === q.status)?.clase ?? "";
     const porcentaje = cobro.total > 0 ? Math.min((cobro.cobrado / cobro.total) * 100, 100) : 100;
+
+    // Lo primero que se sugiere cobrar es lo que falta de la seña; si ya la pagó, todo lo que falta.
+    const atajos: Atajo[] = [];
+    if (cobro.faltaSena > 0) atajos.push({ etiqueta: `Seña · faltan ${formatearPesos(cobro.faltaSena)}`, monto: cobro.faltaSena });
+    if (cobro.falta > cobro.faltaSena) atajos.push({ etiqueta: `Todo lo que falta · ${formatearPesos(cobro.falta)}`, monto: cobro.falta });
+    // La nota dice a qué fue el pago según el monto, así no queda "Saldo" un pago que completa la seña.
+    const notaPara = (m: number) =>
+        cobro.falta === 0
+            ? ""
+            : m >= cobro.falta
+              ? cobro.cobrado === 0
+                  ? "Pago total"
+                  : "Saldo"
+              : m <= cobro.faltaSena
+                ? "Seña"
+                : cobro.faltaSena > 0
+                  ? "Seña y parte del saldo"
+                  : "Parte del saldo";
 
     return (
         <article aria-label={`Presupuesto ${formatearNumero(q.number)}`} className={`rounded-sm border-2 border-white/10 bg-white/[0.03] ${ocupado ? "opacity-60" : ""}`}>
@@ -502,8 +504,20 @@ function TarjetaTrabajo({
                         >
                             <div className="h-full bg-secondary" style={{ width: `${porcentaje}%` }} />
                         </div>
-                        <dl className="grid gap-3 sm:grid-cols-4">
-                            <Dato etiqueta="Seña" valor={formatearPesos(cobro.sena)} detalle={cobro.sena === 0 ? "Sin seña" : cobro.faltaSena === 0 ? "✓ Cobrada" : `Faltan ${formatearPesos(cobro.faltaSena)}`} />
+                        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                            <Dato
+                                etiqueta="Seña"
+                                valor={formatearPesos(cobro.sena)}
+                                detalle={
+                                    cobro.sena === 0
+                                        ? "Sin seña"
+                                        : cobro.faltaSena === 0
+                                          ? "✓ Cobrada"
+                                          : cobro.cobrado > 0
+                                            ? `Pagó ${formatearPesos(cobro.cobrado)} · faltan ${formatearPesos(cobro.faltaSena)}`
+                                            : `Faltan ${formatearPesos(cobro.faltaSena)}`
+                                }
+                            />
                             <Dato etiqueta="Falta cobrar" valor={formatearPesos(cobro.falta)} clase={cobro.falta > 0 ? "text-accent-yellow" : "text-white"} />
                             <Dato etiqueta="Costos" valor={formatearPesos(cobro.costos)} />
                             <Dato etiqueta="Ganancia" valor={formatearPesos(cobro.ganancia)} clase="text-secondary" detalle={`Ya en mano: ${formatearPesos(cobro.gananciaCobrada)}`} />
@@ -514,40 +528,32 @@ function TarjetaTrabajo({
                 )}
 
                 <div className="grid gap-5 lg:grid-cols-2">
-                    <section aria-label="Pagos" className="space-y-2">
-                        <h4 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Pagos</h4>
+                    <section aria-label="Pagos del proyecto" className="space-y-2">
+                        <h4 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Pagos del proyecto</h4>
                         {pagos.length === 0 ? (
                             <p className="text-sm text-gray-500">Todavía no hay pagos.</p>
                         ) : (
                             <ul className="divide-y divide-white/5 rounded-sm border border-white/10">
                                 {pagos.map((p) => (
                                     <Renglon key={p.id} monto={p.monto} etiqueta={`Borrar el pago de ${formatearPesos(p.monto)}`} disabled={ocupado} onQuitar={() => onQuitarPago(p)}>
-                                        <span className="tabular-nums text-gray-400">{p.fecha ? formatearFecha(p.fecha) : "Sin fecha"}</span>
+                                        <span className="shrink-0 tabular-nums text-gray-400">{p.fecha ? formatearFecha(p.fecha) : "Sin fecha"}</span>
                                         {p.nota && <span className="truncate text-white">{p.nota}</span>}
                                     </Renglon>
                                 ))}
                             </ul>
                         )}
-                        <div className="flex flex-wrap gap-2">
-                            {cobro.faltaSena > 0 && (
-                                <button type="button" disabled={ocupado} onClick={() => onPago({ fecha: hoyISO(), monto: cobro.faltaSena, nota: "Seña" })} className={BOTON_SECUNDARIO}>
-                                    <span aria-hidden="true" className="material-icons text-lg">payments</span>
-                                    Cobré la seña · {formatearPesos(cobro.faltaSena)}
-                                </button>
-                            )}
-                            {cobro.falta > 0 && cobro.falta !== cobro.faltaSena && (
-                                <button
-                                    type="button"
-                                    disabled={ocupado}
-                                    onClick={() => onPago({ fecha: hoyISO(), monto: cobro.falta, nota: cobro.cobrado === 0 ? "Pago total" : "Saldo" })}
-                                    className={BOTON_SECUNDARIO}
-                                >
-                                    <span aria-hidden="true" className="material-icons text-lg">done_all</span>
-                                    Cobré todo lo que falta · {formatearPesos(cobro.falta)}
-                                </button>
-                            )}
-                        </div>
-                        <FormPago disabled={ocupado} onAgregar={onPago} />
+                        <FormPago
+                            // Se rearma con cada pago: la sugerencia pasa a ser lo que falta ahora.
+                            key={cobro.cobrado}
+                            titulo="Registrar un pago"
+                            boton="Registrar pago"
+                            sugerido={{ monto: atajos[0]?.monto ?? 0 }}
+                            atajos={atajos.length > 1 ? atajos : []}
+                            notaPara={notaPara}
+                            ayuda={cobro.falta > 0 ? "¿Te pagó una parte? Cambiá el monto." : undefined}
+                            disabled={ocupado}
+                            onAgregar={onPago}
+                        />
                     </section>
 
                     <section aria-label="Costos" className="space-y-2">
@@ -560,6 +566,7 @@ function TarjetaTrabajo({
                                     <Renglon
                                         key={c.id}
                                         monto={c.monto}
+                                        sufijo={c.mensual ? "/mes" : undefined}
                                         etiqueta={`Borrar el costo ${c.concepto}`}
                                         disabled={ocupado}
                                         onQuitar={() => onCostos(costos.filter((x) => x.id !== c.id), "Costo borrado")}
@@ -569,24 +576,21 @@ function TarjetaTrabajo({
                                 ))}
                             </ul>
                         )}
-                        <FormCosto disabled={ocupado} onAgregar={(costo) => onCostos([...costos, { ...costo, id: nuevoId() }], `Costo de ${formatearPesos(costo.monto)} agregado`)} />
+                        <FormCosto
+                            disabled={ocupado}
+                            onAgregar={(costo) =>
+                                onCostos([...costos, { ...costo, id: nuevoId() }], `Costo de ${formatearPesos(costo.monto)}${costo.mensual ? " por mes" : ""} agregado`)
+                            }
+                        />
                     </section>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t-2 border-white/5 pt-4">
-                    {t.mensual > 0 && (
-                        <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-gray-300">
-                            <input
-                                type="checkbox"
-                                checked={q.monthly_active !== false}
-                                disabled={ocupado}
-                                onChange={(e) => onMensual(e.target.checked)}
-                                className="h-4 w-4 accent-primary"
-                            />
-                            Contrató los servicios mensuales ({formatearPesos(t.mensual)}/mes)
-                        </label>
-                    )}
-                    <label className="ml-auto inline-flex items-center gap-2 text-xs text-gray-400">
+                {mensual && (
+                    <SeccionMensual m={mensual} mes={mes} activo={t.activo} costosMes={t.costosMes} ocupado={ocupado} onPago={onPago} onQuitarPago={onQuitarPago} onMensual={onMensual} />
+                )}
+
+                <div className="flex justify-end border-t-2 border-white/5 pt-4">
+                    <label className="inline-flex items-center gap-2 text-xs text-gray-400">
                         Cliente
                         <select
                             value={q.client_id ?? ""}
@@ -608,28 +612,191 @@ function TarjetaTrabajo({
     );
 }
 
-function FormPago({ disabled, onAgregar }: { disabled: boolean; onAgregar: (pago: Omit<Pago, "id">) => void }) {
+/** El mantenimiento mensual de un trabajo: qué meses pagó, cuál debe y el formulario de la cuota. */
+function SeccionMensual({
+    m,
+    mes,
+    activo,
+    costosMes,
+    ocupado,
+    onPago,
+    onQuitarPago,
+    onMensual,
+}: {
+    m: Mensual;
+    mes: string;
+    activo: boolean;
+    costosMes: number;
+    ocupado: boolean;
+    onPago: (pago: Omit<Pago, "id">) => void;
+    onQuitarPago: (pago: Pago) => void;
+    onMensual: (activo: boolean) => void;
+}) {
+    const pagados = new Set(m.cuotas.map((c) => c.mes));
+    // Del más nuevo al más viejo: dos meses adelante por si paga por adelantado, un año atrás o lo que deba.
+    const hasta = [sumarMeses(mes, 2), m.proximo].sort().at(-1)!;
+    const desde = [sumarMeses(mes, -12), m.proximo, ...m.deben].sort()[0];
+    const meses: { valor: string; etiqueta: string }[] = [];
+    for (let x = hasta; x >= desde; x = sumarMeses(x, -1)) {
+        meses.push({ valor: x, etiqueta: `${nombreMes(x)}${pagados.has(x) ? " · ya pagada" : x === mes ? " · este mes" : ""}` });
+    }
+    const debe = m.deben.length === 1 ? nombreMes(m.deben[0]) : `${m.deben.length} cuotas: ${m.deben.map(nombreMes).join(", ")}`;
+
+    return (
+        <section aria-label="Mantenimiento mensual" className="space-y-2 border-t-2 border-white/5 pt-4">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                <h4 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                    Mantenimiento mensual · <span className="text-white tabular-nums">{formatearPesos(m.cuota)}/mes</span>
+                </h4>
+                <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-gray-300">
+                    <input type="checkbox" checked={activo} disabled={ocupado} onChange={(e) => onMensual(e.target.checked)} className="h-4 w-4 accent-primary" />
+                    Lo tiene contratado
+                </label>
+            </div>
+
+            {activo &&
+                (m.empezo ? (
+                    <p className="text-sm text-gray-300">
+                        <span className="capitalize">{nombreMes(mes)}</span>:{" "}
+                        {m.pagoEsteMes ? <strong className="text-secondary">✓ pagado</strong> : <strong className="text-accent-yellow">sin pagar</strong>}
+                        {m.deben.length > 0 && <strong className="text-hot-coral"> · Debe {debe}</strong>}
+                    </p>
+                ) : (
+                    <p className="text-sm text-gray-400">Todavía no registraste cuotas. Cargá la primera cuando te la pague: desde ese mes se espera una por mes.</p>
+                ))}
+
+            {costosMes > 0 && (
+                <p className="text-xs text-gray-400">
+                    Costos por mes {formatearPesos(costosMes)} · te quedan <strong className="text-secondary tabular-nums">{formatearPesos(m.cuota - costosMes)}/mes</strong>
+                </p>
+            )}
+
+            {m.cuotas.length > 0 && (
+                // ponytail: muestra todas las cuotas; con años de historia conviene plegar las viejas.
+                <ul className="divide-y divide-white/5 rounded-sm border border-white/10">
+                    {m.cuotas.map((c) => (
+                        <Renglon key={c.id} monto={c.monto} etiqueta={`Borrar la cuota de ${nombreMes(c.mes)}`} disabled={ocupado} onQuitar={() => onQuitarPago(c)}>
+                            <span className="shrink-0 text-white capitalize">{nombreMes(c.mes)}</span>
+                            {c.fecha && <span className="truncate text-gray-400">pagada el {formatearFecha(c.fecha)}</span>}
+                        </Renglon>
+                    ))}
+                </ul>
+            )}
+
+            {activo && (
+                <FormPago
+                    key={`${m.proximo}-${m.cuotas.length}`}
+                    titulo="Registrar una cuota"
+                    boton="Registrar cuota"
+                    sugerido={{ monto: m.cuota, mes: m.proximo }}
+                    meses={meses}
+                    disabled={ocupado}
+                    onAgregar={onPago}
+                />
+            )}
+        </section>
+    );
+}
+
+type Atajo = { etiqueta: string; monto: number };
+
+/** Registrar un pago del proyecto o, con `meses`, una cuota del mensual. Arranca con lo sugerido; se cambia lo que haga falta. */
+function FormPago({
+    titulo,
+    boton,
+    sugerido,
+    atajos = [],
+    notaPara,
+    meses,
+    ayuda,
+    disabled,
+    onAgregar,
+}: {
+    titulo: string;
+    boton: string;
+    sugerido: { monto: number; mes?: string };
+    atajos?: Atajo[];
+    /** La nota que corresponde a un monto. Deja de seguir al monto apenas se escribe una a mano. */
+    notaPara?: (monto: number) => string;
+    meses?: { valor: string; etiqueta: string }[];
+    ayuda?: string;
+    disabled: boolean;
+    onAgregar: (pago: Omit<Pago, "id">) => void;
+}) {
     const [fecha, setFecha] = useState(hoyISO);
-    const [monto, setMonto] = useState(0);
-    const [nota, setNota] = useState("");
+    const [monto, setMonto] = useState(sugerido.monto);
+    const [nota, setNota] = useState(() => notaPara?.(sugerido.monto) ?? "");
+    const [notaPropia, setNotaPropia] = useState(false);
+    const [mes, setMes] = useState(sugerido.mes ?? "");
+
+    function cambiarMonto(m: number) {
+        setMonto(m);
+        if (notaPara && !notaPropia) setNota(notaPara(m));
+    }
 
     return (
         <form
-            aria-label="Registrar otro pago"
+            aria-label={titulo}
             onSubmit={(e) => {
                 e.preventDefault();
-                onAgregar({ fecha, monto, nota: nota.trim() });
-                setMonto(0);
-                setNota("");
+                onAgregar({ fecha, monto, nota: nota.trim(), mes });
             }}
-            className="flex flex-wrap items-center gap-2"
+            className="space-y-2 rounded-sm border border-white/10 bg-black/20 p-3"
         >
-            <input type="date" aria-label="Fecha del pago" value={fecha} onChange={(e) => setFecha(e.target.value || hoyISO())} className="admin-input w-36 py-1.5! text-sm [color-scheme:dark]" />
-            <PesosInput etiqueta="Monto del pago" valor={monto} onChange={setMonto} className="w-32" />
-            <input aria-label="Nota del pago" placeholder="Nota (opcional)" value={nota} onChange={(e) => setNota(e.target.value)} className="admin-input min-w-0 flex-1 basis-28 py-1.5! text-sm" />
-            <button type="submit" disabled={disabled || monto <= 0} className={BOTON_SECUNDARIO}>
-                Agregar
-            </button>
+            <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">{titulo}</p>
+            {atajos.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                    {atajos.map((a) => (
+                        <button
+                            key={a.etiqueta}
+                            type="button"
+                            aria-pressed={monto === a.monto}
+                            onClick={() => cambiarMonto(a.monto)}
+                            className={`rounded-sm border px-2 py-1 text-xs font-bold transition-colors ${
+                                monto === a.monto ? "border-primary bg-primary text-white" : "border-white/15 bg-white/5 text-gray-300 hover:border-white/40 hover:text-white"
+                            }`}
+                        >
+                            {a.etiqueta}
+                        </button>
+                    ))}
+                </div>
+            )}
+            {/* En el celular, un campo debajo del otro y a lo ancho. */}
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+                {meses && (
+                    <select aria-label="Mes que paga" value={mes} onChange={(e) => setMes(e.target.value)} className="admin-input w-full py-1.5! text-sm [color-scheme:dark] sm:w-auto">
+                        {meses.map((x) => (
+                            <option key={x.valor} value={x.valor}>
+                                {x.etiqueta}
+                            </option>
+                        ))}
+                    </select>
+                )}
+                <PesosInput etiqueta="Monto que te pagó" valor={monto} onChange={cambiarMonto} className="w-full sm:w-36" />
+                <input
+                    type="date"
+                    aria-label="Fecha en que te pagó"
+                    value={fecha}
+                    onChange={(e) => setFecha(e.target.value || hoyISO())}
+                    className="admin-input w-full py-1.5! text-sm [color-scheme:dark] sm:w-36"
+                />
+                {!meses && (
+                    <input
+                        aria-label="Nota del pago"
+                        placeholder="Nota (opcional)"
+                        value={nota}
+                        onChange={(e) => {
+                            setNota(e.target.value);
+                            setNotaPropia(true);
+                        }}
+                        className="admin-input w-full py-1.5! text-sm sm:w-auto sm:min-w-0 sm:flex-1 sm:basis-28"
+                    />
+                )}
+                <button type="submit" disabled={disabled || monto <= 0 || (!!meses && !mes)} className={BOTON_PRIMARIO}>
+                    {boton}
+                </button>
+            </div>
+            {ayuda && <p className="text-xs text-gray-500">{ayuda}</p>}
         </form>
     );
 }
@@ -637,26 +804,32 @@ function FormPago({ disabled, onAgregar }: { disabled: boolean; onAgregar: (pago
 function FormCosto({ disabled, onAgregar }: { disabled: boolean; onAgregar: (costo: Omit<Costo, "id">) => void }) {
     const [concepto, setConcepto] = useState("");
     const [monto, setMonto] = useState(0);
+    const [mensual, setMensual] = useState(false);
 
     return (
         <form
             aria-label="Agregar un costo"
             onSubmit={(e) => {
                 e.preventDefault();
-                onAgregar({ concepto: concepto.trim(), monto });
+                onAgregar({ concepto: concepto.trim(), monto, mensual });
                 setConcepto("");
                 setMonto(0);
+                setMensual(false);
             }}
             className="flex flex-wrap items-center gap-2"
         >
             <input
                 aria-label="Concepto del costo"
-                placeholder="Freelancer, dominio, plugin…"
+                placeholder="Freelancer, dominio, hosting…"
                 value={concepto}
                 onChange={(e) => setConcepto(e.target.value)}
                 className="admin-input min-w-0 flex-1 basis-40 py-1.5! text-sm"
             />
-            <PesosInput etiqueta="Monto del costo" valor={monto} onChange={setMonto} className="w-32" />
+            <PesosInput etiqueta="Monto del costo" valor={monto} onChange={setMonto} sufijo={mensual ? "/mes" : undefined} className="w-36" />
+            <label className="inline-flex cursor-pointer items-center gap-1.5 text-xs text-gray-300">
+                <input type="checkbox" checked={mensual} onChange={(e) => setMensual(e.target.checked)} className="h-4 w-4 accent-primary" />
+                Todos los meses
+            </label>
             <button type="submit" disabled={disabled || monto <= 0} className={BOTON_SECUNDARIO}>
                 Agregar
             </button>
@@ -740,12 +913,14 @@ function FormContacto({ datos, onCambio, autoFocus }: { datos: Contacto; onCambi
 
 function Renglon({
     monto,
+    sufijo,
     etiqueta,
     disabled,
     onQuitar,
     children,
 }: {
     monto: number;
+    sufijo?: string;
     etiqueta: string;
     disabled: boolean;
     onQuitar: () => void;
@@ -754,14 +929,17 @@ function Renglon({
     return (
         <li className="flex items-center gap-3 px-3 py-1.5 text-sm">
             <span className="flex min-w-0 flex-1 items-center gap-3">{children}</span>
-            <span className="font-bold text-white tabular-nums">{formatearPesos(monto)}</span>
+            <span className="font-bold text-white tabular-nums">
+                {formatearPesos(monto)}
+                {sufijo && <span className="text-xs font-medium text-gray-400">{sufijo}</span>}
+            </span>
             <button
                 type="button"
                 disabled={disabled}
                 onClick={onQuitar}
                 aria-label={etiqueta}
                 title={etiqueta}
-                className="grid h-7 w-7 place-items-center rounded-sm text-gray-500 hover:bg-hot-coral/15 hover:text-hot-coral disabled:opacity-30"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-sm text-gray-500 hover:bg-hot-coral/15 hover:text-hot-coral disabled:opacity-30"
             >
                 <span aria-hidden="true" className="material-icons text-base">close</span>
             </button>
@@ -777,26 +955,33 @@ function EtiquetaCobro({ estado }: { estado: EstadoCobro | null }) {
 
 function Monto({ etiqueta, valor }: { etiqueta: string; valor: number }) {
     return (
-        <span className="w-28 text-right">
+        <span className="sm:w-28 sm:text-right">
             <span className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">{etiqueta}</span>
             <span className="font-bold text-white tabular-nums">{formatearPesos(valor)}</span>
         </span>
     );
 }
 
-function Cifra({ etiqueta, valor, detalle, clase = "text-white" }: { etiqueta: string; valor: string; detalle?: string; clase?: string }) {
+function Cifra({ etiqueta, valor, sufijo, detalle = [], clase = "text-white" }: { etiqueta: string; valor: string; sufijo?: string; detalle?: string[]; clase?: string }) {
     return (
-        <div className="rounded-sm border-2 border-white/10 bg-[#1e1530] p-4">
+        <div className="min-w-0 rounded-sm border-2 border-white/10 bg-[#1e1530] p-3 sm:p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">{etiqueta}</p>
-            <p className={`mt-1 font-display text-2xl font-bold tabular-nums ${clase}`}>{valor}</p>
-            {detalle && <p className="mt-0.5 text-xs text-gray-500">{detalle}</p>}
+            <p className={`mt-1 font-display text-xl font-bold tabular-nums sm:text-2xl ${clase}`}>
+                {valor}
+                {sufijo && <span className="text-sm font-medium text-gray-400">{sufijo}</span>}
+            </p>
+            {detalle.filter(Boolean).map((d) => (
+                <p key={d} className="mt-0.5 text-xs text-gray-500">
+                    {d}
+                </p>
+            ))}
         </div>
     );
 }
 
 function Dato({ etiqueta, valor, detalle, clase = "text-white" }: { etiqueta: string; valor: string; detalle?: string; clase?: string }) {
     return (
-        <div className="rounded-sm border border-white/10 bg-black/20 px-3 py-2">
+        <div className="min-w-0 rounded-sm border border-white/10 bg-black/20 px-3 py-2">
             <dt className="text-[11px] font-bold uppercase tracking-wider text-gray-500">{etiqueta}</dt>
             <dd className={`font-display text-lg font-bold tabular-nums ${clase}`}>{valor}</dd>
             {detalle && <dd className="text-xs text-gray-400">{detalle}</dd>}
