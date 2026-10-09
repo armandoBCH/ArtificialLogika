@@ -380,6 +380,26 @@ export async function DELETE(
         return NextResponse.json({ error: "ID válido requerido" }, { status: 400 });
     }
 
+    // Borrar el presupuesto no frena a Mercado Pago: le seguiría cobrando al
+    // cliente y el panel ya no tendría dónde anotarlo. Sin la tabla (antes de
+    // supabase/mercadopago-2026-10-09.sql) `activas` viene vacío y se borra como siempre.
+    if (table === "quotes") {
+        const [suscripciones, links] = await Promise.all([
+            supabase.from("mp_subscriptions").select("id").eq("quote_id", id).neq("status", "cancelled").limit(1),
+            supabase.from("mp_links").select("id").eq("quote_id", id).eq("status", "open").limit(1),
+        ]);
+        if (suscripciones.data?.length || links.data?.length) {
+            return NextResponse.json(
+                {
+                    error: suscripciones.data?.length
+                        ? "Este presupuesto tiene un cobro automático en Mercado Pago. Cancelalo desde Clientes antes de borrarlo."
+                        : "Este presupuesto tiene un link de pago de Mercado Pago sin usar. Anulalo desde Clientes antes de borrarlo.",
+                },
+                { status: 409 }
+            );
+        }
+    }
+
     const { error } = await supabase.from(table).delete().eq("id", id);
 
     if (error) {

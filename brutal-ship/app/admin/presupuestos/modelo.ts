@@ -69,6 +69,9 @@ export interface PresupuestoGuardado {
     payments?: unknown;
     costs?: unknown;
     monthly_active?: boolean;
+    /** No son columnas de quotes: Clientes y el Dashboard le agregan sus filas de mp_payments y mp_charges. */
+    mp_payments?: unknown;
+    mp_charges?: unknown;
     created_at: string;
     updated_at: string;
 }
