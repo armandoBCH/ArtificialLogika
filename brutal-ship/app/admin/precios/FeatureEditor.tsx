@@ -5,6 +5,7 @@ import SortableGrid from "../components/SortableGrid";
 import { DragHandle, MoveButtons } from "../components/SortControls";
 import IconPicker from "../components/IconPicker";
 import { arrayMove } from "../hooks/useReorderQueue";
+import { agrupar, agregarAlFinal, cambiarEstado, estadoDe, ubicarMovida, type Estado } from "./grupos";
 import { estaEnVerMas } from "@/lib/precios";
 import { FONDO_POR_DEFECTO, ICONO_POR_DEFECTO, textoSobreFondo } from "@/lib/iconos-plan";
 
@@ -15,6 +16,8 @@ export interface PlanFeature {
     icon_bg: string;
     /** Va dentro de "Ver las N restantes" en la tarjeta del sitio. */
     collapsed?: boolean;
+    /** No sale en el sitio, ni en presupuestos, ni en portafolio. Queda guardada. */
+    hidden?: boolean;
 }
 
 /**
@@ -22,7 +25,13 @@ export interface PlanFeature {
  * arrastrar necesita una identidad estable y el texto no sirve (se edita, y
  * puede repetirse). Se descarta al guardar, ver `sinClaves`.
  */
-export type EditableFeature = PlanFeature & { _key: string; collapsed: boolean };
+export type EditableFeature = PlanFeature & { _key: string; collapsed: boolean; hidden: boolean };
+
+const OPCIONES: { e: Estado; icon: string; label: string; title: string; activo: string }[] = [
+    { e: "vista", icon: "visibility", label: "Vista", title: "A la vista: se ve en la tarjeta del sitio", activo: "bg-secondary/20 text-secondary" },
+    { e: "mas", icon: "unfold_more", label: "Ver más", title: "En “Ver las N restantes”: se ve al abrir la lista", activo: "bg-white/15 text-white" },
+    { e: "oculta", icon: "visibility_off", label: "Oculta", title: "Oculta: no se muestra en el sitio, presupuestos ni portafolio. Queda guardada", activo: "bg-hot-coral/20 text-hot-coral" },
+];
 
 let contador = 0;
 export function nuevaClave(): string {
@@ -44,35 +53,16 @@ export function conClaves(features: PlanFeature[] | null | undefined): EditableF
         // Las cargadas antes de que existiera la opcion toman la regla vieja
         // (las primeras cuatro a la vista), asi el sitio no cambia al abrirlas.
         collapsed: estaEnVerMas(f, i),
+        hidden: !!f.hidden,
         _key: nuevaClave(),
     }));
     return agrupar(lista);
 }
 
 export function sinClaves(features: EditableFeature[]): PlanFeature[] {
-    return features.map(({ text, icon, is_highlighted, icon_bg, collapsed }) => ({
-        text, icon, is_highlighted, icon_bg, collapsed,
+    return features.map(({ text, icon, is_highlighted, icon_bg, collapsed, hidden }) => ({
+        text, icon, is_highlighted, icon_bg, collapsed, hidden,
     }));
-}
-
-/**
- * Las de "a la vista" primero, despues las de "ver mas", cada grupo en su orden.
- * Asi el orden del editor es el mismo que el de la tarjeta del sitio.
- */
-function agrupar(lista: EditableFeature[]): EditableFeature[] {
-    return [...lista.filter((f) => !f.collapsed), ...lista.filter((f) => f.collapsed)];
-}
-
-/**
- * Despues de mover una, decide de que lado queda segun donde la soltaron: toma
- * el lado de la que quedo justo arriba (o "a la vista" si quedo primera). Con la
- * lista agrupada, eso nunca deja una de "ver mas" en medio de las visibles.
- */
-function ubicarMovida(lista: EditableFeature[], key: string): EditableFeature[] {
-    const i = lista.findIndex((f) => f._key === key);
-    if (i < 0) return lista;
-    const collapsed = i === 0 ? false : lista[i - 1].collapsed;
-    return lista.map((f) => (f._key === key ? { ...f, collapsed } : f));
 }
 
 /** La unica clave que cambio de lugar entre dos ordenes (un arrastre mueve una). */
@@ -117,31 +107,18 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
         onChange(ubicarMovida(arrayMove(features, from, clamped), key));
     };
 
-    /** Pasa una de lado y la deja en el borde entre los dos grupos. */
-    const toggleCollapsed = (key: string) => {
-        const f = features.find((x) => x._key === key);
-        if (!f) return;
-        const resto = features.filter((x) => x._key !== key);
-        const borde = resto.filter((x) => !x.collapsed).length;
-        const lista = resto.slice();
-        lista.splice(borde, 0, { ...f, collapsed: !f.collapsed });
-        onChange(lista);
-    };
-
-    const add = (base?: PlanFeature) => {
-        const nueva: EditableFeature = {
+    const add = (base?: PlanFeature) =>
+        onChange(agregarAlFinal(features, {
             text: base?.text ?? "",
             icon: base?.icon || ICONO_POR_DEFECTO,
             is_highlighted: base?.is_highlighted ?? false,
             icon_bg: base?.icon_bg || FONDO_POR_DEFECTO,
-            // Entra al final, del lado de la ultima; despues se cambia con un clic.
-            collapsed: features.length ? features[features.length - 1].collapsed : false,
+            collapsed: false,
+            hidden: false,
             _key: nuevaClave(),
-        };
-        onChange([...features, nueva]);
-    };
+        }));
 
-    const visibles = features.filter((f) => !f.collapsed).length;
+    const cuantas = (e: Estado) => features.filter((f) => estadoDe(f) === e).length;
 
     const editing = features.find((f) => f._key === pickerKey) ?? null;
     const closePicker = useCallback(() => setPickerKey(null), []);
@@ -149,16 +126,23 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
     return (
         <div className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-[10px] text-gray-500 flex flex-wrap items-center gap-1.5">
-                    <span aria-hidden="true" className="material-icons text-[13px] text-secondary">visibility</span>
-                    Tocá <strong className="text-gray-300">A la vista / En ver más</strong> en cada una para elegir
-                    dónde aparece. Arrastrá para el orden.
-                    {features.length > 0 && (
-                        <span className="font-bold text-gray-400">
-                            {visibles} a la vista · {features.length - visibles} en ver más
-                        </span>
-                    )}
-                </p>
+                <div className="text-[10px] text-gray-500 space-y-1">
+                    <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                        Elegí dónde va cada una:
+                        <span className="inline-flex items-center gap-0.5 text-secondary"><span aria-hidden="true" className="material-icons text-[13px]">visibility</span>a la vista</span>
+                        <span className="inline-flex items-center gap-0.5 text-gray-300"><span aria-hidden="true" className="material-icons text-[13px]">unfold_more</span>en &quot;ver más&quot;</span>
+                        <span className="inline-flex items-center gap-0.5 text-hot-coral"><span aria-hidden="true" className="material-icons text-[13px]">visibility_off</span>oculta: no se muestra, queda guardada</span>
+                    </p>
+                    <p>
+                        Arrastrá para el orden.
+                        {features.length > 0 && (
+                            <span className="font-bold text-gray-400">
+                                {" "}{cuantas("vista")} a la vista · {cuantas("mas")} en ver más
+                                {cuantas("oculta") > 0 && ` · ${cuantas("oculta")} oculta${cuantas("oculta") === 1 ? "" : "s"}`}
+                            </span>
+                        )}
+                    </p>
+                </div>
                 <button
                     type="button"
                     onClick={() => add()}
@@ -180,19 +164,24 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
                     className="flex flex-col gap-1.5"
                 >
                     {(f, ctx) => {
-                        const aLaVista = !f.collapsed;
+                        const estado = estadoDe(f);
+                        // Alto fijo por tamaño de pantalla (SortableGrid lo necesita): en el
+                        // celular son dos renglones, el texto arriba y los controles abajo;
+                        // en un renglon solo, el texto quedaba de tres letras de ancho.
                         return (
                             <div
-                                className={`h-14 flex items-center gap-2 px-2 rounded-sm border-2 transition-colors ${
+                                className={`h-[5.5rem] sm:h-14 flex flex-wrap sm:flex-nowrap content-center items-center gap-x-2 gap-y-1.5 px-2 rounded-sm border-2 transition-colors ${
                                     ctx.isDragging
                                         ? "bg-[#2a1d40] border-primary shadow-neobrutalism-primary"
-                                        : aLaVista
+                                        : estado === "vista"
                                             ? "bg-white/[0.07] border-white/15"
-                                            : "bg-white/[0.03] border-white/10"
+                                            : estado === "mas"
+                                                ? "bg-white/[0.03] border-white/10"
+                                                : "bg-transparent border-dashed border-white/10"
                                 }`}
                             >
                                 <DragHandle ctx={ctx} compact />
-                                <span className="w-5 text-center text-[11px] font-black text-white/40 tabular-nums shrink-0">
+                                <span className="hidden sm:inline w-5 text-center text-[11px] font-black text-white/40 tabular-nums shrink-0">
                                     {ctx.index + 1}
                                 </span>
 
@@ -204,7 +193,7 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
                                     className="group relative shrink-0 rounded-sm p-1 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                                 >
                                     <span
-                                        className={`w-8 h-8 ${f.icon_bg} ${textoSobreFondo(f.icon_bg)} border-2 border-black shadow-neobrutalism-sm flex items-center justify-center`}
+                                        className={`w-8 h-8 ${f.icon_bg} ${textoSobreFondo(f.icon_bg)} border-2 border-black shadow-neobrutalism-sm flex items-center justify-center ${estado === "oculta" ? "opacity-40" : ""}`}
                                     >
                                         <span aria-hidden="true" className="material-icons text-[18px]">{f.icon}</span>
                                     </span>
@@ -217,7 +206,7 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
                                 </button>
 
                                 <input
-                                    className="admin-input flex-1 min-w-0 text-sm py-1.5"
+                                    className={`admin-input flex-1 min-w-0 text-sm py-1.5 ${estado === "oculta" ? "text-gray-500" : ""}`}
                                     placeholder="Texto de la característica"
                                     value={f.text}
                                     onChange={(e) => patch(f._key, { text: e.target.value })}
@@ -225,50 +214,63 @@ export default function FeatureEditor({ features, onChange, fromOtherPlans, used
 
                                 <button
                                     type="button"
-                                    onClick={() => toggleCollapsed(f._key)}
-                                    aria-pressed={aLaVista}
-                                    title={aLaVista
-                                        ? "Se ve en la tarjeta. Clic para mandarla a “Ver las N restantes”"
-                                        : "Está dentro de “Ver las N restantes”. Clic para que se vea en la tarjeta"}
-                                    className={`inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider px-1.5 py-1 rounded-sm border shrink-0 transition-colors ${
-                                        aLaVista
-                                            ? "text-secondary border-secondary/40 bg-secondary/10 hover:bg-secondary/20"
-                                            : "text-gray-400 border-white/15 bg-white/5 hover:border-white/40 hover:text-white"
-                                    }`}
-                                >
-                                    <span aria-hidden="true" className="material-icons text-[12px]">
-                                        {aLaVista ? "visibility" : "unfold_more"}
-                                    </span>
-                                    <span className="hidden sm:inline">{aLaVista ? "A la vista" : "En ver más"}</span>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={() => patch(f._key, { is_highlighted: !f.is_highlighted })}
-                                    aria-pressed={f.is_highlighted}
-                                    title="Destacada: se ve en negrita y subrayada en coral"
-                                    className={`px-2 py-1 text-[9px] font-bold uppercase border rounded-sm transition-all shrink-0 ${
-                                        f.is_highlighted
-                                            ? "bg-[#F2FA5A] text-black border-black"
-                                            : "bg-white/5 text-gray-500 border-white/10 hover:border-white/30"
-                                    }`}
-                                >
-                                    {f.is_highlighted ? "⭐ Destacada" : "Normal"}
-                                </button>
-
-                                <div className="hidden sm:block">
-                                    <MoveButtons id={f._key} index={ctx.index} total={features.length} onMove={move} compact />
-                                </div>
-
-                                <button
-                                    type="button"
                                     onClick={() => onChange(features.filter((x) => x._key !== f._key))}
                                     title="Quitar característica"
                                     aria-label={`Quitar ${f.text || "característica"}`}
-                                    className="text-hot-coral hover:text-white w-6 h-6 flex items-center justify-center transition-colors shrink-0"
+                                    className="sm:order-last text-hot-coral hover:text-white w-6 h-6 flex items-center justify-center transition-colors shrink-0"
                                 >
                                     <span aria-hidden="true" className="material-icons text-[16px]">delete</span>
                                 </button>
+
+                                {/* En el celular, segundo renglon; desde tablet sus hijos se suman al de arriba. */}
+                                <div className="w-full flex items-center gap-2 sm:contents">
+                                    <div
+                                        role="group"
+                                        aria-label={`Dónde aparece ${f.text || "esta característica"}`}
+                                        className="flex shrink-0 rounded-sm border border-white/15 overflow-hidden"
+                                    >
+                                        {OPCIONES.map((o) => {
+                                            const activa = estado === o.e;
+                                            return (
+                                                <button
+                                                    key={o.e}
+                                                    type="button"
+                                                    onClick={() => onChange(cambiarEstado(features, f._key, o.e))}
+                                                    aria-pressed={activa}
+                                                    title={o.title}
+                                                    className={`h-7 px-2 inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider transition-colors ${
+                                                        activa ? o.activo : "text-gray-500 hover:bg-white/10 hover:text-white"
+                                                    }`}
+                                                >
+                                                    <span aria-hidden="true" className="material-icons text-[14px]">{o.icon}</span>
+                                                    <span className="sm:hidden xl:inline">{o.label}</span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => patch(f._key, { is_highlighted: !f.is_highlighted })}
+                                        aria-pressed={f.is_highlighted}
+                                        aria-label="Destacada"
+                                        title="Destacada: se ve en negrita y subrayada en coral"
+                                        className={`h-7 px-1.5 inline-flex items-center gap-1 text-[9px] font-bold uppercase border rounded-sm transition-all shrink-0 ${
+                                            f.is_highlighted
+                                                ? "bg-[#F2FA5A] text-black border-black"
+                                                : "bg-white/5 text-gray-500 border-white/10 hover:border-white/30"
+                                        }`}
+                                    >
+                                        <span aria-hidden="true" className="material-icons text-[14px]">
+                                            {f.is_highlighted ? "star" : "star_border"}
+                                        </span>
+                                        <span className="hidden xl:inline">{f.is_highlighted ? "Destacada" : "Normal"}</span>
+                                    </button>
+
+                                    <div className="hidden md:block">
+                                        <MoveButtons id={f._key} index={ctx.index} total={features.length} onMove={move} compact />
+                                    </div>
+                                </div>
                             </div>
                         );
                     }}

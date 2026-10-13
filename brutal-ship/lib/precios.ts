@@ -49,7 +49,7 @@ export function cuotaMensual(plan: { monthly_price?: number | string | null }): 
  */
 export const CARACTERISTICAS_A_LA_VISTA = 4;
 
-type ConColapso = { collapsed?: boolean | null };
+type ConColapso = { collapsed?: boolean | null; hidden?: boolean | null };
 
 /** Si la caracteristica va dentro de "Ver las N restantes". */
 export function estaEnVerMas(f: ConColapso, indice: number): boolean {
@@ -57,13 +57,17 @@ export function estaEnVerMas(f: ConColapso, indice: number): boolean {
 }
 
 /**
- * Parte las caracteristicas en las que se ven y las de "Ver mas", respetando el
- * orden de cada grupo. La usan la tarjeta del sitio y el admin, asi los dos
- * muestran exactamente lo mismo.
+ * Parte las caracteristicas en las que se ven, las de "Ver mas" y las ocultas,
+ * respetando el orden de cada grupo. La usan la tarjeta del sitio y el admin,
+ * asi los dos muestran exactamente lo mismo. Las ocultas (`hidden`) no salen en
+ * el sitio: quedan guardadas para volver a mostrarlas sin reescribirlas.
  */
-export function separarCaracteristicas<T extends ConColapso>(features: T[]): { aLaVista: T[]; enVerMas: T[] } {
+export function separarCaracteristicas<T extends ConColapso>(features: T[]): { aLaVista: T[]; enVerMas: T[]; ocultas: T[] } {
     const aLaVista: T[] = [];
     const enVerMas: T[] = [];
-    features.forEach((f, i) => (estaEnVerMas(f, i) ? enVerMas : aLaVista).push(f));
-    return { aLaVista, enVerMas };
+    const ocultas: T[] = [];
+    // El indice es el de la lista entera: la regla vieja (las primeras cuatro a
+    // la vista) se aplicaba asi, y las ocultas nunca son filas viejas.
+    features.forEach((f, i) => (f.hidden ? ocultas : estaEnVerMas(f, i) ? enVerMas : aLaVista).push(f));
+    return { aLaVista, enVerMas, ocultas };
 }

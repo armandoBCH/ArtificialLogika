@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useAdminData } from "../hooks/useAdminData";
+import { traerALaVista, useAdminData } from "../hooks/useAdminData";
 import AdminError from "../components/AdminError";
 import type { Testimonial } from "@/lib/types/database";
 
@@ -98,7 +98,7 @@ export default function TestimoniosPage() {
             </div>
 
             {showForm && (
-                <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-6 space-y-6">
+                <div key={editing?.id ?? "nuevo"} ref={traerALaVista} className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-4 sm:p-6 space-y-6">
                     <h2 className="text-xl font-black text-white font-body border-b border-white/10 pb-4">
                         {editing ? "✏️ Editar Testimonio" : "🆕 Nuevo Testimonio"}
                     </h2>

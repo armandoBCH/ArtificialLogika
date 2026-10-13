@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import { useAdminData } from "../hooks/useAdminData";
+import { traerALaVista, useAdminData } from "../hooks/useAdminData";
 import AdminError from "../components/AdminError";
 import dynamic from "next/dynamic";
 
 import ProjectsBoard from "./ProjectsBoard";
+import IncluyeEditor from "./IncluyeEditor";
 
 const ScreenshotCropModal = dynamic(() => import("../components/ScreenshotCropModal"), { ssr: false });
 
@@ -15,10 +16,10 @@ interface PortfolioStat {
     label: string;
 }
 
-// "Que se hizo" en cada proyecto sale de los planes de precios. Antes salia de
-// la tabla `services`, que se saco del admin porque ya no se mostraba en el
-// sitio. Lo que un proyecto ya tiene guardado se sigue mostrando aunque no
-// coincida con ningun plan actual, asi se puede sacar.
+// Los planes de precios se ofrecen como "Plan aplicado" y sus caracteristicas
+// como sugerencias de "Que incluye". Antes salian de la tabla `services`, que
+// se saco del admin porque ya no se mostraba en el sitio. Un plan guardado que
+// ya no coincide con ninguno actual se sigue mostrando, asi se puede sacar.
 interface PlanOption {
     name: string;
     features: string[];
@@ -26,7 +27,21 @@ interface PlanOption {
 
 // Una caracteristica de plan llega como {text, icon, ...}; el string suelto
 // contempla filas viejas.
-type FeatureDePlan = string | { text?: string } | null;
+type FeatureDePlan = string | { text?: string; hidden?: boolean } | null;
+
+/** Lo minimo para publicar un caso que se vea completo. El titulo es obligatorio. */
+function loQueFalta(p: Partial<PortfolioProject>): string[] {
+    return [
+        !p.title?.trim() && "título",
+        !(p.image_url || p.image_url_wide) && "imagen",
+        !p.description?.trim() && "descripción corta",
+        !p.categories?.length && "categoría",
+        !p.applied_features?.length && "qué incluye",
+    ].filter((x): x is string => !!x);
+}
+
+// Lo que Google muestra de la descripcion corta: recortar() de lib/seo la corta ahi.
+const LARGO_DESCRIPCION = 160;
 
 interface PortfolioProject {
     id: string;
@@ -86,7 +101,9 @@ export default function PortafolioPage() {
                 setAvailablePlans(
                     (Array.isArray(plans) ? plans : []).map((p) => ({
                         name: p.name,
+                        // Lo que se oculta en Precios tampoco se sugiere aca.
                         features: (p.features ?? [])
+                            .filter((f) => typeof f === "string" || !f?.hidden)
                             .map((f) => (typeof f === "string" ? f : f?.text ?? "").trim())
                             .filter(Boolean),
                     }))
@@ -188,12 +205,16 @@ export default function PortafolioPage() {
         return Array.from(merged).sort((a, b) => a.localeCompare(b, "es"));
     }, [data, customCategories]);
 
+    // La categoria nueva queda elegida. Antes solo se sumaba a la lista (y a
+    // `category`, que ya no manda): habia que encontrarla y tocarla otra vez.
     const addCategory = () => {
         const trimmed = newCategoryInput.trim();
-        if (trimmed && !allCategories.includes(trimmed)) {
-            setCustomCategories((prev) => [...prev, trimmed]);
-            setForm({ ...form, category: trimmed });
-        }
+        if (!trimmed) return;
+        const existente = allCategories.find((c) => c.toLowerCase() === trimmed.toLowerCase());
+        if (!existente) setCustomCategories((prev) => [...prev, trimmed]);
+        const cat = existente ?? trimmed;
+        const cats = form.categories || [];
+        if (!cats.includes(cat)) setForm({ ...form, categories: [...cats, cat], category: cats[0] || cat });
         setNewCategoryInput("");
     };
 
@@ -215,14 +236,30 @@ export default function PortafolioPage() {
         if (ok) { setEditing(null); setCreating(false); }
     }
 
+    // La copia nace oculta y al final, y se abre para editarla. El id y las
+    // fechas no viajan: la API solo acepta los campos de su lista.
+    async function duplicar(p: PortfolioProject) {
+        const last = data.reduce((max, x) => Math.max(max, x.display_order || 0), 0);
+        const copia = await create({ ...p, title: `${p.title} (copia)`, is_active: false, display_order: last + 1 });
+        if (copia) openEdit(copia);
+    }
+
     const showForm = creating || editing;
+    const faltan = loQueFalta(form);
 
     // Helper: toggle plan
     const togglePlan = (planName: string) => {
         const current = form.applied_services || [];
         if (current.includes(planName)) {
-            // Al sacar el plan se van tambien sus caracteristicas.
-            const featsToRemove = availablePlans.find((p) => p.name === planName)?.features ?? [];
+            // Al sacar el plan se van tambien sus caracteristicas, salvo las que
+            // tambien trae otro plan que sigue elegido.
+            const quedan = new Set(
+                availablePlans
+                    .filter((p) => p.name !== planName && current.includes(p.name))
+                    .flatMap((p) => p.features)
+            );
+            const featsToRemove = (availablePlans.find((p) => p.name === planName)?.features ?? [])
+                .filter((f) => !quedan.has(f));
             setForm({
                 ...form,
                 applied_services: current.filter((s) => s !== planName),
@@ -233,27 +270,22 @@ export default function PortafolioPage() {
         }
     };
 
-    // Helper: toggle feature
-    const toggleFeature = (feat: string) => {
-        const current = form.applied_features || [];
-        if (current.includes(feat)) {
-            setForm({ ...form, applied_features: current.filter(f => f !== feat) });
-        } else {
-            setForm({ ...form, applied_features: [...current, feat] });
-        }
-    };
-
-    // Caracteristicas de los planes elegidos, sin repetir.
-    const selectedPlanFeatures = availablePlans
+    const planesElegidos = availablePlans
         .filter((p) => (form.applied_services || []).includes(p.name))
-        .flatMap((p) => p.features)
-        .filter((v, i, a) => a.indexOf(v) === i);
+        .map((p) => ({ plan: p.name, features: p.features }));
+
+    // Lo cargado en los otros proyectos, para no reescribirlo en cada uno.
+    const incluyeDeOtros = useMemo(
+        () => Array.from(new Set(
+            data.filter((p) => p.id !== editing?.id).flatMap((p) => p.applied_features ?? []).map((f) => f.trim()).filter(Boolean)
+        )),
+        [data, editing]
+    );
 
     // Lo guardado que no coincide con ningun plan actual: nombres de la epoca
     // de `services`. Se muestra aparte para que se pueda quitar.
     const planNames = availablePlans.map((p) => p.name);
     const legacyPlans = (form.applied_services || []).filter((s) => !planNames.includes(s));
-    const legacyFeatures = (form.applied_features || []).filter((f) => !selectedPlanFeatures.includes(f));
 
     // Helpers for stats array
     const addStat = () => {
@@ -288,7 +320,7 @@ export default function PortafolioPage() {
                 </div>
 
                 {showForm && (
-                    <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-6 space-y-6">
+                    <div key={editing?.id ?? "nuevo"} ref={traerALaVista} className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-4 sm:p-6 space-y-6">
                         <h2 className="text-xl font-black text-white font-body border-b border-white/10 pb-4">
                             {editing ? "✏️ Editar Proyecto" : "🆕 Nuevo Proyecto"}
                         </h2>
@@ -301,10 +333,13 @@ export default function PortafolioPage() {
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <label className="space-y-1">
-                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Título del Proyecto</span>
-                                    <input className="admin-input w-full" value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Título del Proyecto <span className="text-hot-coral">*</span></span>
+                                    <input className="admin-input w-full" required value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                                    <p className="text-[10px] text-gray-500">Es el nombre en el sitio y arma la dirección de la página del proyecto.</p>
                                 </label>
-                                <label className="space-y-1">
+                                {/* div y no label: un label con botones adentro le pasa el clic al
+                                    primero, y tocar el título marcaba la primera categoría. */}
+                                <div className="space-y-1">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Categorías <span className="text-primary">(podés elegir varias)</span></span>
                                     <div className="flex flex-wrap gap-2 mt-1">
                                         {allCategories.map((cat: string) => {
@@ -333,8 +368,9 @@ export default function PortafolioPage() {
                                     </div>
                                     <div className="flex gap-2 mt-2">
                                         <input
-                                            className="admin-input flex-1 text-sm"
+                                            className="admin-input flex-1 min-w-0 text-sm"
                                             placeholder="Nueva categoría..."
+                                            aria-label="Nueva categoría"
                                             value={newCategoryInput}
                                             onChange={(e) => setNewCategoryInput(e.target.value)}
                                             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCategory(); } }}
@@ -348,11 +384,17 @@ export default function PortafolioPage() {
                                             + Agregar
                                         </button>
                                     </div>
-                                </label>
+                                </div>
                                 <label className="space-y-1 md:col-span-2">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Descripción corta (tarjetas)</span>
                                     <textarea className="admin-input w-full" rows={2} placeholder="Breve descripción que aparece en las tarjetas del catálogo" value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-                                    <p className="text-[10px] text-gray-500">Se muestra en las tarjetas del catálogo y la sección de inicio. Máximo 2-3 líneas.</p>
+                                    <p className="text-[10px] text-gray-500 flex flex-wrap justify-between gap-x-3">
+                                        <span>Se muestra en las tarjetas del catálogo, en el inicio y en Google. Máximo 2-3 líneas.</span>
+                                        <span className={`font-bold tabular-nums ${(form.description || "").length > LARGO_DESCRIPCION ? "text-[#F2FA5A]" : ""}`}>
+                                            {(form.description || "").length}/{LARGO_DESCRIPCION}
+                                            {(form.description || "").length > LARGO_DESCRIPCION && " · Google corta el resto"}
+                                        </span>
+                                    </p>
                                 </label>
                                 <label className="space-y-1 md:col-span-2">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Descripción extendida (detalle)</span>
@@ -561,7 +603,7 @@ export default function PortafolioPage() {
                                 <span aria-hidden="true" className="material-icons text-base">build_circle</span>
                                 Plan aplicado
                             </h3>
-                            <p className="text-[10px] text-gray-500">Tocá el plan (o los planes) que se usaron en este proyecto. Salen de Precios.</p>
+                            <p className="text-[10px] text-gray-500">Tocá el plan (o los planes) que se usaron en este proyecto. Salen de Precios, y lo que incluyen aparece como sugerencia en &quot;Qué incluye&quot;.</p>
 
                             {availablePlans.length > 0 || legacyPlans.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -571,6 +613,7 @@ export default function PortafolioPage() {
                                             <button
                                                 key={plan.name}
                                                 type="button"
+                                                aria-pressed={isSelected}
                                                 onClick={() => togglePlan(plan.name)}
                                                 className={`p-4 border-2 rounded-sm text-left transition-all flex flex-col gap-2 ${isSelected
                                                     ? "bg-[#9b51e0] text-white border-[#9b51e0] shadow-neobrutalism-white scale-[1.02]"
@@ -612,56 +655,24 @@ export default function PortafolioPage() {
                             )}
                         </div>
 
-                        {/* ── SECTION 4: Qué incluye (sale de los planes elegidos) ── */}
-                        {(selectedPlanFeatures.length > 0 || legacyFeatures.length > 0) && (
-                            <div className="space-y-3 border-t border-white/10 pt-4">
-                                <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                    <span aria-hidden="true" className="material-icons text-base">auto_awesome</span>
-                                    Qué incluye
-                                </h3>
-                                <p className="text-[10px] text-gray-500">Marcá lo que se destaca en este proyecto. No hace falta elegir todo.</p>
-
-                                <div className="flex flex-wrap gap-2">
-                                    {selectedPlanFeatures.map((feat) => {
-                                        const isActive = (form.applied_features || []).includes(feat);
-                                        return (
-                                            <button
-                                                key={feat}
-                                                type="button"
-                                                onClick={() => toggleFeature(feat)}
-                                                className={`px-3 py-2 text-xs font-bold uppercase tracking-wider border-2 rounded-sm transition-all flex items-center gap-1.5 ${isActive
-                                                    ? "bg-white text-black border-white shadow-neobrutalism-white"
-                                                    : "bg-white/5 text-gray-500 border-white/10 hover:border-white/30 hover:text-white"
-                                                    }`}
-                                            >
-                                                <span aria-hidden="true" className="material-icons text-sm">
-                                                    {isActive ? "check_box" : "check_box_outline_blank"}
-                                                </span>
-                                                {feat}
-                                            </button>
-                                        );
-                                    })}
-                                    {legacyFeatures.map((feat) => (
-                                        <button
-                                            key={`legacy-${feat}`}
-                                            type="button"
-                                            onClick={() => toggleFeature(feat)}
-                                            title="Guardado de antes, no está en los planes elegidos. Clic para quitarlo."
-                                            className="px-3 py-2 text-xs font-bold uppercase tracking-wider border-2 border-dashed rounded-sm transition-all flex items-center gap-1.5 bg-white/80 text-black border-white/60 hover:bg-hot-coral/20 hover:text-white hover:border-hot-coral"
-                                        >
-                                            <span aria-hidden="true" className="material-icons text-sm">history</span>
-                                            {feat}
-                                        </button>
-                                    ))}
-                                </div>
-                                {legacyFeatures.length > 0 && (
-                                    <p className="text-[10px] text-gray-500 flex items-center gap-1">
-                                        <span aria-hidden="true" className="material-icons text-[12px]">history</span>
-                                        Los punteados se guardaron antes y no están en los planes elegidos. Se siguen viendo en el sitio hasta que los quites.
-                                    </p>
+                        {/* ── SECTION 4: Qué incluye ── */}
+                        <div className="space-y-3 border-t border-white/10 pt-4">
+                            <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
+                                <span aria-hidden="true" className="material-icons text-base">auto_awesome</span>
+                                Qué incluye
+                                {(form.applied_features || []).length > 0 && (
+                                    <span className="text-[10px] text-gray-400 normal-case tracking-normal font-bold">
+                                        {(form.applied_features || []).length} en el sitio
+                                    </span>
                                 )}
-                            </div>
-                        )}
+                            </h3>
+                            <IncluyeEditor
+                                items={form.applied_features || []}
+                                onChange={(applied_features) => setForm((prev) => ({ ...prev, applied_features }))}
+                                deLosPlanes={planesElegidos}
+                                deOtrosProyectos={incluyeDeOtros}
+                            />
+                        </div>
 
                         {/* ── SECTION 5: Tags ── */}
                         <div className="space-y-3 border-t border-white/10 pt-4">
@@ -786,9 +797,11 @@ export default function PortafolioPage() {
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Posición</span>
                                 <p className="flex items-center gap-2 text-sm text-gray-300 bg-white/5 border border-white/10 rounded-sm px-3 py-2">
                                     <span aria-hidden="true" className="material-icons text-[18px] text-primary">drag_indicator</span>
-                                    {editing
-                                        ? <>Está en el lugar <strong className="text-white font-black">#{form.display_order || 0}</strong>. Se cambia arrastrando la tarjeta en la lista.</>
-                                        : <>Se va a agregar al final. Después lo movés arrastrando la tarjeta.</>}
+                                    <span>
+                                        {editing
+                                            ? <>Está en el lugar <strong className="text-white font-black">#{data.findIndex((p) => p.id === editing.id) + 1}</strong>. Se cambia arrastrando la tarjeta en la lista.</>
+                                            : <>Se va a agregar al final. Después lo movés arrastrando la tarjeta.</>}
+                                    </span>
                                 </p>
                             </div>
                             <div className="flex items-center pt-5 gap-6">
@@ -803,13 +816,20 @@ export default function PortafolioPage() {
                             </div>
                         </div>
 
-                        <div className="flex gap-3 pt-4 border-t border-white/10">
-                            <button onClick={handleSave} disabled={saving} className="bg-primary text-white font-bold px-6 py-2.5 border-2 border-black shadow-neobrutalism-sm rounded-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all disabled:opacity-50">
+                        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-white/10">
+                            <button onClick={handleSave} disabled={saving || !form.title?.trim()} className="bg-primary text-white font-bold px-6 py-2.5 border-2 border-black shadow-neobrutalism-sm rounded-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                                 {saving ? "Guardando..." : "💾 Guardar Proyecto"}
                             </button>
                             <button onClick={() => { setEditing(null); setCreating(false); }} className="text-gray-400 font-bold px-5 py-2 hover:text-white transition-colors">
                                 Cancelar
                             </button>
+                            {/* Avisa, no frena: un caso puede publicarse incompleto a proposito. */}
+                            <p role="status" className={`w-full sm:w-auto sm:ml-auto text-xs font-bold flex items-start gap-1.5 ${faltan.length ? "text-[#F2FA5A]" : "text-secondary"}`}>
+                                <span aria-hidden="true" className="material-icons text-[16px]">{faltan.length ? "error_outline" : "check_circle"}</span>
+                                {faltan.length
+                                    ? `Le falta: ${faltan.join(" · ")}${!form.title?.trim() ? " (el título es obligatorio)" : ""}`
+                                    : "Completo para publicar"}
+                            </p>
                         </div>
                     </div>
                 )}
@@ -820,6 +840,8 @@ export default function PortafolioPage() {
                     onEdit={openEdit}
                     onDelete={(id) => { if (confirm("¿Eliminar este proyecto definitivamente?")) remove(id); }}
                     onReorder={reorder}
+                    onToggleActive={(p) => update({ id: p.id, is_active: !p.is_active })}
+                    onDuplicate={duplicar}
                 />
             </div>
 
