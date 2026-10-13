@@ -39,6 +39,8 @@ type Props<T extends BoardProject> = {
     onDelete: (id: string) => void;
     /** Persiste el orden. Devuelve si se guardo bien. */
     onReorder: (orderedIds: string[]) => Promise<boolean>;
+    onToggleActive: (p: T) => void;
+    onDuplicate: (p: T) => void;
 };
 
 export default function ProjectsBoard<T extends BoardProject>({
@@ -47,6 +49,8 @@ export default function ProjectsBoard<T extends BoardProject>({
     onEdit,
     onDelete,
     onReorder,
+    onToggleActive,
+    onDuplicate,
 }: Props<T>) {
     const { mode, cols, setMode, setCols } = useViewPrefs("admin:portafolio:view");
 
@@ -202,6 +206,8 @@ export default function ProjectsBoard<T extends BoardProject>({
                                 onMove={moveVisible}
                                 onEdit={onEdit}
                                 onDelete={onDelete}
+                                onToggleActive={onToggleActive}
+                                onDuplicate={onDuplicate}
                             />
                         ) : (
                             <GridCard
@@ -212,6 +218,8 @@ export default function ProjectsBoard<T extends BoardProject>({
                                 onMove={moveVisible}
                                 onEdit={onEdit}
                                 onDelete={onDelete}
+                                onToggleActive={onToggleActive}
+                                onDuplicate={onDuplicate}
                             />
                         )
                     }
@@ -386,9 +394,57 @@ type CardProps<T extends BoardProject> = {
     onMove: (id: string, to: number) => void;
     onEdit: (p: T) => void;
     onDelete: (id: string) => void;
+    onToggleActive: (p: T) => void;
+    onDuplicate: (p: T) => void;
 };
 
-function GridCard<T extends BoardProject>({ p, ctx, position, total, onMove, onEdit, onDelete }: CardProps<T>) {
+/**
+ * Lo que antes pedia abrir el formulario: ocultar o mostrar, ver la pagina
+ * publicada y duplicar. El link va por id: la pagina redirige sola al slug.
+ * Un proyecto oculto no tiene pagina publica, asi que ahi el link no esta.
+ */
+function QuickActions<T extends BoardProject>({ p, onToggleActive, onDuplicate }: Pick<CardProps<T>, "p" | "onToggleActive" | "onDuplicate">) {
+    const btn = "w-7 h-7 flex items-center justify-center rounded-sm border transition-colors";
+    return (
+        <div className="flex items-center gap-1">
+            <button
+                type="button"
+                onClick={() => onToggleActive(p)}
+                aria-pressed={p.is_active}
+                title={p.is_active ? "Visible en el sitio — clic para ocultar" : "Oculto — clic para mostrar"}
+                aria-label={p.is_active ? `Ocultar ${p.title} del sitio` : `Mostrar ${p.title} en el sitio`}
+                className={`${btn} ${p.is_active
+                    ? "text-secondary border-secondary/30 bg-[#1e1530]/90 hover:bg-secondary/20"
+                    : "text-hot-coral border-hot-coral/40 bg-[#1e1530]/90 hover:bg-hot-coral/20"}`}
+            >
+                <span aria-hidden="true" className="material-icons text-[16px]">{p.is_active ? "visibility" : "visibility_off"}</span>
+            </button>
+            {p.is_active && (
+                <a
+                    href={`/portafolio/${p.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Ver en el sitio (pestaña nueva)"
+                    aria-label={`Ver ${p.title} en el sitio`}
+                    className={`${btn} text-white border-white/20 bg-[#1e1530]/90 hover:bg-white/20`}
+                >
+                    <span aria-hidden="true" className="material-icons text-[16px]">open_in_new</span>
+                </a>
+            )}
+            <button
+                type="button"
+                onClick={() => onDuplicate(p)}
+                title="Duplicar: la copia nace oculta y se abre para editarla"
+                aria-label={`Duplicar ${p.title}`}
+                className={`${btn} text-white border-white/20 bg-[#1e1530]/90 hover:bg-white/20`}
+            >
+                <span aria-hidden="true" className="material-icons text-[16px]">content_copy</span>
+            </button>
+        </div>
+    );
+}
+
+function GridCard<T extends BoardProject>({ p, ctx, position, total, onMove, onEdit, onDelete, onToggleActive, onDuplicate }: CardProps<T>) {
     return (
         <div
             className={`h-[19.5rem] bg-[#1e1530] border-2 rounded-sm overflow-hidden flex flex-col transition-colors ${
@@ -436,6 +492,10 @@ function GridCard<T extends BoardProject>({ p, ctx, position, total, onMove, onE
                         MUESTRA
                     </span>
                 )}
+
+                <div className="absolute bottom-2 right-2 z-10">
+                    <QuickActions p={p} onToggleActive={onToggleActive} onDuplicate={onDuplicate} />
+                </div>
             </div>
 
             {/* Cuerpo */}
@@ -489,17 +549,17 @@ function GridCard<T extends BoardProject>({ p, ctx, position, total, onMove, onE
    Fila de lista compacta — para acomodar muchos de una sentada
    ═══════════════════════════════════════════════════════════════════════════ */
 
-function ListRow<T extends BoardProject>({ p, ctx, position, total, onMove, onEdit, onDelete }: CardProps<T>) {
+function ListRow<T extends BoardProject>({ p, ctx, position, total, onMove, onEdit, onDelete, onToggleActive, onDuplicate }: CardProps<T>) {
     return (
         <div
-            className={`h-16 bg-[#1e1530] border-2 rounded-sm flex items-center gap-3 px-3 transition-colors ${
+            className={`h-16 bg-[#1e1530] border-2 rounded-sm flex items-center gap-2 sm:gap-3 px-3 transition-colors ${
                 ctx.isDragging
                     ? "border-primary shadow-neobrutalism-primary"
                     : "border-white/10 hover:border-primary/40"
             }`}
         >
             <DragHandle ctx={ctx} compact />
-            <span className="text-white/50 font-black text-xs tabular-nums w-8 shrink-0">#{position}</span>
+            <span className="hidden sm:inline text-white/50 font-black text-xs tabular-nums w-8 shrink-0">#{position}</span>
 
             <div className="w-16 h-11 shrink-0 bg-black/40 rounded-sm overflow-hidden border border-white/10 relative">
                 {p.image_url ? (
@@ -547,9 +607,14 @@ function ListRow<T extends BoardProject>({ p, ctx, position, total, onMove, onEd
                 )}
             </div>
 
-            <MoveButtons id={p.id} index={ctx.index} total={total} onMove={onMove} compact />
+            <div className="hidden lg:block">
+                <MoveButtons id={p.id} index={ctx.index} total={total} onMove={onMove} compact />
+            </div>
 
             <div className="flex items-center gap-1.5 shrink-0">
+                <div className="hidden sm:block">
+                    <QuickActions p={p} onToggleActive={onToggleActive} onDuplicate={onDuplicate} />
+                </div>
                 <button
                     onClick={() => onEdit(p)}
                     className="text-white bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-sm text-xs font-bold transition-colors"

@@ -313,6 +313,8 @@ export function precioDePlan(plan: PricingPlan): number {
 /** "Presupuesto sin cargo" es marketing de la home: dentro de un presupuesto no dice nada. */
 export function incluyeDePlan(plan: PricingPlan): string[] {
     return (plan.features ?? [])
+        // Lo que se oculta en Precios tampoco se promete en un presupuesto.
+        .filter((f) => typeof f === "string" || !f.hidden)
         .map((f) => (typeof f === "string" ? f : f.text).trim())
         .filter((t) => t && !/presupuesto sin cargo/i.test(t))
         .map((t) => t.replace(/\s*\+$/, ""));
@@ -384,6 +386,7 @@ export function sugerenciasDePlan(nombrePlan: string, planes: PricingPlan[]): st
     const plan = planes.find((p) => p.name === nombrePlan);
     if (!plan || !Array.isArray(plan.features)) return [];
     return plan.features
+        .filter((f) => typeof f === "string" || !f?.hidden)
         .map((f) => (typeof f === "string" ? f : f?.text ?? ""))
         .map((t) => t.trim())
         .filter(Boolean);

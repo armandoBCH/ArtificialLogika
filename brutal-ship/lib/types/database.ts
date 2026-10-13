@@ -38,6 +38,8 @@ export interface PricingFeature {
     icon_bg: string;
     /** Va dentro de "Ver las N restantes". Sin dato: las primeras 4 a la vista. */
     collapsed?: boolean;
+    /** No se muestra en ningún lado (sitio, presupuestos, portafolio). Queda guardada. */
+    hidden?: boolean;
 }
 
 export interface PortfolioProject {

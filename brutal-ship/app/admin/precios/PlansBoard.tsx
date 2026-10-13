@@ -204,7 +204,7 @@ function ActiveToggle<T extends BoardPlan>({ plan, onToggleActive }: { plan: T; 
    arrastre y eso solo vale si todas las tarjetas miden lo mismo. */
 function PlanCard<T extends BoardPlan>({ plan, ctx, position, total, onMove, onEdit, onDelete, onToggleActive }: CardProps<T>) {
     const features = plan.features ?? [];
-    const { aLaVista, enVerMas } = separarCaracteristicas(features);
+    const { aLaVista, enVerMas, ocultas } = separarCaracteristicas(features);
     // La tarjeta tiene alto fijo: entran cuatro filas, el resto se cuenta.
     const PREVIA = 4;
     const visiblesSinLugar = Math.max(0, aLaVista.length - PREVIA);
@@ -253,11 +253,12 @@ function PlanCard<T extends BoardPlan>({ plan, ctx, position, total, onMove, onE
                     <FeatureChip key={i} f={f} />
                 ))}
                 {features.length === 0 && <p className="text-xs text-gray-500 italic">Sin características</p>}
-                {(visiblesSinLugar > 0 || enVerMas.length > 0) && (
+                {(visiblesSinLugar > 0 || enVerMas.length > 0 || ocultas.length > 0) && (
                     <p className="text-[10px] text-gray-500 font-bold pl-7">
                         {[
                             visiblesSinLugar > 0 && `+${visiblesSinLugar} a la vista`,
                             enVerMas.length > 0 && `${enVerMas.length} en "ver más"`,
+                            ocultas.length > 0 && `${ocultas.length} oculta${ocultas.length === 1 ? "" : "s"}`,
                         ].filter(Boolean).join(" · ")}
                     </p>
                 )}
@@ -323,9 +324,9 @@ function PlanRow<T extends BoardPlan>({ plan, ctx, position, total, onMove, onEd
                         {plan.featured_label || "Destacado"}
                     </span>
                 )}
-                <span className="text-[10px] text-gray-500 font-bold flex items-center gap-1">
+                <span className="text-[10px] text-gray-500 font-bold flex items-center gap-1" title="Características que se ven en el sitio">
                     <span aria-hidden="true" className="material-icons text-[13px]">checklist</span>
-                    {plan.features?.length ?? 0}
+                    {(plan.features ?? []).filter((f) => !f.hidden).length}
                 </span>
             </div>
 

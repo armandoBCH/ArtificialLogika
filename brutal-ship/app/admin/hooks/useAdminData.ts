@@ -2,6 +2,24 @@
 
 import { useState, useEffect, useCallback } from "react";
 
+/**
+ * Ref para el formulario de alta y edicion: lo trae a la vista cuando aparece.
+ * El formulario va arriba de la lista y "Editar" se toca abajo, asi que en el
+ * celular parecia que el boton no hacia nada. Con un `key` por registro en el
+ * formulario, tambien salta al pasar de editar uno a editar otro.
+ * Es una funcion fija a proposito: inline, React la llamaria en cada render.
+ *
+ * Salto instantaneo y no suave: mientras el suave anima, las imagenes del
+ * formulario terminan de cargar, el navegador corrige el scroll para no mover
+ * lo que se esta viendo, y la animacion frenaba cientos de pixeles antes o
+ * despues. "instant" y no "auto": el sitio pone scroll-behavior smooth global.
+ * Y scrollTo y no scrollIntoView: ese respeta el `scroll-pt-28` del <html>,
+ * que es para la barra fija del sitio publico y en el admin dejaba 112px vacios.
+ */
+export function traerALaVista(el: HTMLElement | null) {
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 16, behavior: "instant" });
+}
+
 export function useAdminData<T extends { id: string; display_order?: number }>(table: string) {
     const [data, setData] = useState<T[]>([]);
     const [loading, setLoading] = useState(true);
@@ -27,7 +45,8 @@ export function useAdminData<T extends { id: string; display_order?: number }>(t
         fetchData();
     }, [fetchData]);
 
-    const create = async (item: Partial<T>) => {
+    /** Devuelve el registro creado (para abrirlo, p. ej. al duplicar) o false. */
+    const create = async (item: Partial<T>): Promise<T | false> => {
         setSaving(true);
         try {
             const res = await fetch(`/api/admin/${table}`, {
@@ -39,8 +58,9 @@ export function useAdminData<T extends { id: string; display_order?: number }>(t
                 const err = await res.json();
                 throw new Error(err.error || "Error al crear");
             }
+            const creado = (await res.json()) as T;
             await fetchData();
-            return true;
+            return creado;
         } catch (err) {
             setError(err instanceof Error ? err.message : "Error");
             return false;

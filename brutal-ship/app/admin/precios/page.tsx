@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useAdminData } from "../hooks/useAdminData";
+import { traerALaVista, useAdminData } from "../hooks/useAdminData";
 import AdminError from "../components/AdminError";
 import PlansBoard from "./PlansBoard";
 import FeatureEditor, { conClaves, sinClaves, type EditableFeature, type PlanFeature } from "./FeatureEditor";
@@ -125,7 +125,7 @@ export default function PreciosPage() {
             </div>
 
             {showForm && (
-                <div className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-6 space-y-6">
+                <div key={editing?.id ?? "nuevo"} ref={traerALaVista} className="bg-[#1e1530] border-2 border-primary/30 rounded-sm p-4 sm:p-6 space-y-6">
                     <h2 className="text-xl font-black text-white font-body border-b border-white/10 pb-4">
                         {editing ? "✏️ Editar Plan" : "🆕 Nuevo Plan"}
                     </h2>
@@ -254,9 +254,11 @@ export default function PreciosPage() {
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Posición</span>
                                 <p className="flex items-center gap-2 text-sm text-gray-300 bg-white/5 border border-white/10 rounded-sm px-3 py-2">
                                     <span aria-hidden="true" className="material-icons text-[18px] text-primary">drag_indicator</span>
-                                    {editing
-                                        ? <>Está en el lugar <strong className="text-white font-black">#{position}</strong>. Se cambia arrastrando la tarjeta.</>
-                                        : <>Se agrega al final. Después lo movés arrastrando.</>}
+                                    <span>
+                                        {editing
+                                            ? <>Está en el lugar <strong className="text-white font-black">#{position}</strong>. Se cambia arrastrando la tarjeta.</>
+                                            : <>Se agrega al final. Después lo movés arrastrando.</>}
+                                    </span>
                                 </p>
                             </div>
                             <div className="space-y-2 pt-4">
