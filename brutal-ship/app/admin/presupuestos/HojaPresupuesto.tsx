@@ -16,7 +16,8 @@ import {
  * Es papel, no pantalla del admin: fondo blanco, tinta negra y los dispositivos de
  * la marca. La ficha (la etiqueta que rompe el borde) para cada bloque de datos,
  * porque un presupuesto ES un formulario que Logika completó por el cliente. Un
- * solo sello, para la garantía de la seña: es el único veredicto del documento.
+ * solo sello, para la garantía (el diseño previo sin cargo): es el único veredicto del
+ * documento.
  *
  * Usa container queries y no breakpoints de pantalla: la misma hoja se ve en la
  * columna angosta del editor, a ancho completo en la vista previa y en un A4.
