@@ -34,7 +34,7 @@ export async function generateMetadata({
             titulo: `${post.title} | ${BUSINESS.name}`,
             descripcion: post.excerpt,
             ruta: `/blog/${slug}`,
-            articulo: { publicado: post.date, seccion: post.category },
+            articulo: { publicado: post.date, modificado: post.updated ?? post.date, seccion: post.category },
         }),
         alternates: {
             canonical: `${SITE_URL}/blog/${slug}`,
@@ -88,7 +88,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         headline: post.title,
         description: post.excerpt,
         datePublished: post.date,
-        dateModified: post.date,
+        dateModified: post.updated ?? post.date,
         author: {
             "@type": "Organization",
             name: BUSINESS.legalName,

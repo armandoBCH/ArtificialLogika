@@ -189,8 +189,14 @@ export default function RootLayout({
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
           strategy="lazyOnload"
         />
+        {/* Un navegador que entró alguna vez a /admin es del dueño: GA no lo
+            cuenta más (ni en el admin ni en el sitio), así las visitas son de clientes. */}
         <Script id="google-analytics" strategy="lazyOnload">
           {`
+            try {
+              if (location.pathname.indexOf('/admin') === 0) localStorage.setItem('logika-sin-ga', '1');
+              if (localStorage.getItem('logika-sin-ga')) window['ga-disable-${GA_MEASUREMENT_ID}'] = true;
+            } catch (e) {}
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());

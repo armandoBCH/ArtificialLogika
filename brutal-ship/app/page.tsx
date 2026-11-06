@@ -22,8 +22,9 @@ import type { Metadata } from "next";
 import { SITE_URL, BUSINESS, vistaPrevia } from "@/lib/seo/constants";
 
 export const metadata: Metadata = {
-  // absolute: la home no lleva el "| Logika" del template, ya empieza con la marca.
-  title: { absolute: `${BUSINESS.name} — ${BUSINESS.slogan}` },
+  // El título dice lo que la gente escribe en Google ("diseño web", "páginas web
+  // para negocios"); el slogan queda para la tarjeta al compartir (openGraph).
+  title: { absolute: `Diseño de páginas web para negocios en Argentina | ${BUSINESS.name}` },
   description: BUSINESS.description,
   ...vistaPrevia({
     titulo: `${BUSINESS.name} — ${BUSINESS.slogan}`,

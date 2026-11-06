@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const masReciente = (fechas: string[]) =>
         fechas.length ? new Date(fechas.reduce((a, b) => (a > b ? a : b))) : undefined;
     const ultimoProyecto = masReciente(projects.map((p) => p.updated_at).filter(Boolean));
-    const ultimoPost = masReciente(BLOG_POSTS.map((p) => p.date));
+    const ultimoPost = masReciente(BLOG_POSTS.map((p) => p.updated ?? p.date));
 
     return [
         { url: SITE_URL, lastModified: ultimoProyecto, changeFrequency: "weekly", priority: 1.0 },
@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${SITE_URL}/terminos`, changeFrequency: "yearly", priority: 0.3 },
         ...BLOG_POSTS.map((post) => ({
             url: `${SITE_URL}/blog/${post.slug}`,
-            lastModified: new Date(post.date),
+            lastModified: new Date(post.updated ?? post.date),
             changeFrequency: "monthly" as const,
             priority: 0.6,
         })),

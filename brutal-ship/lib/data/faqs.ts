@@ -5,7 +5,7 @@ const DEFAULT_FAQS: FAQ[] = [
     {
         id: "1",
         question: "¿Cuánto tarda en estar lista mi web?",
-        answer: "Para una Landing Page, entre 1 y 2 semanas. Para sitios institucionales o e-commerce, entre 2 y 4 semanas. Te damos un plazo concreto desde el día uno y siempre lo cumplimos.",
+        answer: "Para una Landing Page, entre 1 y 2 semanas. Para sitios institucionales o e-commerce, entre 2 y 4 semanas. Antes de arrancar te decimos cuánto va a llevar tu proyecto.",
         display_order: 1,
         is_active: true,
         created_at: "",

@@ -8,6 +8,13 @@
  *   E-commerce           US$399 -> $619.000
  *   Mantenimiento        US$15 / 25 / 35 -> $23.000 / $39.000 / $54.000
  *
+ * En noviembre de 2026 el dueño los bajó desde el panel a $200.000 / $350.000 /
+ * $600.000, y el mantenimiento de la landing a $25.000.
+ *
+ * ponytail: el blog (app/blog/[slug]/articles.ts y app/blog/page.tsx) repite
+ * los precios escritos a mano. Si cambian en el panel, hay que cambiarlos ahí;
+ * si pasa seguido, que el blog los lea de `pricing_plans`.
+ *
  * Los planes viven en la base (`pricing_plans`) y se editan desde /admin/precios,
  * cuota mensual incluida (`monthly_price`). Antes las cuotas estaban escritas acá
  * atadas al nombre del plan; renombrar un plan le borraba la cuota sin aviso.

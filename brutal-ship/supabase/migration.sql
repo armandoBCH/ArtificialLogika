@@ -232,7 +232,7 @@ INSERT INTO testimonials (name, role, quote, avatar_url, badge_text, badge_color
 
 -- FAQs
 INSERT INTO faqs (question, answer, display_order) VALUES
-('¿Cuánto tarda en estar lista mi web?', 'Para una Landing Page, entre 1 y 2 semanas. Para sitios institucionales o e-commerce, entre 2 y 4 semanas. Te damos un plazo concreto desde el día uno y siempre lo cumplimos.', 1),
+('¿Cuánto tarda en estar lista mi web?', 'Para una Landing Page, entre 1 y 2 semanas. Para sitios institucionales o e-commerce, entre 2 y 4 semanas. Antes de arrancar te decimos cuánto va a llevar tu proyecto.', 1),
 ('¿Tengo que saber de tecnología?', 'No, para nada. Nosotros nos encargamos de absolutamente todo: diseño, desarrollo, que funcione en celulares, que aparezca en Google, dominio, hosting y certificado de seguridad. Vos solo nos contás qué necesitás.', 2),
 ('¿El precio incluye dominio y hosting?', 'Te ayudamos a configurar todo: dominio (.com o .com.ar), hosting, emails profesionales y certificado de seguridad (el candadito verde). El costo del dominio y hosting es aparte (generalmente menos de $20 USD/año), pero nosotros lo tramitamos por vos.', 3),
 ('¿Qué pasa si necesito algo más complejo?', 'Los precios que ves son la base. Si tu proyecto necesita funciones extra (reservas online, sistema de turnos, integración con software, idiomas múltiples, etc.), te armamos un presupuesto personalizado. Siempre sabés el precio total antes de arrancar.', 4),

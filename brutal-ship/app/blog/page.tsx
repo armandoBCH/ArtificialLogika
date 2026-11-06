@@ -32,6 +32,7 @@ const BLOG_POSTS = [
         excerpt:
             "Precios reales, qué incluye cada plan, y cómo elegir la mejor opción para tu negocio sin pagar de más.",
         date: "2026-08-04",
+        updated: "2026-11-06", // precios nuevos
         readTime: "5 min",
         category: "Precios",
     },
@@ -41,6 +42,7 @@ const BLOG_POSTS = [
         excerpt:
             "Si todavía dependés solo de redes sociales, estás perdiendo clientes. Te explicamos por qué una web propia cambia todo.",
         date: "2026-08-06",
+        updated: "2026-11-06", // precios nuevos
         readTime: "4 min",
         category: "Negocios",
     },
@@ -50,6 +52,7 @@ const BLOG_POSTS = [
         excerpt:
             "Todo lo que necesitás saber para vender online: plataformas, medios de pago, envíos, costos y errores comunes.",
         date: "2026-08-08",
+        updated: "2026-11-06", // precios nuevos
         readTime: "7 min",
         category: "E-commerce",
     },
@@ -59,6 +62,7 @@ const BLOG_POSTS = [
         excerpt:
             "Si sos emprendedor y querés empezar a recibir consultas por internet, una landing page es tu mejor aliado.",
         date: "2026-08-11",
+        updated: "2026-11-06", // precios nuevos
         readTime: "4 min",
         category: "Diseño Web",
     },
@@ -66,8 +70,9 @@ const BLOG_POSTS = [
         slug: "cuanto-cuesta-pagina-web-peluqueria",
         title: "¿Cuánto cuesta una página web para una peluquería?",
         excerpt:
-            "Desde $229.000 y lista en 1 a 2 semanas. Qué tiene que tener, si hace falta turnero online, y por qué conviene publicar los precios.",
+            "Desde $200.000 y lista en 1 a 2 semanas. Qué tiene que tener, si hace falta turnero online, y por qué conviene publicar los precios.",
         date: "2026-08-13",
+        updated: "2026-11-06", // precios nuevos
         readTime: "4 min",
         category: "Precios",
     },
@@ -113,6 +118,7 @@ const BLOG_POSTS = [
         excerpt:
             "Resuelven cosas distintas. WhatsApp es donde cerrás la venta; la web es lo que hace que te escriban a WhatsApp.",
         date: "2026-08-25",
+        updated: "2026-11-06", // precios nuevos
         readTime: "4 min",
         category: "Negocios",
     },
@@ -131,6 +137,7 @@ const BLOG_POSTS = [
         excerpt:
             "Cinco cosas para mirar antes que el precio, y las señales de alarma que conviene detectar antes de firmar.",
         date: "2026-08-27",
+        updated: "2026-11-06", // precios nuevos
         readTime: "5 min",
         category: "Negocios",
     },
@@ -158,6 +165,7 @@ const BLOG_POSTS = [
         excerpt:
             "Los ocho pasos en orden: qué definir primero, qué tipo de sitio elegir, cuánto presupuestar y qué hace falta para no perderte en el camino.",
         date: "2026-09-27",
+        updated: "2026-11-06", // precios nuevos
         readTime: "8 min",
         category: "Proceso",
     },
