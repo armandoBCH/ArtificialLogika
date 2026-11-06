@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Bitter } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { SITE_URL, BUSINESS, SEO_KEYWORDS } from "@/lib/seo/constants";
@@ -37,10 +36,17 @@ const materialIcons = localFont({
 // Space Grotesk es la voz de la marca: display, titulares, botones y etiquetas.
 // Su grotesca geométrica con detalles raros (la g, la a de doble piso) es lo que
 // sostiene el neobrutalismo suave sin volverse rígida.
-const spaceGrotesk = Space_Grotesk({
+//
+// Desde 2026-11-05 Space Grotesk y Bitter también viven en el repo (variables,
+// subset latin, bajadas de Google Fonts; las dos son OFL). Google pasó a servir las
+// fuentes con URLs /l/font?kit=…&skey=…&v=…, y next/font/google de Next 16.1 con
+// Turbopack no las resuelve ("next/font/google queries have exactly one entry"):
+// el build de Vercel fallaba. Así el build ya no depende de la red.
+const spaceGrotesk = localFont({
+  src: "./fonts/space-grotesk-normal.woff2",
   variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400 700",
+  style: "normal",
   display: "swap",
 });
 
@@ -60,12 +66,14 @@ const spaceGrotesk = Space_Grotesk({
 //
 // Sigue siendo argentina, que era el punto: una agencia de acá, hablándole a negocios
 // de acá, con tipografía de acá.
-const bitter = Bitter({
+const bitter = localFont({
+  src: [
+    { path: "./fonts/bitter-normal.woff2", weight: "400 700", style: "normal" },
+    { path: "./fonts/bitter-italic.woff2", weight: "400 700", style: "italic" },
+  ],
   variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
   display: "swap",
+  adjustFontFallback: "Times New Roman",
 });
 
 export const viewport: Viewport = {
