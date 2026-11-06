@@ -14,7 +14,7 @@ export const DOCUMENTOS = {
     },
     terminos: {
         titulo: "Términos de Servicio",
-        actualizado: "16 de septiembre de 2026",
+        actualizado: "12 de octubre de 2026",
         intro: "Cómo trabajamos, qué incluye cada plan, cuándo se paga y qué pasa si algo no sale como esperabas.",
         sello: "Vigente",
     },

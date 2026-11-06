@@ -59,7 +59,7 @@ const DEFAULT_FAQS: FAQ[] = [
     {
         id: "7",
         question: "¿Cómo es la forma de pago?",
-        answer: "Trabajamos con un 50% de seña para arrancar y el 50% restante al entregar. Si no te gusta el diseño inicial, te devolvemos la seña. Aceptamos transferencia bancaria y podemos armar un plan de pago si lo necesitás.",
+        answer: "Trabajamos con un 50% de seña para arrancar y el 50% restante al entregar. Antes de pagar nada te mostramos un diseño previo de tu web: si no te gusta, no pagás. La seña se paga recién cuando aprobás el presupuesto, y desde ahí no se devuelve. Aceptamos transferencia bancaria y podemos armar un plan de pago si lo necesitás.",
         display_order: 7,
         is_active: true,
         created_at: "",

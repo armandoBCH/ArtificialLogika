@@ -108,15 +108,16 @@ export interface Empresa {
 
 /* ─────────────────────────────────────────────────────────────
    Textos por defecto
-   Salen de lo confirmado en PRODUCT.md y /terminos: seña del 50%, garantía
-   sobre el primer diseño, qué aporta el cliente, uso en el portafolio.
+   Salen de lo confirmado en PRODUCT.md y /terminos: seña del 50% que no se
+   devuelve una vez aprobado el presupuesto, diseño previo sin cargo antes de
+   pagar, qué aporta el cliente, uso en el portafolio.
    Todo se puede cambiar en cada presupuesto.
    ───────────────────────────────────────────────────────────── */
 
 export const MENSAJE_POR_DEFECTO =
     "Gracias por contarnos tu idea. Acá tenés el detalle de lo que vamos a hacer, cuánto cuesta y qué necesitamos de vos. Del resto nos encargamos nosotros.";
 
-export const GARANTIA_POR_DEFECTO = "Si el primer diseño no te convence, te devolvemos la seña";
+export const GARANTIA_POR_DEFECTO = "Diseño previo sin cargo, antes de pagar";
 
 export const APORTA_CLIENTE_POR_DEFECTO = [
     "Contarnos qué necesitás",
@@ -126,7 +127,7 @@ export const APORTA_CLIENTE_POR_DEFECTO = [
 ];
 
 export const CONDICIONES_POR_DEFECTO = [
-    "La seña se devuelve completa si el primer diseño no te convence. Una vez aprobado el diseño y empezado el desarrollo, deja de ser reintegrable.",
+    "El diseño previo es sin cargo y lo ves antes de pagar. Una vez aprobado este presupuesto y pagada la seña, la seña no se devuelve.",
     "El plazo corre en días hábiles desde que recibimos la seña y el material.",
     "Nos encargamos de los textos, el dominio, el hosting, el correo, el candadito de seguridad y la publicación.",
     "Incluye 1 mes de soporte después de publicar.",

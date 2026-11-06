@@ -1,7 +1,12 @@
 /**
- * "Si no te gusta el primer diseño, te devolvemos la seña completa" es el mejor activo
- * de conversión que tiene Logika. Tuvo su propia sección, con párrafo y un botón "Ver
- * precios" que llevaba... a la sección siguiente.
+ * "Si no te gusta el diseño previo, no pagás nada" es el mejor activo de conversión que
+ * tiene Logika. Tuvo su propia sección, con párrafo y un botón "Ver precios" que
+ * llevaba... a la sección siguiente.
+ *
+ * Desde 2026-10-12 la seña NO se devuelve: el cliente ve el diseño previo y el
+ * presupuesto antes de pagar nada, y una vez que aprueba el presupuesto y paga la seña
+ * ya no es reintegrable (/terminos punto 6). Por eso la franja promete verlo antes de
+ * pagar, no la devolución, y dice a la vista que la seña no vuelve.
  *
  * Desde 2026-09 es la franja que abre Precios: el titular conserva la escala, y todo lo
  * demás son condiciones de una línea, pegadas al número donde aparece la duda. Es el
@@ -20,9 +25,9 @@
  */
 const CONDICIONES = [
     {
-        icono: "undo",
+        icono: "payments",
         titulo: "Seña del 50%",
-        texto: "Reintegrable hasta que apruebes el diseño. El resto, al entregar.",
+        texto: "La pagás recién cuando aprobás el presupuesto, y desde ahí no se devuelve. El resto, al entregar.",
     },
     {
         icono: "event_available",
@@ -55,13 +60,13 @@ export default function GuaranteeSection() {
 
             <div className="relative z-10 max-w-6xl mx-auto text-center">
                 <p className="sello bg-ink-black text-white text-sm shadow-neobrutalism-sm">
-                    Sin riesgo para vos
+                    Primero lo ves, después pagás
                 </p>
                 <h2
                     id="garantia-heading"
                     className="mt-7 text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] text-ink-black"
                 >
-                    Si no te gusta el primer diseño,
+                    Si no te gusta el diseño previo,
                     <br />
                     <span className="bg-white text-ink-black px-3 inline-block mt-3 border-4 border-black shadow-neobrutalism">
                         no pagás nada.

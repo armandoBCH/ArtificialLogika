@@ -15,7 +15,7 @@ import GaleriaProyecto from "./GaleriaProyecto";
 const GARANTIAS = [
     ["draw", "Diseño previo sin cargo", "Ves cómo va a quedar tu web antes de pagar."],
     ["schedule", "De 1 a 4 semanas", "Según el plan, hasta dejarla online."],
-    ["undo", "Seña reintegrable", "Hasta que apruebes el primer diseño."],
+    ["payments", "Seña del 50%", "Se paga al aprobar el presupuesto. El resto, al entregar."],
 ] as const;
 
 interface ProjectPageProps {

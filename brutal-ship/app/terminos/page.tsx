@@ -9,11 +9,11 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
     title: "Términos de Servicio",
     description:
-        "Cómo trabajamos en Logika: alcance, plazos, forma de pago, revisiones, garantía de la seña, propiedad del sitio y mantenimiento.",
+        "Cómo trabajamos en Logika: alcance, plazos, forma de pago, diseño previo y seña, revisiones, propiedad del sitio y mantenimiento.",
     ...vistaPrevia({
         titulo: `Términos de Servicio | ${BUSINESS.name}`,
         descripcion:
-            "Cómo trabajamos en Logika: alcance, plazos, forma de pago, revisiones, garantía de la seña, propiedad del sitio y mantenimiento.",
+            "Cómo trabajamos en Logika: alcance, plazos, forma de pago, diseño previo y seña, revisiones, propiedad del sitio y mantenimiento.",
         ruta: "/terminos",
     }),
     alternates: { canonical: `${SITE_URL}/terminos` },
@@ -95,14 +95,15 @@ export default async function TerminosPage() {
             </ul>
             <p>Aceptamos transferencia bancaria. Podemos armar un plan de pago si lo necesitás.</p>
 
-            <h2>6. Garantía sobre la seña</h2>
+            <h2>6. Diseño previo y seña</h2>
             <p>
-                Si el diseño inicial que te presentamos no te convence,{" "}
-                <strong>te devolvemos la seña completa</strong> y el proyecto termina ahí, sin costo para vos.
+                Antes de pedirte ningún pago te mostramos un diseño previo de tu web y te enviamos el presupuesto,
+                sin cargo y sin compromiso. Si no te convence,{" "}
+                <strong>no pagás nada</strong> y el proyecto termina ahí.
             </p>
             <p>
-                Esta garantía aplica a la primera propuesta de diseño. Una vez que aprobás el diseño y pasamos a
-                la etapa de desarrollo, la seña no es reintegrable, porque el trabajo ya está en ejecución.
+                Una vez que aprobás el presupuesto y pagás la seña, el trabajo empieza a ejecutarse y{" "}
+                <strong>la seña no se devuelve</strong>.
             </p>
 
             <h2>7. Revisiones</h2>
@@ -143,8 +144,8 @@ export default async function TerminosPage() {
 
             <h2>11. Cancelación</h2>
             <p>
-                Podés cancelar el proyecto en cualquier momento. Si ya pasamos la etapa de diseño aprobado, se
-                factura el trabajo realizado hasta esa fecha y se te entrega lo producido.
+                Podés cancelar el proyecto en cualquier momento. Si ya aprobaste el presupuesto, la seña no se
+                devuelve (punto 6), se factura el trabajo realizado hasta esa fecha y se te entrega lo producido.
             </p>
 
             <h2>12. Legislación aplicable</h2>

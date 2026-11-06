@@ -82,7 +82,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿Hay que pagar todo por adelantado?",
                 respuesta:
-                    "No. Se arranca con el 50% de seña y el resto se paga al entregar. Si el diseño inicial no te convence, se devuelve la seña completa.",
+                    "No. Primero ves el diseño previo y el presupuesto sin pagar nada. Se arranca con el 50% de seña, que se paga al aprobar el presupuesto y no se devuelve, y el resto se paga al entregar.",
             },
             {
                 pregunta: "¿El precio incluye el dominio y el hosting?",
@@ -397,7 +397,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿Puedo ver cómo va quedando durante el proceso?",
                 respuesta:
-                    "Sí. Primero se muestra un diseño antes de construir nada, y recién cuando lo aprobás empieza el desarrollo. Si el diseño no te convence, se devuelve la seña completa.",
+                    "Sí. Primero se muestra un diseño previo antes de construir nada, y recién cuando aprobás el presupuesto y pagás la seña empieza el desarrollo. Si el diseño no te convence, no pagás nada.",
             },
             {
                 pregunta: "¿Qué necesito tener listo para que no se demore?",
@@ -497,7 +497,7 @@ const articulos: Record<string, Articulo> = {
 
     "que-es-un-mockup-web": {
         respuestaCorta:
-            "Un mockup es una vista previa de cómo va a quedar tu web, hecha antes de programar nada. Sirve para que veas el diseño y pidas cambios cuando corregir todavía es barato. En Logika el mockup y el presupuesto no tienen costo ni compromiso, y si el diseño no te convence se devuelve la seña completa.",
+            "Un mockup es una vista previa de cómo va a quedar tu web, hecha antes de programar nada. Sirve para que veas el diseño y pidas cambios cuando corregir todavía es barato. En Logika el mockup y el presupuesto no tienen costo ni compromiso, y si el diseño no te convence no pagás nada.",
         contenido: `
     <h2>¿Qué es un mockup de una página web?</h2>
     <p>Es una vista previa del diseño, hecha antes de escribir una línea de código. Ves cómo va a quedar tu web: los colores, la disposición, dónde van las fotos y los botones.</p>
@@ -511,7 +511,8 @@ const articulos: Record<string, Articulo> = {
     <p>Hay estudios que lo cobran, y es una postura válida porque lleva trabajo. Lo que conviene evitar es pagar el proyecto completo sin haber visto nada.</p>
 
     <h3>¿Qué pasa si no me gusta el diseño?</h3>
-    <p>Se ajusta hasta que te guste, y si aun así no convence se devuelve la seña completa y ahí termina. Esa es la garantía, y es el motivo por el que el diseño va antes que el desarrollo.</p>
+    <p>Se ajusta hasta que te guste, y si aun así no convence no pagás nada y ahí termina. Esa es la garantía, y es el motivo por el que el diseño va antes que el desarrollo y antes de que pagues.</p>
+    <p>Lo que sí conviene saber de entrada: una vez que aprobás el presupuesto y pagás la seña, el trabajo empieza y la seña no se devuelve. Por eso el diseño se ve primero.</p>
     <p>El orden importa: primero mostrar, después construir. Al revés, el que asume todo el riesgo sos vos.</p>
 
     <h3>¿Cuántos cambios puedo pedir?</h3>
