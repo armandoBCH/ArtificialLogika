@@ -58,6 +58,13 @@ export default async function PrivacidadPage() {
                     agregada sobre cómo se usa el sitio: páginas vistas, tiempo de permanencia, tipo de
                     dispositivo, ciudad aproximada y desde dónde llegaste. No incluye tu nombre ni tu email.
                 </li>
+                <li>
+                    <strong>Avisos en Facebook e Instagram:</strong> usamos el píxel de Meta para saber si
+                    nuestros avisos traen visitas y consultas, y para mostrarle avisos de Logika a quien ya visitó
+                    el sitio. Meta recibe qué páginas viste y si tocaste un botón de WhatsApp o mandaste el
+                    formulario, junto con datos técnicos de tu navegador. No le mandamos tu nombre, tu email ni
+                    tu teléfono.
+                </li>
             </ul>
             <p>
                 <strong>No pedimos ni almacenamos datos de tarjetas ni información bancaria en este sitio.</strong>{" "}
@@ -69,9 +76,10 @@ export default async function PrivacidadPage() {
                 <li>Responder tu consulta y prepararte un presupuesto.</li>
                 <li>Contactarte durante el proyecto si lo contratás.</li>
                 <li>Entender qué partes del sitio funcionan y cuáles no, en forma agregada.</li>
+                <li>Medir nuestros avisos y mostrarte avisos de Logika en Facebook e Instagram.</li>
             </ul>
             <p>
-                <strong>No vendemos tus datos.</strong> No los usamos para publicidad de terceros ni te
+                <strong>No vendemos tus datos.</strong> No los usamos para publicidad de otras empresas ni te
                 mandamos correos masivos si no los pediste.
             </p>
 
@@ -79,8 +87,9 @@ export default async function PrivacidadPage() {
             <p>
                 Los mensajes del formulario se almacenan en <strong>Supabase</strong>, nuestro proveedor de base
                 de datos, y solo accede a ellos el equipo de Logika. La medición de uso la procesa{" "}
-                <strong>Google Analytics</strong>. Ambos son proveedores con servidores fuera de Argentina, lo que
-                implica una transferencia internacional de datos.
+                <strong>Google Analytics</strong>, y la de los avisos, <strong>Meta</strong>. Los tres son
+                proveedores con servidores fuera de Argentina, lo que implica una transferencia internacional de
+                datos.
             </p>
             <p>
                 No compartimos tu información con nadie más, salvo que una autoridad competente nos lo requiera
@@ -89,9 +98,10 @@ export default async function PrivacidadPage() {
 
             <h2>Cookies</h2>
             <p>
-                Usamos cookies de Google Analytics para medir el uso del sitio. No usamos cookies de publicidad ni
-                de perfilamiento. Podés bloquearlas desde la configuración de tu navegador; el sitio sigue
-                funcionando igual.
+                Usamos cookies de Google Analytics para medir el uso del sitio, y las del píxel de Meta para
+                medir nuestros avisos y mostrárselos a quien ya nos visitó. Podés bloquearlas desde la
+                configuración de tu navegador y elegir qué avisos ves desde las preferencias de anuncios de
+                Facebook o Instagram. El sitio sigue funcionando igual.
             </p>
 
             <h2>Cuánto tiempo los conservamos</h2>

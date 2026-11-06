@@ -17,11 +17,11 @@
 -- Tiene que decir "listo". Si dice "revisar", la columna "donde" dice qué corregir
 -- a mano desde /admin (Precios, FAQs, Testimonios).
 --
--- Para revertir: en /admin -> FAQs, reemplazá "Antes de pagar nada ... no se devuelve."
+-- Para revertir: en /admin -> FAQs, reemplazá "Antes de pagar nada ... aprobás el presupuesto."
 -- por "Si no te gusta el diseño inicial, te devolvemos la seña." (el texto anterior).
 
 UPDATE faqs
-SET answer     = 'Trabajamos con un 50% de seña para arrancar y el 50% restante al entregar. Antes de pagar nada te mostramos un diseño previo de tu web: si no te gusta, no pagás. La seña se paga recién cuando aprobás el presupuesto, y desde ahí no se devuelve. Aceptamos transferencia bancaria y podemos armar un plan de pago si lo necesitás.',
+SET answer     = 'Trabajamos con un 50% de seña para arrancar y el 50% restante al entregar. Antes de pagar nada te mostramos un diseño previo de tu web: si no te gusta, no pagás. La seña se paga recién cuando aprobás el presupuesto. Aceptamos transferencia bancaria y podemos armar un plan de pago si lo necesitás.',
     updated_at = now()
 WHERE question ILIKE '%forma de pago%'
   AND answer ~* '(devolvemos la seña|seña completa|reintegr|reembols)';

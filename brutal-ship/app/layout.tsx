@@ -6,6 +6,7 @@ import { SITE_URL, BUSINESS, SEO_KEYWORDS } from "@/lib/seo/constants";
 import ScrollProgress from "./components/ScrollProgress";
 import IconFontGate from "./components/IconFontGate";
 import PageTransition from "./components/PageTransition";
+import MetaPixel from "./components/MetaPixel";
 import "./globals.css";
 
 const GA_MEASUREMENT_ID = "G-5MTH0Y3GG2";
@@ -188,6 +189,7 @@ export default function RootLayout({
             gtag('config', '${GA_MEASUREMENT_ID}');
           `}
         </Script>
+        <MetaPixel />
       </body>
     </html>
   );

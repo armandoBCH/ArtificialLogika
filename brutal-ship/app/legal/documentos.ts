@@ -8,13 +8,13 @@
 export const DOCUMENTOS = {
     privacidad: {
         titulo: "Política de Privacidad",
-        actualizado: "23 de agosto de 2026",
+        actualizado: "5 de noviembre de 2026",
         intro: "Qué datos tuyos guardamos, para qué los usamos y cómo pedir que los borremos. Sin letra chica.",
         sello: "Sin letra chica",
     },
     terminos: {
         titulo: "Términos de Servicio",
-        actualizado: "12 de octubre de 2026",
+        actualizado: "5 de noviembre de 2026",
         intro: "Cómo trabajamos, qué incluye cada plan, cuándo se paga y qué pasa si algo no sale como esperabas.",
         sello: "Vigente",
     },

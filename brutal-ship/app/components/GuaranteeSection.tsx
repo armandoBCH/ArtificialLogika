@@ -6,7 +6,8 @@
  * Desde 2026-10-12 la seña NO se devuelve: el cliente ve el diseño previo y el
  * presupuesto antes de pagar nada, y una vez que aprueba el presupuesto y paga la seña
  * ya no es reintegrable (/terminos punto 6). Por eso la franja promete verlo antes de
- * pagar, no la devolución, y dice a la vista que la seña no vuelve.
+ * pagar, no la devolución. Desde 2026-11-05 la franja no dice si la seña vuelve o no
+ * (regla del dueño para todo lo que vende): eso lo dicen /terminos y el presupuesto.
  *
  * Desde 2026-09 es la franja que abre Precios: el titular conserva la escala, y todo lo
  * demás son condiciones de una línea, pegadas al número donde aparece la duda. Es el
@@ -19,20 +20,13 @@
  *
  * Las condiciones juntan lo que antes estaba repartido entre esta sección y las tres
  * promesas de la ProcessSection que se eliminó. Todas salen de PRODUCT.md y /terminos,
- * MENOS "Plazo firme": esa promesa vivía solo en el proceso y no figura en /terminos.
- * Está pendiente de que el dueño confirme que es política (.impeccable/TUS-TAREAS.md).
- * Si no lo es, se borra esa entrada y listo.
+ * "Plazo firme" se sacó el 2026-11-05: Logika no promete plazos firmes en lo que vende.
  */
 const CONDICIONES = [
     {
         icono: "payments",
         titulo: "Seña del 50%",
-        texto: "La pagás recién cuando aprobás el presupuesto, y desde ahí no se devuelve. El resto, al entregar.",
-    },
-    {
-        icono: "event_available",
-        titulo: "Plazo firme",
-        texto: "Si nos atrasamos, sumamos funciones sin cargo.",
+        texto: "La pagás recién cuando aprobás el presupuesto. El resto, al entregar.",
     },
     {
         icono: "support_agent",
@@ -73,7 +67,7 @@ export default function GuaranteeSection() {
                     </span>
                 </h2>
 
-                <ul className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6 border-y-2 border-black/15 py-8 text-left">
+                <ul className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6 border-y-2 border-black/15 py-8 text-left">
                     {CONDICIONES.map((c) => (
                         <li key={c.titulo}>
                             <span className="flex items-center gap-2">

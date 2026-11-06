@@ -88,6 +88,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
 
             if (res.ok) {
                 setStatus('success');
+                window.fbq?.('track', 'Lead');
                 form.reset();
             } else {
                 const data = await res.json().catch(() => ({}));

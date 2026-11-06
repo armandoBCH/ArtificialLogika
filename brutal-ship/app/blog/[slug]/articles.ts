@@ -82,7 +82,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿Hay que pagar todo por adelantado?",
                 respuesta:
-                    "No. Primero ves el diseño previo y el presupuesto sin pagar nada. Se arranca con el 50% de seña, que se paga al aprobar el presupuesto y no se devuelve, y el resto se paga al entregar.",
+                    "No. Primero ves el diseño previo y el presupuesto sin pagar nada. Se arranca con el 50% de seña, que se paga al aprobar el presupuesto, y el resto se paga al entregar.",
             },
             {
                 pregunta: "¿El precio incluye el dominio y el hosting?",
@@ -512,7 +512,6 @@ const articulos: Record<string, Articulo> = {
 
     <h3>¿Qué pasa si no me gusta el diseño?</h3>
     <p>Se ajusta hasta que te guste, y si aun así no convence no pagás nada y ahí termina. Esa es la garantía, y es el motivo por el que el diseño va antes que el desarrollo y antes de que pagues.</p>
-    <p>Lo que sí conviene saber de entrada: una vez que aprobás el presupuesto y pagás la seña, el trabajo empieza y la seña no se devuelve. Por eso el diseño se ve primero.</p>
     <p>El orden importa: primero mostrar, después construir. Al revés, el que asume todo el riesgo sos vos.</p>
 
     <h3>¿Cuántos cambios puedo pedir?</h3>

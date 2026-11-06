@@ -81,7 +81,7 @@ export async function GET() {
         "4. Aprobado el presupuesto y pagada la seña, el desarrollo lleva de 1 a 2 semanas para una landing page, y de 2 a 4 para un sitio institucional o un e-commerce.",
         "5. Logika publica el sitio y configura dominio, correo y todo lo técnico.",
         "",
-        "Se arranca con el 50% de seña, que se paga al aprobar el presupuesto y no se devuelve. El resto se paga cuando la web está lista.",
+        "Se arranca con el 50% de seña, que se paga al aprobar el presupuesto. El resto se paga cuando la web está lista.",
         "Incluye un mes de soporte sin costo extra.",
         "El diseño previo (mockup) y el presupuesto no tienen cargo ni compromiso.",
         ""

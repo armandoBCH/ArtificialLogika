@@ -14,6 +14,7 @@ export default function WhatsAppChatWidget({ config }: WhatsAppChatWidgetProps) 
 
     const handleSendMessage = (message: string) => {
         const encodedMessage = encodeURIComponent(message);
+        window.fbq?.('track', 'Contact');
         window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
         setIsOpen(false);
     };
