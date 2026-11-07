@@ -30,6 +30,14 @@ export default function Footer({ config }: FooterProps) {
                         <p className="text-white/70 text-sm leading-relaxed mb-6">
                             Y sí: es <strong className="font-bold text-white">Logika con K</strong>. Si nos buscaste como <em>logica</em>, llegaste bien.
                         </p>
+                        {/* La ubicación vivía solo en la tarjeta de WhatsApp de Contacto, que en
+                            celular ya no se muestra. Acá se ve en todos los tamaños. */}
+                        {config.location && (
+                            <p className="text-white/70 text-sm mb-6 flex items-center gap-1.5">
+                                <span aria-hidden="true" className="material-icons text-base">location_on</span>
+                                {config.location}
+                            </p>
+                        )}
                         <div className="flex gap-4">
                             <a
                                 className="size-11 flex items-center justify-center rounded-full border-2 border-white/25 hover:bg-hot-coral hover:border-hot-coral hover:text-white transition-all text-white/70"

@@ -1,25 +1,16 @@
-"use client";
-
-import { m, useScroll, useTransform } from "framer-motion";
+import type { ReactNode } from "react";
 import MagneticWrapper from "./MagneticWrapper";
 
 /**
- * El mockup del navegador es la animación original del proyecto: una escena que se
- * ARMA sola en bucle de 6s — cae el marquee, entra la barra de navegación, se
- * escribe el titular, el cursor cruza y hace clic, el botón se hunde y estalla.
+ * Hasta el 2026-11-06 la columna derecha era una maqueta animada: una web inventada
+ * ("www.tunegocio.com") que se armaba sola en loop de 6s. Era lo más genérico de la
+ * página, ocupaba el lugar donde la persona se pregunta "¿son reales?" y, como se movía
+ * sin parar y sin pausa, incumplía WCAG 2.2.2. El dueño eligió, entre tres opciones
+ * probadas en el sitio, mostrar trabajo real: `children` es <HeroTrabajos /> (page.tsx).
  *
- * Estuvo un tiempo rotando por rubros (peluquería, taller, estudio…). Eso montaba un
- * segundo relato encima del que la escena ya cuenta y obligaba a remontar el SVG cada
- * pocos segundos, cortando el armado por la mitad. Vuelve al original: una sola
- * escena, contada entera, con los easings de rebote que le dan el carácter.
- *
- * Las animaciones viven en globals.css bajo `.hero-svg-wrapper` (scoped, no inline).
+ * Nada del hero se mueve en loop. Solo entra el titular, una vez.
  */
-export default function HeroSection() {
-    const { scrollY } = useScroll();
-    // Parallax del círculo de fondo
-    const y1 = useTransform(scrollY, [0, 1000], [0, 150]);
-
+export default function HeroSection({ children }: { children?: ReactNode }) {
     // El titular anima con keyframes CSS, no con framer-motion, para que el HTML del
     // servidor ya llegue con el texto pintado. Quien nunca recibe el JS igual lo lee.
     const sentence1 = "Tu Web".split("");
@@ -32,34 +23,33 @@ export default function HeroSection() {
         // pt-28 en celular: con pt-36 quedaban ~75px vacíos entre el menú flotante y el titular.
         <header className="relative overflow-hidden bg-background-light pt-28 sm:pt-32 lg:pt-36 pb-24 border-b-2 border-black">
             {/* Había además un cuadrado amarillo abajo a la izquierda: a 1024px tapaba la
-                línea "Diseño previo y presupuesto sin cargo", que es la que más tranquiliza. */}
-            <m.div style={{ y: y1 }} className="absolute top-20 right-[-50px] w-64 h-64 bg-mint rounded-full border-2 border-black mix-blend-multiply opacity-80 hidden lg:block z-0 animate-pulse"></m.div>
+                línea "Diseño previo y presupuesto sin cargo", que es la que más tranquiliza.
+                El círculo queda quieto: antes latía y se desplazaba con el scroll. */}
+            <div aria-hidden="true" className="absolute top-20 right-[-50px] w-64 h-64 bg-mint rounded-full border-2 border-black mix-blend-multiply opacity-80 hidden lg:block z-0"></div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-8">
-                        <div className="hero-title-float">
-                            <h1
-                                aria-label="Tu Web Profesional."
-                                className="text-[clamp(3rem,12vw,6rem)] lg:text-[clamp(3rem,5vw,5.5rem)] font-bold leading-[0.9] tracking-[-0.02em] uppercase flex flex-col"
-                            >
-                                <span aria-hidden="true" className="flex overflow-hidden pb-2 -mb-2">
-                                    {sentence1.map((char, index) => (
-                                        <span key={index} style={letterDelay(index)} className="hero-letter inline-block">
-                                            {char === " " ? "\u00A0" : char}
+                        <h1
+                            aria-label="Tu Web Profesional."
+                            className="text-[clamp(3rem,12vw,6rem)] lg:text-[clamp(3rem,5vw,5.5rem)] font-bold leading-[0.9] tracking-[-0.02em] uppercase flex flex-col"
+                        >
+                            <span aria-hidden="true" className="flex overflow-hidden pb-2 -mb-2">
+                                {sentence1.map((char, index) => (
+                                    <span key={index} style={letterDelay(index)} className="hero-letter inline-block">
+                                        {char === " " ? " " : char}
+                                    </span>
+                                ))}
+                            </span>
+                            <span aria-hidden="true" className="flex overflow-hidden pb-4 -mb-4">
+                                <span className="text-transparent bg-clip-text bg-primary text-stroke whitespace-nowrap flex">
+                                    {sentence2.map((char, index) => (
+                                        <span key={index} style={letterDelay(sentence1.length + index)} className="hero-letter inline-block">
+                                            {char}
                                         </span>
                                     ))}
                                 </span>
-                                <span aria-hidden="true" className="flex overflow-hidden pb-4 -mb-4">
-                                    <span className="text-transparent bg-clip-text bg-primary text-stroke whitespace-nowrap flex">
-                                        {sentence2.map((char, index) => (
-                                            <span key={index} style={letterDelay(sentence1.length + index)} className="hero-letter inline-block">
-                                                {char}
-                                            </span>
-                                        ))}
-                                    </span>
-                                </span>
-                            </h1>
-                        </div>
+                            </span>
+                        </h1>
                         {/* "o renovamos la que ya tenés" es lo que quedó de la sección "¿Tu web es
                             vieja?". Su trabajo era enganchar a los dos públicos a la vez, y eso se
                             hace mejor acá, donde la persona decide si la página le habla a ella,
@@ -93,174 +83,8 @@ export default function HeroSection() {
                             </a>
                         </div>
                     </div>
-                    {/* El margen negativo subia la maqueta 48px. Con items-center en la
-                        grilla eso la metia detras del navbar fijo: arrancaba en 96px
-                        cuando la barra termina en 104. Sin el margen queda con 40px de
-                        aire, que es la separacion que ya tiene el titular. */}
                     <div className="relative w-full max-w-lg lg:max-w-xl mx-auto">
-                        {/* SVG animations are handled by scoped CSS in globals.css via .hero-svg-wrapper */}
-                        <div aria-hidden="true" className="bg-white border-4 border-black rounded-xl shadow-neobrutalism-xl overflow-hidden transform transition-all duration-300 hero-svg-wrapper flex flex-col">
-                            {/* Browser Header */}
-                            <div className="bg-[#E5E5E5] border-b-4 border-black px-5 py-3.5 flex items-center gap-2.5 relative z-10 w-full">
-                                <div className="w-4 h-4 rounded-full bg-[#FF6B6B] border-[3px] border-black"></div>
-                                <div className="w-4 h-4 rounded-full bg-[#FDE047] border-[3px] border-black"></div>
-                                <div className="w-4 h-4 rounded-full bg-[#00D68F] border-[3px] border-black"></div>
-                                <div className="ml-5 bg-white border-[3px] border-black rounded-[20px] px-4 py-1 text-sm font-bold text-center flex-grow max-w-[300px] text-[#1A1A1A]">
-                                    www.tunegocio.com
-                                </div>
-                            </div>
-                            {/* SVG Canvas */}
-                            <div className="w-full aspect-[4/3] bg-white relative">
-                                <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-60 mix-blend-multiply z-50">
-                                    <filter id="noiseFilter">
-                                        <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" />
-                                        <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.08 0" />
-                                    </filter>
-                                    <rect width="100%" height="100%" filter="url(#noiseFilter)" />
-                                </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" preserveAspectRatio="xMidYMid meet" className="w-full h-full block relative z-10">
-                                    <defs>
-                                        <pattern id="grid-pattern-hero" width="50" height="50" patternUnits="userSpaceOnUse">
-                                            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#E5E5E5" strokeWidth="2" />
-                                            <circle cx="0" cy="0" r="1.5" fill="#1A1A1A" opacity="0.3" />
-                                        </pattern>
-                                    </defs>
-
-                                    <g className="scene-fade">
-                                        <rect width="1000" height="750" fill="#FFFFFF" />
-                                        <rect width="1000" height="750" fill="url(#grid-pattern-hero)" />
-
-                                        <g className="shape-intro">
-                                            <g className="spin" style={{ transformOrigin: '900px 150px' }}>
-                                                <path d="M890 150 L910 150 M900 140 L900 160 M893 143 L907 157 M893 157 L907 143" stroke="#FDE047" strokeWidth="6" strokeLinecap="round" />
-                                            </g>
-                                            <circle cx="100" cy="650" r="24" fill="none" stroke="#4A90FF" strokeWidth="4" strokeDasharray="10 5" className="spin" style={{ transformOrigin: '100px 650px' }} />
-                                            <rect x="850" y="600" width="30" height="30" fill="#FF6B6B" stroke="#1A1A1A" strokeWidth="3" transform="rotate(25 865 615)" className="float" />
-                                        </g>
-
-                                        <g className="reveal-1">
-                                            <rect x="-4" y="-4" width="1008" height="44" fill="#FDE047" stroke="#1A1A1A" strokeWidth="4" />
-                                            <g className="marquee-track">
-                                                <text x="0" y="24" fontWeight="900" fontSize="14" fill="#1A1A1A" letterSpacing="1">
-                                                    ENVÍOS A TODO EL PAÍS · PEDÍ POR WHATSAPP · TU NEGOCIO, AHORA EN INTERNET · ATENDEMOS DE LUNES A SÁBADO · ENVÍOS A TODO EL PAÍS · PEDÍ POR WHATSAPP · TU NEGOCIO, AHORA EN INTERNET · ATENDEMOS DE LUNES A SÁBADO ·
-                                                </text>
-                                            </g>
-                                        </g>
-
-                                        <g className="reveal-2">
-                                            <rect x="-4" y="36" width="1008" height="74" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="4" />
-                                            <text x="60" y="82" fontWeight="900" fontSize="28" fill="#1A1A1A" letterSpacing="-1">TUNEGOCIO<tspan fill="#8523E1">.</tspan></text>
-                                            <text x="940" y="80" fontWeight="700" fontSize="15" fill="#1A1A1A" textAnchor="end" xmlSpace="preserve">Inicio   ·   Servicios   ·   Casos   ·   Contacto</text>
-                                            <rect x="860" y="60" width="46" height="24" rx="12" fill="#FF6B6B" stroke="#1A1A1A" strokeWidth="2" />
-                                            <text x="883" y="76" fontWeight="900" fontSize="12" fill="#FFFFFF" textAnchor="middle">PRO</text>
-                                        </g>
-
-                                        <g className="reveal-3">
-                                            <text x="60" y="230" fontWeight="900" fontSize="64" fill="#1A1A1A" letterSpacing="-2">Hacemos que</text>
-                                            <circle cx="480" cy="210" r="10" fill="#00D68F" stroke="#1A1A1A" strokeWidth="2" />
-                                        </g>
-
-                                        <g className="reveal-4">
-                                            <g transform="rotate(-2 190 280)">
-                                                <rect x="50" y="245" width="280" height="70" fill="#00D68F" stroke="#1A1A1A" strokeWidth="4" className="mint-highlight" />
-                                            </g>
-                                            <text x="60" y="300" fontWeight="900" fontSize="64" fill="#1A1A1A" letterSpacing="-2">tu marca</text>
-                                        </g>
-
-                                        <g className="reveal-5">
-                                            <text x="60" y="370" fontWeight="900" fontSize="64" fill="#1A1A1A" letterSpacing="-2">destaque hoy<tspan fill="#8523E1">.</tspan></text>
-                                            <path d="M60 385 Q 120 405, 180 385 T 300 385 T 450 385" fill="none" stroke="#FF6B6B" strokeWidth="6" strokeLinecap="round" />
-                                            <rect x="470" y="315" width="8" height="60" fill="#1A1A1A" className="blink" />
-                                        </g>
-
-                                        <g className="reveal-6" style={{ transformOrigin: '180px 470px' }}>
-                                            <rect x="66" y="446" width="240" height="64" fill="#1A1A1A" />
-                                            <g className="btn-press">
-                                                <rect x="60" y="440" width="240" height="64" fill="#8523E1" stroke="#1A1A1A" strokeWidth="4" />
-                                                <text x="180" y="482" fontWeight="900" fontSize="20" fill="#FFFFFF" textAnchor="middle">Empezar ahora →</text>
-                                            </g>
-                                            <g style={{ transformOrigin: '180px 472px' }}>
-                                                <circle cx="180" cy="472" r="10" fill="none" stroke="#8523E1" className="ring-burst" />
-                                                <g className="starburst-anim" style={{ transformOrigin: '180px 472px' }}>
-                                                    <path d="M180 390 L195 450 L255 440 L205 475 L230 530 L180 490 L130 530 L155 475 L105 440 L165 450 Z" fill="#FDE047" stroke="#1A1A1A" strokeWidth="4" strokeLinejoin="round" />
-                                                    <circle cx="110" cy="400" r="10" fill="#FF6B6B" stroke="#1A1A1A" strokeWidth="3" />
-                                                    <circle cx="260" cy="390" r="8" fill="#00D68F" stroke="#1A1A1A" strokeWidth="3" />
-                                                    <circle cx="250" cy="550" r="12" fill="#4A90FF" stroke="#1A1A1A" strokeWidth="3" />
-                                                    <rect x="90" y="510" width="16" height="16" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="3" transform="rotate(20 98 518)" />
-                                                </g>
-                                            </g>
-                                        </g>
-
-                                        <g className="reveal-7">
-                                            <g className="float" style={{ transformOrigin: '750px 300px' }}>
-                                                <rect x="576" y="166" width="360" height="280" fill="#1A1A1A" transform="rotate(4 750 300)" />
-                                                <rect x="570" y="160" width="360" height="280" fill="#00D68F" stroke="#1A1A1A" strokeWidth="4" transform="rotate(4 750 300)" />
-                                                <circle cx="880" cy="200" r="60" fill="#8523E1" stroke="#1A1A1A" strokeWidth="4" />
-
-                                                <rect x="520" y="220" width="300" height="200" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="4" />
-                                                <rect x="520" y="220" width="300" height="30" fill="#E5E5E5" strokeWidth="0" />
-                                                <line x1="520" y1="250" x2="820" y2="250" stroke="#1A1A1A" strokeWidth="4" />
-                                                <circle cx="540" cy="235" r="5" fill="#1A1A1A" />
-                                                <circle cx="555" cy="235" r="5" fill="#1A1A1A" />
-
-                                                <rect x="550" y="360" width="30" height="40" fill="#4A90FF" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '550px 400px' }} />
-                                                <rect x="600" y="320" width="30" height="80" fill="#FDE047" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '600px 400px', animationDelay: '0.2s' }} />
-                                                <rect x="650" y="280" width="30" height="120" fill="#FF6B6B" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '650px 400px', animationDelay: '0.4s' }} />
-                                                <rect x="700" y="340" width="30" height="60" fill="#8523E1" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '700px 400px', animationDelay: '0.1s' }} />
-                                                <line x1="540" y1="400" x2="750" y2="400" stroke="#1A1A1A" strokeWidth="4" />
-
-                                                <g transform="translate(800, 360) rotate(-15)">
-                                                    <polygon points="0,-25 15,-10 35,-15 25,5 40,20 20,25 15,45 0,30 -15,45 -20,25 -40,20 -25,5 -35,-15 -15,-10" fill="#FDE047" stroke="#1A1A1A" strokeWidth="3" />
-                                                    <text x="0" y="6" fontWeight="900" fontSize="16" fill="#1A1A1A" textAnchor="middle">100%</text>
-                                                </g>
-                                            </g>
-                                        </g>
-
-                                        <g className="reveal-8">
-                                            <rect x="66" y="556" width="270" height="150" fill="#1A1A1A" />
-                                            <rect x="60" y="550" width="270" height="150" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="4" />
-                                            <rect x="60" y="550" width="270" height="40" fill="#FDE047" />
-                                            <line x1="60" y1="590" x2="330" y2="590" stroke="#1A1A1A" strokeWidth="4" />
-                                            <text x="195" y="577" fontWeight="900" fontSize="18" fill="#1A1A1A" textAnchor="middle">Estrategia</text>
-                                            <path d="M 90 670 L 130 640 L 160 650 L 210 610" fill="none" stroke="#4A90FF" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="draw-path" />
-                                            <polygon points="200,610 220,600 215,620" fill="#4A90FF" stroke="#1A1A1A" strokeWidth="2" />
-                                            <line x1="80" y1="610" x2="80" y2="680" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
-                                            <line x1="80" y1="680" x2="230" y2="680" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
-                                        </g>
-
-                                        <g className="reveal-9">
-                                            <rect x="366" y="556" width="270" height="150" fill="#1A1A1A" />
-                                            <rect x="360" y="550" width="270" height="150" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="4" />
-                                            <rect x="360" y="550" width="270" height="40" fill="#00D68F" />
-                                            <line x1="360" y1="590" x2="630" y2="590" stroke="#1A1A1A" strokeWidth="4" />
-                                            <text x="495" y="577" fontWeight="900" fontSize="18" fill="#1A1A1A" textAnchor="middle">Diseño UI</text>
-                                            <rect x="390" y="615" width="40" height="20" rx="10" fill="#E5E5E5" stroke="#1A1A1A" strokeWidth="3" />
-                                            <circle cx="400" cy="625" r="6" fill="#1A1A1A" className="toggle-slide" />
-                                            <rect x="445" y="620" width="140" height="10" fill="#E5E5E5" stroke="#1A1A1A" strokeWidth="2" />
-                                            <rect x="390" y="655" width="40" height="20" rx="10" fill="#8523E1" stroke="#1A1A1A" strokeWidth="3" />
-                                            <circle cx="420" cy="665" r="6" fill="#FFFFFF" />
-                                            <rect x="445" y="660" width="100" height="10" fill="#E5E5E5" stroke="#1A1A1A" strokeWidth="2" />
-                                        </g>
-
-                                        <g className="reveal-8" style={{ animationDelay: '0.1s' }}>
-                                            <rect x="666" y="556" width="270" height="150" fill="#1A1A1A" />
-                                            <rect x="660" y="550" width="270" height="150" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="4" />
-                                            <rect x="660" y="550" width="270" height="40" fill="#FF6B6B" />
-                                            <line x1="660" y1="590" x2="930" y2="590" stroke="#1A1A1A" strokeWidth="4" />
-                                            <text x="795" y="577" fontWeight="900" fontSize="18" fill="#1A1A1A" textAnchor="middle">Desarrollo</text>
-                                            <text x="690" y="625" fontWeight="700" fontSize="12" fill="#1A1A1A">Compilando...</text>
-                                            <rect x="690" y="640" width="210" height="16" rx="8" fill="#E5E5E5" stroke="#1A1A1A" strokeWidth="3" />
-                                            <rect x="690" y="640" width="0" height="16" rx="8" fill="#FDE047" stroke="#1A1A1A" strokeWidth="3" className="progress-fill" />
-                                        </g>
-
-                                        <g className="cursor-anim">
-                                            <path d="M 12 12 L 32 42 L 38 28 L 52 22 Z" fill="#1A1A1A" />
-                                            <path d="M 0 0 L 20 30 L 26 16 L 40 10 Z" fill="#1A1A1A" stroke="#FFFFFF" strokeWidth="3" strokeLinejoin="round" />
-                                        </g>
-                                    </g>
-                            </svg>
-                            </div>
-                        </div>
+                        {children}
                     </div>
                 </div>
             </div>

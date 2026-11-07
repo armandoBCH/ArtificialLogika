@@ -319,8 +319,10 @@ export default function ContactSection({ config }: ContactSectionProps) {
                             <TeamCard />
                         </div>
 
-                        {/* WhatsApp Card */}
-                        <div className="order-3 lg:order-none bg-ink-black rounded-xl border-2 border-black p-8 shadow-neobrutalism">
+                        {/* WhatsApp Card. En celular no va: la barra fija de abajo ya tiene
+                            WhatsApp a un toque todo el tiempo, y la tarjeta sumaba media pantalla
+                            entre el formulario y el final. El mail sigue en el footer. */}
+                        <div className="hidden lg:block lg:order-none bg-ink-black rounded-xl border-2 border-black p-8 shadow-neobrutalism">
                             <div>
                                 <div className="size-12 bg-whatsapp rounded-lg flex items-center justify-center border-2 border-black mb-4 shadow-neobrutalism-white">
                                     <span aria-hidden="true" className="material-icons text-black text-2xl">chat</span>
