@@ -72,7 +72,7 @@ export default function PortfolioShowcase({ projects, testimonials = [] }: Portf
                         </svg>
                     </div>
                     <div className="flex flex-col">
-                        <h2 id="portafolio-heading" className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] text-white">
+                        <h2 id="portafolio-heading" className="titular-seccion text-white">
                             Nuestro <span className="text-accent-yellow">Trabajo</span>
                         </h2>
                         <p className="mt-3 md:mt-4 text-base md:text-xl font-medium text-white/75 max-w-xl">
@@ -93,7 +93,7 @@ export default function PortfolioShowcase({ projects, testimonials = [] }: Portf
 
                 <div className="mt-10 text-center">
                     <Link
-                        className="cta inline-block w-full sm:w-auto px-6 py-4 md:px-10 bg-accent-yellow text-ink-black text-sm md:text-lg font-bold uppercase tracking-widest border-2 border-transparent hover:bg-white hover:border-black shadow-neobrutalism-white transition-all duration-300 hover:-translate-y-1"
+                        className="boton boton-amarillo boton-sobre-oscuro w-full sm:w-auto px-6 py-4 md:px-10 md:text-lg"
                         href="/portafolio"
                     >
                         Ver todos los trabajos

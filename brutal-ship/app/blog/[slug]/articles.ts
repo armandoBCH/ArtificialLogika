@@ -44,7 +44,7 @@ export interface Articulo {
 const articulos: Record<string, Articulo> = {
     "cuanto-cuesta-una-pagina-web-en-argentina": {
         respuestaCorta:
-            "En Logika, en 2026, una landing page de una sola sección arranca en $200.000, un sitio institucional de hasta 5 páginas en $350.000 y una tienda online en $600.000. El plazo de entrega va de 1 a 2 semanas para una landing y de 2 a 4 semanas para un sitio institucional o un e-commerce. A eso hay que sumarle entre $15.000 y $30.000 por mes de hosting y dominio, que es lo único que se paga siempre.",
+            "En Logika, en 2026, una landing page de una sola sección arranca en $200.000, un sitio institucional de hasta 5 páginas en $350.000 y una tienda online en $600.000. El plazo de entrega va de 1 a 2 semanas para una landing y de 2 a 4 semanas para un sitio institucional o un e-commerce. A eso hay que sumarle el hosting y el dominio, que se renuevan, van detallados en el presupuesto y son lo único que se paga siempre.",
         contenido: `
     <h2>¿Cuánto cuesta una página web en Argentina?</h2>
     <p>Depende de qué tenga que hacer la web, y las diferencias son grandes. Abajo están los tres casos que cubren a la mayoría de los negocios, con el precio y el plazo de cada uno.</p>
@@ -67,7 +67,7 @@ const articulos: Record<string, Articulo> = {
 
     <h3>¿Conviene pago único o mensualidad?</h3>
     <p>Pago único, salvo que necesites cambios seguidos. Con las plataformas por suscripción pagás todos los meses para siempre y la web no es tuya: si dejás de pagar, desaparece.</p>
-    <p>Lo único que sí se paga siempre es el hosting y el dominio, y ronda entre <strong>$15.000 y $30.000 por mes</strong>. Eso no es una suscripción a un servicio: es el alquiler del lugar donde vive tu web.</p>
+    <p>Lo único que sí se paga siempre es el hosting y el dominio. Eso no es una suscripción a un servicio: es el alquiler del lugar donde vive tu web, y el monto va detallado en el presupuesto.</p>
 
     <h3>¿Por qué hay presupuestos de $75.000 y otros de $3.000.000?</h3>
     <p>Porque no están vendiendo lo mismo. Abajo de $150.000 normalmente es una plantilla cargada con tu logo, sin diseño propio ni configuración de SEO. Arriba de $2.300.000 suele haber una agencia con estructura, cuentas y varias personas involucradas.</p>
@@ -87,7 +87,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿El precio incluye el dominio y el hosting?",
                 respuesta:
-                    "Sí, se tramita todo: dominio .com o .com.ar, hosting, correos profesionales y certificado de seguridad. El costo mensual de mantener eso activo ronda los $15.000 a $30.000.",
+                    "Sí, se tramita todo: dominio .com o .com.ar, hosting, correos profesionales y certificado de seguridad. Mantener eso activo tiene un costo aparte, que va detallado en el presupuesto.",
             },
             {
                 pregunta: "¿Hace falta saber de tecnología?",
@@ -307,7 +307,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿El dominio está incluido en el precio de la web?",
                 respuesta:
-                    "Logika tramita el dominio, el hosting, los correos y el certificado de seguridad. El costo de mantener eso activo ronda los $15.000 a $30.000 por mes.",
+                    "Logika tramita el dominio, el hosting, los correos y el certificado de seguridad. Mantener eso activo tiene un costo aparte, que va detallado en el presupuesto.",
             },
             {
                 pregunta: "¿El dominio queda a mi nombre?",
@@ -324,15 +324,15 @@ const articulos: Record<string, Articulo> = {
 
     "que-es-el-hosting-web": {
         respuestaCorta:
-            "El hosting es el servicio que mantiene tu web encendida y accesible las 24 horas: es el lugar donde viven los archivos, las fotos y los textos. Sin hosting, el dominio no lleva a ningún lado. Para una web de negocio chico o mediano el costo ronda entre $15.000 y $30.000 por mes incluyendo el dominio, y es el único gasto que se paga siempre.",
+            "El hosting es el servicio que mantiene tu web encendida y accesible las 24 horas: es el lugar donde viven los archivos, las fotos y los textos. Sin hosting, el dominio no lleva a ningún lado. Se paga aparte del diseño, junto con el dominio, y es el único gasto que se paga siempre.",
         contenido: `
     <h2>¿Qué es el hosting de una página web?</h2>
     <p>Es el servicio que mantiene tu web prendida y disponible. Los archivos, las fotos y los textos viven en una computadora que está encendida todo el día, y eso es lo que se alquila.</p>
     <p>Si el dominio es la dirección, el hosting es la casa. Podés tener la dirección, pero sin casa no hay adónde llegar.</p>
 
     <h3>¿Cuánto cuesta el hosting en Argentina?</h3>
-    <p>Entre $15.000 y $30.000 por mes para una web de negocio chico o mediano, con el dominio incluido. Es el único costo que se paga siempre, hagas lo que hagas.</p>
-    <p>Hay opciones más baratas, pero suelen compartir el servidor con cientos de sitios y eso se nota: la web tarda en cargar. Una web lenta pierde visitantes antes de que lean nada.</p>
+    <p>Depende del tamaño de la web y de lo que tenga que aguantar: no es lo mismo una página de presentación que una tienda con muchas fotos. En Logika el monto, con el dominio incluido, va detallado en el presupuesto. Es el único costo que se paga siempre, hagas lo que hagas.</p>
+    <p>Hay hostings más baratos, pero suelen compartir el servidor con cientos de sitios y eso se nota: la web tarda en cargar. Una web lenta pierde visitantes antes de que lean nada.</p>
 
     <h3>¿Puedo tener una web sin pagar hosting?</h3>
     <p>Existen planes gratuitos, pero tienen costos escondidos: publicidad de la plataforma en tu sitio, una dirección del tipo tunegocio.plataforma.com en vez de dominio propio, y límites de tráfico.</p>
@@ -350,7 +350,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿El hosting y el dominio se pagan por separado?",
                 respuesta:
-                    "Se pueden contratar por separado, pero lo habitual es tenerlos juntos para simplificar. En Logika se tramitan ambos y el costo mensual conjunto ronda los $15.000 a $30.000.",
+                    "Se pueden contratar por separado, pero lo habitual es tenerlos juntos para simplificar. En Logika se tramitan ambos y el costo de los dos va detallado en el presupuesto.",
             },
             {
                 pregunta: "¿Necesito saber de servidores para tener una web?",
@@ -709,7 +709,7 @@ const articulos: Record<string, Articulo> = {
 
     <h3>3. ¿Cuánto presupuesto conviene manejar?</h3>
     <p>En Logika, en 2026, una web arranca en <strong>$200.000</strong> si es una landing page y en <strong>$600.000</strong> si es una tienda online. El desglose completo, con lo que incluye cada franja de precio, está en la <a href="/blog/cuanto-cuesta-una-pagina-web-en-argentina">nota de costos</a>.</p>
-    <p>Aparte de ese pago único hay un gasto mensual que se paga siempre: el hosting y el dominio, entre $15.000 y $30.000 por mes. Contemplalo antes de decidir, porque es el costo que no desaparece nunca.</p>
+    <p>Aparte de ese pago único hay un gasto que se paga siempre: el hosting y el dominio, que se renuevan y van detallados en el presupuesto. Contemplalo antes de decidir, porque es el costo que no desaparece nunca.</p>
 
     <h3>4. ¿Qué tengo que preparar antes de arrancar?</h3>
     <p>Los textos de qué hacés, fotos propias de tu trabajo o tus productos, y tus datos de contacto y horarios. El logo ayuda pero no frena: se puede arrancar sin él.</p>
@@ -744,7 +744,7 @@ const articulos: Record<string, Articulo> = {
             {
                 pregunta: "¿Cuánto tengo que tener presupuestado para hacer mi página web?",
                 respuesta:
-                    "En Logika, en 2026, una web arranca en $200.000 si es una landing page y en $600.000 si es una tienda online, más entre $15.000 y $30.000 por mes de hosting y dominio.",
+                    "En Logika, en 2026, una web arranca en $200.000 si es una landing page y en $600.000 si es una tienda online, más el hosting y el dominio, que se renuevan y van detallados en el presupuesto.",
             },
             {
                 pregunta: "¿Puedo hacer todos los pasos yo mismo, sin agencia?",

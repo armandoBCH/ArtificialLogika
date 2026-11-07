@@ -70,7 +70,7 @@ export default function ProjectCard({ project, variante = "home" }: ProjectCardP
                         <span className="absolute inset-0 flex items-center justify-center text-xs text-ink-black/60">Sin imagen</span>
                     )}
                     {muestra && (
-                        <span className="sello absolute left-2 top-2 z-[1] bg-accent-yellow text-ink-black text-[10px] shadow-neobrutalism-sm">
+                        <span className="sello absolute left-2 top-2 z-[1] bg-accent-yellow text-ink-black text-xs shadow-neobrutalism-sm">
                             Muestra
                         </span>
                     )}
@@ -78,7 +78,7 @@ export default function ProjectCard({ project, variante = "home" }: ProjectCardP
 
                 <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-4 md:p-5">
                     {categorias.length > 0 && (
-                        <p className="truncate text-[11px] font-black uppercase tracking-[0.14em] text-ink-black/60">
+                        <p className="etiqueta truncate text-ink-black/70">
                             {lista ? categorias.join(" · ") : categorias[0]}
                         </p>
                     )}
@@ -115,11 +115,11 @@ export default function ProjectCard({ project, variante = "home" }: ProjectCardP
                         ? stats.slice(0, 2).map((s, i) => (
                             <li key={i} className="inline-flex items-baseline gap-1 rounded-md border-2 border-black bg-accent-yellow px-2 py-0.5">
                                 <span className="text-sm font-black tabular-nums text-ink-black md:text-base">{s.value}</span>
-                                <span className="text-[11px] font-bold uppercase tracking-wide text-ink-black/80">{s.label}</span>
+                                <span className="etiqueta text-ink-black/80">{s.label}</span>
                             </li>
                         ))
                         : hechos.map((h, i) => (
-                            <li key={i} className={`${i > 0 ? "hidden sm:block " : ""}max-w-full truncate rounded-md border-2 border-black/15 bg-background-light px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-ink-black/75`}>
+                            <li key={i} className={`${i > 0 ? "hidden sm:block " : ""}etiqueta max-w-full truncate rounded-md border-2 border-black/15 bg-background-light px-2 py-0.5 text-ink-black/75`}>
                                 {h}
                             </li>
                         ))}

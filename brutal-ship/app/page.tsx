@@ -1,5 +1,6 @@
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
+import HeroTrabajos from "./components/HeroTrabajos";
 import WhoDoesWhatSection from "./components/WhoDoesWhatSection";
 import PortfolioShowcase from "./components/PortfolioShowcase";
 import GuaranteeSection from "./components/GuaranteeSection";
@@ -53,7 +54,9 @@ export default async function Home() {
       <PricingJsonLd plans={plans} />
       <Navbar config={config} />
       <main id="contenido">
-      <HeroSection />
+      <HeroSection>
+        <HeroTrabajos projects={projects} />
+      </HeroSection>
       {/* Seis bloques, uno por pregunta de quien llega sin conocernos:
           ¿qué hacen? -> ¿qué tengo que hacer yo? -> ¿son reales? ->
           ¿cuánto sale y si no me gusta? -> mis otras dudas -> ¿con quién hablo?

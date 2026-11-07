@@ -173,12 +173,12 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                         <div className="rounded-xl border-2 border-black bg-white p-5 shadow-neobrutalism md:p-6 lg:sticky lg:top-32">
                             <div className="flex flex-wrap items-center gap-2">
                                 {categorias.map((c) => (
-                                    <span key={c} className="rounded-full bg-ink-black px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-white">
+                                    <span key={c} className="etiqueta rounded-full bg-ink-black px-3 py-1 text-white">
                                         {c}
                                     </span>
                                 ))}
                                 {muestra && (
-                                    <span className="sello bg-accent-yellow text-ink-black text-[11px] shadow-neobrutalism-sm">Proyecto de muestra</span>
+                                    <span className="sello bg-accent-yellow text-ink-black text-xs shadow-neobrutalism-sm">Proyecto de muestra</span>
                                 )}
                             </div>
                             <h1 className="mt-3 text-3xl font-bold uppercase leading-[1.05] tracking-tight md:text-4xl">
@@ -211,7 +211,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                             <div className="mt-6 flex flex-col gap-3">
                                 <Link
                                     href="/#contacto"
-                                    className="cta inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-black bg-primary px-5 font-bold uppercase tracking-wide text-white shadow-neobrutalism-sm transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                                    className="boton boton-primario"
                                 >
                                     Quiero una web así
                                     <span aria-hidden="true" className="material-icons text-lg">arrow_forward</span>
@@ -220,10 +220,10 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                     href={whatsappUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="cta inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-black bg-white px-5 font-bold uppercase tracking-wide text-ink-black transition-colors hover:bg-[#25D366]"
+                                    className="boton boton-whatsapp"
                                 >
                                     <span aria-hidden="true" className="material-icons text-lg">chat</span>
-                                    Consultar por WhatsApp
+                                    Hablemos por WhatsApp
                                 </a>
                                 {project.external_url && (
                                     <a
@@ -268,7 +268,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                 <section aria-labelledby="incluye">
                                     <h2 id="incluye" className="flex items-baseline gap-3 text-2xl font-bold uppercase tracking-tight md:text-3xl">
                                         Qué incluye
-                                        <span className="text-sm font-black tabular-nums text-ink-black/50">{incluye.length}</span>
+                                        <span className="text-sm font-bold tabular-nums text-ink-black/70">{incluye.length}</span>
                                     </h2>
                                     <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2.5 rounded-xl border-2 border-black bg-background-light p-5 sm:grid-cols-2">
                                         {incluye.map((f) => (

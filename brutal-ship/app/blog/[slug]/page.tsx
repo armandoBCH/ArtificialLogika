@@ -130,21 +130,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <Navbar config={config} />
 
             <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 lg:py-20 relative z-10">
-                {/* Decoración de fondo */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] h-[600px] pattern-grid-lg text-black/[0.03] pointer-events-none -z-10"></div>
-
-                {/* Breadcrumb nav */}
-                <nav className="text-sm font-bold text-ink-black/70 mb-12 flex items-center gap-3 uppercase tracking-wider justify-center">
-                    <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
-                    <span className="text-primary">/</span>
-                    <Link href="/blog" className="hover:text-primary transition-colors">Blog</Link>
-                    <span className="text-primary">/</span>
-                    <span className="text-ink-black/60 truncate max-w-[150px] md:max-w-[300px]">{post.title}</span>
+                {/* Migas con 44px de alto para el dedo: antes medían 20. */}
+                <nav aria-label="Ruta" className="etiqueta text-sm text-ink-black/70 mb-8 flex items-center gap-2 justify-center">
+                    <Link href="/" className="inline-flex min-h-11 items-center hover:text-primary transition-colors">Inicio</Link>
+                    <span aria-hidden="true" className="text-primary">/</span>
+                    <Link href="/blog" className="inline-flex min-h-11 items-center hover:text-primary transition-colors">Blog</Link>
+                    <span aria-hidden="true" className="text-primary">/</span>
+                    <span aria-current="page" className="text-ink-black/70 truncate max-w-[150px] md:max-w-[300px]">{post.title}</span>
                 </nav>
 
                 <header className="mb-16 text-center border-b-4 border-black/10 pb-16">
                     <div className="flex justify-center items-center gap-4 mb-8 flex-wrap">
-                        <span className="bg-primary text-white text-sm font-black px-4 py-2 border-2 border-black shadow-neobrutalism uppercase rounded-lg transform -rotate-2">
+                        <span className="etiqueta text-sm bg-primary text-white px-4 py-2 border-2 border-black shadow-neobrutalism rounded-lg -rotate-2">
                             {post.category}
                         </span>
                         <time className="text-base font-bold text-ink-black/80 bg-background-light px-4 py-2 rounded-lg border-2 border-transparent" dateTime={post.date}>
@@ -159,10 +156,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                             {post.readTime}
                         </span>
                     </div>
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-8 uppercase drop-shadow-neobrutalism-sm text-black">
+                    {/* El título de una nota es una pregunta larga: en mayúsculas y a 96px se
+                        leía letra por letra. Va en minúscula, que es como se lee rápido. */}
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-[-0.02em] leading-[1.05] mb-8 text-ink-black">
                         {post.title}
                     </h1>
-                    <p className="text-2xl text-ink-black/80 font-medium max-w-3xl mx-auto leading-relaxed border-x-4 border-primary px-6 py-2">
+                    <p className="text-xl md:text-2xl text-ink-black/80 font-medium max-w-3xl mx-auto leading-relaxed border-x-4 border-primary px-6 py-2">
                         {post.excerpt}
                     </p>
                 </header>
@@ -173,9 +172,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     un fragmento citable sin tener que resumir la nota entera. */}
                 <aside
                     aria-label="Respuesta corta"
-                    className="mt-12 mb-4 max-w-3xl mx-auto border-4 border-black bg-accent-yellow rounded-xl p-6 md:p-8 shadow-neobrutalism"
+                    className="mt-12 mb-12 max-w-3xl mx-auto border-4 border-black bg-accent-yellow rounded-xl p-6 md:p-8 shadow-neobrutalism"
                 >
-                    <p className="text-xs font-black uppercase tracking-[0.18em] text-ink-black/70">
+                    <p className="etiqueta text-ink-black/75">
                         En corto
                     </p>
                     <p className="mt-3 text-lg md:text-xl font-bold leading-snug text-ink-black">
@@ -183,18 +182,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     </p>
                 </aside>
 
-                {/* Article Body Neobrutalista */}
+                {/* Cuerpo de la nota. La tipografía (18px en celular, 20px en computadora,
+                    subtítulos, enlaces, viñetas) está en globals.css bajo `article .prose`:
+                    el plugin de Tailwind que leía las clases `prose-*` nunca estuvo instalado.
+                    Mismo ancho que "En corto" y las preguntas: ~70 caracteres por renglón. */}
                 <div
-                    className="prose prose-xl md:prose-2xl max-w-none mx-auto
-                    prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight prose-headings:mt-16
-                    prose-h2:text-4xl prose-h2:md:text-5xl prose-h2:border-b-4 prose-h2:border-primary prose-h2:pb-2 prose-h2:inline-flex prose-h2:mb-8
-                    prose-h3:text-2xl prose-h3:md:text-3xl prose-h3:text-hot-coral prose-h3:mt-12
-                    prose-p:text-ink-black prose-p:leading-relaxed prose-p:text-xl md:prose-p:text-2xl
-                    prose-a:text-hot-coral prose-a:font-bold prose-a:underline prose-a:decoration-4 prose-a:underline-offset-4 hover:prose-a:bg-hot-coral hover:prose-a:text-white transition-all
-                    prose-strong:bg-accent-yellow/40 prose-strong:px-1 prose-strong:text-black
-                    prose-ul:list-none prose-ul:pl-0 prose-li:relative prose-li:pl-10 prose-li:mb-4
-                    before:prose-li:content-['→'] before:prose-li:absolute before:prose-li:left-0 before:prose-li:text-primary before:prose-li:font-black before:prose-li:text-2xl
-                    prose-blockquote:border-l-8 prose-blockquote:border-black prose-blockquote:bg-background-light prose-blockquote:p-8 md:prose-blockquote:p-12 prose-blockquote:not-italic prose-blockquote:font-medium prose-blockquote:text-2xl md:prose-blockquote:text-3xl prose-blockquote:shadow-neobrutalism-xl prose-blockquote:rounded-lg prose-blockquote:my-16"
+                    className="prose max-w-3xl mx-auto"
                     dangerouslySetInnerHTML={{ __html: articulo.contenido }}
                 />
 
@@ -207,7 +200,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     >
                         <h2
                             id="preguntas-nota"
-                            className="text-3xl md:text-4xl font-black uppercase tracking-tight border-b-4 border-primary pb-2 inline-flex mb-8"
+                            className="text-3xl md:text-4xl font-bold uppercase tracking-[-0.02em] border-b-4 border-primary pb-2 inline-flex mb-8"
                         >
                             Preguntas frecuentes
                         </h2>
@@ -233,7 +226,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     <section aria-labelledby="notas-relacionadas" className="mt-24">
                         <h2
                             id="notas-relacionadas"
-                            className="text-3xl md:text-4xl font-black uppercase tracking-tight border-b-4 border-primary pb-2 inline-flex mb-8"
+                            className="text-3xl md:text-4xl font-bold uppercase tracking-[-0.02em] border-b-4 border-primary pb-2 inline-flex mb-8"
                         >
                             Artículos relacionados
                         </h2>
@@ -242,12 +235,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                 <Link
                                     key={r.slug}
                                     href={`/blog/${r.slug}`}
-                                    className="group flex flex-col bg-white border-4 border-black rounded-xl p-6 shadow-neobrutalism-lg hover:-translate-y-2 hover:-translate-x-1 hover:shadow-neobrutalism-xl transition-all duration-300"
+                                    className="group flex flex-col bg-white border-2 border-black rounded-xl p-6 shadow-neobrutalism hover:-translate-y-0.5 hover:shadow-neobrutalism-lg transition-all duration-200"
                                 >
-                                    <span className="self-start bg-primary text-white text-xs font-bold px-3 py-1.5 border-2 border-black shadow-neobrutalism-sm uppercase rounded-full mb-4">
+                                    <span className="etiqueta self-start bg-primary text-white px-3 py-1.5 border-2 border-black rounded-full mb-4">
                                         {r.category}
                                     </span>
-                                    <h3 className="text-xl md:text-2xl font-black leading-tight tracking-tight group-hover:text-primary transition-colors">
+                                    <h3 className="text-xl md:text-2xl font-bold leading-tight group-hover:text-primary transition-colors">
                                         {r.title}
                                     </h3>
                                 </Link>
@@ -256,31 +249,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     </section>
                 )}
 
-                {/* CTA Neobrutalista */}
-                <div className="mt-24 md:mt-32 bg-primary/10 border-4 border-black rounded-2xl p-8 md:p-12 text-center shadow-neobrutalism-xl relative overflow-hidden group">
-                    <div className="absolute top-[-50px] right-[-50px] w-64 h-64 bg-primary rounded-full blur-[80px] opacity-30 group-hover:opacity-50 transition-opacity duration-700"></div>
-                    <div className="absolute bottom-[-50px] left-[-50px] w-64 h-64 bg-hot-coral rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
-
-                    <div className="relative z-10">
-                        <h2 className="text-4xl md:text-5xl font-black uppercase mb-4 tracking-tight leading-none text-black">¿Necesitás tu web<br /> <span className="text-primary">profesional?</span></h2>
-                        <p className="text-xl md:text-2xl font-medium text-ink-black mb-8 max-w-2xl mx-auto">
-                            Contactanos y en menos de 48hs te enviamos un presupuesto y un diseño previo de tu web, gratis. Sin letra chica.
-                        </p>
-                        <Link
-                            href="/#contacto"
-                            className="cta inline-flex max-w-full items-center justify-center gap-3 bg-black text-white font-black text-lg md:text-xl uppercase py-5 px-10 rounded-xl border-4 border-transparent hover:border-primary hover:bg-transparent hover:text-primary transition-all duration-300 transform hover:-translate-y-1 shadow-neobrutalism-lg hover:shadow-neobrutalism-xl"
-                        >
-                            Pedir Presupuesto Gratis
-                            <span aria-hidden="true" className="material-icons text-xl">rocket_launch</span>
-                        </Link>
-                    </div>
+                {/* El cierre de cada nota: el mismo CTA y la misma promesa que la home. */}
+                <div className="mt-24 md:mt-32 bg-white border-2 border-black rounded-xl p-8 md:p-12 text-center shadow-neobrutalism-lg">
+                    <h2 className="titular-seccion text-4xl md:text-5xl mb-4 text-ink-black">¿Necesitás tu web<br /> <span className="text-primary">profesional?</span></h2>
+                    <p className="text-xl md:text-2xl font-medium text-ink-black mb-8 max-w-2xl mx-auto">
+                        Contactanos y en menos de 48hs te enviamos un presupuesto y un diseño previo de tu web, gratis. Sin letra chica.
+                    </p>
+                    <Link
+                        href="/#contacto"
+                        className="boton boton-primario max-w-full text-lg md:text-xl px-8 py-4"
+                    >
+                        Quiero mi web
+                        <span aria-hidden="true" className="material-icons text-xl">arrow_forward</span>
+                    </Link>
                 </div>
 
                 {/* Back to blog */}
                 <div className="mt-16 md:mt-24 text-center">
                     <Link
                         href="/blog"
-                        className="inline-flex items-center gap-3 text-ink-black/70 font-bold text-lg md:text-xl uppercase tracking-wider hover:text-primary hover:gap-5 transition-all"
+                        className="inline-flex min-h-11 items-center gap-3 text-ink-black/75 font-bold text-lg md:text-xl uppercase tracking-wider hover:text-primary hover:gap-5 transition-all"
                     >
                         <span aria-hidden="true" className="material-icons border-2 border-current rounded-full p-1">arrow_back</span>
                         Volver al blog

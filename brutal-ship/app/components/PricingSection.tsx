@@ -43,7 +43,9 @@ function FeatureItem({ feature }: { feature: PricingFeature }) {
             <div className={`w-6 h-6 ${feature.icon_bg} ${textoSobreFondo(feature.icon_bg)} border-2 border-black shadow-neobrutalism-sm flex items-center justify-center flex-shrink-0`}>
                 <span aria-hidden="true" className="material-icons text-sm font-black">{feature.icon}</span>
             </div>
-            <span className={feature.is_highlighted ? "font-bold underline decoration-hot-coral decoration-2 underline-offset-2" : "font-medium"}>
+            {/* Destacado con marcador amarillo y no con subrayado coral: un subrayado rojo
+                se leía como una marca de error de ortografía. */}
+            <span className={feature.is_highlighted ? "font-bold bg-accent-yellow px-1 box-decoration-clone" : "font-medium"}>
                 {feature.text}
             </span>
         </div>
@@ -76,9 +78,11 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
                 iba absoluta y la destacada compensaba con `pt-11`, así que su cabecera
                 arrancaba más abajo que las otras dos y quedaba un hueco blanco arriba.
                 Reservando el espacio en todas, los tres encabezados alinean solos. */}
-            <div className={`h-9 flex items-center justify-center border-b-2 border-black ${isFeatured ? "bg-accent-yellow" : cabecera}`}>
+            {/* En celular las tarjetas van apiladas y no hay nada que alinear: la franja
+                vacía de las comunes se veía como un error. Ahí queda solo la de la destacada. */}
+            <div className={`h-9 items-center justify-center border-b-2 border-black ${isFeatured ? "flex bg-accent-yellow" : `hidden lg:flex ${cabecera}`}`}>
                 {isFeatured && plan.featured_label && (
-                    <span className="font-black uppercase text-[11px] tracking-[0.18em] text-ink-black">
+                    <span className="etiqueta text-ink-black">
                         {plan.featured_label}
                     </span>
                 )}
@@ -114,21 +118,21 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
                     )}
                 </div>
                 {plan.price_note && (
-                    <p className="text-xs text-ink-black/70 font-medium mb-6 text-center">{plan.price_note}</p>
+                    <p className="text-sm text-ink-black/75 font-medium mb-6 text-center">{plan.price_note}</p>
                 )}
                 {!plan.price_note && <div className="mb-4" />}
                 <div className="mb-5 text-left border-l-2 border-primary pl-3">
-                    <span className="block font-black uppercase tracking-wider text-xs text-ink-black mb-1">Elegí este si querés</span>
-                    <p className="text-sm font-bold text-ink-black leading-snug">
+                    <span className="etiqueta block text-ink-black mb-1">Elegí este si querés</span>
+                    <p className="text-base font-bold text-ink-black leading-snug">
                         {QUIERO[plan.name] ?? QUIERO_FALLBACK}
                     </p>
                     {EJEMPLOS[plan.name] && (
-                        <p className="mt-1.5 text-xs font-medium text-ink-black/60 leading-snug">
+                        <p className="mt-1.5 text-sm font-medium text-ink-black/75 leading-snug">
                             {EJEMPLOS[plan.name]}
                         </p>
                     )}
                     {NOTA_PRECIO[plan.name] && (
-                        <p className="mt-2 flex items-start gap-1.5 text-xs font-bold text-ink-black/70 leading-snug">
+                        <p className="mt-2 flex items-start gap-1.5 text-sm font-bold text-ink-black/75 leading-snug">
                             <span aria-hidden="true" className="material-icons text-sm leading-none mt-px">info</span>
                             {NOTA_PRECIO[plan.name]}
                         </p>
@@ -163,10 +167,7 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
                     blanco en los otros. Un solo origen de verdad para todo el énfasis. */}
                 <a
                     href="#contacto"
-                    className={`cta mt-auto flex items-center justify-center gap-2 w-full min-h-12 font-black text-base uppercase tracking-wide border-2 border-black rounded transition-all ${isFeatured
-                        ? "bg-primary text-white shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px]"
-                        : "bg-white text-ink-black shadow-neobrutalism-sm hover:bg-accent-yellow hover:shadow-neobrutalism hover:-translate-y-[2px]"
-                        }`}
+                    className={`boton mt-auto w-full ${isFeatured ? "boton-primario" : "boton-secundario"}`}
                 >
                     {plan.cta_text}
                     <span aria-hidden="true" className="material-icons text-lg transition-transform group-hover/plan:translate-x-1">arrow_forward</span>
@@ -196,17 +197,17 @@ const QUIERO: Record<string, string> = {
 // Los ejemplos concretos venian del selector y hacian trabajo real: aterrizan el
 // plan en un rubro que la persona reconoce.
 const EJEMPLOS: Record<string, string> = {
-    "Landing Page": "Peluqueria, entrenador, fotografo, oficios",
-    "Sitio Institucional": "Clinica, estudio juridico, constructora, PyME",
-    "E-commerce": "Tienda, heladeria, distribuidora, turnos",
-    "E-commerce / Plataforma": "Tienda, heladeria, distribuidora, turnos",
+    "Landing Page": "Peluquería, entrenador, fotógrafo, oficios",
+    "Sitio Institucional": "Clínica, estudio jurídico, constructora, PyME",
+    "E-commerce": "Tienda, heladería, distribuidora, turnos",
+    "E-commerce / Plataforma": "Tienda, heladería, distribuidora, turnos",
 };
 
 // La advertencia del E-commerce vivia en una caja suelta al pie de la seccion,
 // a 2000px del precio que califica. Va donde corresponde: pegada al precio.
 const NOTA_PRECIO: Record<string, string> = {
-    "E-commerce": "Precio base. Puede variar segun el alcance de tu proyecto.",
-    "E-commerce / Plataforma": "Precio base. Puede variar segun el alcance de tu proyecto.",
+    "E-commerce": "Precio base. Puede variar según el alcance de tu proyecto.",
+    "E-commerce / Plataforma": "Precio base. Puede variar según el alcance de tu proyecto.",
 };
 
 const QUIERO_FALLBACK = "Una web que trabaje para tu negocio.";
@@ -264,7 +265,7 @@ function MantenimientoMensual({ conCuota }: { conCuota: { plan: PricingPlan; cuo
             <div className="mt-4 group-open:animate-[cuota-reveal_0.4s_cubic-bezier(0.22,1,0.36,1)]">
                 <div className="bg-white border-4 border-black rounded-xl shadow-neobrutalism-lg overflow-hidden">
                     <div className="bg-primary text-white px-5 py-6 sm:px-8 sm:py-8 border-b-4 border-black">
-                        <h3 className="text-3xl sm:text-4xl font-bold uppercase tracking-tighter leading-[1.05]">
+                        <h3 className="text-3xl sm:text-4xl font-bold uppercase tracking-[-0.02em] leading-[1.05]">
                             Para que tu web{" "}
                             <span className="inline-block bg-accent-yellow text-ink-black px-2 -rotate-2 border-2 border-black shadow-neobrutalism-sm">siga viva</span>
                         </h3>
@@ -275,14 +276,14 @@ function MantenimientoMensual({ conCuota }: { conCuota: { plan: PricingPlan; cuo
 
                     <div className="grid lg:grid-cols-5">
                         <div className="p-5 sm:p-8 lg:col-span-3 lg:border-r-4 border-black">
-                            <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-ink-black/70">Qué incluye</h4>
+                            <h4 className="etiqueta mb-4 text-ink-black/75">Qué incluye</h4>
                             <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2.5 sm:gap-3">
                                 {INCLUYE.map((item) => (
                                     <li key={item.titulo} className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 rounded-lg border-2 border-black bg-background-light p-3">
                                         <span aria-hidden="true" className="shrink-0 w-9 h-9 lg:w-11 lg:h-11 flex items-center justify-center rounded-md border-2 border-black bg-white text-primary"><span className="material-icons text-xl lg:text-2xl">{item.icon}</span></span>
                                         <span className="min-w-0 flex flex-col gap-1">
                                             <span className="font-display font-bold text-sm sm:text-base leading-tight">{item.titulo}</span>
-                                            <span className="text-xs text-ink-black/70 leading-snug">{item.detalle}</span>
+                                            <span className="text-sm text-ink-black/75 leading-snug">{item.detalle}</span>
                                         </span>
                                     </li>
                                 ))}
@@ -291,14 +292,14 @@ function MantenimientoMensual({ conCuota }: { conCuota: { plan: PricingPlan; cuo
                                     <span aria-hidden="true" className="shrink-0 w-9 h-9 lg:w-11 lg:h-11 flex items-center justify-center rounded-md border-2 border-black bg-white"><span className="material-icons text-xl lg:text-2xl">support_agent</span></span>
                                     <span className="min-w-0">
                                         <span className="block font-display font-bold text-sm sm:text-base leading-tight">Soporte directo por WhatsApp</span>
-                                        <span className="block text-xs text-ink-black/80 leading-snug">Nos escribís y lo resolvemos.</span>
+                                        <span className="block text-sm text-ink-black/80 leading-snug">Nos escribís y lo resolvemos.</span>
                                     </span>
                                 </li>
                             </ul>
                         </div>
 
                         <div className="flex flex-col p-5 sm:p-8 lg:col-span-2 border-t-4 lg:border-t-0 border-black bg-background-light">
-                            <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-ink-black/70">Cuánto sale, según tu plan</h4>
+                            <h4 className="etiqueta mb-4 text-ink-black/75">Cuánto sale, según tu plan</h4>
                             {/* Sale de los planes: cada uno con cuota aparece aca, en el orden del sitio. */}
                             <dl className="overflow-hidden rounded-lg border-2 border-black bg-white shadow-neobrutalism divide-y-2 divide-black">
                                 {conCuota.map(({ plan, cuota }) => (
@@ -306,12 +307,12 @@ function MantenimientoMensual({ conCuota }: { conCuota: { plan: PricingPlan; cuo
                                         <dt className="min-w-0">
                                             <span className="block font-display font-bold uppercase text-sm leading-tight">{plan.name}</span>
                                             {plan.is_featured && plan.featured_label && (
-                                                <span className="mt-0.5 block text-[11px] font-bold uppercase tracking-wider text-primary">{plan.featured_label}</span>
+                                                <span className="etiqueta mt-0.5 block text-primary-dark">{plan.featured_label}</span>
                                             )}
                                         </dt>
                                         <dd className="shrink-0 text-right font-display leading-none">
                                             {plan.payment_type === "Precio Base" && (
-                                                <span className="block mb-1 text-[11px] font-bold uppercase tracking-wider text-ink-black/70">desde</span>
+                                                <span className="etiqueta block mb-1 text-ink-black/75">desde</span>
                                             )}
                                             <span className="text-2xl sm:text-3xl font-bold tabular-nums">{formatearPesos(cuota)}</span>
                                             <span className="ml-0.5 text-sm font-bold text-ink-black/70">/mes</span>
@@ -347,16 +348,13 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
     return (
         <section id="precios" aria-labelledby="precios-heading" className="pt-12 pb-20 bg-accent-yellow border-b-2 border-black relative overflow-hidden">
             <span id="servicios" className="block relative -top-28" aria-hidden="true"></span>
-            {/* Decoration */}
-            <div className="absolute top-10 left-10 text-9xl opacity-10 font-bold rotate-12 pointer-events-none">✦</div>
-            <div className="absolute bottom-10 right-10 text-9xl opacity-10 font-bold -rotate-12 pointer-events-none">✦</div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
                 <m.div
                     initial={{ y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
                 >
-                    <h2 id="precios-heading" className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] mb-4">Qué recibís<br /><span className="text-primary">y cuánto sale</span></h2>
+                    <h2 id="precios-heading" className="titular-seccion mb-4">Qué recibís<br /><span className="text-primary">y cuánto sale</span></h2>
                     <p className="text-xl font-medium mb-12 max-w-xl mx-auto">Todo en un solo lugar. Sin sorpresas, sin letra chica.</p>
                 </m.div>
 

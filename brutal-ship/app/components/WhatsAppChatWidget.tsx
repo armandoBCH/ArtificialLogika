@@ -31,14 +31,14 @@ export default function WhatsAppChatWidget({ config }: WhatsAppChatWidgetProps) 
                 className={`bg-white border-2 border-black rounded-lg shadow-neobrutalism-lg w-80 mb-4 flex flex-col origin-bottom-right transition-all duration-300 ease-out absolute bottom-16 right-0 ${isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-90 translate-y-4 pointer-events-none'
                     }`}>
                 {/* Header */}
-                <div className="bg-[#25D366] text-ink-black p-4 border-b-2 border-black flex items-center justify-between">
+                <div className="bg-whatsapp text-ink-black p-4 border-b-2 border-black flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-white rounded-full border-2 border-black flex items-center justify-center overflow-hidden">
                             <span aria-hidden="true" className="material-icons text-black text-2xl">support_agent</span>
                         </div>
                         <div>
                             <h4 className="font-bold text-lg leading-tight">Logika</h4>
-                            <p className="text-xs text-ink-black/70 font-medium">En línea</p>
+                            <p className="text-xs text-ink-black/70 font-medium">Te respondemos por WhatsApp</p>
                         </div>
                     </div>
                     <button
@@ -54,7 +54,7 @@ export default function WhatsAppChatWidget({ config }: WhatsAppChatWidgetProps) 
                 <div className="p-4 bg-[#E5DDD5] flex flex-col gap-3 min-h-[320px]">
                     {/* Welcome Message */}
                     <div className="bg-white border-2 border-black rounded-lg rounded-tl-none p-3 shadow-neobrutalism-sm self-start max-w-[85%] relative">
-                        <p className="text-sm font-medium">¡Hola! 👋 Bienvenido a Logika.</p>
+                        <p className="text-sm font-medium">¡Hola! 👋 Te damos la bienvenida a Logika.</p>
                         <p className="text-sm font-medium mt-1">¿En qué te podemos ayudar hoy? Presioná una opción abajo:</p>
                     </div>
 
@@ -62,19 +62,19 @@ export default function WhatsAppChatWidget({ config }: WhatsAppChatWidgetProps) 
                     <div className="flex flex-col gap-2 mt-2 w-full">
                         <button
                             onClick={() => handleSendMessage("Hola, me interesa empezar mi página web con el Plan Landing.")}
-                            className="bg-white border-2 border-[#25D366] hover:bg-[#25D366] hover:text-ink-black hover:border-black text-black text-sm font-bold min-h-11 py-2 px-3 rounded-lg shadow-neobrutalism-sm hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all text-left"
+                            className="bg-white border-2 border-whatsapp hover:bg-whatsapp hover:text-ink-black hover:border-black text-black text-sm font-bold min-h-11 py-2 px-3 rounded-lg shadow-neobrutalism-sm hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all text-left"
                         >
                             🚀 Quiero una Landing Page
                         </button>
                         <button
                             onClick={() => handleSendMessage("Hola, me interesa armar mi tienda online (E-commerce).")}
-                            className="bg-white border-2 border-[#25D366] hover:bg-[#25D366] hover:text-ink-black hover:border-black text-black text-sm font-bold min-h-11 py-2 px-3 rounded-lg shadow-neobrutalism-sm hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all text-left"
+                            className="bg-white border-2 border-whatsapp hover:bg-whatsapp hover:text-ink-black hover:border-black text-black text-sm font-bold min-h-11 py-2 px-3 rounded-lg shadow-neobrutalism-sm hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all text-left"
                         >
                             🛒 Quiero un E-commerce
                         </button>
                         <button
                             onClick={() => handleSendMessage("Hola, necesito un sitio web institucional completo.")}
-                            className="bg-white border-2 border-[#25D366] hover:bg-[#25D366] hover:text-ink-black hover:border-black text-black text-sm font-bold min-h-11 py-2 px-3 rounded-lg shadow-neobrutalism-sm hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all text-left"
+                            className="bg-white border-2 border-whatsapp hover:bg-whatsapp hover:text-ink-black hover:border-black text-black text-sm font-bold min-h-11 py-2 px-3 rounded-lg shadow-neobrutalism-sm hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all text-left"
                         >
                             🏢 Quiero un Sitio Institucional
                         </button>
@@ -91,7 +91,7 @@ export default function WhatsAppChatWidget({ config }: WhatsAppChatWidgetProps) 
             {/* Toggle Button (replaces the old a tag) */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`flex items-center justify-center w-14 h-14 bg-[#25D366] text-ink-black rounded-full border-2 border-black shadow-neobrutalism transition-all z-50 ${isOpen ? 'scale-90 shadow-none translate-x-[2px] translate-y-[2px]' : 'hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px]'
+                className={`flex items-center justify-center w-14 h-14 bg-whatsapp text-ink-black rounded-full border-2 border-black shadow-neobrutalism transition-all z-50 ${isOpen ? 'scale-90 shadow-none translate-x-[2px] translate-y-[2px]' : 'hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px]'
                     }`}
                 aria-label={isOpen ? "Cerrar chat de WhatsApp" : "Abrir chat de WhatsApp"}
             >

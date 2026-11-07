@@ -54,13 +54,13 @@ export default function WhoDoesWhatSection() {
                 que se fundió acá. Un link guardado o compartido sigue cayendo en su lugar. */}
             <span id="quien-hace-que" aria-hidden="true" className="absolute top-0"></span>
             <span id="proceso" aria-hidden="true" className="absolute top-0"></span>
-            <div className="absolute inset-0 pattern-dots opacity-[0.06] pointer-events-none" aria-hidden="true"></div>
+            <div className="absolute inset-0 patron-puntos pointer-events-none" aria-hidden="true"></div>
 
             <div className="relative z-10 max-w-7xl mx-auto">
                 <BlockReveal>
                     <h2
                         id="como-funciona-heading"
-                        className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] max-w-3xl"
+                        className="titular-seccion max-w-3xl"
                     >
                         Tu parte del trabajo
                         <br />
