@@ -58,7 +58,7 @@ export default function GuaranteeSection() {
                 </p>
                 <h2
                     id="garantia-heading"
-                    className="mt-7 text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] text-ink-black"
+                    className="titular-seccion mt-7 text-ink-black"
                 >
                     Si no te gusta el diseño previo,
                     <br />

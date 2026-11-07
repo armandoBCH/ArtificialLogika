@@ -111,8 +111,8 @@ export default function ContactSection({ config }: ContactSectionProps) {
             <div className="relative z-10 max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-12 text-center">
-                    <h2 id="contacto-heading" className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] text-white mb-4 drop-shadow-neobrutalism">
-                        ¿Listo Para Tu <br className="hidden md:block" />Nueva Web?
+                    <h2 id="contacto-heading" className="titular-seccion text-white mb-4">
+                        ¿Listo para tu <br className="hidden md:block" />nueva web?
                     </h2>
                     {/* La oferta se decía cuatro veces en esta sección: acá, en un sello rotado
                         sobre el formulario, en su título y en el párrafo de abajo. Queda una. */}
@@ -123,7 +123,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Contact Form Card */}
-                    <div className="order-2 lg:order-none lg:col-span-7 bg-white rounded-lg border-2 border-black p-6 md:p-10 shadow-neobrutalism relative">
+                    <div className="order-2 lg:order-none lg:col-span-7 bg-white rounded-xl border-2 border-black p-6 md:p-10 shadow-neobrutalism relative">
                         {prefill && (
                             <p className="mb-6 flex items-start gap-2 rounded border-2 border-black bg-accent-yellow px-4 py-3 text-sm font-bold shadow-neobrutalism-sm">
                                 <span aria-hidden="true" className="material-icons text-base leading-5">bookmark</span>
@@ -136,8 +136,8 @@ export default function ContactSection({ config }: ContactSectionProps) {
                             /* The confirmation persists. This is the moment the visitor decided to
                                trust us; it earns a real panel and a stated next step, not a label
                                that flashes inside a button and erases itself. */
-                            <div role="status" ref={exitoRef} tabIndex={-1} className="flex flex-col items-start gap-4 rounded border-2 border-black bg-secondary p-6 md:p-8 shadow-neobrutalism-sm focus:outline-none">
-                                <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-black bg-[#00D68F]">
+                            <div role="status" ref={exitoRef} tabIndex={-1} className="flex flex-col items-start gap-4 rounded-lg border-2 border-black bg-secondary p-6 md:p-8 shadow-neobrutalism-sm focus:outline-none">
+                                <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-black bg-white">
                                     <span aria-hidden="true" className="material-icons text-black">check</span>
                                 </span>
                                 <div>
@@ -151,14 +151,14 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                         href={whatsappUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="cta flex items-center justify-center gap-2 rounded border-2 border-black bg-[#25D366] px-6 py-3 font-bold uppercase tracking-wider text-ink-black shadow-neobrutalism-sm transition-all hover:shadow-neobrutalism"
+                                        className="boton boton-whatsapp"
                                     >
-                                        ¿Preferís hablar ahora?
+                                        Hablemos por WhatsApp
                                     </a>
                                     <button
                                         type="button"
                                         onClick={() => setStatus('idle')}
-                                        className="rounded border-2 border-black bg-white px-6 py-3 font-bold uppercase tracking-wider text-black shadow-neobrutalism-sm transition-all hover:shadow-neobrutalism"
+                                        className="boton boton-secundario"
                                     >
                                         Enviar otra consulta
                                     </button>
@@ -182,7 +182,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                         name="name"
                                         required
                                         autoComplete="name"
-                                        className="w-full rounded border-2 border-black bg-background-light px-4 py-3 text-black placeholder-gray-400 focus:bg-white focus:-translate-y-1 focus:border-primary focus:shadow-neobrutalism-primary transition-all duration-300 font-medium"
+                                        className="w-full rounded-lg border-2 border-black bg-background-light px-4 py-3 text-black placeholder:text-ink-black/65 focus:bg-white focus:-translate-y-1 focus:border-primary focus:shadow-neobrutalism-primary transition-all duration-300 font-medium"
                                         placeholder="Juan Pérez"
                                         type="text"
                                     />
@@ -199,7 +199,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                         aria-invalid={contactError ? true : undefined}
                                         aria-describedby={contactError ? "contacto-error" : undefined}
                                         onChange={() => contactError && setContactError('')}
-                                        className={`w-full rounded border-2 bg-background-light px-4 py-3 text-black placeholder-gray-400 focus:bg-white focus:-translate-y-1 focus:border-primary focus:shadow-neobrutalism-primary transition-all duration-300 font-medium ${contactError ? 'border-red-600' : 'border-black'}`}
+                                        className={`w-full rounded-lg border-2 bg-background-light px-4 py-3 text-black placeholder:text-ink-black/65 focus:bg-white focus:-translate-y-1 focus:border-primary focus:shadow-neobrutalism-primary transition-all duration-300 font-medium ${contactError ? 'border-red-600' : 'border-black'}`}
                                         placeholder="juan@ejemplo.com o 11-1234-5678"
                                         type="text"
                                     />
@@ -217,7 +217,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                     reading as a dropdown. The inline caret restores that affordance. */}
                                 <select
                                     name="business_type"
-                                    className="w-full rounded border-2 border-black bg-background-light px-4 py-3 pr-11 text-black focus:bg-white focus:-translate-y-1 focus:border-primary focus:shadow-neobrutalism-primary transition-all duration-300 font-medium appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231A1A1A%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22/%3E%3C/svg%3E')] bg-[length:1.25rem] bg-[right_0.9rem_center] bg-no-repeat"
+                                    className="w-full rounded-lg border-2 border-black bg-background-light px-4 py-3 pr-11 text-black focus:bg-white focus:-translate-y-1 focus:border-primary focus:shadow-neobrutalism-primary transition-all duration-300 font-medium appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231A1A1A%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22/%3E%3C/svg%3E')] bg-[length:1.25rem] bg-[right_0.9rem_center] bg-no-repeat"
                                     defaultValue=""
                                 >
                                     <option value="" disabled>Elegí tu rubro</option>
@@ -236,7 +236,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                     required
                                     key={prefill ? prefill.rubro : 'vacio'}
                                     defaultValue={prefill ? `Hola! Vi el ejemplo de ${prefill.rubro} y quiero mi web.` : undefined}
-                                    className="w-full rounded border-2 border-black bg-background-light px-4 py-3 text-black placeholder-gray-400 focus:bg-white focus:-translate-y-1 focus:border-primary focus:shadow-neobrutalism-primary transition-all duration-300 font-medium resize-none"
+                                    className="w-full rounded-lg border-2 border-black bg-background-light px-4 py-3 text-black placeholder:text-ink-black/65 focus:bg-white focus:-translate-y-1 focus:border-primary focus:shadow-neobrutalism-primary transition-all duration-300 font-medium resize-none"
                                     placeholder="Ej: Necesito una web para mi peluquería con fotos de mis trabajos, precios y un botón de WhatsApp..."
                                     rows={4}
                                 ></textarea>
@@ -259,7 +259,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                 </div>
                             )}
                             <button
-                                className={`w-full md:w-auto md:min-w-[20rem] px-8 py-3 text-white font-bold uppercase tracking-wider rounded border-2 border-black transition-all shadow-neobrutalism-sm ${status === 'loading' ? 'bg-primary' : 'bg-primary hover:bg-primary/90 hover:shadow-neobrutalism active:scale-95'} flex items-center justify-center gap-2 overflow-hidden relative`}
+                                className="boton boton-primario w-full md:w-auto md:min-w-[20rem] px-8 overflow-hidden relative"
                                 type="submit"
                                 disabled={status === 'loading'}
                                 style={{ minHeight: '52px' }}
@@ -275,7 +275,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                             exit={{ opacity: 0, y: -20 }}
                                             className="flex items-center gap-2"
                                         >
-                                            Quiero Mi Presupuesto Gratis <span aria-hidden="true" className="material-icons text-sm">arrow_forward</span>
+                                            Quiero mi presupuesto gratis <span aria-hidden="true" className="material-icons text-sm">arrow_forward</span>
                                         </m.div>
                                     )}
                                     {status === 'loading' && (
@@ -296,13 +296,13 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                 </AnimatePresence>
                             </button>
                             {/* Trust signals under button */}
-                            <div className="flex flex-wrap items-center gap-4 text-xs text-ink-black/70 font-medium pt-1">
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-ink-black/75 font-medium pt-1">
                                 <span className="flex items-center gap-1">
-                                    <span aria-hidden="true" className="material-icons text-green-600 text-sm">check_circle</span>
+                                    <span aria-hidden="true" className="material-icons text-primary text-sm">check_circle</span>
                                     Sin compromiso
                                 </span>
                                 <span className="flex items-center gap-1">
-                                    <span aria-hidden="true" className="material-icons text-green-600 text-sm">check_circle</span>
+                                    <span aria-hidden="true" className="material-icons text-primary text-sm">check_circle</span>
                                     Respuesta en {config.response_time || '48hs'}
                                 </span>
                             </div>
@@ -320,10 +320,9 @@ export default function ContactSection({ config }: ContactSectionProps) {
                         </div>
 
                         {/* WhatsApp Card */}
-                        <div className="order-3 lg:order-none bg-ink-black rounded-lg border-2 border-white/10 p-8 shadow-neobrutalism relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -mr-16 -mt-16 transition-all group-hover:bg-secondary/20"></div>
-                            <div className="relative z-10">
-                                <div className="size-12 bg-secondary rounded-lg flex items-center justify-center border-2 border-black mb-4 shadow-neobrutalism-white">
+                        <div className="order-3 lg:order-none bg-ink-black rounded-xl border-2 border-black p-8 shadow-neobrutalism">
+                            <div>
+                                <div className="size-12 bg-whatsapp rounded-lg flex items-center justify-center border-2 border-black mb-4 shadow-neobrutalism-white">
                                     <span aria-hidden="true" className="material-icons text-black text-2xl">chat</span>
                                 </div>
                                 <h3 className="text-white text-2xl font-bold mb-2">¿Preferís WhatsApp?</h3>
@@ -332,12 +331,12 @@ export default function ContactSection({ config }: ContactSectionProps) {
                                     Escribinos directo y te respondemos al toque. Sin formularios, sin esperas.
                                 </p>
                                 <a
-                                    className="cta inline-flex items-center justify-center gap-2 w-full py-3 bg-secondary text-black font-bold uppercase tracking-wider rounded border-2 border-black shadow-neobrutalism-white hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-neobrutalism-white transition-all"
+                                    className="boton boton-whatsapp boton-sobre-oscuro w-full"
                                     href={whatsappUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    <span>Chatear por WhatsApp</span>
+                                    <span>Hablemos por WhatsApp</span>
                                     <span aria-hidden="true" className="material-icons text-sm">arrow_outward</span>
                                 </a>
                                 {/* Lo que era la caja "Contacto directo". Si el mail no está cargado
@@ -365,10 +364,11 @@ export default function ContactSection({ config }: ContactSectionProps) {
                         {/* What happens after you send. Replaces an invented testimonial
                             ("María L.") illustrated with generated avatars — a promise we
                             actually control beats social proof we do not have yet. */}
-                        <div className="order-3 lg:order-none bg-white/10 backdrop-blur-sm rounded-lg border-2 border-white/20 p-6">
-                            <h3 className="text-white font-bold text-sm uppercase tracking-wide mb-3">Qué pasa después</h3>
-                            {/* text-white y no /80: sobre el velo blanco del violeta, el 80% daba 3,98:1. */}
-                            <ol className="space-y-2 text-white text-sm font-medium">
+                        {/* Panel violeta oscuro y sólido: el vidrio esmerilado que tenía (velo blanco
+                            con desenfoque) es justo lo que el sistema descarta. */}
+                        <div className="order-3 lg:order-none bg-primary-dark rounded-xl border-2 border-black p-6">
+                            <h3 className="etiqueta text-white mb-3">Qué pasa después</h3>
+                            <ol className="space-y-2 text-white text-base font-medium">
                                 <li className="flex gap-2">
                                     <span aria-hidden="true" className="font-black text-white">1.</span>
                                     Leemos lo que nos contás y preparamos una propuesta.

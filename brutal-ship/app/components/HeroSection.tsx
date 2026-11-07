@@ -17,9 +17,8 @@ import MagneticWrapper from "./MagneticWrapper";
  */
 export default function HeroSection() {
     const { scrollY } = useScroll();
-    // Parallax values for abstract shapes
+    // Parallax del círculo de fondo
     const y1 = useTransform(scrollY, [0, 1000], [0, 150]);
-    const y2 = useTransform(scrollY, [0, 1000], [0, -100]);
 
     // El titular anima con keyframes CSS, no con framer-motion, para que el HTML del
     // servidor ya llegue con el texto pintado. Quien nunca recibe el JS igual lo lee.
@@ -30,17 +29,18 @@ export default function HeroSection() {
     const letterDelay = (index: number) => ({ animationDelay: `${(0.1 + index * 0.05).toFixed(2)}s` });
 
     return (
-        <header className="relative overflow-hidden bg-background-light pt-36 pb-24 border-b-2 border-black">
-            {/* Abstract Shapes */}
+        // pt-28 en celular: con pt-36 quedaban ~75px vacíos entre el menú flotante y el titular.
+        <header className="relative overflow-hidden bg-background-light pt-28 sm:pt-32 lg:pt-36 pb-24 border-b-2 border-black">
+            {/* Había además un cuadrado amarillo abajo a la izquierda: a 1024px tapaba la
+                línea "Diseño previo y presupuesto sin cargo", que es la que más tranquiliza. */}
             <m.div style={{ y: y1 }} className="absolute top-20 right-[-50px] w-64 h-64 bg-mint rounded-full border-2 border-black mix-blend-multiply opacity-80 hidden lg:block z-0 animate-pulse"></m.div>
-            <m.div style={{ y: y2 }} className="absolute bottom-10 left-10 w-32 h-32 bg-accent-yellow border-2 border-black transform rotate-12 z-0 hidden lg:block"></m.div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-8">
                         <div className="hero-title-float">
                             <h1
                                 aria-label="Tu Web Profesional."
-                                className="text-[clamp(3rem,12vw,6rem)] lg:text-[clamp(3rem,5vw,5.5rem)] font-bold leading-[0.9] tracking-tighter uppercase flex flex-col"
+                                className="text-[clamp(3rem,12vw,6rem)] lg:text-[clamp(3rem,5vw,5.5rem)] font-bold leading-[0.9] tracking-[-0.02em] uppercase flex flex-col"
                             >
                                 <span aria-hidden="true" className="flex overflow-hidden pb-2 -mb-2">
                                     {sentence1.map((char, index) => (
@@ -69,7 +69,7 @@ export default function HeroSection() {
                         </p>
                         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-4">
                             <MagneticWrapper>
-                                <a href="#contacto" className="w-full sm:w-auto bg-primary text-white border-2 border-black font-bold text-lg py-4 px-8 shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all rounded-lg flex items-center justify-center gap-2">
+                                <a href="#contacto" className="boton boton-primario w-full sm:w-auto text-lg py-4 px-8">
                                     Quiero mi web
                                     <span aria-hidden="true" className="material-icons">arrow_forward</span>
                                 </a>
@@ -82,12 +82,14 @@ export default function HeroSection() {
                                 <span aria-hidden="true" className="material-icons mr-1 align-[-4px] text-lg text-primary">verified</span>
                                 Diseño previo y presupuesto sin cargo. Lo ves antes de pagar nada.
                             </p>
-                            <a href="#portafolio" className="md:hidden flex items-center justify-center gap-2 text-black font-bold text-lg py-2 mt-2 underline decoration-2 underline-offset-4">
-                                Ver Nuestro Trabajo
-                                <span aria-hidden="true" className="material-icons text-sm">open_in_new</span>
+                            {/* Lleva más abajo en la misma página: flecha hacia abajo, no el ícono de
+                                "abre otra pestaña" que tenía. */}
+                            <a href="#portafolio" className="md:hidden flex min-h-11 items-center justify-center gap-2 text-black font-bold text-lg mt-2 underline decoration-2 underline-offset-4">
+                                Ver nuestro trabajo
+                                <span aria-hidden="true" className="material-icons text-lg">arrow_downward</span>
                             </a>
-                            <a href="#portafolio" className="hidden md:block bg-white text-black border-2 border-black font-bold text-lg py-4 px-8 shadow-neobrutalism hover:shadow-neobrutalism-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all rounded-lg text-center">
-                                Ver Nuestro Trabajo
+                            <a href="#portafolio" className="hidden md:inline-flex boton boton-secundario text-lg py-4 px-8">
+                                Ver nuestro trabajo
                             </a>
                         </div>
                     </div>
@@ -101,7 +103,7 @@ export default function HeroSection() {
                             {/* Browser Header */}
                             <div className="bg-[#E5E5E5] border-b-4 border-black px-5 py-3.5 flex items-center gap-2.5 relative z-10 w-full">
                                 <div className="w-4 h-4 rounded-full bg-[#FF6B6B] border-[3px] border-black"></div>
-                                <div className="w-4 h-4 rounded-full bg-[#FFD93D] border-[3px] border-black"></div>
+                                <div className="w-4 h-4 rounded-full bg-[#FDE047] border-[3px] border-black"></div>
                                 <div className="w-4 h-4 rounded-full bg-[#00D68F] border-[3px] border-black"></div>
                                 <div className="ml-5 bg-white border-[3px] border-black rounded-[20px] px-4 py-1 text-sm font-bold text-center flex-grow max-w-[300px] text-[#1A1A1A]">
                                     www.tunegocio.com
@@ -130,17 +132,17 @@ export default function HeroSection() {
 
                                         <g className="shape-intro">
                                             <g className="spin" style={{ transformOrigin: '900px 150px' }}>
-                                                <path d="M890 150 L910 150 M900 140 L900 160 M893 143 L907 157 M893 157 L907 143" stroke="#FFD93D" strokeWidth="6" strokeLinecap="round" />
+                                                <path d="M890 150 L910 150 M900 140 L900 160 M893 143 L907 157 M893 157 L907 143" stroke="#FDE047" strokeWidth="6" strokeLinecap="round" />
                                             </g>
-                                            <circle cx="100" cy="650" r="24" fill="none" stroke="#4D96FF" strokeWidth="4" strokeDasharray="10 5" className="spin" style={{ transformOrigin: '100px 650px' }} />
+                                            <circle cx="100" cy="650" r="24" fill="none" stroke="#4A90FF" strokeWidth="4" strokeDasharray="10 5" className="spin" style={{ transformOrigin: '100px 650px' }} />
                                             <rect x="850" y="600" width="30" height="30" fill="#FF6B6B" stroke="#1A1A1A" strokeWidth="3" transform="rotate(25 865 615)" className="float" />
                                         </g>
 
                                         <g className="reveal-1">
-                                            <rect x="-4" y="-4" width="1008" height="44" fill="#FFD93D" stroke="#1A1A1A" strokeWidth="4" />
+                                            <rect x="-4" y="-4" width="1008" height="44" fill="#FDE047" stroke="#1A1A1A" strokeWidth="4" />
                                             <g className="marquee-track">
                                                 <text x="0" y="24" fontWeight="900" fontSize="14" fill="#1A1A1A" letterSpacing="1">
-                                                    🚀 IMPULSA TU NEGOCIO CON NUESTRA NUEVA PLATAFORMA DIGITAL · DISEÑO NEOBRUTALISTA DE ALTO IMPACTO · 🚀 IMPULSA TU NEGOCIO CON NUESTRA NUEVA PLATAFORMA DIGITAL · DISEÑO NEOBRUTALISTA DE ALTO IMPACTO ·
+                                                    ENVÍOS A TODO EL PAÍS · PEDÍ POR WHATSAPP · TU NEGOCIO, AHORA EN INTERNET · ATENDEMOS DE LUNES A SÁBADO · ENVÍOS A TODO EL PAÍS · PEDÍ POR WHATSAPP · TU NEGOCIO, AHORA EN INTERNET · ATENDEMOS DE LUNES A SÁBADO ·
                                                 </text>
                                             </g>
                                         </g>
@@ -180,10 +182,10 @@ export default function HeroSection() {
                                             <g style={{ transformOrigin: '180px 472px' }}>
                                                 <circle cx="180" cy="472" r="10" fill="none" stroke="#8523E1" className="ring-burst" />
                                                 <g className="starburst-anim" style={{ transformOrigin: '180px 472px' }}>
-                                                    <path d="M180 390 L195 450 L255 440 L205 475 L230 530 L180 490 L130 530 L155 475 L105 440 L165 450 Z" fill="#FFD93D" stroke="#1A1A1A" strokeWidth="4" strokeLinejoin="round" />
+                                                    <path d="M180 390 L195 450 L255 440 L205 475 L230 530 L180 490 L130 530 L155 475 L105 440 L165 450 Z" fill="#FDE047" stroke="#1A1A1A" strokeWidth="4" strokeLinejoin="round" />
                                                     <circle cx="110" cy="400" r="10" fill="#FF6B6B" stroke="#1A1A1A" strokeWidth="3" />
                                                     <circle cx="260" cy="390" r="8" fill="#00D68F" stroke="#1A1A1A" strokeWidth="3" />
-                                                    <circle cx="250" cy="550" r="12" fill="#4D96FF" stroke="#1A1A1A" strokeWidth="3" />
+                                                    <circle cx="250" cy="550" r="12" fill="#4A90FF" stroke="#1A1A1A" strokeWidth="3" />
                                                     <rect x="90" y="510" width="16" height="16" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="3" transform="rotate(20 98 518)" />
                                                 </g>
                                             </g>
@@ -201,14 +203,14 @@ export default function HeroSection() {
                                                 <circle cx="540" cy="235" r="5" fill="#1A1A1A" />
                                                 <circle cx="555" cy="235" r="5" fill="#1A1A1A" />
 
-                                                <rect x="550" y="360" width="30" height="40" fill="#4D96FF" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '550px 400px' }} />
-                                                <rect x="600" y="320" width="30" height="80" fill="#FFD93D" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '600px 400px', animationDelay: '0.2s' }} />
+                                                <rect x="550" y="360" width="30" height="40" fill="#4A90FF" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '550px 400px' }} />
+                                                <rect x="600" y="320" width="30" height="80" fill="#FDE047" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '600px 400px', animationDelay: '0.2s' }} />
                                                 <rect x="650" y="280" width="30" height="120" fill="#FF6B6B" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '650px 400px', animationDelay: '0.4s' }} />
                                                 <rect x="700" y="340" width="30" height="60" fill="#8523E1" stroke="#1A1A1A" strokeWidth="2" className="bar-grow" style={{ transformOrigin: '700px 400px', animationDelay: '0.1s' }} />
                                                 <line x1="540" y1="400" x2="750" y2="400" stroke="#1A1A1A" strokeWidth="4" />
 
                                                 <g transform="translate(800, 360) rotate(-15)">
-                                                    <polygon points="0,-25 15,-10 35,-15 25,5 40,20 20,25 15,45 0,30 -15,45 -20,25 -40,20 -25,5 -35,-15 -15,-10" fill="#FFD93D" stroke="#1A1A1A" strokeWidth="3" />
+                                                    <polygon points="0,-25 15,-10 35,-15 25,5 40,20 20,25 15,45 0,30 -15,45 -20,25 -40,20 -25,5 -35,-15 -15,-10" fill="#FDE047" stroke="#1A1A1A" strokeWidth="3" />
                                                     <text x="0" y="6" fontWeight="900" fontSize="16" fill="#1A1A1A" textAnchor="middle">100%</text>
                                                 </g>
                                             </g>
@@ -217,11 +219,11 @@ export default function HeroSection() {
                                         <g className="reveal-8">
                                             <rect x="66" y="556" width="270" height="150" fill="#1A1A1A" />
                                             <rect x="60" y="550" width="270" height="150" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="4" />
-                                            <rect x="60" y="550" width="270" height="40" fill="#FFD93D" />
+                                            <rect x="60" y="550" width="270" height="40" fill="#FDE047" />
                                             <line x1="60" y1="590" x2="330" y2="590" stroke="#1A1A1A" strokeWidth="4" />
                                             <text x="195" y="577" fontWeight="900" fontSize="18" fill="#1A1A1A" textAnchor="middle">Estrategia</text>
-                                            <path d="M 90 670 L 130 640 L 160 650 L 210 610" fill="none" stroke="#4D96FF" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="draw-path" />
-                                            <polygon points="200,610 220,600 215,620" fill="#4D96FF" stroke="#1A1A1A" strokeWidth="2" />
+                                            <path d="M 90 670 L 130 640 L 160 650 L 210 610" fill="none" stroke="#4A90FF" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="draw-path" />
+                                            <polygon points="200,610 220,600 215,620" fill="#4A90FF" stroke="#1A1A1A" strokeWidth="2" />
                                             <line x1="80" y1="610" x2="80" y2="680" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
                                             <line x1="80" y1="680" x2="230" y2="680" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
                                         </g>
@@ -248,7 +250,7 @@ export default function HeroSection() {
                                             <text x="795" y="577" fontWeight="900" fontSize="18" fill="#1A1A1A" textAnchor="middle">Desarrollo</text>
                                             <text x="690" y="625" fontWeight="700" fontSize="12" fill="#1A1A1A">Compilando...</text>
                                             <rect x="690" y="640" width="210" height="16" rx="8" fill="#E5E5E5" stroke="#1A1A1A" strokeWidth="3" />
-                                            <rect x="690" y="640" width="0" height="16" rx="8" fill="#FFD93D" stroke="#1A1A1A" strokeWidth="3" className="progress-fill" />
+                                            <rect x="690" y="640" width="0" height="16" rx="8" fill="#FDE047" stroke="#1A1A1A" strokeWidth="3" className="progress-fill" />
                                         </g>
 
                                         <g className="cursor-anim">

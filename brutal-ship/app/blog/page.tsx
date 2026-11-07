@@ -197,11 +197,10 @@ export default async function BlogPage() {
     };
 
     return (
+        // Sin manchas difuminadas ni degradé: el blog es parte del mismo sitio y habla con
+        // el mismo sistema (bordes, sombra dura, puntos de fondo).
         <main className="min-h-screen bg-background-light text-ink-black pt-24 relative overflow-hidden">
-            {/* Elementos decorativos de fondo */}
-            <div className="absolute top-0 inset-0 pattern-grid-lg text-black/[0.03] pointer-events-none z-0"></div>
-            <div className="absolute top-40 right-[-100px] w-64 h-64 bg-mint rounded-full blur-[100px] opacity-40 z-0 pointer-events-none hidden md:block"></div>
-            <div className="absolute bottom-40 left-[-50px] w-48 h-48 bg-hot-coral rounded-full blur-[80px] opacity-20 z-0 pointer-events-none"></div>
+            <div aria-hidden="true" className="absolute inset-0 patron-puntos pointer-events-none z-0"></div>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={jsonLd(breadcrumbSchema)}
@@ -214,8 +213,8 @@ export default async function BlogPage() {
 
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24 relative z-10">
                 <div className="text-center mb-16 md:mb-24">
-                    <h1 className="text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-tight mb-6 text-black drop-shadow-neobrutalism-sm leading-none">
-                        Nuestro <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-hot-coral">Blog</span>
+                    <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-[-0.02em] mb-6 text-ink-black leading-none">
+                        Nuestro <span className="text-primary">blog</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-ink-black/80 max-w-3xl mx-auto font-medium border-x-4 border-black px-6 py-2">
                         Estrategias, consejos e ideas sin filtro para hacer crecer tu negocio en internet.
@@ -226,11 +225,11 @@ export default async function BlogPage() {
                     {BLOG_POSTS.map((post) => (
                         <article
                             key={post.slug}
-                            className="group flex flex-col justify-between bg-white border-4 border-black rounded-xl p-8 shadow-neobrutalism-lg hover:-translate-y-2 hover:-translate-x-1 hover:shadow-neobrutalism-xl transition-all duration-300"
+                            className="group flex flex-col justify-between bg-white border-2 border-black rounded-xl p-6 md:p-8 shadow-neobrutalism hover:-translate-y-0.5 hover:shadow-neobrutalism-lg transition-all duration-200"
                         >
                             <div>
                                 <div className="flex items-center gap-3 mb-6 flex-wrap">
-                                    <span className="bg-primary text-white text-xs md:text-sm font-bold px-3 py-1.5 border-2 border-black shadow-neobrutalism-sm uppercase rounded-full">
+                                    <span className="etiqueta bg-primary text-white px-3 py-1.5 border-2 border-black rounded-full">
                                         {post.category}
                                     </span>
                                     <span className="text-sm font-medium text-ink-black/70 bg-background-light px-3 py-1.5 rounded-full border-2 border-transparent">
@@ -246,7 +245,7 @@ export default async function BlogPage() {
                                     </span>
                                 </div>
                                 <Link href={`/blog/${post.slug}`}>
-                                    <h2 className="text-3xl md:text-4xl font-black mb-4 group-hover:text-primary transition-colors leading-tight tracking-tight">
+                                    <h2 className="text-2xl md:text-3xl font-bold mb-4 group-hover:text-primary transition-colors leading-tight tracking-[-0.01em]">
                                         {post.title}
                                     </h2>
                                 </Link>
@@ -256,10 +255,10 @@ export default async function BlogPage() {
                             </div>
                             <Link
                                 href={`/blog/${post.slug}`}
-                                className="inline-flex w-max items-center gap-2 bg-black text-white font-bold text-sm md:text-base uppercase py-3 px-6 rounded-md hover:bg-primary transition-colors"
+                                className="boton boton-secundario self-start text-sm"
                             >
                                 Leer artículo
-                                <span aria-hidden="true" className="material-icons text-sm group-hover:translate-x-2 transition-transform">arrow_forward</span>
+                                <span aria-hidden="true" className="material-icons text-base">arrow_forward</span>
                             </Link>
                         </article>
                     ))}

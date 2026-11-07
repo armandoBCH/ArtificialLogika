@@ -12,14 +12,23 @@ interface CatalogGridProps {
 
 type Tipo = "todos" | "reales" | "muestras";
 
-// Los rubros se cargan a mano en el panel y llegan con mayúsculas mezcladas ("BLOG
-// LITERARIO", "Barbería"). Se agrupan sin distinguirlas y se muestran parejos.
-const clave = (rubro: string) => rubro.trim().toLocaleLowerCase("es");
-const etiqueta = (rubro: string) => {
-    const t = clave(rubro);
+// Los rubros se cargan a mano en el panel y llegan con mayúsculas y tildes mezcladas
+// ("BLOG LITERARIO", "Peluqueria" y "Peluquería"). Se agrupan sin distinguir ninguna de
+// las dos cosas y se muestran con la versión que tiene tilde, que es la bien escrita.
+// NFD separa cada letra de su tilde (0x300–0x36F son las marcas que se combinan); se descartan.
+const clave = (rubro: string) =>
+    [...rubro.trim().toLocaleLowerCase("es").normalize("NFD")]
+        .filter((c) => c.charCodeAt(0) < 0x300 || c.charCodeAt(0) > 0x36f)
+        .join("");
+const capitalizar = (rubro: string) => {
+    const t = rubro.trim().toLocaleLowerCase("es");
     return t.charAt(0).toLocaleUpperCase("es") + t.slice(1);
 };
 const rubrosDe = (p: PortfolioProject) => [...new Set(categoriasDe(p).map(clave))];
+
+// Un filtro con un solo trabajo no filtra nada: es lo mismo que mirar la lista. Con 12
+// proyectos eran 21 botones de "1". Aparecen solos cuando un rubro junta dos o más.
+const MINIMO_POR_RUBRO = 2;
 type Orden = "destacados" | "resultados" | "recientes";
 
 const ORDENES: { valor: Orden; etiqueta: string }[] = [
@@ -46,10 +55,22 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
     const [tipo, setTipo] = useState<Tipo>("todos");
     const [orden, setOrden] = useState<Orden>("destacados");
 
+    // [clave, cantidad, cómo se muestra]
     const rubros = useMemo(() => {
         const cuenta = new Map<string, number>();
-        activos.forEach((p) => rubrosDe(p).forEach((c) => cuenta.set(c, (cuenta.get(c) ?? 0) + 1)));
-        return [...cuenta.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+        const nombre = new Map<string, string>();
+        activos.forEach((p) => {
+            rubrosDe(p).forEach((c) => cuenta.set(c, (cuenta.get(c) ?? 0) + 1));
+            categoriasDe(p).forEach((original) => {
+                const c = clave(original);
+                const previo = nombre.get(c);
+                if (!previo || (/[^\x00-\x7F]/.test(original) && !/[^\x00-\x7F]/.test(previo))) nombre.set(c, original);
+            });
+        });
+        return [...cuenta.entries()]
+            .filter(([, n]) => n >= MINIMO_POR_RUBRO)
+            .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+            .map(([c, n]) => [c, n, capitalizar(nombre.get(c) ?? c)] as const);
     }, [activos]);
 
     const cantidadReales = activos.filter((p) => !esMuestra(p)).length;
@@ -93,7 +114,8 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                     Nuestros <span className="text-primary">proyectos</span>
                 </h1>
                 <p className="mt-4 max-w-2xl text-base font-medium text-ink-black/75 sm:text-lg md:text-xl">
-                    Webs que hicimos para negocios reales y demos que construimos para mostrar lo que se puede hacer. Filtrá por rubro para ver algo parecido al tuyo.
+                    Webs que hicimos para negocios reales y demos que construimos para mostrar lo que se puede hacer.
+                    {rubros.length > 0 && " Filtrá por rubro para ver algo parecido al tuyo."}
                 </p>
             </header>
 
@@ -101,26 +123,28 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                 {/* Filtros de escritorio */}
                 <aside aria-label="Filtros" className="hidden lg:block">
                     <div className="sticky top-32 space-y-8">
-                        <div>
-                            <h2 className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-ink-black/60">Rubro</h2>
-                            <ul className="space-y-1">
-                                <li>
-                                    <button type="button" aria-pressed={rubro === null} onClick={() => setRubro(null)} className={opcion(rubro === null)}>
-                                        Todos <span className="tabular-nums opacity-70">{activos.length}</span>
-                                    </button>
-                                </li>
-                                {rubros.map(([nombre, n]) => (
-                                    <li key={nombre}>
-                                        <button type="button" aria-pressed={rubro === nombre} onClick={() => setRubro(rubro === nombre ? null : nombre)} className={opcion(rubro === nombre)}>
-                                            {etiqueta(nombre)} <span className="tabular-nums opacity-70">{n}</span>
+                        {rubros.length > 0 && (
+                            <div>
+                                <h2 className="etiqueta mb-2 text-ink-black/70">Rubro</h2>
+                                <ul className="space-y-1">
+                                    <li>
+                                        <button type="button" aria-pressed={rubro === null} onClick={() => setRubro(null)} className={opcion(rubro === null)}>
+                                            Todos <span className="tabular-nums opacity-70">{activos.length}</span>
                                         </button>
                                     </li>
-                                ))}
-                            </ul>
-                        </div>
+                                    {rubros.map(([c, n, nombre]) => (
+                                        <li key={c}>
+                                            <button type="button" aria-pressed={rubro === c} onClick={() => setRubro(rubro === c ? null : c)} className={opcion(rubro === c)}>
+                                                {nombre} <span className="tabular-nums opacity-70">{n}</span>
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                         {cantidadMuestras > 0 && cantidadReales > 0 && (
                             <div>
-                                <h2 className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-ink-black/60">Tipo</h2>
+                                <h2 className="etiqueta mb-2 text-ink-black/70">Tipo</h2>
                                 <ul className="space-y-1">
                                     {([["todos", "Todos", activos.length], ["reales", "Clientes reales", cantidadReales], ["muestras", "Demos", cantidadMuestras]] as const).map(([valor, etiqueta, n]) => (
                                         <li key={valor}>
@@ -137,16 +161,18 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
 
                 <div className="min-w-0">
                     {/* Filtros de celular: una fila de chips que se desliza. */}
-                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-3 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:hidden [&::-webkit-scrollbar]:hidden">
-                        <button type="button" aria-pressed={rubro === null} onClick={() => setRubro(null)} className={chip(rubro === null)}>
-                            Todos
-                        </button>
-                        {rubros.map(([nombre, n]) => (
-                            <button key={nombre} type="button" aria-pressed={rubro === nombre} onClick={() => setRubro(rubro === nombre ? null : nombre)} className={chip(rubro === nombre)}>
-                                {etiqueta(nombre)} <span className="tabular-nums opacity-60">{n}</span>
+                    {rubros.length > 0 && (
+                        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-3 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:hidden [&::-webkit-scrollbar]:hidden">
+                            <button type="button" aria-pressed={rubro === null} onClick={() => setRubro(null)} className={chip(rubro === null)}>
+                                Todos
                             </button>
-                        ))}
-                    </div>
+                            {rubros.map(([c, n, nombre]) => (
+                                <button key={c} type="button" aria-pressed={rubro === c} onClick={() => setRubro(rubro === c ? null : c)} className={chip(rubro === c)}>
+                                    {nombre} <span className="tabular-nums opacity-70">{n}</span>
+                                </button>
+                            ))}
+                        </div>
+                    )}
 
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-black/10 pb-3">
                         <p role="status" className="text-sm font-bold text-ink-black/70">
@@ -197,7 +223,7 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                         </div>
                         <Link
                             href="/#contacto"
-                            className="cta inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-lg border-2 border-black bg-primary px-6 font-bold uppercase text-white shadow-neobrutalism-sm transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                            className="boton boton-primario shrink-0"
                         >
                             Quiero mi web
                             <span aria-hidden="true" className="material-icons text-lg">arrow_forward</span>

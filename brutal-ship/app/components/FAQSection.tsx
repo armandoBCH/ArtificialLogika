@@ -27,10 +27,10 @@ export default function FAQSection({ faqs, config }: FAQSectionProps) {
 
     return (
         <section id="faq" aria-labelledby="faq-heading" className="relative bg-background-light border-b-2 border-black">
-            <div aria-hidden="true" className="absolute inset-0 pointer-events-none opacity-5 z-0 bg-pattern-dots"></div>
+            <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-0 patron-puntos"></div>
 
             <div className="relative z-10 mx-auto max-w-3xl px-4 py-20">
-                <h2 id="faq-heading" className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter leading-[0.95] text-ink-black">
+                <h2 id="faq-heading" className="titular-seccion text-ink-black">
                     Preguntas<br />frecuentes
                 </h2>
 
@@ -49,15 +49,9 @@ export default function FAQSection({ faqs, config }: FAQSectionProps) {
                                         onClick={() => setOpenIndex(isOpen ? null : index)}
                                         className="group w-full flex min-h-11 items-center justify-between gap-4 px-5 py-4 md:px-6 text-left text-lg font-bold text-ink-black hover:bg-background-light transition-colors"
                                     >
-                                        <span className="flex min-w-0 items-baseline gap-3">
-                                            <span
-                                                aria-hidden="true"
-                                                className={`shrink-0 font-black tabular-nums text-sm tracking-wider transition-colors ${isOpen ? "text-primary" : "text-ink-black/50"}`}
-                                            >
-                                                {String(index + 1).padStart(2, "0")}
-                                            </span>
-                                            <span className="group-hover:text-primary transition-colors">{item.question}</span>
-                                        </span>
+                                        {/* Iban numeradas 01–08: el orden no dice nada y el número
+                                            gris no llegaba al contraste mínimo. */}
+                                        <span className={`min-w-0 group-hover:text-primary transition-colors ${isOpen ? "text-primary-dark" : ""}`}>{item.question}</span>
                                         <span
                                             aria-hidden="true"
                                             className={`material-icons shrink-0 text-2xl rounded-full border-2 border-black transition-transform duration-300 ${isOpen ? "rotate-45 bg-accent-yellow" : "bg-background-light"}`}
@@ -78,7 +72,7 @@ export default function FAQSection({ faqs, config }: FAQSectionProps) {
                                 >
                                     <div className="overflow-hidden">
                                         {hasAnswer && (
-                                            <p className="px-5 pb-5 md:px-6 md:pl-14 text-base md:text-lg leading-relaxed text-ink-black/80">
+                                            <p className="px-5 pb-5 md:px-6 text-base md:text-lg leading-relaxed text-ink-black/80">
                                                 {item.answer}
                                             </p>
                                         )}

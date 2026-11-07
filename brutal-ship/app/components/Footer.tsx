@@ -12,8 +12,6 @@ export default function Footer({ config }: FooterProps) {
     const instagramUrl = config.instagram_url || '#';
     return (
         <footer className="bg-ink-black border-t-4 border-black text-white pt-16 pb-8 px-6 md:px-10 relative overflow-hidden">
-            {/* Geometric Footer Decoration */}
-            <div className="geometric-shape bottom-0 left-0 w-64 h-64 bg-primary rounded-full blur-[100px] opacity-20"></div>
 
             <div className="max-w-7xl mx-auto relative z-10">
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 md:gap-12 mb-16">
@@ -34,7 +32,7 @@ export default function Footer({ config }: FooterProps) {
                         </p>
                         <div className="flex gap-4">
                             <a
-                                className="size-11 flex items-center justify-center rounded-full border-2 border-white/25 hover:bg-pink-500 hover:border-pink-500 hover:text-white transition-all text-white/70"
+                                className="size-11 flex items-center justify-center rounded-full border-2 border-white/25 hover:bg-hot-coral hover:border-hot-coral hover:text-white transition-all text-white/70"
                                 href={instagramUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -53,7 +51,7 @@ export default function Footer({ config }: FooterProps) {
                                 <span aria-hidden="true" className="material-icons text-lg">alternate_email</span>
                             </a>
                             <a
-                                className="size-11 flex items-center justify-center rounded-full border-2 border-white/25 hover:bg-[#25D366] hover:border-[#25D366] hover:text-ink-black transition-all text-white/70"
+                                className="size-11 flex items-center justify-center rounded-full border-2 border-white/25 hover:bg-whatsapp hover:border-whatsapp hover:text-ink-black transition-all text-white/70"
                                 href={whatsappUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -69,16 +67,16 @@ export default function Footer({ config }: FooterProps) {
 
                     {/* Links Column 1 */}
                     <div>
-                        <h3 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Navegación</h3>
+                        <h3 className="etiqueta mb-6 border-b-2 border-white/15 pb-2 text-white/90">Navegación</h3>
                         <ul className="space-y-3">
                             <li>
                                 <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
-                                    Servicios
+                                    Precios
                                 </Link>
                             </li>
                             <li>
                                 <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#portafolio">
-                                    Nuestro Trabajo
+                                    Nuestro trabajo
                                 </Link>
                             </li>
                             <li>
@@ -88,7 +86,7 @@ export default function Footer({ config }: FooterProps) {
                             </li>
                             <li>
                                 <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#faq">
-                                    FAQ
+                                    Preguntas frecuentes
                                 </Link>
                             </li>
                             <li>
@@ -101,20 +99,20 @@ export default function Footer({ config }: FooterProps) {
 
                     {/* Links Column 2 */}
                     <div>
-                        <h3 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">Servicios</h3>
+                        <h3 className="etiqueta mb-6 border-b-2 border-white/15 pb-2 text-white/90">Servicios</h3>
                         <ul className="space-y-3">
                             <li>
-                                <Link className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
+                                <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
                                     Landing Page
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
+                                <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
                                     Sitio Institucional
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-white/70 hover:text-primary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
+                                <Link className="text-white/70 hover:text-secondary underline-grow transition-all flex items-center min-h-11 min-w-11 w-fit max-w-full" href="/#precios">
                                     E-commerce / Plataforma
                                 </Link>
                             </li>
@@ -123,13 +121,13 @@ export default function Footer({ config }: FooterProps) {
 
                     {/* CTA Column */}
                     <div className="col-span-2 md:col-span-1">
-                        <h3 className="mb-6 border-b-2 border-white/15 pb-2 text-xs font-black uppercase tracking-[0.18em] text-white/90">¿Listo para Arrancar?</h3>
+                        <h3 className="etiqueta mb-6 border-b-2 border-white/15 pb-2 text-white/90">¿Listo para arrancar?</h3>
                         <p className="text-white/70 text-sm mb-4">
                             Escribinos hoy y en menos de {config.response_time || '48hs'} te respondemos con una propuesta para tu proyecto.
                         </p>
                         <Link
                             href="/#contacto"
-                            className="cta block w-full bg-white text-black font-bold text-sm uppercase py-3 px-6 rounded hover:bg-white/10 transition-colors border-2 border-transparent hover:border-primary text-center"
+                            className="boton boton-primario boton-sobre-oscuro w-full text-sm"
                         >
                             Quiero mi web
                         </Link>
@@ -144,10 +142,10 @@ export default function Footer({ config }: FooterProps) {
                             Blog
                         </Link>
                         <Link className="hover:text-white transition-colors inline-flex items-center justify-center min-h-11 min-w-11 px-2" href="/privacidad">
-                            Política de Privacidad
+                            Política de privacidad
                         </Link>
                         <Link className="hover:text-white transition-colors inline-flex items-center justify-center min-h-11 min-w-11 px-2" href="/terminos">
-                            Términos de Servicio
+                            Términos de servicio
                         </Link>
                     </div>
                 </div>
