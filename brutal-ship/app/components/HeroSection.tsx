@@ -11,13 +11,26 @@ import MagneticWrapper from "./MagneticWrapper";
  * Nada del hero se mueve en loop. Solo entra el titular, una vez.
  */
 export default function HeroSection({ children }: { children?: ReactNode }) {
-    // El titular anima con keyframes CSS, no con framer-motion, para que el HTML del
-    // servidor ya llegue con el texto pintado. Quien nunca recibe el JS igual lo lee.
-    const sentence1 = "Tu Web".split("");
-    const sentence2 = "Profesional.".split("");
-    // toFixed(2) y no la suma cruda: 0.1 + 1 * 0.05 da 0.15000000000000002 en punto
-    // flotante, y ese string termina en el HTML del servidor.
-    const letterDelay = (index: number) => ({ animationDelay: `${(0.1 + index * 0.05).toFixed(2)}s` });
+    // El titular dice el diferencial (lo que el cliente NO hace), no "Tu web profesional.":
+    // sale de BRAND_CORE.md y lo eligió el dueño el 2026-11-17.
+    // Anima con keyframes CSS, no con framer-motion, para que el HTML del servidor ya llegue
+    // con el texto pintado. Entra palabra por palabra detrás de una máscara (motion.md).
+    const linea1 = ["Vos", "atendé", "tu", "negocio."];
+    const linea2 = ["La", "web", "la", "hacemos", "nosotros."];
+    // toFixed(2) y no la suma cruda: en punto flotante quedan decimales colgando, y ese
+    // string termina en el HTML del servidor.
+    const retraso = (index: number) => ({ animationDelay: `${(0.1 + index * 0.07).toFixed(2)}s` });
+    const palabras = (lista: string[], desde: number) =>
+        lista.map((p, i) => (
+            <span key={p + i}>
+                {/* Aire arriba y abajo dentro de la máscara: en mayúsculas la tilde de "ATENDÉ"
+                    sube más que la altura de línea y se cortaba. */}
+                <span className="inline-block overflow-hidden pt-[0.15em] -mt-[0.15em] pb-[0.1em] -mb-[0.1em] align-bottom">
+                    <span style={retraso(desde + i)} className="hero-letter inline-block">{p}</span>
+                </span>
+                {i < lista.length - 1 && " "}
+            </span>
+        ));
 
     return (
         // pt-28 en celular: con pt-36 quedaban ~75px vacíos entre el menú flotante y el titular.
@@ -30,32 +43,21 @@ export default function HeroSection({ children }: { children?: ReactNode }) {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-8">
                         <h1
-                            aria-label="Tu Web Profesional."
-                            className="text-[clamp(3rem,12vw,6rem)] lg:text-[clamp(3rem,5vw,5.5rem)] font-bold leading-[0.9] tracking-[-0.02em] uppercase flex flex-col"
+                            aria-label="Vos atendé tu negocio. La web la hacemos nosotros."
+                            className="text-[clamp(2.5rem,11vw,4.5rem)] lg:text-[clamp(3rem,4.4vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.02em] uppercase"
                         >
-                            <span aria-hidden="true" className="flex overflow-hidden pb-2 -mb-2">
-                                {sentence1.map((char, index) => (
-                                    <span key={index} style={letterDelay(index)} className="hero-letter inline-block">
-                                        {char === " " ? " " : char}
-                                    </span>
-                                ))}
+                            <span aria-hidden="true" className="block">
+                                {palabras(linea1, 0)}
                             </span>
-                            <span aria-hidden="true" className="flex overflow-hidden pb-4 -mb-4">
-                                <span className="text-transparent bg-clip-text bg-primary text-stroke whitespace-nowrap flex">
-                                    {sentence2.map((char, index) => (
-                                        <span key={index} style={letterDelay(sentence1.length + index)} className="hero-letter inline-block">
-                                            {char}
-                                        </span>
-                                    ))}
-                                </span>
+                            <span aria-hidden="true" className="mt-1 block text-transparent bg-clip-text bg-primary text-stroke">
+                                {palabras(linea2, linea1.length)}
                             </span>
                         </h1>
                         {/* "o renovamos la que ya tenés" es lo que quedó de la sección "¿Tu web es
-                            vieja?". Su trabajo era enganchar a los dos públicos a la vez, y eso se
-                            hace mejor acá, donde la persona decide si la página le habla a ella,
-                            que en dos pantallas de argumento a mitad del recorrido. */}
+                            vieja?". El "nosotros nos encargamos de todo" ya lo dice el titular: la
+                            bajada cuenta qué es ese "todo", en palabras del dueño de un negocio. */}
                         <p className="text-xl md:text-2xl font-medium py-2 max-w-lg">
-                            Diseñamos y creamos la página web que tu negocio necesita, o renovamos la que ya tenés. Vos no te preocupás por nada — nosotros nos encargamos de todo.
+                            Diseñamos tu página web, o renovamos la que ya tenés, y nos ocupamos de todo lo técnico: el dominio, el correo, el candadito de seguridad y que Google la encuentre.
                         </p>
                         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-4">
                             <MagneticWrapper>

@@ -339,6 +339,85 @@ function MantenimientoMensual({ conCuota }: { conCuota: { plan: PricingPlan; cuo
     );
 }
 
+/**
+ * La letra chica, en claro y al lado del precio: cómo se paga, qué no está incluido y qué
+ * pasa si después querés cambiar algo. Todo sale de lo publicado en /terminos (§2, §3, §5 y
+ * §7); si cambian los términos, cambia esto. Idea tomada de cómo explica el pago
+ * logicawebs.com.ar (2026-11-17), con nuestros datos y nuestras palabras.
+ */
+const PAGO = [
+    "Te mostramos el diseño previo y el presupuesto. Gratis.",
+    "Si te gusta, pagás el 50% para arrancar.",
+    "El otro 50%, cuando te la entregamos y antes de publicarla.",
+];
+
+const NO_INCLUIDO = [
+    "Lo que no figure en tu presupuesto: ahí queda escrito todo lo que incluye.",
+    "Las fotos y el logo: los ponés vos. Si no tenés logo, lo charlamos antes de arrancar.",
+];
+
+const CAMBIOS = [
+    "Antes de construirla, ajustamos el diseño previo hasta que te guste.",
+    "Después de aprobado, los cambios de estructura se presupuestan aparte: sabés el precio antes.",
+    "Si el error es nuestro, no se cobra nunca.",
+];
+
+function ComoSePaga() {
+    return (
+        <div className="ficha mx-auto mt-14 max-w-5xl rounded-xl bg-white px-5 pb-6 pt-9 text-left shadow-neobrutalism sm:px-8 sm:pb-8">
+            {/* No "Sin letra chica": la ficha no repite todas las condiciones (por regla del
+                dueño, lo que vende no habla de si la seña vuelve; eso queda en /terminos), así
+                que el título no puede prometer que está todo. El enlace de abajo lleva al resto. */}
+            <span className="ficha-etiqueta text-ink-black">Antes de arrancar</span>
+            <div className="grid gap-7 md:grid-cols-3 md:gap-8">
+                <div>
+                    <h3 className="text-lg font-bold uppercase tracking-[-0.01em]">Cómo se paga</h3>
+                    <ol className="mt-3 space-y-2.5">
+                        {PAGO.map((t, i) => (
+                            <li key={t} className="flex items-start gap-2.5 font-medium leading-snug">
+                                <span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-black bg-accent-yellow text-xs font-black">{i + 1}</span>
+                                {t}
+                            </li>
+                        ))}
+                    </ol>
+                    <p className="mt-3 text-sm font-medium text-ink-black/75">
+                        Por transferencia. Si lo necesitás, armamos un plan de pago.
+                    </p>
+                </div>
+                <div className="md:border-l-2 md:border-dashed md:border-black/15 md:pl-8">
+                    <h3 className="text-lg font-bold uppercase tracking-[-0.01em]">Qué no está incluido</h3>
+                    <ul className="mt-3 space-y-2.5">
+                        {NO_INCLUIDO.map((t) => (
+                            <li key={t} className="flex items-start gap-2.5 font-medium leading-snug">
+                                <span aria-hidden="true" className="material-icons mt-0.5 shrink-0 text-lg text-ink-black/60">remove_circle_outline</span>
+                                {t}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <div className="md:border-l-2 md:border-dashed md:border-black/15 md:pl-8">
+                    <h3 className="text-lg font-bold uppercase tracking-[-0.01em]">Si después querés cambiar algo</h3>
+                    <ul className="mt-3 space-y-2.5">
+                        {CAMBIOS.map((t) => (
+                            <li key={t} className="flex items-start gap-2.5 font-medium leading-snug">
+                                <span aria-hidden="true" className="material-icons mt-0.5 shrink-0 text-lg text-primary">check_circle</span>
+                                {t}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+            <p className="mt-6 border-t-2 border-dashed border-black/15 pt-4 text-sm font-medium text-ink-black/75">
+                Todas las condiciones, en{" "}
+                <a href="/terminos" className="font-bold text-primary-dark underline decoration-2 underline-offset-4 hover:text-ink-black">
+                    los términos del servicio
+                </a>
+                .
+            </p>
+        </div>
+    );
+}
+
 export default function PricingSection({ plans, config }: PricingSectionProps) {
     const conCuota = plans
         .map((plan) => ({ plan, cuota: cuotaMensual(plan) }))
@@ -369,6 +448,8 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                         <PlanCard key={plan.id} plan={plan} />
                     ))}
                 </m.div>
+
+                <ComoSePaga />
 
                 {/* El mantenimiento mensual es opcional. Mostrarlo abierto en el momento de decidir
                     sumaba tres compromisos de precio mas a los tres planes. Queda plegado, pero el
