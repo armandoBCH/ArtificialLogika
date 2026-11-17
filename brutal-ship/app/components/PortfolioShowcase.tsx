@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ProjectCard from "./ProjectCard";
 import TestimonialQuotes from "./TestimonialQuotes";
+import TrabajosEnCelular from "./TrabajosEnCelular";
 import type { PortfolioProject, Testimonial } from "@/lib/types/database";
 import { esMuestra } from "@/lib/data/portfolio";
 
@@ -99,6 +100,8 @@ export default function PortfolioShowcase({ projects, testimonials = [] }: Portf
                         Ver todos los trabajos
                     </Link>
                 </div>
+
+                <TrabajosEnCelular projects={projects} />
 
                 {testimonials.length > 0 && (
                     <div className="mt-12 md:mt-20 border-t-4 border-white/25 pt-10 md:pt-16">

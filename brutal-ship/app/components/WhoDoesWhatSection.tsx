@@ -29,6 +29,20 @@ const CLIENTE = [
     "Listo. Seguí atendiendo tu negocio.",
 ];
 
+// La pregunta que se hace quien duda: "¿y si la hago yo?". Una tabla y no un párrafo:
+// se lee de un vistazo, fila por fila. Nada exagerado sobre las plantillas (traen el
+// candadito y tienen soporte propio) y nada que /terminos no sostenga: el soporte
+// incluido es un mes (§2) y el alojamiento sigue después con el mensual o por tu cuenta (§9).
+const COMPARACION: [string, string, string][] = [
+    ["Quién la arma", "Vos, de a ratos", "Nosotros"],
+    ["Los textos", "Los escribís vos", "Los escribimos nosotros"],
+    ["Dominio y correo", "Los contratás y configurás vos", "Por nuestra cuenta"],
+    ["Si algo se rompe", "Te arreglás con el soporte de la plataforma", "Nos escribís: el primer mes va incluido, después con el mensual"],
+    // Cortas a propósito: a 375px una palabra larga ("mantenimiento") no entraba en la columna.
+    ["Cómo se paga", "Un plan todos los meses", "La web, una sola vez; el alojamiento, aparte"],
+    ["Antes de pagar", "La armás y recién ahí la ves", "Ves el diseño previo, gratis"],
+];
+
 const LOGIKA = [
     "Diseño de la web completa",
     "Desarrollo y programación",
@@ -141,6 +155,48 @@ export default function WhoDoesWhatSection() {
                         el plan, hasta dejar tu web online.
                     </span>
                 </p>
+
+                <div className="mt-14">
+                    <h3 className="text-2xl font-bold uppercase tracking-[-0.01em] md:text-3xl">
+                        ¿Y si la hago yo con una plantilla?
+                    </h3>
+                    <div className="mt-6 overflow-hidden rounded-xl border-2 border-black bg-white shadow-neobrutalism">
+                        <table className="w-full table-fixed text-left text-sm sm:text-base">
+                            <caption className="sr-only">Hacer la web con una plantilla o con Logika</caption>
+                            <colgroup>
+                                <col className="w-[30%]" />
+                                <col className="w-[35%]" />
+                                <col className="w-[35%]" />
+                            </colgroup>
+                            <thead>
+                                <tr className="border-b-2 border-black">
+                                    <th scope="col" className="p-3 sm:p-4"><span className="sr-only">Tema</span></th>
+                                    <th scope="col" className="etiqueta p-3 align-bottom text-ink-black/75 sm:p-4">Con una plantilla</th>
+                                    <th scope="col" className="etiqueta bg-primary p-3 align-bottom text-white sm:p-4">Con Logika</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y-2 divide-black/10">
+                                {COMPARACION.map(([tema, plantilla, logika]) => (
+                                    <tr key={tema}>
+                                        <th scope="row" className="p-3 align-top font-bold leading-snug sm:p-4">{tema}</th>
+                                        <td className="p-3 align-top leading-snug text-ink-black/80 sm:p-4">
+                                            <span className="flex items-start gap-1.5">
+                                                <span aria-hidden="true" className="material-icons mt-px shrink-0 text-base text-ink-black/50 sm:text-lg">close</span>
+                                                {plantilla}
+                                            </span>
+                                        </td>
+                                        <td className="bg-primary/10 p-3 align-top font-bold leading-snug sm:p-4">
+                                            <span className="flex items-start gap-1.5">
+                                                <span aria-hidden="true" className="material-icons mt-px shrink-0 text-base text-primary sm:text-lg">check_circle</span>
+                                                {logika}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </section>
     );
