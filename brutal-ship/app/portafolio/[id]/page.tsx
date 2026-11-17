@@ -214,7 +214,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                                     className="boton boton-primario"
                                 >
                                     Quiero una web así
-                                    <span aria-hidden="true" className="material-icons text-lg">arrow_forward</span>
+                                    <span aria-hidden="true" className="flecha material-icons text-lg">arrow_forward</span>
                                 </Link>
                                 <a
                                     href={whatsappUrl}

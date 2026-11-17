@@ -258,7 +258,7 @@ export default async function BlogPage() {
                                 className="boton boton-secundario self-start text-sm"
                             >
                                 Leer artículo
-                                <span aria-hidden="true" className="material-icons text-base">arrow_forward</span>
+                                <span aria-hidden="true" className="flecha material-icons text-base">arrow_forward</span>
                             </Link>
                         </article>
                     ))}

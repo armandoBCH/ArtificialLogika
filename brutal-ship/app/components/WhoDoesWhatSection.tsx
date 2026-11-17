@@ -1,5 +1,3 @@
-import BlockReveal from "./BlockReveal";
-
 /**
  * El diferencial de Logika no es la estética ni el precio: es cuánto trabajo NO hace el cliente.
  * La composición tiene que argumentar eso sola.
@@ -62,7 +60,10 @@ export default function WhoDoesWhatSection() {
         <section
             id="como-funciona"
             aria-labelledby="como-funciona-heading"
-            className="relative bg-background-light border-b-2 border-black px-4 py-20 md:px-10 lg:px-20 overflow-hidden"
+            // overflow-clip y no overflow-hidden: `hidden` vuelve a la sección una caja con scroll
+            // propio, y las animaciones atadas al scroll (el sello, las tildes, el marcador) miraban
+            // esa caja quieta en vez de la página. Recorta igual.
+            className="relative bg-background-light border-b-2 border-black px-4 py-20 md:px-10 lg:px-20 overflow-clip"
         >
             {/* Anclas de antes: #quien-hace-que era el id de esta sección y #proceso el de la
                 que se fundió acá. Un link guardado o compartido sigue cayendo en su lugar. */}
@@ -71,19 +72,20 @@ export default function WhoDoesWhatSection() {
             <div className="absolute inset-0 patron-puntos pointer-events-none" aria-hidden="true"></div>
 
             <div className="relative z-10 max-w-7xl mx-auto">
-                <BlockReveal>
-                    <h2
-                        id="como-funciona-heading"
-                        className="titular-seccion max-w-3xl"
-                    >
-                        Tu parte del trabajo
-                        <br />
-                        <span className="text-primary">entra en cuatro renglones.</span>
-                    </h2>
-                    <p className="mt-6 text-lg md:text-xl font-medium max-w-xl text-black/70">
-                        Cuatro cosas de tu lado. Once del nuestro. Esa diferencia es el producto.
-                    </p>
-                </BlockReveal>
+                {/* Hasta 2026-11-17 el titular salía de atrás de una cortina violeta (BlockReveal).
+                    Competía con el marcador: los dos querían ser la entrada del titular, y la cortina
+                    lo tapaba mientras se pintaba. Quedó el marcador, que además dice cuál es la idea. */}
+                <h2
+                    id="como-funciona-heading"
+                    className="titular-seccion max-w-3xl"
+                >
+                    Tu parte del trabajo
+                    <br />
+                    <span className="marcador text-primary">entra en cuatro renglones.</span>
+                </h2>
+                <p className="mt-6 text-lg md:text-xl font-medium max-w-xl text-black/70">
+                    Cuatro cosas de tu lado. Once del nuestro. Esa diferencia es el producto.
+                </p>
 
                 <div className="mt-14 grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start">
                     {/* Lo que pone el cliente: cuatro líneas y se termina. */}
@@ -125,12 +127,14 @@ export default function WhoDoesWhatSection() {
                             <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border-4 border-white/20"></div>
                         </div>
                         <span className="ficha-etiqueta text-white">Lo que ponemos nosotros</span>
+                        {/* Las tildes se marcan de a una mientras la lista sube (globals.css,
+                            "LAS ONCE TILDES"). El texto no se mueve: se lee desde el primer momento. */}
                         <ul className="relative space-y-3">
                             {LOGIKA.map((item) => (
                                 <li key={item} className="flex items-start gap-2.5 text-lg font-medium leading-snug">
                                     <span
                                         aria-hidden="true"
-                                        className="material-icons shrink-0 text-secondary text-xl leading-7"
+                                        className="tilde-cae material-icons shrink-0 text-secondary text-xl leading-7"
                                     >
                                         check_circle
                                     </span>
