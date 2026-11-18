@@ -45,7 +45,8 @@ export default function GuaranteeSection() {
         <section
             id="garantia"
             aria-labelledby="garantia-heading"
-            className="relative bg-accent-yellow border-t-4 border-black px-4 pt-16 pb-6 md:px-10 lg:px-20 overflow-hidden"
+            // overflow-clip: con `hidden` la animación atada al scroll de la caja no avanzaba.
+            className="relative bg-accent-yellow border-t-4 border-black px-4 pt-16 pb-6 md:px-10 lg:px-20 overflow-clip"
         >
             <div
                 aria-hidden="true"
@@ -62,7 +63,8 @@ export default function GuaranteeSection() {
                 >
                     Si no te gusta el diseño previo,
                     <br />
-                    <span className="bg-white text-ink-black px-3 inline-block mt-3 border-4 border-black shadow-neobrutalism">
+                    {/* Baja a su lugar como una etiqueta que se pega (globals.css, "LA CAJA QUE SE APOYA"). */}
+                    <span className="caja-apoya bg-white text-ink-black px-3 inline-block mt-3 border-4 border-black shadow-neobrutalism">
                         no pagás nada.
                     </span>
                 </h2>

@@ -24,12 +24,13 @@ export default function TrabajosEnCelular({ projects }: { projects: PortfolioPro
                 Las webs de nuestros clientes, tal como abren en un teléfono. Tocá una para verla publicada.
             </p>
             {/* Se desliza de costado en celular. Es una zona con scroll: lleva tabIndex y nombre
-                para que se pueda mover con el teclado. */}
+                para que se pueda mover con el teclado. El pt-2 es aire para el teléfono que se
+                levanta al pasar el mouse: la zona con scroll también recorta arriba. */}
             <ul
                 role="list"
                 tabIndex={0}
                 aria-label="Webs de clientes vistas en un celular"
-                className="-mx-4 mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-6 lg:gap-6 lg:overflow-visible lg:px-0"
+                className="-mx-4 mt-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pt-2 pb-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-6 lg:gap-6 lg:overflow-visible lg:px-0"
             >
                 {webs.map((p) => (
                     // `relative`: el texto para lectores de pantalla (sr-only) es absoluto. Sin un
@@ -42,7 +43,9 @@ export default function TrabajosEnCelular({ projects }: { projects: PortfolioPro
                             rel="noopener noreferrer"
                             className="group block"
                         >
-                            <span className="block rounded-[1.6rem] border-2 border-white bg-black p-1.5 shadow-neobrutalism-white transition-transform duration-200 group-hover:-translate-y-0.5">
+                            {/* Al pasar el mouse el teléfono se levanta y se inclina apenas, como
+                                quien lo agarra de la mesa; al tocarlo vuelve a apoyarse. */}
+                            <span className="block rounded-[1.6rem] border-2 border-white bg-black p-1.5 shadow-neobrutalism-white transition-transform duration-200 ease-out group-hover:-translate-y-1 group-hover:-rotate-2 group-active:translate-y-0 group-active:rotate-0">
                                 <span className="relative block aspect-[375/812] overflow-hidden rounded-[1.15rem] bg-background-light">
                                     <Image
                                         src={CAPTURAS_CELULAR[p.id]}

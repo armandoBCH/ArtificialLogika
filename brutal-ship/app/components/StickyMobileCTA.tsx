@@ -47,7 +47,7 @@ export default function StickyMobileCTA({ config }: StickyMobileCTAProps) {
                     className="boton boton-primario shadow-neobrutalism-white-sm flex-1 px-4 text-sm"
                 >
                     <span>Quiero mi web</span>
-                    <span aria-hidden="true" className="material-icons text-sm">arrow_forward</span>
+                    <span aria-hidden="true" className="flecha material-icons text-sm">arrow_forward</span>
                 </a>
             </div>
         </m.div>

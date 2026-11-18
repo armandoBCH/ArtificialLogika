@@ -12,11 +12,12 @@ import MagneticWrapper from "./MagneticWrapper";
  */
 export default function HeroSection({ children }: { children?: ReactNode }) {
     // El titular dice el diferencial (lo que el cliente NO hace), no "Tu web profesional.":
-    // sale de BRAND_CORE.md y lo eligió el dueño el 2026-11-17.
+    // sale de BRAND_CORE.md. El dueño lo eligió el 2026-11-17 y ese mismo día lo acortó:
+    // "Vos atendé tu negocio. La web la hacemos nosotros." era largo para leer de un golpe.
     // Anima con keyframes CSS, no con framer-motion, para que el HTML del servidor ya llegue
     // con el texto pintado. Entra palabra por palabra detrás de una máscara (motion.md).
-    const linea1 = ["Vos", "atendé", "tu", "negocio."];
-    const linea2 = ["La", "web", "la", "hacemos", "nosotros."];
+    const linea1 = ["Vos", "atendé."];
+    const linea2 = ["Nosotros,", "la", "web."];
     // toFixed(2) y no la suma cruda: en punto flotante quedan decimales colgando, y ese
     // string termina en el HTML del servidor.
     const retraso = (index: number) => ({ animationDelay: `${(0.1 + index * 0.07).toFixed(2)}s` });
@@ -43,14 +44,19 @@ export default function HeroSection({ children }: { children?: ReactNode }) {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-8">
                         <h1
-                            aria-label="Vos atendé tu negocio. La web la hacemos nosotros."
-                            className="text-[clamp(2.5rem,11vw,4.5rem)] lg:text-[clamp(3rem,4.4vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.02em] uppercase"
+                            aria-label="Vos atendé. Nosotros, la web."
+                            className="text-[clamp(2.75rem,13vw,5rem)] lg:text-[clamp(3.5rem,6.6vw,6.25rem)] font-bold leading-[0.95] tracking-[-0.02em] uppercase"
                         >
                             <span aria-hidden="true" className="block">
                                 {palabras(linea1, 0)}
                             </span>
-                            <span aria-hidden="true" className="mt-1 block text-transparent bg-clip-text bg-primary text-stroke">
-                                {palabras(linea2, linea1.length)}
+                            {/* El marcador amarillo pasa una vez, cuando ya cayeron las palabras, y
+                                subraya la mitad que es la promesa. Es el mismo gesto que los titulares
+                                de cada sección (globals.css, "MARCADOR"). */}
+                            <span aria-hidden="true" className="mt-1 block">
+                                <span className="marcador marcador-entra text-primary text-stroke">
+                                    {palabras(linea2, linea1.length)}
+                                </span>
                             </span>
                         </h1>
                         {/* "o renovamos la que ya tenés" es lo que quedó de la sección "¿Tu web es
@@ -63,7 +69,7 @@ export default function HeroSection({ children }: { children?: ReactNode }) {
                             <MagneticWrapper>
                                 <a href="#contacto" className="boton boton-primario w-full sm:w-auto text-lg py-4 px-8">
                                     Quiero mi web
-                                    <span aria-hidden="true" className="material-icons">arrow_forward</span>
+                                    <span aria-hidden="true" className="flecha material-icons">arrow_forward</span>
                                 </a>
                             </MagneticWrapper>
                             {/* La oferta vivía en una banda propia debajo del hero: en un celular de

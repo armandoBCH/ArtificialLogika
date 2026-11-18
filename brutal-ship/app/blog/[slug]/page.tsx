@@ -260,7 +260,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         className="boton boton-primario max-w-full text-lg md:text-xl px-8 py-4"
                     >
                         Quiero mi web
-                        <span aria-hidden="true" className="material-icons text-xl">arrow_forward</span>
+                        <span aria-hidden="true" className="flecha material-icons text-xl">arrow_forward</span>
                     </Link>
                 </div>
 

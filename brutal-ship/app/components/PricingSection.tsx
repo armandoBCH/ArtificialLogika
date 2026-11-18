@@ -425,7 +425,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
     const whatsappUrl = `https://wa.me/${config.whatsapp_number}?text=${encodeURIComponent("Hola, tengo dudas sobre los planes web")}`;
 
     return (
-        <section id="precios" aria-labelledby="precios-heading" className="pt-12 pb-20 bg-accent-yellow border-b-2 border-black relative overflow-hidden">
+        <section id="precios" aria-labelledby="precios-heading" className="pt-12 pb-20 bg-accent-yellow border-b-2 border-black relative overflow-clip">
             <span id="servicios" className="block relative -top-28" aria-hidden="true"></span>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
                 <m.div
@@ -433,7 +433,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
                 >
-                    <h2 id="precios-heading" className="titular-seccion mb-4">Qué recibís<br /><span className="text-primary">y cuánto sale</span></h2>
+                    <h2 id="precios-heading" className="titular-seccion mb-4">Qué recibís<br /><span className="marcador marcador-blanco text-primary">y cuánto sale</span></h2>
                     <p className="text-xl font-medium mb-12 max-w-xl mx-auto">Todo en un solo lugar. Sin sorpresas, sin letra chica.</p>
                 </m.div>
 

@@ -226,7 +226,7 @@ export default function CatalogGrid({ initialProjects }: CatalogGridProps) {
                             className="boton boton-primario shrink-0"
                         >
                             Quiero mi web
-                            <span aria-hidden="true" className="material-icons text-lg">arrow_forward</span>
+                            <span aria-hidden="true" className="flecha material-icons text-lg">arrow_forward</span>
                         </Link>
                     </div>
                 </div>

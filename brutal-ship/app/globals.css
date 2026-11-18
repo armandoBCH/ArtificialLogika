@@ -196,6 +196,19 @@ dd {
     box-shadow: none;
   }
 
+  /* La flecha empuja hacia donde lleva el botón. 3px: se nota, no baila. */
+  /* Solo la flecha que va al final (`.flecha`): un ícono adelante del texto ("home",
+     "chat") se corría hacia las letras. */
+  .boton .flecha {
+    transition: translate 0.2s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  @media (hover: hover) {
+    .boton:not(:disabled):hover .flecha {
+      translate: 3px 0;
+    }
+  }
+
   .boton:disabled {
     cursor: progress;
   }
@@ -952,6 +965,136 @@ body:has(.visor[open]) {
 @supports not (animation-timeline: view()) {
   .sello-cae {
     animation: sello-estampa 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  }
+}
+
+/* ===================================================================
+   MARCADOR
+   La frase que importa de cada titular lleva un resaltador, como quien
+   marca lo importante de un papel. Se pinta una vez, de izquierda a
+   derecha, mientras el titular sube por la pantalla (va atado al scroll,
+   sin JavaScript). En el hero ya está en pantalla al cargar: ahí pasa
+   cuando terminan de caer las palabras.
+
+   Cubre la mitad de abajo de las letras, no todo el renglón: así sigue
+   leyéndose como un trazo de marcador y no como una caja. Sobre el amarillo
+   de Precios va en blanco (`marcador-blanco`). Sobre negro no va: probado en
+   "Nuestro trabajo" con violeta, se leía como un bloque.
+   `box-decoration-break: clone` hace que cada renglón tenga su trazo.
+
+   Uno por sección como mucho. Si todo está marcado, nada lo está.
+   =================================================================== */
+
+.marcador {
+  --marcador: #FDE047;
+  background-image: linear-gradient(transparent 50%, var(--marcador) 50%, var(--marcador) 86%, transparent 86%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-inline: 0.06em;
+  animation: marcador-pinta linear both;
+  animation-timeline: view();
+  /* Termina con el titular a media pantalla: antes terminaba apenas asomaba y, en
+     "Cómo funciona", la cortina violeta del titular lo tapaba mientras se pintaba. */
+  animation-range: entry 100% cover 50%;
+}
+
+/* Sobre el amarillo de Precios, el marcador amarillo no se veía. */
+.marcador-blanco {
+  --marcador: #ffffff;
+}
+
+/* El shorthand `animation` vuelve `animation-timeline` a auto: este pasa con el reloj. */
+.marcador-entra {
+  animation: marcador-pinta 0.5s cubic-bezier(0.65, 0, 0.35, 1) 0.85s backwards;
+}
+
+@keyframes marcador-pinta {
+  from {
+    background-size: 0% 100%;
+  }
+}
+
+@supports not (animation-timeline: view()) {
+  .marcador:not(.marcador-entra) {
+    animation: none;
+  }
+}
+
+/* ===================================================================
+   LAS ONCE TILDES
+   El momento de la sección "Cómo funciona": del lado del cliente hay
+   cuatro renglones y un sello que cierra; del lado de Logika las tildes
+   se van marcando de a una a medida que la lista sube. Atadas al scroll:
+   bajás y se tildan, como quien repasa una lista de tareas hechas.
+   Si alguien llega con la lista ya en pantalla, ya están todas marcadas.
+   =================================================================== */
+
+.tilde-cae {
+  animation: tilde-marca linear both;
+  animation-timeline: view();
+  animation-range: cover 0% cover 14%;
+}
+
+@keyframes tilde-marca {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-45deg);
+  }
+
+  65% {
+    opacity: 1;
+    transform: scale(1.25) rotate(6deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports not (animation-timeline: view()) {
+  .tilde-cae {
+    animation: none;
+  }
+}
+
+/* ===================================================================
+   LA CAJA QUE SE APOYA
+   "No pagás nada." es la frase que más tranquiliza de la página. La caja
+   blanca baja a su lugar como una etiqueta que se pega: un poco más
+   grande y torcida, y se asienta. Una vez, atada al scroll. Sin fundido: si
+   alguien frena el scroll a mitad de camino, la frase igual se lee entera.
+   =================================================================== */
+
+.caja-apoya {
+  animation: caja-se-apoya linear both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 30%;
+}
+
+@keyframes caja-se-apoya {
+  from {
+    transform: translate(-6px, -10px) rotate(-4deg) scale(1.12);
+    box-shadow: none;
+  }
+}
+
+@supports not (animation-timeline: view()) {
+  .caja-apoya {
+    animation: none;
+  }
+}
+
+/* Con "reducir movimiento" la regla general acorta las animaciones con reloj, pero
+   las atadas al scroll siguen el scroll igual: se apagan acá y queda el estado final. */
+@media (prefers-reduced-motion: reduce) {
+  .marcador,
+  .tilde-cae,
+  .caja-apoya,
+  .sello-cae {
+    animation: none !important;
   }
 }
 
