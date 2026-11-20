@@ -56,6 +56,7 @@ interface PortfolioProject {
     description_long: string;
     image_url: string;
     image_url_wide: string;
+    image_url_mobile?: string | null;
     image_alt: string;
     accent_color: string;
     stats: PortfolioStat[];
@@ -116,7 +117,7 @@ export default function PortafolioPage() {
 
     const empty: Partial<PortfolioProject> = {
         title: "", description: "", description_long: "", category: "", categories: [],
-        image_url: "", image_url_wide: "", image_alt: "", accent_color: "primary",
+        image_url: "", image_url_wide: "", image_url_mobile: "", image_alt: "", accent_color: "primary",
         external_url: "", applied_services: [], applied_features: [],
         tags: [], stats: [], is_active: true, is_sample: false, display_order: 0,
     };
@@ -125,13 +126,14 @@ export default function PortafolioPage() {
     const [customCategories, setCustomCategories] = useState<string[]>([]);
     const [newCategoryInput, setNewCategoryInput] = useState("");
     const [showScreenshotModal, setShowScreenshotModal] = useState(false);
-    const [uploadingSlot, setUploadingSlot] = useState<"" | "4x3" | "16x9">("");
+    const [uploadingSlot, setUploadingSlot] = useState<"" | "4x3" | "16x9" | "movil">("");
     const [uploadError, setUploadError] = useState("");
-    const [draggingSlot, setDraggingSlot] = useState<"" | "4x3" | "16x9">("");
+    const [draggingSlot, setDraggingSlot] = useState<"" | "4x3" | "16x9" | "movil">("");
     const fileInput43Ref = useRef<HTMLInputElement>(null);
     const fileInput169Ref = useRef<HTMLInputElement>(null);
+    const fileInputMovilRef = useRef<HTMLInputElement>(null);
 
-    const handleFileUpload = useCallback(async (file: File, target: "4x3" | "16x9") => {
+    const handleFileUpload = useCallback(async (file: File, target: "4x3" | "16x9" | "movil") => {
         if (!file.type.startsWith("image/")) {
             setUploadError("Solo se permiten archivos de imagen.");
             return;
@@ -171,7 +173,9 @@ export default function PortafolioPage() {
                 ...prev,
                 ...(target === "4x3"
                     ? { image_url: data.url }
-                    : { image_url_wide: data.url }),
+                    : target === "16x9"
+                        ? { image_url_wide: data.url }
+                        : { image_url_mobile: data.url }),
                 image_alt: prev.image_alt || `Imagen de ${prev.title || "proyecto"}`,
             }));
         } catch (err) {
@@ -181,7 +185,7 @@ export default function PortafolioPage() {
         }
     }, [form.title]);
 
-    const makeDropHandlers = useCallback((slot: "4x3" | "16x9") => ({
+    const makeDropHandlers = useCallback((slot: "4x3" | "16x9" | "movil") => ({
         onDrop: (e: React.DragEvent) => {
             e.preventDefault();
             setDraggingSlot("");
@@ -438,7 +442,7 @@ export default function PortafolioPage() {
                                 {/* ── Direct Image Upload: Two zones ── */}
                                 <div className="md:col-span-2 space-y-3">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">O subí imágenes directamente</span>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         {/* 4:3 Upload Zone */}
                                         <div className="space-y-2">
                                             <p className="text-[11px] text-primary font-black uppercase tracking-wider flex items-center gap-1">
@@ -541,6 +545,63 @@ export default function PortafolioPage() {
                                                     </div>
                                                 )}
                                             </div>
+                                        </div>
+
+                                        {/* Celular: primera pantalla en un teléfono (390×844 o 375×812) */}
+                                        <div className="space-y-2">
+                                            <p className="text-[11px] text-accent-yellow font-black uppercase tracking-wider flex items-center gap-1">
+                                                📱 Celular (vertical)
+                                            </p>
+                                            <div
+                                                {...makeDropHandlers("movil")}
+                                                onClick={() => fileInputMovilRef.current?.click()}
+                                                className={`relative border-2 border-dashed rounded-sm p-5 text-center cursor-pointer transition-all ${
+                                                    draggingSlot === "movil"
+                                                        ? "border-accent-yellow bg-accent-yellow/10 scale-[1.01]"
+                                                        : uploadingSlot === "movil"
+                                                            ? "border-accent-yellow/50 bg-accent-yellow/5"
+                                                            : "border-white/20 bg-white/5 hover:border-accent-yellow/40 hover:bg-white/10"
+                                                }`}
+                                            >
+                                                <input
+                                                    ref={fileInputMovilRef}
+                                                    type="file"
+                                                    accept="image/png,image/jpeg,image/webp"
+                                                    className="hidden"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) handleFileUpload(file, "movil");
+                                                        e.target.value = "";
+                                                    }}
+                                                />
+                                                {uploadingSlot === "movil" ? (
+                                                    <div className="flex flex-col items-center gap-2 py-2">
+                                                        <div className="w-7 h-7 border-3 border-accent-yellow border-t-transparent rounded-full animate-spin" />
+                                                        <p className="text-white font-bold text-xs">Subiendo...</p>
+                                                    </div>
+                                                ) : form.image_url_mobile ? (
+                                                    <div className="flex flex-col items-center gap-2">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img src={form.image_url_mobile} alt="Preview celular" className="h-24 aspect-[375/812] object-cover object-top rounded border border-white/10" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                                        <p className="text-accent-yellow text-[10px] font-bold">✓ Imagen cargada · Clic para reemplazar</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center gap-1.5 py-2">
+                                                        <span aria-hidden="true" className={`material-icons text-2xl ${draggingSlot === "movil" ? "text-accent-yellow" : "text-gray-500"}`}>
+                                                            {draggingSlot === "movil" ? "file_download" : "smartphone"}
+                                                        </span>
+                                                        <p className="text-gray-300 text-xs font-bold">
+                                                            {draggingSlot === "movil" ? "Soltá acá" : "Subir captura de celular"}
+                                                        </p>
+                                                        <p className="text-gray-500 text-[10px]">&quot;Así se ven en el celular&quot; y galería</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {form.image_url_mobile && (
+                                                <button type="button" onClick={() => setForm({ ...form, image_url_mobile: "" })} className="text-[10px] font-bold text-gray-400 underline hover:text-white">
+                                                    Quitar captura de celular
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                     {uploadError && (
