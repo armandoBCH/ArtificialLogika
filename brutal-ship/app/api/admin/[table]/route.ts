@@ -29,7 +29,7 @@ const ALLOWED_FIELDS: Record<AllowedTable, string[]> = {
     ],
     portfolio_projects: [
         "title", "category", "categories", "tags", "description", "description_long",
-        "image_url", "image_url_wide", "image_alt", "accent_color", "stats",
+        "image_url", "image_url_wide", "image_url_mobile", "image_alt", "accent_color", "stats",
         "display_order", "is_active", "is_sample", "external_url",
         "applied_services", "applied_features",
     ],

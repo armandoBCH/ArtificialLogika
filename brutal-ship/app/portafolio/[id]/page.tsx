@@ -93,13 +93,14 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         ? project.description_long
         : null;
 
-    // Primero la 4:3 de detalle; la panorámica solo si es otra imagen.
+    // Primero la 4:3 de detalle; la panorámica solo si es otra imagen; al final, el celular.
     const imagenes = [
         project.image_url ? { src: project.image_url, formato: "4:3" as const } : null,
         project.image_url_wide && project.image_url_wide !== project.image_url
             ? { src: project.image_url_wide, formato: "16:9" as const }
             : null,
-    ].filter((x): x is { src: string; formato: "4:3" | "16:9" } => x !== null);
+        project.image_url_mobile ? { src: project.image_url_mobile, formato: "celular" as const } : null,
+    ].filter((x): x is { src: string; formato: "4:3" | "16:9" | "celular" } => x !== null);
 
     // Otros proyectos: el mismo criterio de la home, trabajo real primero.
     const otros = projects

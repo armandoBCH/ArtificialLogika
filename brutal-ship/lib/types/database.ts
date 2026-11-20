@@ -58,6 +58,9 @@ export interface PortfolioProject {
     description_long: string;
     image_url: string;
     image_url_wide: string;
+    /** Primera pantalla de la web en un celular. Si está, el proyecto entra solo en
+        "Y así se ven en el celular" y en su galería. */
+    image_url_mobile?: string | null;
     image_alt: string;
     accent_color: string;
     stats: PortfolioStat[];
