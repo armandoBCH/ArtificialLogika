@@ -31,6 +31,7 @@ const SECCIONES = [
     { href: "#como-funciona", etiqueta: "Cómo funciona", soloMovil: false },
     { href: "/portafolio", etiqueta: "Trabajos", soloMovil: false },
     { href: "#precios", etiqueta: "Precios", soloMovil: false },
+    { href: "#sistemas", etiqueta: "Sistemas y apps", soloMovil: true },
     { href: "#garantia", etiqueta: "Garantía", soloMovil: true },
     { href: "#faq", etiqueta: "Preguntas", soloMovil: false },
     { href: "#quienes-somos", etiqueta: "Nosotros", soloMovil: true },
