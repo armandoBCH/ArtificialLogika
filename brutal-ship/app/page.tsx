@@ -5,6 +5,7 @@ import WhoDoesWhatSection from "./components/WhoDoesWhatSection";
 import PortfolioShowcase from "./components/PortfolioShowcase";
 import GuaranteeSection from "./components/GuaranteeSection";
 import PricingSection from "./components/PricingSection";
+import SistemasSection from "./components/SistemasSection";
 import FAQSection from "./components/FAQSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
@@ -69,11 +70,15 @@ export default async function Home() {
             tiempos (al pie de esa sección) y sus promesas (en la garantía).
           - Nosotros: es la ficha del equipo en Contacto.
           - Testimonios: son los mismos clientes del portafolio; van ahí.
-          La garantía no es una parada propia: es la franja que abre Precios. */}
+          La garantía no es una parada propia: es la franja que abre Precios.
+          Desde 2026-11-21, después de Precios va "Más que una web" (tiendas,
+          sistemas y apps), para quien llega desde la campaña a negocios
+          establecidos. */}
       <WhoDoesWhatSection />
       <PortfolioShowcase projects={projects} testimonials={testimonials} />
       <GuaranteeSection />
       <PricingSection plans={plans} config={config} />
+      <SistemasSection plans={plans} config={config} />
       <FAQSection faqs={faqs} config={config} />
       <ContactSection config={config} />
       </main>
