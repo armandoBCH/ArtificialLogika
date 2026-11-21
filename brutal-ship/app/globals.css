@@ -1179,3 +1179,150 @@ body:has(.visor[open]) {
     break-inside: avoid;
   }
 }
+
+/* ===================================================================
+   LAS ESCENAS DE SISTEMAS (SistemasSection.tsx)
+   Cada producto muestra su acción mientras bajás: el botón de la tienda
+   se aprieta, el carrito cuenta 1, el pago se estampa y el pedido llega
+   al panel; los pedidos del sistema pasan de "Nuevo" a "Listo" de a uno;
+   el ícono de la app se toca, la app se abre desde él y el turno se
+   confirma; la receta se lee y aparecen sus datos; el asesor responde.
+
+   Igual que el resto del sitio: atado al scroll y una sola vez, nada se
+   mueve solo. Todas las piezas leen la línea de tiempo de su escena
+   (`--escena`), no la propia, para que la secuencia salga en orden.
+   Sin soporte o con "reducir movimiento" no hay animación y cada pieza
+   queda en su estado final: por eso el estado final es el estilo base.
+   =================================================================== */
+
+.escena {
+  view-timeline-name: --escena;
+}
+
+.escena .anima {
+  animation-timeline: --escena;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-range: entry 25% cover 50%;
+}
+
+/* Lo que termina oculto: la etiqueta vieja, la línea que lee y el "escribiendo". */
+.escena .t-sale,
+.escena .s-nuevo,
+.escena .r-scan,
+.escena .c-escribe {
+  opacity: 0;
+}
+
+/* Tienda */
+.escena .t-boton { animation-name: esc-aprieta; }
+.escena .t-sale { animation-name: esc-se-va; }
+.escena .t-entra { animation-name: esc-llega; }
+.escena .t-cuenta { animation-name: esc-cuenta; }
+.escena .t-pago { animation-name: sello-estampa; animation-range: entry 60% cover 42%; }
+.escena .t-aviso { animation-name: esc-sube; animation-range: cover 35% cover 52%; }
+
+@keyframes esc-aprieta {
+  0%, 22% { translate: 0 0; box-shadow: var(--shadow-neobrutalism-sm); }
+  28% { translate: 2px 2px; box-shadow: none; }
+  34%, 100% { translate: 0 0; box-shadow: var(--shadow-neobrutalism-sm); }
+}
+@keyframes esc-se-va {
+  0%, 27% { opacity: 1; }
+  31%, 100% { opacity: 0; }
+}
+@keyframes esc-llega {
+  0%, 27% { opacity: 0; }
+  31%, 100% { opacity: 1; }
+}
+@keyframes esc-cuenta {
+  0%, 30% { scale: 0; }
+  37% { scale: 1.35; }
+  43%, 100% { scale: 1; }
+}
+@keyframes esc-sube {
+  from { opacity: 0; translate: 0 18px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+/* Sistema: cada pedido se tilda un poco después que el anterior. */
+.escena .s-nuevo { animation-name: esc-se-va-corto; }
+.escena .s-listo { animation-name: esc-tilda; }
+.escena .s-fila-1 .anima { animation-range: entry 30% cover 30%; }
+.escena .s-fila-2 .anima { animation-range: entry 60% cover 40%; }
+.escena .s-fila-3 .anima { animation-range: entry 90% cover 50%; }
+
+@keyframes esc-se-va-corto {
+  0%, 45% { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+@keyframes esc-tilda {
+  0%, 45% { opacity: 0; scale: 0.6; }
+  60% { opacity: 1; scale: 1.15; }
+  70%, 100% { opacity: 1; scale: 1; }
+}
+
+/* App: se toca el ícono, la app crece desde él y el turno se confirma. */
+.escena .a-icono { animation-name: esc-toca; }
+.escena .a-pantalla { animation-name: esc-abre; }
+.escena .a-hora { animation-name: esc-elige; }
+.escena .a-sello { animation-name: esc-estampa-chico; animation-range: cover 38% cover 52%; }
+
+/* Dentro del teléfono el sello entra más chico: con el tamaño del de la tienda, el
+   borde de la pantalla lo cortaba mientras caía. */
+@keyframes esc-estampa-chico {
+  0% { opacity: 0; transform: rotate(-10deg) scale(1.5); }
+  70% { opacity: 1; }
+  100% { opacity: 1; transform: rotate(-3deg) scale(1); }
+}
+@keyframes esc-toca {
+  0%, 15% { scale: 1; }
+  22% { scale: 0.82; }
+  28%, 100% { scale: 1; }
+}
+@keyframes esc-abre {
+  0%, 26% { clip-path: circle(0% at 50% 40%); }
+  55%, 100% { clip-path: circle(150% at 50% 40%); }
+}
+@keyframes esc-elige {
+  0%, 62% { background-color: #ffffff; color: var(--color-ink-black); }
+  68%, 100% { background-color: var(--color-primary); color: #ffffff; }
+}
+
+/* Receta: la línea baja una vez y después aparecen los datos de a uno. */
+.escena .r-scan { animation-name: esc-escanea; animation-range: entry 30% cover 40%; }
+.escena .r-dato { animation-name: esc-sube; }
+.escena .r-dato-1 { animation-range: cover 34% cover 40%; }
+.escena .r-dato-2 { animation-name: esc-sube; animation-range: cover 38% cover 44%; }
+.escena .r-dato-3 { animation-name: esc-sube; animation-range: cover 42% cover 48%; }
+
+@keyframes esc-escanea {
+  0% { opacity: 0; translate: 0 0; }
+  8% { opacity: 1; }
+  88% { opacity: 1; translate: 0 100%; }
+  100% { opacity: 0; translate: 0 100%; }
+}
+
+/* Asesor: la pregunta, el "escribiendo", la respuesta y el kit. */
+.escena .c-pregunta { animation-name: esc-sube; animation-range: entry 30% entry 80%; }
+.escena .c-escribe { animation-name: esc-escribe; animation-range: entry 80% cover 36%; }
+.escena .c-respuesta { animation-name: esc-sube; animation-range: cover 34% cover 42%; }
+.escena .c-kit { animation-name: esc-sube; animation-range: cover 40% cover 48%; }
+
+@keyframes esc-escribe {
+  0% { opacity: 0; }
+  20%, 80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@supports not (animation-timeline: view()) {
+  .escena .anima {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .escena .anima {
+    animation: none !important;
+  }
+}
