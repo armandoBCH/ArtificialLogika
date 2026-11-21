@@ -12,7 +12,8 @@ import { formatearPrecio } from "@/lib/precios";
  * Cada producto se explica con una animación corta, no con texto: la compra en
  * la tienda, los pedidos que pasan a "Listo", la app que se abre y confirma un
  * turno, la receta que lee la IA y el asesor que responde. Arrancan al entrar en
- * pantalla, duran menos de 2 s y pasan una vez (AnimaAlVer.tsx y globals.css,
+ * pantalla, van en fila (una termina y arranca la siguiente), duran unos 3 s cada
+ * una y pasan una vez (AnimaAlVer.tsx y globals.css,
  * "LAS ESCENAS DE SISTEMAS"). Son ilustración: el producto, los horarios y los
  * valores de la receta son de ejemplo, por eso van con aria-hidden.
  *
@@ -129,7 +130,7 @@ export default function SistemasSection({ plans, config }: { plans: PricingPlan[
 
 function EscenaTienda() {
     return (
-        <div aria-hidden="true" data-anima="escena" className="escena relative mx-auto w-full max-w-xs pb-8">
+        <div aria-hidden="true" data-anima="escena" data-dura="3000" className="escena relative mx-auto w-full max-w-xs pb-8">
             <div className="overflow-clip rounded-xl border-4 border-black bg-white shadow-neobrutalism">
                 <div className="flex items-center justify-between border-b-2 border-black bg-background-light px-3 py-2">
                     <span className="font-display text-xs font-bold text-ink-black/70">tunegocio.com.ar</span>
@@ -174,7 +175,7 @@ const PEDIDOS = [
 
 function EscenaSistema() {
     return (
-        <div aria-hidden="true" data-anima="escena" className="escena w-full overflow-clip rounded-xl border-4 border-black bg-white shadow-neobrutalism">
+        <div aria-hidden="true" data-anima="escena" data-dura="2500" className="escena w-full overflow-clip rounded-xl border-4 border-black bg-white shadow-neobrutalism">
             <div className="border-b-2 border-black bg-ink-black px-3 py-2 font-display text-xs font-bold uppercase text-white">Pedidos de hoy</div>
             <ul className="divide-y-2 divide-black/10">
                 {PEDIDOS.map((p, i) => (
@@ -197,7 +198,7 @@ function EscenaSistema() {
 
 function EscenaApp() {
     return (
-        <div aria-hidden="true" data-anima="escena" className="escena mx-auto w-40">
+        <div aria-hidden="true" data-anima="escena" data-dura="3100" className="escena mx-auto w-40">
             <div className="rounded-[1.9rem] border-4 border-black bg-ink-black p-1.5 shadow-neobrutalism-lg">
                 <div className="relative aspect-[9/16] overflow-clip rounded-[1.5rem] bg-background-light">
                     <div className="grid grid-cols-3 gap-2.5 p-3 pt-6">
@@ -238,7 +239,7 @@ function EscenaApp() {
 
 function EscenaReceta() {
     return (
-        <div aria-hidden="true" data-anima="escena" className="escena flex items-center gap-3">
+        <div aria-hidden="true" data-anima="escena" data-dura="2500" className="escena flex items-center gap-3">
             <div className="relative w-36 shrink-0 overflow-clip rounded-lg border-4 border-black bg-white p-3 shadow-neobrutalism-white">
                 <span className="flex items-center justify-between font-display text-xs font-bold uppercase text-ink-black">
                     Receta
@@ -263,7 +264,7 @@ function EscenaReceta() {
 
 function EscenaChat() {
     return (
-        <div aria-hidden="true" data-anima="escena" className="escena flex flex-col gap-2">
+        <div aria-hidden="true" data-anima="escena" data-dura="2300" className="escena flex flex-col gap-2">
             <p className="anima c-pregunta self-end rounded-2xl rounded-br-sm border-2 border-black bg-white px-3 py-2 text-sm font-medium leading-snug text-ink-black">
                 ¿Qué arnés me sirve?
             </p>
