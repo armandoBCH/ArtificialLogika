@@ -53,7 +53,7 @@ export default function GuaranteeSection() {
                 className="absolute -right-20 -top-20 w-72 h-72 rounded-full border-4 border-black/10 pointer-events-none"
             ></div>
 
-            <div className="relative z-10 max-w-6xl mx-auto text-center">
+            <div data-anima="garantia" className="relative z-10 max-w-6xl mx-auto text-center">
                 <p className="sello bg-ink-black text-white text-sm shadow-neobrutalism-sm">
                     Primero lo ves, después pagás
                 </p>
@@ -70,8 +70,8 @@ export default function GuaranteeSection() {
                 </h2>
 
                 <ul className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6 border-y-2 border-black/15 py-8 text-left">
-                    {CONDICIONES.map((c) => (
-                        <li key={c.titulo}>
+                    {CONDICIONES.map((c, i) => (
+                        <li key={c.titulo} className="condicion-cae" style={{ "--i": i } as React.CSSProperties}>
                             <span className="flex items-center gap-2">
                                 <span aria-hidden="true" className="material-icons text-xl text-primary">
                                     {c.icono}
