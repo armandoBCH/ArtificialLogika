@@ -100,7 +100,7 @@ function PlanCard({ plan }: { plan: PricingPlan }) {
             <div className="p-6 flex flex-col flex-1">
                 {plan.original_price && (
                     <div className="flex items-end justify-center gap-1 mb-1">
-                        <span className="text-xl font-bold text-ink-black/60 line-through">{formatearPrecio(plan.original_price, plan.currency)}</span>
+                        <span className="tachado text-xl font-bold text-ink-black/60">{formatearPrecio(plan.original_price, plan.currency)}</span>
                     </div>
                 )}
                 <div className="flex flex-col items-center gap-1 mb-3 mt-2">
@@ -442,6 +442,7 @@ export default function PricingSection({ plans, config }: PricingSectionProps) {
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true, margin: "-100px" }}
+                    data-anima="planes"
                     className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl lg:max-w-[85rem] mx-auto items-start relative z-10"
                 >
                     {plans.map((plan) => (

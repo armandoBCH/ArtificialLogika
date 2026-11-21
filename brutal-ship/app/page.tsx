@@ -6,6 +6,7 @@ import PortfolioShowcase from "./components/PortfolioShowcase";
 import GuaranteeSection from "./components/GuaranteeSection";
 import PricingSection from "./components/PricingSection";
 import SistemasSection from "./components/SistemasSection";
+import AnimaAlVer from "./components/AnimaAlVer";
 import FAQSection from "./components/FAQSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
@@ -83,6 +84,7 @@ export default async function Home() {
       <ContactSection config={config} />
       </main>
       <Footer config={config} />
+      <AnimaAlVer />
       <StickyMobileCTA config={config} />
       <WhatsAppChatWidget config={config} />
       {/* Spacer for sticky mobile CTA */}

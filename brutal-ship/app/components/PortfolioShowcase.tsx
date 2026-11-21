@@ -56,8 +56,8 @@ export default function PortfolioShowcase({ projects, testimonials = [] }: Portf
             <div aria-hidden="true" className="w-full h-4 bg-accent-yellow border-b-4 border-black"></div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-16">
-                <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6 border-b-4 border-white/25 pb-6 md:pb-8">
-                    <div aria-hidden="true" className="text-secondary shrink-0">
+                <div data-anima="portafolio" className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6 border-b-4 border-white/25 pb-6 md:pb-8">
+                    <div aria-hidden="true" className="estrella-gira text-secondary shrink-0">
                         <svg
                             className="drop-shadow-neobrutalism w-14 h-14 md:w-20 md:h-20"
                             fill="currentColor"
@@ -84,7 +84,7 @@ export default function PortfolioShowcase({ projects, testimonials = [] }: Portf
                     </div>
                 </div>
 
-                <ul className="mt-10 md:mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+                <ul data-anima="tarjetas" className="mt-10 md:mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
                     {featuredProjects.map((project) => (
                         <li key={project.id}>
                             <ProjectCard project={project} />

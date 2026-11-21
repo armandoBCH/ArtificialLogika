@@ -87,7 +87,7 @@ export default function WhoDoesWhatSection() {
                     Cuatro cosas de tu lado. Once del nuestro. Esa diferencia es el producto.
                 </p>
 
-                <div className="mt-14 grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start">
+                <div data-anima="como-funciona" className="mt-14 grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start">
                     {/* Lo que pone el cliente: cuatro líneas y se termina. */}
                     <div className="ficha lg:col-span-2 bg-white rounded-xl shadow-neobrutalism p-7 md:p-9 pt-9 md:pt-11">
                         <span className="ficha-etiqueta text-ink-black">Lo que ponés vos</span>
@@ -96,7 +96,8 @@ export default function WhoDoesWhatSection() {
                                 <li key={paso} className="flex items-start gap-3 text-lg font-bold leading-snug">
                                     <span
                                         aria-hidden="true"
-                                        className="shrink-0 flex h-7 w-7 items-center justify-center rounded-full border-2 border-black bg-accent-yellow text-sm font-black"
+                                        className="numero-cae shrink-0 flex h-7 w-7 items-center justify-center rounded-full border-2 border-black bg-accent-yellow text-sm font-black"
+                                        style={{ "--i": i } as React.CSSProperties}
                                     >
                                         {i + 1}
                                     </span>
@@ -127,14 +128,15 @@ export default function WhoDoesWhatSection() {
                             <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border-4 border-white/20"></div>
                         </div>
                         <span className="ficha-etiqueta text-white">Lo que ponemos nosotros</span>
-                        {/* Las tildes se marcan de a una mientras la lista sube (globals.css,
-                            "LAS ONCE TILDES"). El texto no se mueve: se lee desde el primer momento. */}
+                        {/* Las tildes se marcan en fila cuando la lista entra en pantalla (globals.css,
+                            "ANIMA AL VER"). El texto no se mueve: se lee desde el primer momento. */}
                         <ul className="relative space-y-3">
-                            {LOGIKA.map((item) => (
+                            {LOGIKA.map((item, i) => (
                                 <li key={item} className="flex items-start gap-2.5 text-lg font-medium leading-snug">
                                     <span
                                         aria-hidden="true"
                                         className="tilde-cae material-icons shrink-0 text-secondary text-xl leading-7"
+                                        style={{ "--i": i } as React.CSSProperties}
                                     >
                                         check_circle
                                     </span>
